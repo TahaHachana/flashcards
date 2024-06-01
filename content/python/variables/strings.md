@@ -1,6 +1,6 @@
 # Strings
 
-Strings in Python are a sequence of letters in a specific order.
+A string in Python is a sequence of letters in a specific order.
 
 ```python
 double_quotes = "Hello World"
