@@ -47,8 +47,17 @@ def move_up_one_dir(path):
 def not_excluded_folder(folder):
     return folder not in EXCLUDED_FOLDERS
 
+def first_dirname(path):
+    return os.path.basename(os.path.dirname(path))
 
-def write_index_html(path):
+path = "." #"content/programming-syntax/variables"
+
+
+
+def write_index_html(path, title="Programming Syntax Flashcards"):
+    hirearchy =  [x.title()  for x in path.split("/")[1:]]
+    if len(hirearchy) > 0:
+        title = title + " - " + " - ".join(hirearchy)
     folder_names = [
         name
         for name in os.listdir(path)
@@ -57,7 +66,7 @@ def write_index_html(path):
     folder_names = list(filter(not_excluded_folder, folder_names))
     links = [{"href": f"./{folder}/", "text": folder} for folder in folder_names]
     context = {
-        "title": "My Title",
+        "title": title,
         "links": links,
     }
     html_output = index_template.render(context)
@@ -66,7 +75,10 @@ def write_index_html(path):
         index_file.write(html_output)
         print(f"Created index.html in: {path}")
 
-def write_carousel_html(md_folder, path):
+def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
+    hirearchy =  [x.title()  for x in path.split("/")[1:]]
+    if len(hirearchy) > 0:
+        title = title + " - " + " - ".join(hirearchy)    
     markdown_files = [
         name
         for name in os.listdir(md_folder)
@@ -80,7 +92,7 @@ def write_carousel_html(md_folder, path):
             slide = {"text": markdown_to_html(text), "code": markdown_to_html(code)}
             slides.append(slide)
     context = {
-        "title": "Carousel Title",
+        "title": title,
         "slides": slides,
     }
     html_output = carousel_template.render(context)
@@ -116,5 +128,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Todo: Relevant title for each page
 # Todo: Code syntax highlighting
