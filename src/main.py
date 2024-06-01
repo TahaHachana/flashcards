@@ -34,8 +34,8 @@ def rec_list_folders_in_dir(dir):
 def move_up_one_dir(path):
     new_path = path.replace(CONTENT_DIR, ".")
     if new_path != ".":
-        print(f"deleting {new_path}")
-        # shutil.rmtree(new_path) #, ignore_errors=True)
+        #print(f"deleting {new_path}")
+        shutil.rmtree(new_path, ignore_errors=True)
     # if not os.path.exists(new_path):
     os.makedirs(new_path, exist_ok=True)
     print(f"Created directory: {new_path}")
@@ -70,7 +70,8 @@ def write_index_html(new_path):
 def main():
     folders = rec_list_folders_in_dir(CONTENT_DIR)
     print(f"folders: {folders}")
-    # move_up_one_dir(CONTENT_DIR)
+    if os.path.exists("./index.html"):
+        os.remove("./index.html")
     write_index_html(".")
     new_paths = []
     for folder in folders:
