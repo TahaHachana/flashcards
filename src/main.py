@@ -1,9 +1,11 @@
 import os
 import shutil
 
-from html_template import index_template
+from html_template import index_template, carousel_template
+from markdown_to_html import split_markdown_text, markdown_to_html
 
 CONTENT_DIR = "./content"
+EXCLUDED_FOLDERS = ["content", ".git", "src"]
 
 # import sys
 # import markdown
@@ -42,18 +44,15 @@ def move_up_one_dir(path):
     return new_path
 
 
-folders_to_exclude = ["content", ".git", "src"]
-
-
 def not_excluded_folder(folder):
-    return folder not in folders_to_exclude
+    return folder not in EXCLUDED_FOLDERS
 
 
-def write_index_html(new_path):
+def write_index_html(path):
     folder_names = [
         name
-        for name in os.listdir(new_path)
-        if os.path.isdir(os.path.join(new_path, name))
+        for name in os.listdir(path)
+        if os.path.isdir(os.path.join(path, name))
     ]
     folder_names = list(filter(not_excluded_folder, folder_names))
     links = [{"href": f"./{folder}/", "text": folder} for folder in folder_names]
@@ -62,11 +61,33 @@ def write_index_html(new_path):
         "links": links,
     }
     html_output = index_template.render(context)
-    index_file_path = os.path.join(new_path, "index.html")
+    index_file_path = os.path.join(path, "index.html")
     with open(index_file_path, "w") as index_file:
         index_file.write(html_output)
-        print(f"Created index.html in: {new_path}")
+        print(f"Created index.html in: {path}")
 
+def write_carousel_html(md_folder, path):
+    markdown_files = [
+        name
+        for name in os.listdir(md_folder)
+        if name.endswith(".md")
+    ]
+    slides = []
+    for markdown_file in markdown_files:
+        with open(os.path.join(md_folder, markdown_file)) as file:
+            markdown_text = file.read()
+            text, code = split_markdown_text(markdown_text)
+            slide = {"text": markdown_to_html(text), "code": markdown_to_html(code)}
+            slides.append(slide)
+    context = {
+        "title": "Carousel Title",
+        "slides": slides,
+    }
+    html_output = carousel_template.render(context)
+    carousel_file_path = os.path.join(path, "index.html")
+    with open(carousel_file_path, "w") as carousel_file:
+        carousel_file.write(html_output)
+        print(f"Created index.html in: {path}")
 
 def contains_md_files(folder):
     for file in os.listdir(folder):
@@ -83,14 +104,17 @@ def main():
     write_index_html(".")
     new_paths = []
     for folder in folders:
-        new_paths.append(move_up_one_dir(folder))
+        if contains_md_files(folder):
+            new_path = move_up_one_dir(folder)
+            write_carousel_html(folder, new_path)
+        else:
+            new_paths.append(move_up_one_dir(folder))
     for new_path in new_paths:
-        write_index_html(new_path)
+            write_index_html(new_path)
 
 
 if __name__ == "__main__":
     main()
 
-# Todo: Carousel child HTML template
-# Todo: Markdown to HTML conversion
-# Todo: Generate carousel page from markdown files
+# Todo: Relevant title for each page
+# Todo: Code syntax highlighting

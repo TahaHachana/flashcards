@@ -9,6 +9,7 @@ env = Environment(
 
 # Load the template
 index_template = env.get_template('index.html')
+carousel_template = env.get_template('carousel.html')
 
 # # Define the data to be passed to the template
 # context = {

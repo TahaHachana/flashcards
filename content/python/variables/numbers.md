@@ -1,6 +1,7 @@
 # Numbers
 
 Python has three types of numbers:
+
 - int
 - float
 - complex
