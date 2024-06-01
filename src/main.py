@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from html_template import html_output
+from html_template import template
 
 CONTENT_DIR = "./content"
 
@@ -20,30 +20,64 @@ CONTENT_DIR = "./content"
 
 # print(sys.executable)
 
-def list_folders_in_dir(dir):
+
+def rec_list_folders_in_dir(dir):
+    folders = []
     for folder in os.listdir(dir):
         folder_path = os.path.join(dir, folder)
         if os.path.isdir(folder_path):
-            print(folder_path)
-            list_folders_in_dir(folder_path)
+            folders.append(folder_path)
+            folders.extend(rec_list_folders_in_dir(folder_path))
+    return folders
 
-def create_index_file(path):
+
+def move_up_one_dir(path):
     new_path = path.replace(CONTENT_DIR, ".")
     if new_path != ".":
-        shutil.rmtree(new_path) #, ignore_errors=True)
+        print(f"deleting {new_path}")
+        # shutil.rmtree(new_path) #, ignore_errors=True)
     # if not os.path.exists(new_path):
-    os.makedirs(new_path)
+    os.makedirs(new_path, exist_ok=True)
     print(f"Created directory: {new_path}")
-    index_file_path = os.path.join(new_path, 'index.html')
-    with open(index_file_path, 'w') as index_file:
-        index_file.write("<html><body><h1>Index</h1></body></html>")
+    return new_path
+
+folders_to_exclude = ["content", ".git", "src"]
+
+def not_excluded_folder(folder):
+    return folder not in folders_to_exclude
+
+def write_index_html(new_path):
+    folder_names = [
+        name
+        for name in os.listdir(new_path)
+        if os.path.isdir(os.path.join(new_path, name))
+    ]
+    folder_names = list(filter(not_excluded_folder, folder_names))
+    links = [
+            {"href": f"/{folder}/", "text": folder} for folder in folder_names
+        ]
+    context = {
+        "title": "My Title",
+        "links": links,
+    }
+    html_output = template.render(context)
+    index_file_path = os.path.join(new_path, "index.html")
+    with open(index_file_path, "w") as index_file:
+        index_file.write(html_output)
         print(f"Created index.html in: {new_path}")
 
+
 def main():
-    folders = list_folders_in_dir(CONTENT_DIR)
-    create_index_file(CONTENT_DIR)
+    folders = rec_list_folders_in_dir(CONTENT_DIR)
+    print(f"folders: {folders}")
+    # move_up_one_dir(CONTENT_DIR)
+    write_index_html(".")
+    new_paths = []
     for folder in folders:
-        create_index_file(folder)
+        new_paths.append(move_up_one_dir(folder))
+    for new_path in new_paths:
+        write_index_html(new_path)
+
 
 if __name__ == "__main__":
     main()
