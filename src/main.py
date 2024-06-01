@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from html_template import template
+from html_template import index_template
 
 CONTENT_DIR = "./content"
 
@@ -54,13 +54,13 @@ def write_index_html(new_path):
     ]
     folder_names = list(filter(not_excluded_folder, folder_names))
     links = [
-            {"href": f"/{folder}/", "text": folder} for folder in folder_names
+            {"href": f"./{folder}/", "text": folder} for folder in folder_names
         ]
     context = {
         "title": "My Title",
         "links": links,
     }
-    html_output = template.render(context)
+    html_output = index_template.render(context)
     index_file_path = os.path.join(new_path, "index.html")
     with open(index_file_path, "w") as index_file:
         index_file.write(html_output)
