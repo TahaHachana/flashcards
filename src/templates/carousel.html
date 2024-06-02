@@ -1,41 +1,51 @@
 {% extends "base.html" %}
-
 {% block title %}{{ title }}{% endblock %}
-
 {% block content %}
 <div id="carousel" class="carousel slide">
-    <div class="carousel-inner" style="width: 70%; margin-left: 15%;">
-        {% for slide in slides %}
-        <div class="carousel-item">
-            <div class="flip-card m-3">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="card h-100 text-bg-dark border-light">
-                            <div class="card-body">
-                                {{ slide.text | safe }}
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+                <div class="carousel-inner">
+
+                {% for slide in slides %}
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        {{ slide.text | safe }}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="flip-card-back">
-                        <div class="card h-100 text-bg-dark border-light">
-                            <div class="card-body">
-                                {{ slide.code | safe }}
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        {{ slide.code | safe }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
+        <div class="row m-3">
+            <div class="col">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
 </div>
 <script>
     document.querySelector(".carousel-item").classList.add("active")
