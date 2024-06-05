@@ -1,6 +1,6 @@
 # Lists
 
-Lists are a collection of items that are ordered and changeable. They are defined by square brackets `[]` and items are separated by commas. Lists can contain items of different types.
+A Python list is an ordered collection of items, which can be of any data type. Lists are mutable, allowing for the addition, removal, and modification of elements. They provide a flexible way to store and manage sequences of data.
 
 ```python
 fruits = ["apple", "banana", "cherry"]

@@ -50,7 +50,9 @@
 <script>
     document.querySelector(".carousel-item").classList.add("active")
     const myCarouselElement = document.querySelector('#carousel')
-    const carousel = new bootstrap.Carousel(myCarouselElement)
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true,
+    });
 </script>
 <style>
     .flip-card {
@@ -111,6 +113,10 @@
 
     pre {
         white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
     }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">

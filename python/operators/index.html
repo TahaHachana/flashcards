@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programming Syntax Flashcards - Python - Data-Types</title>
+  <title>Programming Syntax Flashcards - Python - Operators</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -27,15 +27,34 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Dictionaries</h1>
-<p>A Python dictionary is a collection of key-value pairs, where each key is unique and maps to a value. It allows for fast retrieval, insertion, and deletion of data based on keys, making it a versatile and efficient data structure for various programming tasks.</p>
+                                        <h1>Bitwise Operators</h1>
+<p>Bitwise operators in Python are used to perform bit-level operations on integer values. The primary bitwise operators include &amp;, |, ^, ~, &lt;&lt;, and &gt;&gt;.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">person = {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 30}
+                                        <pre><code class="language-python">a = 10  # Binary: 1010
+b = 3   # Binary: 0011
+
+# Bitwise AND
+print(a &amp; b)  # Output: 2  (Binary: 0010)
+
+# Bitwise OR
+print(a | b)  # Output: 11 (Binary: 1011)
+
+# Bitwise XOR
+print(a ^ b)  # Output: 9  (Binary: 1001)
+
+# Bitwise NOT
+print(~a)     # Output: -11 (Binary: ...11110101, two's complement representation)
+
+# Bitwise left shift
+print(a &lt;&lt; 1)  # Output: 20 (Binary: 10100)
+
+# Bitwise right shift
+print(a &gt;&gt; 1)  # Output: 5  (Binary: 0101)
 </code></pre>
                                     </div>
                                 </div>
@@ -50,15 +69,34 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Sets</h1>
-<p>A Python set is an unordered collection of unique elements. Sets are mutable and do not allow duplicate values, making them useful for storing distinct items and performing operations like union, intersection, and difference. They provide efficient membership testing and are commonly used for tasks involving distinct data elements.</p>
+                                        <h1>Comparison Operators</h1>
+<p>Comparison operators in Python are used to compare two values and return a Boolean result (True or False). The primary comparison operators include ==, !=, &lt;, &gt;, &lt;=, and &gt;=.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">unique_numbers = {1, 2, 3}
+                                        <pre><code class="language-python">a = 10
+b = 3
+
+# Equal to
+print(a == b)  # Output: False
+
+# Not equal to
+print(a != b)  # Output: True
+
+# Less than
+print(a &lt; b)  # Output: False
+
+# Greater than
+print(a &gt; b)  # Output: True
+
+# Less than or equal to
+print(a &lt;= b)  # Output: False
+
+# Greater than or equal to
+print(a &gt;= b)  # Output: True
 </code></pre>
                                     </div>
                                 </div>
@@ -73,17 +111,25 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Strings</h1>
-<p>A Python string is an immutable sequence of characters used to represent text. Strings support a wide range of operations, such as concatenation, slicing, and various methods for manipulating and querying text data. Strings are enclosed in either single, double, or triple quotes.</p>
+                                        <h1>Logical Operators</h1>
+<p>Logical operators in Python are used to combine conditional statements and return Boolean results (True or False). The primary logical operators are and, or, and not.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">double_quotes = &quot;Hello World&quot;
-single_quotes = 'Hello World'
-triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
+                                        <pre><code class="language-python">a = True
+b = False
+
+# Logical AND
+print(a and b)  # Output: False
+
+# Logical OR
+print(a or b)  # Output: True
+
+# Logical NOT
+print(not a)  # Output: False
 </code></pre>
                                     </div>
                                 </div>
@@ -98,68 +144,37 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Lists</h1>
-<p>A Python list is an ordered collection of items, which can be of any data type. Lists are mutable, allowing for the addition, removal, and modification of elements. They provide a flexible way to store and manage sequences of data.</p>
+                                        <h1>Arithmetic Operators</h1>
+<p>Arithmetic operators in Python are used to perform basic mathematical operations, such as addition, subtraction, multiplication, division, and more. The primary arithmetic operators include +, -, <em>, /, //, %, and </em>*.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h1>Tuples</h1>
-<p>A Python tuple is an immutable ordered collection of elements, which can be of any data type.Tuples are useful for storing fixed collections of items and can be indexed and sliced similarly to lists. Tuples are defined by enclosing elements in parentheses.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python">coordinates = (10.0, 20.0)
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h1>Numbers</h1>
-<p>Python has three types of numbers:</p>
-<ul>
-<li>int</li>
-<li>float</li>
-<li>complex</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python">x = 1    # int
-y = 2.8  # float
-z = 1j   # complex
+                                        <pre><code class="language-python">a = 10
+b = 3
+
+# Addition
+print(a + b)  # Output: 13
+
+# Subtraction
+print(a - b)  # Output: 7
+
+# Multiplication
+print(a * b)  # Output: 30
+
+# Division
+print(a / b)  # Output: 3.3333333333333335
+
+# Floor Division
+print(a // b)  # Output: 3
+
+# Modulus
+print(a % b)  # Output: 1
+
+# Exponentiation
+print(a ** b)  # Output: 1000
 </code></pre>
                                     </div>
                                 </div>
