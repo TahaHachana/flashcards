@@ -5,7 +5,7 @@ from html_template import index_template, carousel_template
 from markdown_to_html import split_markdown_text, markdown_to_html
 
 CONTENT_DIR = "./content"
-EXCLUDED_FOLDERS = ["content", ".git", "src"]
+EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache"]
 
 # import sys
 # import markdown
@@ -47,24 +47,26 @@ def move_up_one_dir(path):
 def not_excluded_folder(folder):
     return folder not in EXCLUDED_FOLDERS
 
+
 def first_dirname(path):
     return os.path.basename(os.path.dirname(path))
 
-path = "." #"content/programming-syntax/variables"
 
+path = "."  # "content/programming-syntax/variables"
 
 
 def write_index_html(path, title="Programming Syntax Flashcards"):
-    hirearchy =  [x.title()  for x in path.split("/")[1:]]
+    hirearchy = [x.title() for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
     folder_names = [
-        name
-        for name in os.listdir(path)
-        if os.path.isdir(os.path.join(path, name))
+        name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))
     ]
     folder_names = list(filter(not_excluded_folder, folder_names))
-    links = [{"href": f"./{folder}/", "text": folder.replace("-", " ").title()} for folder in folder_names]
+    links = [
+        {"href": f"./{folder}/", "text": folder.replace("-", " ").title()}
+        for folder in folder_names
+    ]
     context = {
         "title": title,
         "links": links,
@@ -75,15 +77,12 @@ def write_index_html(path, title="Programming Syntax Flashcards"):
         index_file.write(html_output)
         print(f"Created index.html in: {path}")
 
+
 def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
-    hirearchy =  [x.title()  for x in path.split("/")[1:]]
+    hirearchy = [x.title() for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
-        title = title + " - " + " - ".join(hirearchy)    
-    markdown_files = [
-        name
-        for name in os.listdir(md_folder)
-        if name.endswith(".md")
-    ]
+        title = title + " - " + " - ".join(hirearchy)
+    markdown_files = [name for name in os.listdir(md_folder) if name.endswith(".md")]
     slides = []
     for markdown_file in markdown_files:
         with open(os.path.join(md_folder, markdown_file)) as file:
@@ -100,6 +99,7 @@ def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
     with open(carousel_file_path, "w") as carousel_file:
         carousel_file.write(html_output)
         print(f"Created index.html in: {path}")
+
 
 def contains_md_files(folder):
     for file in os.listdir(folder):
@@ -122,7 +122,7 @@ def main():
         else:
             new_paths.append(move_up_one_dir(folder))
     for new_path in new_paths:
-            write_index_html(new_path)
+        write_index_html(new_path)
 
 
 if __name__ == "__main__":
