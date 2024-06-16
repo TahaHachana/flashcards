@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programming Syntax Flashcards - Python - Object-Oriented-Programming</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+                <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Class Keyword</h1>
+<p>The <code>class</code> keyword in Python is used to define a class, which is a blueprint for creating objects. A class encapsulates data and functionality together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">class Dog:
+    &quot;&quot;&quot;
+    A simple class representing a dog.
+    &quot;&quot;&quot;
+
+    # Class attribute
+    species = &quot;Canis familiaris&quot;
+
+    # Instance method
+    def bark(self):
+        return &quot;Woof!&quot;
+
+# Create an instance of the Dog class
+my_dog = Dog()
+
+# Access class attribute
+print(my_dog.species)  # Output: Canis familiaris
+
+# Call instance method
+print(my_dog.bark())  # Output: Woof!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Self</h1>
+<p>In Python, <code>self</code> is a reference to the instance of the class itself. It is used to access attributes and methods of the class in object-oriented programming.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">class Dog:
+    &quot;&quot;&quot;
+    A simple class representing a dog.
+    &quot;&quot;&quot;
+
+    # Initializer / Instance attributes
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    # Instance method
+    def bark(self):
+        return f&quot;{self.name} is barking!&quot;
+
+    # Instance method
+    def get_age(self):
+        return f&quot;{self.name} is {self.age} years old.&quot;
+
+# Create an instance of the Dog class
+my_dog = Dog(&quot;Buddy&quot;, 3)
+
+# Access instance attributes
+print(my_dog.name)  # Output: Buddy
+print(my_dog.age)   # Output: 3
+
+# Call instance methods
+print(my_dog.bark())  # Output: Buddy is barking!
+print(my_dog.get_age())  # Output: Buddy is 3 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Inheritance</h1>
+<p>Inheritance in Python is a mechanism that allows a class (called the child or subclass) to inherit attributes and methods from another class (called the parent or superclass). This promotes code reuse and can create a hierarchical relationship between classes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Define the parent class
+class Animal:
+    &quot;&quot;&quot;
+    A simple class representing an animal.
+    &quot;&quot;&quot;
+
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        return f&quot;{self.name} makes a sound.&quot;
+
+# Define the child class
+class Dog(Animal):
+    &quot;&quot;&quot;
+    A class representing a dog, inheriting from Animal.
+    &quot;&quot;&quot;
+
+    def __init__(self, name, age):
+        # Call the constructor of the parent class
+        super().__init__(name)
+        self.age = age
+
+    def speak(self):
+        return f&quot;{self.name} says Woof!&quot;
+
+# Create an instance of the Dog class
+my_dog = Dog(&quot;Buddy&quot;, 3)
+
+# Access attributes and methods
+print(my_dog.name)  # Output: Buddy
+print(my_dog.age)   # Output: 3
+print(my_dog.speak())  # Output: Buddy says Woof!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Init</h1>
+<p>The <strong>init</strong> method in Python is a special method called a constructor. It is automatically called when a new instance of a class is created. The <strong>init</strong> method initializes the instance's attributes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">class Dog:
+    &quot;&quot;&quot;
+    A simple class representing a dog.
+    &quot;&quot;&quot;
+
+    # Initializer / Instance attributes
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    # Instance method
+    def bark(self):
+        return f&quot;{self.name} is barking!&quot;
+
+    # Instance method
+    def get_age(self):
+        return f&quot;{self.name} is {self.age} years old.&quot;
+
+# Create an instance of the Dog class
+my_dog = Dog(&quot;Buddy&quot;, 3)
+
+# Access instance attributes
+print(my_dog.name)  # Output: Buddy
+print(my_dog.age)   # Output: 3
+
+# Call instance methods
+print(my_dog.bark())  # Output: Buddy is barking!
+print(my_dog.get_age())  # Output: Buddy is 3 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: false,
+    });
+</script>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    hljs.highlightAll();
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
