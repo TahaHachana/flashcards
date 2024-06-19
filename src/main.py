@@ -7,21 +7,6 @@ from markdown_to_html import split_markdown_text, markdown_to_html
 CONTENT_DIR = "./content"
 EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache"]
 
-# import sys
-# import markdown
-
-# markdown_text = """
-# # Heading
-# - List item 1
-# - List item 2
-# """
-
-# html = markdown.markdown(markdown_text)
-# print(html)
-
-
-# print(sys.executable)
-
 
 def rec_list_folders_in_dir(dir):
     folders = []
@@ -36,9 +21,8 @@ def rec_list_folders_in_dir(dir):
 def move_up_one_dir(path):
     new_path = path.replace(CONTENT_DIR, ".")
     if new_path != ".":
-        # print(f"deleting {new_path}")
+        # Careful with shutil.rmtree
         shutil.rmtree(new_path, ignore_errors=True)
-    # if not os.path.exists(new_path):
     os.makedirs(new_path, exist_ok=True)
     print(f"Created directory: {new_path}")
     return new_path
@@ -52,7 +36,7 @@ def first_dirname(path):
     return os.path.basename(os.path.dirname(path))
 
 
-path = "."  # "content/programming-syntax/variables"
+# path = "."
 
 
 def write_index_html(path, title="Programming Syntax Flashcards"):
@@ -127,5 +111,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Todo: Code syntax highlighting

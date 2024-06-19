@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programming Syntax Flashcards - Python - Data-Types</title>
+  <title>Programming Syntax Flashcards - Python - File-Handling</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -27,15 +27,22 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Dictionaries</h1>
-<p>A Python dictionary is a collection of key-value pairs, where each key is unique and maps to a value. It allows for fast retrieval, insertion, and deletion of data based on keys, making it a versatile and efficient data structure for various programming tasks.</p>
+                                        <h1>Reading a File Line by Line</h1>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">person = {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 30}
+                                        <pre><code class="language-python"># Open a file in read mode
+file = open(&quot;example.txt&quot;, &quot;r&quot;)
+
+# Read and print each line in the file
+for line in file:
+    print(line.strip())
+
+# Close the file
+file.close()
 </code></pre>
                                     </div>
                                 </div>
@@ -50,15 +57,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Sets</h1>
-<p>A Python set is an unordered collection of unique elements. Sets are mutable and do not allow duplicate values, making them useful for storing distinct items and performing operations like union, intersection, and difference. They provide efficient membership testing and are commonly used for tasks involving distinct data elements.</p>
+                                        <h1>With Statement</h1>
+<p>The <code>with</code> statement in Python is used to simplify exception handling by encapsulating common preparation and cleanup tasks in so-called context managers. The <code>with</code> statement is used to wrap the execution of a block of code within methods defined by a context manager.</p>
+<p>The <code>with</code> statement is commonly used to open files, acquire locks, and more. When the block of code is exited, the context manager's <code>__exit__()</code> method is called to clean up resources.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">unique_numbers = {1, 2, 3}
+                                        <pre><code class="language-python"># Open a file using the with statement
+with open(&quot;example.txt&quot;, &quot;r&quot;) as file:
+    # Read the entire content of the file
+    content = file.read()
+    print(content)
+# No need to explicitly close the file; it's done automatically
 </code></pre>
                                     </div>
                                 </div>
@@ -73,17 +86,23 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Strings</h1>
-<p>A Python string is an immutable sequence of characters used to represent text. Strings support a wide range of operations, such as concatenation, slicing, and various methods for manipulating and querying text data. Strings are enclosed in either single, double, or triple quotes.</p>
+                                        <h1>Open()</h1>
+<p>The <code>open()</code> function in Python is used to open a file and return a corresponding file object. This function is used for reading, writing, and appending data to files. The syntax is <code>open(file, mode)</code>, where file is the name (and path) of the file and mode specifies the mode in which the file is opened.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">double_quotes = &quot;Hello World&quot;
-single_quotes = 'Hello World'
-triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
+                                        <pre><code class="language-python"># Open a file in read mode
+file = open(&quot;example.txt&quot;, &quot;r&quot;)
+
+# Read the entire content of the file
+content = file.read()
+print(content)
+
+# Close the file
+file.close()
 </code></pre>
                                     </div>
                                 </div>
@@ -98,15 +117,22 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Lists</h1>
-<p>A Python list is an ordered collection of items, which can be of any data type. Lists are mutable, allowing for the addition, removal, and modification of elements. They provide a flexible way to store and manage sequences of data.</p>
+                                        <h1>Writing to a File</h1>
+<p>In Python, you can write to a file using the <code>write()</code> method.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+                                        <pre><code class="language-python"># Open a file in write mode
+file = open(&quot;example.txt&quot;, &quot;w&quot;)
+
+# Write some content to the file
+file.write(&quot;Hello, world!&quot;)
+
+# Close the file
+file.close()
 </code></pre>
                                     </div>
                                 </div>
@@ -121,35 +147,13 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Tuples</h1>
-<p>A Python tuple is an immutable ordered collection of elements, which can be of any data type.Tuples are useful for storing fixed collections of items and can be indexed and sliced similarly to lists. Tuples are defined by enclosing elements in parentheses.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python">coordinates = (10.0, 20.0)
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h1>Numbers</h1>
-<p>Python has three types of numbers:</p>
+                                        <h1>File Modes</h1>
 <ul>
-<li>int</li>
-<li>float</li>
-<li>complex</li>
+<li><code>'r'</code> - Read mode (default). Opens a file for reading.</li>
+<li><code>'w'</code> - Write mode. Opens a file for writing (creates a new file or truncates an existing file).</li>
+<li><code>'a'</code> - Append mode. Opens a file for appending (creates a new file if it doesn't exist).</li>
+<li><code>'b'</code> - Binary mode. Can be added to other modes (e.g., 'rb', 'wb') for binary files.</li>
+<li><code>'t'</code> - Text mode (default). Can be added to other modes (e.g., 'rt', 'wt').</li>
 </ul>
                                     </div>
                                 </div>
@@ -157,9 +161,45 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">x = 1    # int
-y = 2.8  # float
-z = 1j   # complex
+                                        <pre><code class="language-python"># Open a file in read mode
+file = open(&quot;example.txt&quot;, &quot;r&quot;)
+
+# Read the entire content of the file
+content = file.read()
+print(content)
+
+# Close the file
+file.close()
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Appending to a File</h1>
+<p>In Python, you can append to a file using the <code>write()</code> method with the <code>a</code> mode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Open a file in append mode
+file = open(&quot;example.txt&quot;, &quot;a&quot;)
+
+# Append some content to the file
+file.write(&quot;\nAppended text.&quot;)
+
+# Close the file
+file.close()
 </code></pre>
                                     </div>
                                 </div>

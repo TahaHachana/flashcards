@@ -1,8 +1,8 @@
 import markdown
+import re
 
 
 def split_markdown_text(markdown_text):
-    import re
 
     code_block = re.search(r"```.*?```", markdown_text, re.DOTALL)
     if code_block:

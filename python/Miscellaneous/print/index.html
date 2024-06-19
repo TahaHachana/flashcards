@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programming Syntax Flashcards - Python - Data-Types</title>
+  <title>Programming Syntax Flashcards - Python - Miscellaneous - Print</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -27,15 +27,18 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Dictionaries</h1>
-<p>A Python dictionary is a collection of key-value pairs, where each key is unique and maps to a value. It allows for fast retrieval, insertion, and deletion of data based on keys, making it a versatile and efficient data structure for various programming tasks.</p>
+                                        <h1>File Parameter</h1>
+<p>The <code>file</code> parameter in the <code>print()</code> function is used to specify the file to write the output to. By default, the output is printed to the console.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">person = {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 30}
+                                        <pre><code class="language-python"># Redirecting print output to a file
+with open(&quot;output.txt&quot;, &quot;w&quot;) as file:
+    print(&quot;Hello, world!&quot;, file=file)
+# This writes &quot;Hello, world!&quot; to the file &quot;output.txt&quot;
 </code></pre>
                                     </div>
                                 </div>
@@ -50,15 +53,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Sets</h1>
-<p>A Python set is an unordered collection of unique elements. Sets are mutable and do not allow duplicate values, making them useful for storing distinct items and performing operations like union, intersection, and difference. They provide efficient membership testing and are commonly used for tasks involving distinct data elements.</p>
+                                        <h1>Basic Usage</h1>
+<p>The <code>print()</code> function in Python is used to output text or other data to the console or standard output. It can print strings, numbers, variables, and more, and supports multiple arguments and formatting.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">unique_numbers = {1, 2, 3}
+                                        <pre><code class="language-python">print(&quot;Hello, world!&quot;)
+# Output: Hello, world!
 </code></pre>
                                     </div>
                                 </div>
@@ -73,17 +77,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Strings</h1>
-<p>A Python string is an immutable sequence of characters used to represent text. Strings support a wide range of operations, such as concatenation, slicing, and various methods for manipulating and querying text data. Strings are enclosed in either single, double, or triple quotes.</p>
+                                        <h1>Multiple Arguments</h1>
+<p>You can pass multiple arguments to the <code>print()</code> function. The arguments are separated by commas.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">double_quotes = &quot;Hello World&quot;
-single_quotes = 'Hello World'
-triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
+                                        <pre><code class="language-python">print(&quot;The answer is&quot;, 42)
+# Output: The answer is 42
 </code></pre>
                                     </div>
                                 </div>
@@ -98,8 +101,115 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Lists</h1>
-<p>A Python list is an ordered collection of items, which can be of any data type. Lists are mutable, allowing for the addition, removal, and modification of elements. They provide a flexible way to store and manage sequences of data.</p>
+                                        <h1>Using <code>str.format()</code></h1>
+<p><code>str.format()</code> is a built-in method that allows multiple substitutions and value formatting. This method lets us concatenate elements within a string through positional formatting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;My name is {} and I am {} years old.&quot;.format(name, age))
+# Output: My name is Alice and I am 30 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Using %-formatting</h1>
+<p>This is an older method of formatting strings in Python. It uses the <code>%</code> operator to format a set of variables enclosed in a tuple (fixed-size array). The format string contains one or more format codes, which specify how the values should be formatted.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;My name is %s and I am %d years old.&quot; % (name, age))
+# Output: My name is Alice and I am 30 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Printing Variables</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;Name:&quot;, name)
+print(&quot;Age:&quot;, age)
+# Output: 
+# Name: Alice
+# Age: 30
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Separator and End Parameters</h1>
+<p>The <code>print()</code> function in Python has two optional parameters, <code>sep</code> and <code>end</code>, that can be used to customize the output of the function.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">print(&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;, sep=&quot;, &quot;)
+# Output: apple, banana, cherry
+
+print(&quot;Hello&quot;, end=&quot; &quot;)
+print(&quot;world!&quot;)
+# Output: Hello world!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Printing a List</h1>
                                     </div>
                                 </div>
                             </div>
@@ -107,6 +217,8 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <pre><code class="language-python">fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+print(fruits)
+# Output: ['apple', 'banana', 'cherry']
 </code></pre>
                                     </div>
                                 </div>
@@ -121,15 +233,20 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Tuples</h1>
-<p>A Python tuple is an immutable ordered collection of elements, which can be of any data type.Tuples are useful for storing fixed collections of items and can be indexed and sliced similarly to lists. Tuples are defined by enclosing elements in parentheses.</p>
+                                        <h1>Flush Parameter</h1>
+<p>The <code>flush</code> parameter in the <code>print()</code> function is used to forcibly flush the stream. By default, the stream is not flushed.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">coordinates = (10.0, 20.0)
+                                        <pre><code class="language-python">import time
+
+for i in range(5):
+    print(i, end=&quot; &quot;, flush=True)
+    time.sleep(1)
+# Output: 0 1 2 3 4 (printed with a delay of 1 second between each number)
 </code></pre>
                                     </div>
                                 </div>
@@ -144,22 +261,18 @@ triple_quotes = &quot;&quot;&quot;Hello World&quot;&quot;&quot;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Numbers</h1>
-<p>Python has three types of numbers:</p>
-<ul>
-<li>int</li>
-<li>float</li>
-<li>complex</li>
-</ul>
+                                        <h1>Formatted String Literals (f-strings)</h1>
+<p>Python 3.6 introduced f-strings, which provide a concise and convenient way to embed expressions inside string literals, using curly braces <code>{}</code>. They are prefixed with the letter <code>f</code> or <code>F</code> and are evaluated at runtime.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">x = 1    # int
-y = 2.8  # float
-z = 1j   # complex
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(f&quot;My name is {name} and I am {age} years old.&quot;)
+# Output: My name is Alice and I am 30 years old.
 </code></pre>
                                     </div>
                                 </div>

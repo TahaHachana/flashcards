@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
-                <div class="carousel-inner">
+            <div class="carousel-inner">
 
                 
                 <div class="carousel-item">
@@ -222,13 +222,15 @@ print(my_dog.get_age())  # Output: Buddy is 3 years old.
         </div>
         <div class="row">
             <div class="col ms-3">
-                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
                     <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
                     <span class="">Previous</span>
                 </button>
             </div>
             <div class="col me-3">
-                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
                     <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
                     <span class="">Next</span>
                 </button>
@@ -236,13 +238,6 @@ print(my_dog.get_age())  # Output: Buddy is 3 years old.
         </div>
     </div>
 </div>
-<script>
-    document.querySelector(".carousel-item").classList.add("active")
-    const myCarouselElement = document.querySelector('#carousel')
-    const carousel = new bootstrap.Carousel(myCarouselElement, {
-        touch: false,
-    });
-</script>
 <style>
     .flip-card {
         background-color: transparent;
@@ -311,7 +306,15 @@ print(my_dog.get_age())  # Output: Buddy is 3 years old.
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
     hljs.highlightAll();
+
     document.addEventListener('DOMContentLoaded', (event) => {
         const flipCards = document.querySelectorAll('.flip-card');
 
