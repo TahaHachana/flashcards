@@ -27,65 +27,6 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Reading a File Line by Line</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python"># Open a file in read mode
-file = open(&quot;example.txt&quot;, &quot;r&quot;)
-
-# Read and print each line in the file
-for line in file:
-    print(line.strip())
-
-# Close the file
-file.close()
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h1>With Statement</h1>
-<p>The <code>with</code> statement in Python is used to simplify exception handling by encapsulating common preparation and cleanup tasks in so-called context managers. The <code>with</code> statement is used to wrap the execution of a block of code within methods defined by a context manager.</p>
-<p>The <code>with</code> statement is commonly used to open files, acquire locks, and more. When the block of code is exited, the context manager's <code>__exit__()</code> method is called to clean up resources.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python"># Open a file using the with statement
-with open(&quot;example.txt&quot;, &quot;r&quot;) as file:
-    # Read the entire content of the file
-    content = file.read()
-    print(content)
-# No need to explicitly close the file; it's done automatically
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
                                         <h1>Open()</h1>
 <p>The <code>open()</code> function in Python is used to open a file and return a corresponding file object. This function is used for reading, writing, and appending data to files. The syntax is <code>open(file, mode)</code>, where file is the name (and path) of the file and mode specifies the mode in which the file is opened.</p>
                                     </div>
@@ -147,6 +88,95 @@ file.close()
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
+                                        <h1>Appending to a File</h1>
+<p>In Python, you can append to a file using the <code>write()</code> method with the <code>a</code> mode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Open a file in append mode
+file = open(&quot;example.txt&quot;, &quot;a&quot;)
+
+# Append some content to the file
+file.write(&quot;\nAppended text.&quot;)
+
+# Close the file
+file.close()
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Reading a File Line by Line</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Open a file in read mode
+file = open(&quot;example.txt&quot;, &quot;r&quot;)
+
+# Read and print each line in the file
+for line in file:
+    print(line.strip())
+
+# Close the file
+file.close()
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>With Statement</h1>
+<p>The <code>with</code> statement in Python is used to simplify exception handling by encapsulating common preparation and cleanup tasks in so-called context managers. The <code>with</code> statement is used to wrap the execution of a block of code within methods defined by a context manager.</p>
+<p>The <code>with</code> statement is commonly used to open files, acquire locks, and more. When the block of code is exited, the context manager's <code>__exit__()</code> method is called to clean up resources.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Open a file using the with statement
+with open(&quot;example.txt&quot;, &quot;r&quot;) as file:
+    # Read the entire content of the file
+    content = file.read()
+    print(content)
+# No need to explicitly close the file; it's done automatically
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
                                         <h1>File Modes</h1>
 <ul>
 <li><code>'r'</code> - Read mode (default). Opens a file for reading.</li>
@@ -167,36 +197,6 @@ file = open(&quot;example.txt&quot;, &quot;r&quot;)
 # Read the entire content of the file
 content = file.read()
 print(content)
-
-# Close the file
-file.close()
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h1>Appending to a File</h1>
-<p>In Python, you can append to a file using the <code>write()</code> method with the <code>a</code> mode.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code class="language-python"># Open a file in append mode
-file = open(&quot;example.txt&quot;, &quot;a&quot;)
-
-# Append some content to the file
-file.write(&quot;\nAppended text.&quot;)
 
 # Close the file
 file.close()

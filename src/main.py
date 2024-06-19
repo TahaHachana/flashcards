@@ -66,7 +66,7 @@ def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
     hirearchy = [x.title() for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
-    markdown_files = [name for name in os.listdir(md_folder) if name.endswith(".md")]
+    markdown_files = sorted([name for name in os.listdir(md_folder) if name.endswith(".md")])
     slides = []
     for markdown_file in markdown_files:
         with open(os.path.join(md_folder, markdown_file)) as file:
