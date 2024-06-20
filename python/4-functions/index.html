@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programming Syntax Flashcards - Python - Operators</title>
+  <title>Programming Syntax Flashcards - Python - 4-Functions</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -27,37 +27,43 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Arithmetic Operators</h1>
-<p>Arithmetic operators in Python are used to perform basic mathematical operations, such as addition, subtraction, multiplication, division, and more. The primary arithmetic operators include +, -, <em>, /, //, %, and </em>*.</p>
+                                        <h1>Lambdas</h1>
+<p>The lambda statement in Python is used to create small anonymous functions, also known as lambda functions. These functions can have any number of arguments but only one expression. They are often used for short, simple operations and can be defined in a single line.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = 10
-b = 3
+                                        <pre><code class="language-python"># Basic lambda function
+# Define a lambda function to add two numbers
+add = lambda a, b: a + b
 
-# Addition
-print(a + b)  # Output: 13
+# Call the lambda function
+result = add(5, 3)
+print(result)  # Output: 8
 
-# Subtraction
-print(a - b)  # Output: 7
+# Lambda function with no parameters
+# Define a lambda function that takes no parameters
+say_hello = lambda: &quot;Hello, world!&quot;
 
-# Multiplication
-print(a * b)  # Output: 30
+# Call the lambda function
+print(say_hello())  # Output: Hello, world!
 
-# Division
-print(a / b)  # Output: 3.3333333333333335
+# Using lambda function inside another function
+def apply_operation(x, y, operation):
+    return operation(x, y)
 
-# Floor Division
-print(a // b)  # Output: 3
+# Call the function with a lambda function as an argument
+result = apply_operation(5, 3, lambda a, b: a * b)
+print(result)  # Output: 15
 
-# Modulus
-print(a % b)  # Output: 1
+# Lambda function with a single parameter
+# Define a lambda function to square a number
+square = lambda x: x ** 2
 
-# Exponentiation
-print(a ** b)  # Output: 1000
+# Call the lambda function
+print(square(4))  # Output: 16
 </code></pre>
                                     </div>
                                 </div>
@@ -72,34 +78,22 @@ print(a ** b)  # Output: 1000
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Comparison Operators</h1>
-<p>Comparison operators in Python are used to compare two values and return a Boolean result (True or False). The primary comparison operators include ==, !=, &lt;, &gt;, &lt;=, and &gt;=.</p>
+                                        <h1>Default Parameters</h1>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = 10
-b = 3
+                                        <pre><code class="language-python"># Define a function with a default parameter
+def greet(name=&quot;Guest&quot;):
+    print(f&quot;Hello, {name}!&quot;)
 
-# Equal to
-print(a == b)  # Output: False
+# Call the function without providing a parameter
+greet()           # Output: Hello, Guest!
 
-# Not equal to
-print(a != b)  # Output: True
-
-# Less than
-print(a &lt; b)  # Output: False
-
-# Greater than
-print(a &gt; b)  # Output: True
-
-# Less than or equal to
-print(a &lt;= b)  # Output: False
-
-# Greater than or equal to
-print(a &gt;= b)  # Output: True
+# Call the function with a parameter
+greet(&quot;Alice&quot;)    # Output: Hello, Alice!
 </code></pre>
                                     </div>
                                 </div>
@@ -114,25 +108,20 @@ print(a &gt;= b)  # Output: True
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Logical Operators</h1>
-<p>Logical operators in Python are used to combine conditional statements and return Boolean results (True or False). The primary logical operators are and, or, and not.</p>
+                                        <h1>Function Definition</h1>
+<p>The <code>def</code> statement in Python is used to define a function.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = True
-b = False
+                                        <pre><code class="language-python"># Define a function
+def greet(name):
+    print(f&quot;Hello, {name}!&quot;)
 
-# Logical AND
-print(a and b)  # Output: False
-
-# Logical OR
-print(a or b)  # Output: True
-
-# Logical NOT
-print(not a)  # Output: False
+# Call the function
+greet(&quot;Alice&quot;)  # Output: Hello, Alice!
 </code></pre>
                                     </div>
                                 </div>
@@ -147,34 +136,20 @@ print(not a)  # Output: False
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Bitwise Operators</h1>
-<p>Bitwise operators in Python are used to perform bit-level operations on integer values. The primary bitwise operators include &amp;, |, ^, ~, &lt;&lt;, and &gt;&gt;.</p>
+                                        <h1>Parameters And Return Values</h1>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = 10  # Binary: 1010
-b = 3   # Binary: 0011
+                                        <pre><code class="language-python"># Define a function with parameters and a return value
+def add(a, b):
+    return a + b
 
-# Bitwise AND
-print(a &amp; b)  # Output: 2  (Binary: 0010)
-
-# Bitwise OR
-print(a | b)  # Output: 11 (Binary: 1011)
-
-# Bitwise XOR
-print(a ^ b)  # Output: 9  (Binary: 1001)
-
-# Bitwise NOT
-print(~a)     # Output: -11 (Binary: ...11110101, two's complement representation)
-
-# Bitwise left shift
-print(a &lt;&lt; 1)  # Output: 20 (Binary: 10100)
-
-# Bitwise right shift
-print(a &gt;&gt; 1)  # Output: 5  (Binary: 0101)
+# Call the function and print the result
+result = add(5, 3)  # result is 8
+print(result)       # Output: 8
 </code></pre>
                                     </div>
                                 </div>
@@ -189,57 +164,39 @@ print(a &gt;&gt; 1)  # Output: 5  (Binary: 0101)
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Assignment Operators</h1>
-<p>Assignment operators in Python are used to assign values to variables and can also perform operations before the assignment. The primary assignment operators include =, +=, -=, <em>=, /=, %=, //=, </em>*=, &amp;=, |=, ^=, &lt;&lt;=, and &gt;&gt;=.</p>
+                                        <h1>Return Statement</h1>
+<p>The <code>return</code> statement in Python is used to exit a function and optionally pass a value back to the caller. It is used to return the result of a function's execution.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = 10
-b = 3
+                                        <pre><code class="language-python"># Returning a value from a function
+def add(a, b):
+    return a + b
 
-# Simple assignment
-a = b        # a is now 3
+# Call the function and store the result
+result = add(5, 3)
+print(result)  # Output: 8
 
-# Add and assign
-a += b       # a is now 6 (3 + 3)
+# Returning multiple values from a function
+def get_coordinates():
+    x = 10
+    y = 20
+    return x, y
 
-# Subtract and assign
-a -= b       # a is now 3 (6 - 3)
+# Call the function and unpack the returned tuple
+x_coord, y_coord = get_coordinates()
+print(x_coord, y_coord)  # Output: 10 20
 
-# Multiply and assign
-a *= b       # a is now 9 (3 * 3)
+# Returning nothing from a function
+def greet(name):
+    print(f&quot;Hello, {name}!&quot;)
+    return
 
-# Divide and assign
-a /= b       # a is now 3.0 (9 / 3)
-
-# Modulus and assign
-a %= b       # a is now 0.0 (3.0 % 3)
-
-# Floor division and assign
-a = 10       # reset a to 10
-a //= b      # a is now 3 (10 // 3)
-
-# Exponentiation and assign
-a **= b      # a is now 27 (3 ** 3)
-
-# Bitwise AND and assign
-a &amp;= b       # a is now 3 (27 &amp; 3)
-
-# Bitwise OR and assign
-a |= b       # a is now 3 (3 | 3)
-
-# Bitwise XOR and assign
-a ^= b       # a is now 0 (3 ^ 3)
-
-# Bitwise left shift and assign
-a = 10       # reset a to 10
-a &lt;&lt;= b      # a is now 80 (10 &lt;&lt; 3)
-
-# Bitwise right shift and assign
-a &gt;&gt;= b      # a is now 10 (80 &gt;&gt; 3)
+# Call the function
+greet(&quot;Alice&quot;)  # Output: Hello, Alice!
 </code></pre>
                                     </div>
                                 </div>

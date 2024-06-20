@@ -46,7 +46,7 @@ def write_index_html(path, title="Programming Syntax Flashcards"):
     folder_names = [
         name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))
     ]
-    folder_names = list(filter(not_excluded_folder, folder_names))
+    folder_names = sorted(list(filter(not_excluded_folder, folder_names)))
     links = [
         {"href": f"./{folder}/", "text": folder.replace("-", " ").title()}
         for folder in folder_names

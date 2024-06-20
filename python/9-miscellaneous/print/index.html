@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programming Syntax Flashcards - Python - Control-Flow</title>
+  <title>Programming Syntax Flashcards - Python - 9-Miscellaneous - Print</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -27,28 +27,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Conditional Statements</h1>
-<p>The if conditional statement in Python is used to execute a block of code only if a specified condition is true. It can be extended with elif (else if) and else clauses to handle multiple conditions and provide alternative execution paths.</p>
+                                        <h1>Basic Usage</h1>
+<p>The <code>print()</code> function in Python is used to output text or other data to the console or standard output. It can print strings, numbers, variables, and more, and supports multiple arguments and formatting.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python">a = 10
-b = 3
-
-# Basic if statement
-if a &gt; b:
-    print(&quot;a is greater than b&quot;)
-
-# if-elif-else statement
-if a &lt; b:
-    print(&quot;a is less than b&quot;)
-elif a == b:
-    print(&quot;a is equal to b&quot;)
-else:
-    print(&quot;a is greater than b&quot;)
+                                        <pre><code class="language-python">print(&quot;Hello, world!&quot;)
+# Output: Hello, world!
 </code></pre>
                                     </div>
                                 </div>
@@ -63,22 +51,20 @@ else:
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>For Loop</h1>
-<p>Loops in Python are used to repeat a block of code multiple times. The for loop iterates over a sequence (like a list, tuple, or string) or other iterable objects.</p>
+                                        <h1>Flush Parameter</h1>
+<p>The <code>flush</code> parameter in the <code>print()</code> function is used to forcibly flush the stream. By default, the stream is not flushed.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python"># Loop through a list
-fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
-for fruit in fruits:
-    print(fruit)
+                                        <pre><code class="language-python">import time
 
-# Loop through a range of numbers
 for i in range(5):
-    print(i)
+    print(i, end=&quot; &quot;, flush=True)
+    time.sleep(1)
+# Output: 0 1 2 3 4 (printed with a delay of 1 second between each number)
 </code></pre>
                                     </div>
                                 </div>
@@ -93,21 +79,16 @@ for i in range(5):
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>While Loop</h1>
-<p>Loops in Python are used to repeat a block of code multiple times. The while loop repeatedly executes a block of code as long as a specified condition is true.</p>
+                                        <h1>Multiple Arguments</h1>
+<p>You can pass multiple arguments to the <code>print()</code> function. The arguments are separated by commas.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python"># Initialize a counter
-count = 0
-
-# Loop while the counter is less than 5
-while count &lt; 5:
-    print(count)
-    count += 1
+                                        <pre><code class="language-python">print(&quot;The answer is&quot;, 42)
+# Output: The answer is 42
 </code></pre>
                                     </div>
                                 </div>
@@ -122,27 +103,20 @@ while count &lt; 5:
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Break</h1>
-<p>The break statement in Python is used to exit a loop prematurely, skipping any remaining iterations even if the loop's condition has not been met.</p>
+                                        <h1>Separator and End Parameters</h1>
+<p>The <code>print()</code> function in Python has two optional parameters, <code>sep</code> and <code>end</code>, that can be used to customize the output of the function.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python"># Using break in a for loop:
-for i in range(10):
-    if i == 5:
-        break
-    print(i)
+                                        <pre><code class="language-python">print(&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;, sep=&quot;, &quot;)
+# Output: apple, banana, cherry
 
-# Using break in a while loop:
-count = 0
-while count &lt; 10:
-    if count == 5:
-        break
-    print(count)
-    count += 1
+print(&quot;Hello&quot;, end=&quot; &quot;)
+print(&quot;world!&quot;)
+# Output: Hello world!
 </code></pre>
                                     </div>
                                 </div>
@@ -157,27 +131,20 @@ while count &lt; 10:
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Continue</h1>
-<p>The continue statement in Python is used to skip the rest of the code inside a loop for the current iteration and move to the next iteration of the loop.</p>
+                                        <h1>Printing Variables</h1>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python"># Using continue in a for loop:
-for i in range(10):
-    if i % 2 == 0:  # Skip even numbers
-        continue
-    print(i)
-
-# Using continue in a while loop:
-count = 0
-while count &lt; 10:
-    count += 1
-    if count % 2 == 0:  # Skip even numbers
-        continue
-    print(count)
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;Name:&quot;, name)
+print(&quot;Age:&quot;, age)
+# Output: 
+# Name: Alice
+# Age: 30
 </code></pre>
                                     </div>
                                 </div>
@@ -192,37 +159,120 @@ while count &lt; 10:
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h1>Pass</h1>
-<p>The pass statement in Python is used as a placeholder in loops, functions, classes, or conditional statements. It does nothing and is used to ensure syntactical correctness when a statement is required but no action is needed.</p>
+                                        <h1>Formatted String Literals (f-strings)</h1>
+<p>Python 3.6 introduced f-strings, which provide a concise and convenient way to embed expressions inside string literals, using curly braces <code>{}</code>. They are prefixed with the letter <code>f</code> or <code>F</code> and are evaluated at runtime.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code class="language-python"># Using pass in a for loop:
-for i in range(10):
-    if i % 2 == 0:
-        pass  # Placeholder for future code
-    else:
-        print(i)
-
-# Using pass in a while loop:
-count = 0
-while count &lt; 10:
-    if count % 2 == 0:
-        pass  # Placeholder for future code
-    else:
-        print(count)
-    count += 1
-
-# Using pass in a function:
-def my_function():
-    pass  # Placeholder for future code
-
-# Using pass in a class:
-class MyClass:
-    pass  # Placeholder for future code
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(f&quot;My name is {name} and I am {age} years old.&quot;)
+# Output: My name is Alice and I am 30 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Using <code>str.format()</code></h1>
+<p><code>str.format()</code> is a built-in method that allows multiple substitutions and value formatting. This method lets us concatenate elements within a string through positional formatting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;My name is {} and I am {} years old.&quot;.format(name, age))
+# Output: My name is Alice and I am 30 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Using %-formatting</h1>
+<p>This is an older method of formatting strings in Python. It uses the <code>%</code> operator to format a set of variables enclosed in a tuple (fixed-size array). The format string contains one or more format codes, which specify how the values should be formatted.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">name = &quot;Alice&quot;
+age = 30
+print(&quot;My name is %s and I am %d years old.&quot; % (name, age))
+# Output: My name is Alice and I am 30 years old.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>Printing a List</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python">fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+print(fruits)
+# Output: ['apple', 'banana', 'cherry']
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h1>File Parameter</h1>
+<p>The <code>file</code> parameter in the <code>print()</code> function is used to specify the file to write the output to. By default, the output is printed to the console.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-python"># Redirecting print output to a file
+with open(&quot;output.txt&quot;, &quot;w&quot;) as file:
+    print(&quot;Hello, world!&quot;, file=file)
+# This writes &quot;Hello, world!&quot; to the file &quot;output.txt&quot;
 </code></pre>
                                     </div>
                                 </div>
