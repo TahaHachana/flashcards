@@ -2,6 +2,8 @@
 
 The __init__ method in Python is a special method called a constructor. It is automatically called when a new instance of a class is created. The __init__ method initializes the instance's attributes.
 
+---
+
 ```python
 class Dog:
     """

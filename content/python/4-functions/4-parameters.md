@@ -1,5 +1,7 @@
 # Parameters And Return Values
 
+---
+
 ```python
 # Define a function with parameters and a return value
 def add(a, b):

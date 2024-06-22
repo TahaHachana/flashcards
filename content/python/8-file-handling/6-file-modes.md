@@ -6,6 +6,8 @@
 * `'b'` - Binary mode. Can be added to other modes (e.g., 'rb', 'wb') for binary files.
 * `'t'` - Text mode (default). Can be added to other modes (e.g., 'rt', 'wt').
 
+---
+
 ```python
 # Open a file in read mode
 file = open("example.txt", "r")

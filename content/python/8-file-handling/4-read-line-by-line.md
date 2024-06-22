@@ -1,5 +1,7 @@
 # Reading a File Line by Line
 
+---
+
 ```python
 # Open a file in read mode
 file = open("example.txt", "r")

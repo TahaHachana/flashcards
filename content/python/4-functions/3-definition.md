@@ -2,6 +2,8 @@
 
 The `def` statement in Python is used to define a function.
 
+---
+
 ```python
 # Define a function
 def greet(name):

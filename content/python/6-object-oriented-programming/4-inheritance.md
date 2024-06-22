@@ -2,6 +2,8 @@
 
 Inheritance in Python is a mechanism that allows a class (called the child or subclass) to inherit attributes and methods from another class (called the parent or superclass). This promotes code reuse and can create a hierarchical relationship between classes.
 
+---
+
 ```python
 # Define the parent class
 class Animal:

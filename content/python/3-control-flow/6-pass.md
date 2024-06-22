@@ -2,6 +2,8 @@
 
 The pass statement in Python is used as a placeholder in loops, functions, classes, or conditional statements. It does nothing and is used to ensure syntactical correctness when a statement is required but no action is needed.
 
+---
+
 ```python
 # Using pass in a for loop:
 for i in range(10):

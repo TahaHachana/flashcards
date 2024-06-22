@@ -2,6 +2,8 @@
 
 The continue statement in Python is used to skip the rest of the code inside a loop for the current iteration and move to the next iteration of the loop.
 
+---
+
 ```python
 # Using continue in a for loop:
 for i in range(10):

@@ -4,6 +4,8 @@ The `with` statement in Python is used to simplify exception handling by encapsu
 
 The `with` statement is commonly used to open files, acquire locks, and more. When the block of code is exited, the context manager's `__exit__()` method is called to clean up resources.
 
+---
+
 ```python
 # Open a file using the with statement
 with open("example.txt", "r") as file:

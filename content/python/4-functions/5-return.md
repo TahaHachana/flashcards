@@ -2,6 +2,8 @@
 
 The `return` statement in Python is used to exit a function and optionally pass a value back to the caller. It is used to return the result of a function's execution.
 
+---
+
 ```python
 # Returning a value from a function
 def add(a, b):

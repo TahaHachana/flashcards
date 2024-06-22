@@ -2,6 +2,8 @@
 
 Python 3.6 introduced f-strings, which provide a concise and convenient way to embed expressions inside string literals, using curly braces `{}`. They are prefixed with the letter `f` or `F` and are evaluated at runtime.
 
+---
+
 ```python
 name = "Alice"
 age = 30

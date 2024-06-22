@@ -2,6 +2,8 @@
 
 Bitwise operators in Python are used to perform bit-level operations on integer values. The primary bitwise operators include &, |, ^, ~, <<, and >>.
 
+---
+
 ```python
 a = 10  # Binary: 1010
 b = 3   # Binary: 0011

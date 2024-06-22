@@ -2,6 +2,8 @@
 
 The `flush` parameter in the `print()` function is used to forcibly flush the stream. By default, the stream is not flushed.
 
+---
+
 ```python
 import time
 

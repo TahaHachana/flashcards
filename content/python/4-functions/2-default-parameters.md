@@ -1,5 +1,7 @@
 # Default Parameters
 
+---
+
 ```python
 # Define a function with a default parameter
 def greet(name="Guest"):

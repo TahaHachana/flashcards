@@ -2,6 +2,8 @@
 
 The lambda statement in Python is used to create small anonymous functions, also known as lambda functions. These functions can have any number of arguments but only one expression. They are often used for short, simple operations and can be defined in a single line.
 
+---
+
 ```python
 # Basic lambda function
 # Define a lambda function to add two numbers

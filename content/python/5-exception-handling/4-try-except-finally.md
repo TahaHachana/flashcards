@@ -2,6 +2,8 @@
 
 The `finally` block is executed after the `try` block and any `except` block.
 
+---
+
 ```python
 try:
     file = open("example.txt", "r")

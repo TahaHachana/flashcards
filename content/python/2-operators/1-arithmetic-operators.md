@@ -2,6 +2,8 @@
 
 Arithmetic operators in Python are used to perform basic mathematical operations, such as addition, subtraction, multiplication, division, and more. The primary arithmetic operators include +, -, *, /, //, %, and **.
 
+---
+
 ```python
 a = 10
 b = 3

@@ -2,6 +2,8 @@
 
 In Python, you can write to a file using the `write()` method.
 
+---
+
 ```python
 # Open a file in write mode
 file = open("example.txt", "w")

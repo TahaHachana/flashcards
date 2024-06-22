@@ -6,6 +6,8 @@ Python has three types of numbers:
 - float
 - complex
 
+---
+
 ```python
 x = 1    # int
 y = 2.8  # float

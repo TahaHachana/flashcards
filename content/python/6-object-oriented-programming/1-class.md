@@ -2,6 +2,8 @@
 
 The `class` keyword in Python is used to define a class, which is a blueprint for creating objects. A class encapsulates data and functionality together.
 
+---
+
 ```python
 class Dog:
     """

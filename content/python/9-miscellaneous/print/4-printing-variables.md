@@ -1,5 +1,7 @@
 # Printing Variables
 
+---
+
 ```python
 name = "Alice"
 age = 30

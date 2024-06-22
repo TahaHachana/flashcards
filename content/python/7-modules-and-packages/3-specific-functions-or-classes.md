@@ -2,6 +2,8 @@
 
 In Python, you can import specific functions or classes from a module instead of importing the entire module.
 
+---
+
 ```python
 # Import specific functions from the math module
 from math import sqrt, pi

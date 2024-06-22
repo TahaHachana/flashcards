@@ -2,6 +2,8 @@
 
 Assignment operators in Python are used to assign values to variables and can also perform operations before the assignment. The primary assignment operators include =, +=, -=, *=, /=, %=, //=, **=, &=, |=, ^=, <<=, and >>=.
 
+---
+
 ```python
 a = 10
 b = 3

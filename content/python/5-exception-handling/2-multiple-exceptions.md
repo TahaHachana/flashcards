@@ -1,5 +1,7 @@
 # Try-except with Multiple Exceptions
 
+---
+
 ```python
 try:
     result = int("abc")

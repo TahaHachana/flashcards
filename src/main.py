@@ -2,7 +2,7 @@ import os
 import shutil
 
 from html_template import index_template, carousel_template
-from markdown_to_html import split_markdown_text, markdown_to_html
+from markdown_to_html import Flashcard, flashcard_from_md, markdown_to_html
 
 CONTENT_DIR = "./content"
 EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache"]
@@ -74,8 +74,8 @@ def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
     for markdown_file in markdown_files:
         with open(os.path.join(md_folder, markdown_file)) as file:
             markdown_text = file.read()
-            text, code = split_markdown_text(markdown_text)
-            slide = {"text": markdown_to_html(text), "code": markdown_to_html(code)}
+            flashcard = flashcard_from_md(markdown_text)
+            slide = {"question": markdown_to_html(flashcard.question), "answer": markdown_to_html(flashcard.answer)}
             slides.append(slide)
     context = {
         "title": title,

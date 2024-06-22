@@ -2,6 +2,8 @@
 
 In Python, `self` is a reference to the instance of the class itself. It is used to access attributes and methods of the class in object-oriented programming.
 
+---
+
 ```python
 class Dog:
     """

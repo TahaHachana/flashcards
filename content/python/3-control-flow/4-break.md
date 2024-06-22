@@ -2,6 +2,8 @@
 
 The break statement in Python is used to exit a loop prematurely, skipping any remaining iterations even if the loop's condition has not been met.
 
+---
+
 ```python
 # Using break in a for loop:
 for i in range(10):

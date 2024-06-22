@@ -2,6 +2,8 @@
 
 The `else` block is executed if the code block inside the `try` block does not raise any exceptions.
 
+---
+
 ```python
 try:
     result = 10 / 2
