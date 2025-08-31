@@ -5,7 +5,7 @@ from html_template import index_template, carousel_template
 from markdown_to_html import Flashcard, flashcard_from_md, markdown_to_html
 
 CONTENT_DIR = "./content"
-EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache"]
+EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache", "archive"]
 
 
 def rec_list_folders_in_dir(dir):
