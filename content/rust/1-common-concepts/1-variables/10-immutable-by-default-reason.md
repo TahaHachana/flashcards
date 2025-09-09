@@ -1,6 +1,3 @@
-
-10-immutable-by-default-reason.md
-```markdown
 # Immutable by Default Reason
 
 Why does Rust make variables immutable by default?

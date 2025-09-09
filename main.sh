@@ -1,2 +1,2 @@
-python3 src/main.py
-python3 server.py --dir .
+./venv/bin/python src/main.py
+./venv/bin/python server.py --dir .
