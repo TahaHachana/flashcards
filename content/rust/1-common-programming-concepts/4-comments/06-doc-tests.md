@@ -10,9 +10,9 @@ You can control them with attributes:
 * `no_run` → compile but don’t run.
 * `ignore` → skip compilation and execution.
 
-````rust
+```rust
 /// ```no_run
 /// println!("This compiles but doesn't run");
 /// ```
-````
+```
 

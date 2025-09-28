@@ -12,7 +12,7 @@ A function doc usually includes:
 * Optional: `# Panics`, `# Errors`, `# Safety`.
 * At least one `# Examples` code block.
 
-````rust
+```rust
 /// Adds one to a number.
 ///
 /// # Parameters
@@ -25,5 +25,5 @@ A function doc usually includes:
 /// ```
 /// assert_eq!(add_one(1), 2);
 /// ```
-````
+```
 

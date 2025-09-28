@@ -9,5 +9,5 @@ Useful for short explanations, TODOs, or inline notes.
 
 ```rust
 let x = 5; // store number
-````
+```
 
