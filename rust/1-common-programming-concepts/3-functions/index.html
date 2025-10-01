@@ -28,20 +28,42 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Function Declaration Basics</h2>
-<p>How do you declare a function in Rust, and what naming convention is used?</p>
+                                        <h2>Declaring Functions</h2>
+<p>How are functions declared in Rust, and what naming convention is used?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Use the <code>fn</code> keyword followed by the function name in snake_case, parentheses for parameters, and curly braces for the body.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn another_function() {
-    println!(&quot;Another function.&quot;);
+                                        <p>Functions use the <code>fn</code> keyword and follow <strong>snake_case</strong> naming.  </p>
+<pre><code class="language-rust">fn my_function() {
+    println!(&quot;Hello!&quot;);
 }
 </code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Function Order</h2>
+<p>Does Rust require forward declarations of functions like in C?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Functions can be defined in any order, as long as they are in scope when called.
+Rust does not require forward declarations.</p>
                                     </div>
                                 </div>
                             </div>
@@ -56,17 +78,20 @@
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Calling Functions</h2>
-<p>How do you call a function in Rust, and does its position in the source file matter?</p>
+<p>How do you call a function in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Call a function by its name followed by parentheses. The function can be defined before or after the caller, as long as it is in scope.</p>
-<p>Example:</p>
+                                        <p>By using its name followed by parentheses.</p>
 <pre><code class="language-rust">fn main() {
-    another_function();
+    greet();
+}
+
+fn greet() {
+    println!(&quot;Hello!&quot;);
 }
 </code></pre>
                                     </div>
@@ -82,7 +107,7 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Function Parameters</h2>
+                                        <h2>Parameters And Arguments</h2>
 <p>What is the difference between parameters and arguments in Rust functions?</p>
                                     </div>
                                 </div>
@@ -90,10 +115,16 @@
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Parameters are variables in the function signature; arguments are the concrete values passed when calling the function.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn another_function(x: i32) {
-    println!(&quot;The value of x is: {x}&quot;);
+                                        <ul>
+<li><strong>Parameters</strong>: Variables defined in the function signature.</li>
+<li><strong>Arguments</strong>: Actual values passed when calling the function.</li>
+</ul>
+<pre><code class="language-rust">fn print_num(x: i32) {  // parameter
+    println!(&quot;{x}&quot;);
+}
+
+fn main() {
+    print_num(5);       // argument
 }
 </code></pre>
                                     </div>
@@ -109,18 +140,17 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Multiple Parameters</h2>
-<p>How do you define multiple parameters in a Rust function?</p>
+                                        <h2>Parameter Types</h2>
+<p>Must parameter types be declared in Rust functions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Separate parameter declarations with commas, and specify the type for each.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn print_labeled_measurement(value: i32, unit_label: char) {
-    println!(&quot;The measurement is: {value}{unit_label}&quot;);
+                                        <p>Yes. Every parameter in a function must have its type explicitly declared.</p>
+<pre><code class="language-rust">fn add(x: i32, y: i32) -&gt; i32 {
+    x + y
 }
 </code></pre>
                                     </div>
@@ -136,7 +166,37 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Statements vs Expressions</h2>
+                                        <h2>Ownership In Parameters</h2>
+<p>How does ownership apply to function parameters in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Passing parameters follows ownership rules:</p>
+<ul>
+<li>By default, values are moved into the function.</li>
+<li>Use references (<code>&amp;</code>) to borrow instead of moving.</li>
+</ul>
+<pre><code class="language-rust">fn print_len(s: &amp;String) {
+    println!(&quot;{}&quot;, s.len());
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Statements Vs Expressions</h2>
 <p>What is the difference between statements and expressions in Rust?</p>
                                     </div>
                                 </div>
@@ -144,37 +204,14 @@
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Statements perform actions and do not return values. Expressions evaluate to a value and can be part of statements.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let y = 6; // statement
-5 + 6      // expression
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Expressions in Blocks</h2>
-<p>How can a block return a value in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>A block without a semicolon on its final line is an expression whose value is returned.</p>
-<p>Example:</p>
+                                        <ul>
+<li><strong>Statements</strong>: Perform actions but don’t return values (e.g., <code>let y = 6;</code>).</li>
+<li><strong>Expressions</strong>: Produce a value (e.g., <code>5 + 6</code>, function calls, blocks).</li>
+<li>Adding a semicolon to an expression makes it a statement.</li>
+</ul>
 <pre><code class="language-rust">let y = {
     let x = 3;
-    x + 1 // returns 4
+    x + 1 // expression
 };
 </code></pre>
                                     </div>
@@ -190,41 +227,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Semicolon Effect</h2>
-<p>What happens if you add a semicolon to the end of an expression in Rust?</p>
+                                        <h2>Implicit Return Values</h2>
+<p>How does a function return a value implicitly in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>It becomes a statement and no longer returns a value.</p>
-<p>Example:</p>
-<pre><code class="language-rust">x + 1; // statement, returns ()
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Functions with Return Values</h2>
-<p>How do you specify and return a value from a function in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Declare the return type after <code>-&gt;</code> and use the final expression in the function body without a semicolon.</p>
-<p>Example:</p>
+                                        <p>The final expression in the function body is returned automatically if it has no semicolon.</p>
 <pre><code class="language-rust">fn five() -&gt; i32 {
     5
 }
@@ -242,17 +253,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Using Return Values</h2>
-<p>How can you use a function's return value to initialize a variable?</p>
+                                        <h2>Explicit Return Keyword</h2>
+<p>When would you use the <code>return</code> keyword in Rust functions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Assign the function call to a variable.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let x = five(); // x is 5
+                                        <p>Use <code>return expr;</code> to exit early or make returns explicit.</p>
+<pre><code class="language-rust">fn abs(x: i32) -&gt; i32 {
+    if x &lt; 0 {
+        return -x;
+    }
+    x
+}
 </code></pre>
                                     </div>
                                 </div>
@@ -267,18 +282,18 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Return Value Type Mismatch</h2>
-<p>What error occurs if a function's body ends with a statement but a return type is declared?</p>
+                                        <h2>Semicolons And Return Values</h2>
+<p>How does a semicolon affect return values in Rust functions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>A mismatched types error occurs because statements return <code>()</code> (unit type), not the declared type.</p>
-<p>Example:</p>
+                                        <p>Adding a semicolon to an expression turns it into a statement, so it does not return a value.</p>
 <pre><code class="language-rust">fn plus_one(x: i32) -&gt; i32 {
-    x + 1; // error: expected i32, found ()
+    x + 1   // returns x + 1
+    // x + 1; // ❌ error: mismatched types
 }
 </code></pre>
                                     </div>
@@ -294,21 +309,17 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Returning Results</h2>
-<p>How can you return a <code>Result</code> from a function and propagate errors?</p>
+                                        <h2>Unit Return Type</h2>
+<p>What return type do functions without <code>-&gt;</code> in Rust have?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Use <code>Result&lt;T, E&gt;</code> as the return type, and the <code>?</code> operator to propagate errors.</p>
-<p>Example:</p>
-<pre><code class="language-rust">use std::fs::File;
-use std::io;
-
-fn try_open() -&gt; io::Result&lt;File&gt; {
-    File::open(&quot;Cargo.toml&quot;)
+                                        <p>They implicitly return the unit type <code>()</code>.</p>
+<pre><code class="language-rust">fn do_nothing() {
+    // implicitly returns ()
 }
 </code></pre>
                                     </div>
@@ -324,66 +335,8 @@ fn try_open() -&gt; io::Result&lt;File&gt; {
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Generics and Trait Bounds</h2>
-<p>How do you define a generic function with trait bounds?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Use angle brackets with <code>T</code> and specify required traits after <code>:</code>.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn show&lt;T: std::fmt::Display&gt;(x: T) {
-    println!(&quot;{x}&quot;);
-}
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>impl Trait Syntax</h2>
-<p>What is the <code>impl Trait</code> syntax used for in function parameters and return types?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>It provides shorthand for generics:</p>
-<ul>
-<li>In parameters, it accepts any type implementing the trait.</li>
-<li>In return values, it hides the concrete type but guarantees it implements the trait.</li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-rust">fn log_line(item: impl std::fmt::Display) {
-    println!(&quot;{item}&quot;);
-}
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Methods vs Associated Functions</h2>
-<p>What is the difference between a method and an associated function?</p>
+                                        <h2>Key Function Rules</h2>
+<p>Summarize the key rules about functions in Rust.</p>
                                     </div>
                                 </div>
                             </div>
@@ -391,132 +344,15 @@ fn try_open() -&gt; io::Result&lt;File&gt; {
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>A <strong>method</strong> takes <code>self</code> (or <code>&amp;self</code>, <code>&amp;mut self</code>) as its first parameter and is called on an instance.</li>
-<li>An <strong>associated function</strong> does not take <code>self</code> and is called with the type name (often used as constructors).</li>
+<li>Declared with <code>fn</code>, use snake_case.</li>
+<li>No forward declarations needed.</li>
+<li>Parameter types must be explicit.</li>
+<li>Ownership rules apply to parameters.</li>
+<li>Statements don’t return values; expressions do.</li>
+<li>The last expression (no semicolon) is returned implicitly.</li>
+<li><code>return</code> can be used explicitly.</li>
+<li>Functions without a return type return <code>()</code>.</li>
 </ul>
-<p>Example:</p>
-<pre><code class="language-rust">impl Circle {
-    fn area(&amp;self) -&gt; f64 { 3.14 * self.r * self.r }
-    fn new(r: f64) -&gt; Circle { Circle { r } }
-}
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Closure Traits</h2>
-<p>What are the three closure traits, and when are they used?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>Fn</code> – captures by reference, can be called multiple times.</li>
-<li><code>FnMut</code> – captures mutably, can modify captured values.</li>
-<li><code>FnOnce</code> – consumes captured values, can only be called once.</li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-rust">fn apply&lt;F: Fn()&gt;(f: F) { f(); }
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Lifetime Annotations in Functions</h2>
-<p>When do you need to add explicit lifetime annotations in function signatures?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>When a function returns a reference tied to one of its input references, and Rust cannot infer the relationship.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn longest&lt;'a&gt;(a: &amp;'a str, b: &amp;'a str) -&gt; &amp;'a str {
-    if a.len() &gt; b.len() { a } else { b }
-}
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Accepting Both String and &amp;str</h2>
-<p>How can you write a function that accepts both <code>String</code> and <code>&amp;str</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Use a generic parameter with the <code>AsRef&lt;str&gt;</code> trait.</p>
-<p>Example:</p>
-<pre><code class="language-rust">fn greet&lt;S: AsRef&lt;str&gt;&gt;(name: S) {
-    println!(&quot;Hello, {}&quot;, name.as_ref());
-}
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Const Functions</h2>
-<p>What are <code>const fn</code>s in Rust, and how are they used?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>const fn</code> can be evaluated at compile time in constant contexts.</li>
-<li>They can also be called at runtime.</li>
-<li>Useful for defining constants that need computation.</li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-rust">const fn square(x: i32) -&gt; i32 { x * x }
-const N: i32 = square(12);
-
-fn main() {
-    println!(&quot;N = {N}&quot;);
-}
-</code></pre>
                                     </div>
                                 </div>
                             </div>

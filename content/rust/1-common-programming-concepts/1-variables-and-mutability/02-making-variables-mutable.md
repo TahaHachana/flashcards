@@ -1,10 +1,10 @@
 ## Making Variables Mutable
 
-How do you make a variable mutable in Rust?
+How do you declare a variable that can change value in Rust?
 
 ---
 
-Add the `mut` keyword before the variable name when declaring it.
+Add the `mut` keyword to the binding:
 
 ```rust
 fn main() {

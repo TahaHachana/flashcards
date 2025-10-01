@@ -1,11 +1,9 @@
-## Purpose of Comments
+## Purpose Of Comments
 
-What are the main purposes of comments in Rust?
+What is the purpose of comments in Rust?
 
 ---
 
-Comments in Rust are for **humans, not the compiler**. They:
-- Improve readability and maintainability.
-- Explain intent, logic, or design decisions.
-- Provide input for automated documentation via Rustdoc.
+Comments explain code intent for humans.  
+They are ignored by the compiler and should supplement clear naming rather than replace it.
 

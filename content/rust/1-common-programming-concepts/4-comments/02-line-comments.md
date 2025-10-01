@@ -1,13 +1,13 @@
 ## Line Comments
 
-How do you write a line comment in Rust?
+How do you write a single-line comment in Rust?
 
 ---
 
-Line comments start with `//` and continue to the end of the line.  
-Useful for short explanations, TODOs, or inline notes.
+Start with `//`. Everything after `//` on the same line is ignored by the compiler.
 
 ```rust
-let x = 5; // store number
+// This is a comment
+println!("Hello, world!");
 ```
 

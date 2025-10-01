@@ -36,12 +36,12 @@
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>By default, variables in Rust are <strong>immutable</strong> to encourage safety, thread safety, and easier reasoning about code.<br />
-Even if the original binding is immutable, you can still reuse the name later via <strong>shadowing</strong>.  </p>
+                                        <p>By default, variables in Rust are <strong>immutable</strong>.<br />
+This prevents accidental changes, improves safety, and makes reasoning about concurrent code easier.</p>
 <pre><code class="language-rust">fn main() {
     let x = 5;
-    println!(&quot;x = {x}&quot;);
     // x = 6; // ❌ compile-time error
+    println!(&quot;x = {x}&quot;);
 }
 </code></pre>
                                     </div>
@@ -58,14 +58,14 @@ Even if the original binding is immutable, you can still reuse the name later vi
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Making Variables Mutable</h2>
-<p>How do you make a variable mutable in Rust?</p>
+<p>How do you declare a variable that can change value in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Add the <code>mut</code> keyword before the variable name when declaring it.</p>
+                                        <p>Add the <code>mut</code> keyword to the binding:</p>
 <pre><code class="language-rust">fn main() {
     let mut x = 5;
     println!(&quot;x = {x}&quot;);
@@ -86,16 +86,21 @@ Even if the original binding is immutable, you can still reuse the name later vi
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Benefits Of Immutability</h2>
-<p>Why does Rust encourage immutability by default?</p>
+                                        <h2>Initialization Requirement</h2>
+<p>Do variables in Rust need to be initialized before use?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Immutability prevents accidental changes to values, reducing bugs and making code easier to reason about.
-It also improves <strong>thread safety</strong>, since immutable values can be safely shared between threads without extra synchronization.</p>
+                                        <p>Yes, all variables must be initialized before use.
+Rust does not allow uninitialized variables.</p>
+<pre><code class="language-rust">fn main() {
+    let x: i32;
+    // println!(&quot;{x}&quot;); // ❌ compile-time error: use of possibly uninitialized variable
+}
+</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -109,21 +114,21 @@ It also improves <strong>thread safety</strong>, since immutable values can be s
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Constants In Rust</h2>
-<p>How do constants differ from immutable variables in Rust?</p>
+                                        <h2>Declaring Constants</h2>
+<p>How do you declare a constant in Rust, and what rules apply?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>Declared with <code>const</code>, never with <code>mut</code>.</li>
-<li>Always immutable.</li>
-<li>Must have an explicit type annotation.</li>
-<li>Can be declared in any scope, including global.</li>
+                                        <p>Use the <code>const</code> keyword.
+Rules:</p>
+<ul>
+<li>Always immutable (cannot use <code>mut</code>).</li>
+<li>Must include a type annotation.</li>
 <li>Value must be a compile-time constant expression.</li>
-<li>Unlike <code>static</code>, <code>const</code> values have no fixed memory address and are inlined wherever used.</li>
+<li>Naming convention: UPPERCASE with underscores.</li>
 </ul>
 <pre><code class="language-rust">const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 </code></pre>
@@ -140,16 +145,22 @@ It also improves <strong>thread safety</strong>, since immutable values can be s
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Constant Naming Convention</h2>
-<p>What is the naming convention for constants in Rust?</p>
+                                        <h2>Const Vs Let</h2>
+<p>What are the key differences between <code>const</code> and <code>let</code> in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Constants use <strong>all uppercase letters</strong> with underscores between words:</p>
+                                        <ul>
+<li><code>const</code> is always immutable and cannot be shadowed.</li>
+<li><code>const</code> requires a type annotation and compile-time constant expression.</li>
+<li><code>let</code> can create mutable or immutable variables.</li>
+<li><code>let</code> bindings can be shadowed.</li>
+</ul>
 <pre><code class="language-rust">const MAX_POINTS: u32 = 100_000;
+let points = 50; // can shadow later
 </code></pre>
                                     </div>
                                 </div>
@@ -164,25 +175,52 @@ It also improves <strong>thread safety</strong>, since immutable values can be s
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Shadowing Variables</h2>
-<p>What is variable shadowing in Rust?</p>
+                                        <h2>Shadowing Basics</h2>
+<p>What does it mean to shadow a variable in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Shadowing occurs when a new variable with the same name as an existing one is declared using <code>let</code>.
-The new variable overrides the previous one within its scope.
-Often used for step-by-step transformations without introducing new names.</p>
+                                        <p>Shadowing is when a new variable with the same name replaces the previous one.
+The new binding is distinct from the old one.</p>
 <pre><code class="language-rust">fn main() {
     let x = 5;
     let x = x + 1; // shadows previous x
+    println!(&quot;x = {x}&quot;); // prints 6
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shadowing In Inner Scopes</h2>
+<p>How does shadowing behave in nested scopes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Shadowing can apply within inner scopes.
+The inner binding only exists inside that scope.</p>
+<pre><code class="language-rust">fn main() {
+    let x = 6;
     {
-        let x = x * 2; // shadows again in inner scope
-        println!(&quot;inner x = {x}&quot;); // 12
+        let x = x * 2;
+        println!(&quot;Inner x = {x}&quot;); // 12
     }
-    println!(&quot;outer x = {x}&quot;); // 6
+    println!(&quot;Outer x = {x}&quot;); // 6
 }
 </code></pre>
                                     </div>
@@ -198,8 +236,8 @@ Often used for step-by-step transformations without introducing new names.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Shadowing Vs Mutability</h2>
-<p>How is shadowing different from using <code>mut</code>?</p>
+                                        <h2>Shadowing Vs Mut</h2>
+<p>What is the difference between shadowing and using <code>mut</code>?</p>
                                     </div>
                                 </div>
                             </div>
@@ -207,102 +245,16 @@ Often used for step-by-step transformations without introducing new names.</p>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li><code>mut</code> changes the value of the <strong>same</strong> variable without creating a new binding.</li>
-<li>Shadowing creates a <strong>new</strong> variable, possibly with a different type, reusing the same name.</li>
+<li><code>mut</code> allows changing the <strong>value</strong> of the same variable, but not its type.</li>
+<li>Shadowing creates a new variable, which can even have a different type.</li>
 </ul>
-<p>Key idea:
-<em>Shadowing = new binding. Mutability = same binding.</em></p>
-<pre><code class="language-rust">// Shadowing can change type:
-let spaces = &quot;   &quot;;
-let spaces = spaces.len(); // &amp;str → usize
+<pre><code class="language-rust">fn main() {
+    let mut a = 5;
+    a = 6; // ✅ same type, new value
 
-// Mutability cannot change type:
-let mut spaces = &quot;   &quot;;
-// spaces = spaces.len(); // ❌ type mismatch
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>When To Use Mutability</h2>
-<p>When should you use <code>mut</code> instead of shadowing?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Use <code>mut</code> when you need to update a variable's value <strong>in place</strong> without changing its type, and when the intent to modify is clear to readers.</p>
-<p>Example of intent clarity:</p>
-<pre><code class="language-rust">let mut counter = 0; 
-counter += 1; // ✅ clear intent to increment
-</code></pre>
-<p>Shadowing is better for transformations or type changes while keeping the name.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Compile-Time Safety</h2>
-<p>How does Rust enforce variable immutability at compile time?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>The compiler produces an error if you try to reassign an immutable variable.
-This check happens at <strong>compile time</strong>, preventing runtime bugs.</p>
-<pre><code class="language-rust">let x = 5;
-x = 6; // ❌ error[E0384]: cannot assign twice to immutable variable
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Scope And Shadowing</h2>
-<p>How does scope affect shadowing in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Shadowing applies within the scope where the new variable is declared.
-When the scope ends, the previous binding becomes visible again.</p>
-<p>Note: inner scope shadowing does <strong>not</strong> update the outer variable — it only hides it temporarily.</p>
-<pre><code class="language-rust">let x = 5;
-{
-    let x = 10; // shadows outer x
-    println!(&quot;{x}&quot;); // 10
+    let spaces = &quot;   &quot;;
+    let spaces = spaces.len(); // ✅ shadowed with new type (usize)
 }
-println!(&quot;{x}&quot;); // 5
 </code></pre>
                                     </div>
                                 </div>
@@ -317,127 +269,21 @@ println!(&quot;{x}&quot;); // 5
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Type Annotations</h2>
-<p>How do you explicitly declare a variable’s type in Rust, and when is it useful?</p>
+                                        <h2>Compiler Guidance</h2>
+<p>How does the Rust compiler help with variables and mutability?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Use <code>: type</code> after the variable name.
-Type annotations are useful for clarity, working with generics, or when inference isn’t enough.</p>
-<pre><code class="language-rust">let x: i32 = 5;
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Return Values From Blocks</h2>
-<p>How can a block of code be used as the value of a variable?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>The final expression in a block (without <code>;</code>) becomes its return value.</p>
-<pre><code class="language-rust">let y = {
-    let x = 3;
-    x + 1 // y = 4
-};
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Mutable Binding vs Value Mutability</h2>
-<p>What’s the difference between a mutable binding and value mutability in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>let mut</code> makes the <strong>binding</strong> mutable, so you can reassign it or call mutating methods.</li>
-<li>Some types (like <code>Vec</code>) are <strong>internally mutable</strong> and support mutation through methods.</li>
-<li>An immutable binding cannot call mutating methods, even if the value type is mutable.</li>
+                                        <p>The compiler enforces:</p>
+<ul>
+<li>Initialization before use.</li>
+<li>No reassignment to immutable bindings.</li>
+<li>Proper use of <code>const</code>, <code>let</code>, and <code>mut</code>.</li>
 </ul>
-<pre><code class="language-rust">let v = vec![1, 2, 3];
-// v.push(4); // ❌ cannot borrow as mutable
-
-let mut v = vec![1, 2, 3];
-v.push(4); // ✅ works
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Constants vs Variables</h2>
-<p>Why might you use a <code>const</code> instead of an immutable <code>let</code> binding?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>const</code> is evaluated at compile time.</li>
-<li>Can appear in global scope.</li>
-<li>Has no runtime overhead (inlined wherever used).</li>
-<li>Immutable <code>let</code> bindings are evaluated at runtime and have scope-based lifetimes.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Best Practice: Mut vs Shadow</h2>
-<p>When is shadowing generally preferred over <code>mut</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Shadowing is clearer for step-by-step transformations or type changes while keeping the same name.
-<code>mut</code> is clearer for repeated updates to the same value when the type does not change.</p>
+<p>These errors guide developers toward safer, more predictable code.</p>
                                     </div>
                                 </div>
                             </div>

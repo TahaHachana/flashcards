@@ -28,22 +28,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Rust Type System Basics</h2>
-<p>What does it mean that Rust is statically typed, and when is a type annotation required?</p>
+                                        <h2>Static Typing</h2>
+<p>What does it mean that Rust is a statically typed language?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Rust is statically typed, meaning all variable types must be known at compile time.<br />
-The compiler can usually infer types, but annotations are required when:</p>
-<ul>
-<li>Multiple types are possible (ambiguity).</li>
-<li>Using generic methods like <code>parse()</code>.</li>
-<li>You want a type other than the default (<code>i32</code> for integers, <code>f64</code> for floats).</li>
-</ul>
-<p>Example:</p>
+                                        <p>All variable types must be known at compile time.<br />
+The compiler can often infer types, but explicit annotations are needed when multiple types are possible.</p>
 <pre><code class="language-rust">let guess: u32 = &quot;42&quot;.parse().expect(&quot;Not a number!&quot;);
 </code></pre>
                                     </div>
@@ -59,20 +53,18 @@ The compiler can usually infer types, but annotations are required when:</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Scalar Types Overview</h2>
-<p>What are the four primary scalar types in Rust?</p>
+                                        <h2>Default Type Inference</h2>
+<p>What are the default numeric types that Rust assigns when no type is specified?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ol>
-<li>Integers</li>
-<li>Floating-point numbers</li>
-<li>Booleans</li>
-<li>Characters</li>
-</ol>
+                                        <ul>
+<li>Integers default to <code>i32</code>.</li>
+<li>Floating-point numbers default to <code>f64</code>.</li>
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -87,34 +79,7 @@ The compiler can usually infer types, but annotations are required when:</p>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Integer Types</h2>
-<p>List Rust's built-in signed and unsigned integer types with their sizes.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Signed: <code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code>, <code>isize</code></p>
-<p>Unsigned: <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code>, <code>usize</code></p>
-<ul>
-<li><code>i32</code> is the default integer type.</li>
-<li><code>isize</code>/<code>usize</code> depend on the system architecture (32-bit or 64-bit).</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Integer Ranges</h2>
-<p>What are the value ranges for signed and unsigned integers in Rust?</p>
+<p>What signed and unsigned integer types does Rust provide?</p>
                                     </div>
                                 </div>
                             </div>
@@ -122,14 +87,10 @@ The compiler can usually infer types, but annotations are required when:</p>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>Signed: −(2ⁿ⁻¹) to 2ⁿ⁻¹ − 1</li>
-<li>Unsigned: 0 to 2ⁿ − 1</li>
+<li><strong>Signed</strong>: <code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code>, <code>isize</code></li>
+<li><strong>Unsigned</strong>: <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code>, <code>usize</code></li>
 </ul>
-<p>Example:</p>
-<ul>
-<li><code>i8</code>: −128 to 127</li>
-<li><code>u8</code>: 0 to 255</li>
-</ul>
+<p>Defaults: <code>i32</code> for integers, <code>isize</code>/<code>usize</code> for indexing.</p>
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +105,7 @@ The compiler can usually infer types, but annotations are required when:</p>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Integer Literals</h2>
-<p>What forms can integer literals take in Rust?</p>
+<p>What literal forms can you use to write integers in Rust?</p>
                                     </div>
                                 </div>
                             </div>
@@ -156,13 +117,8 @@ The compiler can usually infer types, but annotations are required when:</p>
 <li>Hex: <code>0xff</code></li>
 <li>Octal: <code>0o77</code></li>
 <li>Binary: <code>0b1111_0000</code></li>
-<li>Byte (u8 only): <code>b'A'</code></li>
+<li>Byte (<code>u8</code> only): <code>b'A'</code></li>
 </ul>
-<p>Underscores <code>_</code> can be used as visual separators.
-Literals can also have type suffixes:</p>
-<pre><code class="language-rust">let x = 42u8;
-let y = 3.14f32;
-</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -176,8 +132,8 @@ let y = 3.14f32;
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Integer Overflow Behavior</h2>
-<p>How does Rust handle integer overflow in debug and release modes?</p>
+                                        <h2>Integer Overflow</h2>
+<p>How does Rust handle integer overflow in debug vs release modes?</p>
                                     </div>
                                 </div>
                             </div>
@@ -185,15 +141,9 @@ let y = 3.14f32;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>Debug mode: Panics at runtime on overflow.</li>
-<li>Release mode: Wraps using two’s complement.</li>
-</ul>
-<p>Explicit handling methods:</p>
-<ul>
-<li><code>wrapping_*</code></li>
-<li><code>checked_*</code></li>
-<li><code>overflowing_*</code></li>
-<li><code>saturating_*</code></li>
+<li><strong>Debug mode</strong>: Program panics on overflow.</li>
+<li><strong>Release mode</strong>: Value wraps using two’s complement.</li>
+<li>Methods for control: <code>wrapping_*</code>, <code>checked_*</code>, <code>overflowing_*</code>, <code>saturating_*</code>.</li>
 </ul>
                                     </div>
                                 </div>
@@ -209,23 +159,19 @@ let y = 3.14f32;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Floating-Point Types</h2>
-<p>What floating-point types does Rust have, and which is the default?</p>
+<p>What floating-point types does Rust provide, and which is default?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Rust has:</p>
-<ul>
-<li><code>f32</code> (32-bit, single precision)</li>
-<li><code>f64</code> (64-bit, double precision, default)</li>
+                                        <ul>
+<li><code>f32</code> (32-bit)</li>
+<li><code>f64</code> (64-bit, default)
+  Both follow IEEE-754 standard.
+  You can force type with suffixes: <code>1.0f32</code>, <code>2.5f64</code>.</li>
 </ul>
-<p>Both are signed and follow IEEE-754.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let x = 2.0;      // f64 by default
-let y: f32 = 3.0; // f32
-</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -240,17 +186,19 @@ let y: f32 = 3.0; // f32
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Numeric Operations</h2>
-<p>What basic numeric operations are supported in Rust?</p>
+<p>What basic arithmetic operations can be performed on numbers in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Addition <code>+</code>, subtraction <code>-</code>, multiplication <code>*</code>, division <code>/</code>, remainder <code>%</code>.</p>
-<p>Example:</p>
+                                        <p>Addition, subtraction, multiplication, division (with truncation), and remainder.</p>
 <pre><code class="language-rust">let sum = 5 + 10;
+let difference = 95.5 - 4.3;
+let product = 4 * 30;
 let quotient = 56.7 / 32.2;
+let truncated = -5 / 3; // -1
 let remainder = 43 % 5;
 </code></pre>
                                     </div>
@@ -267,7 +215,7 @@ let remainder = 43 % 5;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Boolean Type</h2>
-<p>How is the Boolean type represented in Rust?</p>
+<p>What is the type for Boolean values in Rust and what values can it hold?</p>
                                     </div>
                                 </div>
                             </div>
@@ -275,9 +223,7 @@ let remainder = 43 % 5;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <p>Type: <code>bool</code>
-Values: <code>true</code> or <code>false</code>
-Size: 1 byte</p>
-<p>Example:</p>
+Values: <code>true</code> or <code>false</code></p>
 <pre><code class="language-rust">let t = true;
 let f: bool = false;
 </code></pre>
@@ -295,7 +241,34 @@ let f: bool = false;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Character Type</h2>
-<p>What is the size and range of Rust's <code>char</code> type?</p>
+<p>What does the <code>char</code> type in Rust represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <code>char</code> is 4 bytes and represents a Unicode scalar value.
+It can hold ASCII, accented letters, CJK characters, emoji, etc.
+It does not necessarily equal a grapheme cluster.</p>
+<pre><code class="language-rust">let heart = '❤';
+let smile = '😻';
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tuples</h2>
+<p>What are tuples in Rust and how are they used?</p>
                                     </div>
                                 </div>
                             </div>
@@ -303,67 +276,13 @@ let f: bool = false;
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>Size: 4 bytes</li>
-<li>Represents a Unicode scalar value (U+0000 to U+D7FF and U+E000 to U+10FFFF).</li>
+<li>Fixed length, can contain mixed types.</li>
+<li>Values can be accessed via destructuring or by index.</li>
 </ul>
-<p>Example:</p>
-<pre><code class="language-rust">let c = 'z';
-let z: char = 'ℤ';
-let emoji = '😻';
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Compound Types Overview</h2>
-<p>What are Rust's two primitive compound types?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ol>
-<li>Tuples</li>
-<li>Arrays</li>
-</ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Tuple Basics</h2>
-<p>How do you declare and destructure a tuple in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Declare:</p>
 <pre><code class="language-rust">let tup: (i32, f64, u8) = (500, 6.4, 1);
+let (x, y, z) = tup;
+println!(&quot;y = {y}&quot;);
 </code></pre>
-<p>Destructure:</p>
-<pre><code class="language-rust">let (x, y, z) = tup;
-</code></pre>
-<p>Access by index: <code>tup.0</code>, <code>tup.1</code>, <code>tup.2</code></p>
                                     </div>
                                 </div>
                             </div>
@@ -378,18 +297,18 @@ let emoji = '😻';
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <h2>Unit Type</h2>
-<p>What is the unit type in Rust and when is it used?</p>
+<p>What is the unit type <code>()</code> in Rust and when is it used?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>The unit type <code>()</code> represents an empty value or return type.</li>
-<li>Functions with no return type implicitly return <code>()</code>.</li>
-<li>Useful in generics and to signal “nothing.”</li>
-</ul>
+                                        <p><code>()</code> is a special tuple with no values.
+It represents “nothing” and is the implicit return type of functions that don’t return anything.</p>
+<pre><code class="language-rust">fn do_nothing() {}
+// return type is ()
+</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -403,8 +322,8 @@ let emoji = '😻';
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Array Basics</h2>
-<p>How do you declare arrays in Rust, and what are their constraints?</p>
+                                        <h2>Arrays</h2>
+<p>What are arrays in Rust and how do they behave?</p>
                                     </div>
                                 </div>
                             </div>
@@ -412,15 +331,13 @@ let emoji = '😻';
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>Arrays have fixed length.</li>
-<li>All elements must be the same type.</li>
-<li>Stored on the stack (faster than <code>Vec</code>).</li>
+<li>Fixed size, all elements same type.</li>
+<li>Accessed by index.</li>
+<li>Out-of-bounds indexing causes a runtime panic.</li>
+<li>Arrays are distinct from vectors (<code>Vec&lt;T&gt;</code>), which are growable.</li>
 </ul>
-<p>Example:</p>
 <pre><code class="language-rust">let a = [1, 2, 3, 4, 5];
-let months = [&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;];
-let a: [i32; 5] = [1, 2, 3, 4, 5];
-let a = [3; 5]; // [3, 3, 3, 3, 3]
+let first = a[0];
 </code></pre>
                                     </div>
                                 </div>
@@ -435,19 +352,17 @@ let a = [3; 5]; // [3, 3, 3, 3, 3]
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Accessing Array Elements</h2>
-<p>How do you access array elements in Rust?</p>
+                                        <h2>Arrays With Repeated Values</h2>
+<p>How can you create an array filled with the same value in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Use zero-based indexing:</p>
-<pre><code class="language-rust">let first = a[0];
-let second = a[1];
+                                        <p>Use <code>[value; count]</code> syntax:</p>
+<pre><code class="language-rust">let a = [3; 5]; // [3, 3, 3, 3, 3]
 </code></pre>
-<p>Accessing out-of-bounds indices causes a runtime panic.</p>
                                     </div>
                                 </div>
                             </div>
@@ -461,31 +376,8 @@ let second = a[1];
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Array Out-Of-Bounds Safety</h2>
-<p>What happens if you access an array index out of bounds in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Rust checks indices at runtime.
-If the index ≥ array length, the program panics to prevent invalid memory access.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Default Numeric Types</h2>
-<p>What are the default integer and floating-point types in Rust?</p>
+                                        <h2>Safety In Data Types</h2>
+<p>How does Rust enforce safety in its type system for data types?</p>
                                     </div>
                                 </div>
                             </div>
@@ -493,484 +385,11 @@ If the index ≥ array length, the program panics to prevent invalid memory acce
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li>Integers default to <code>i32</code>.</li>
-<li>Floating-point numbers default to <code>f64</code>.</li>
+<li>Requires all types to be known at compile time.</li>
+<li>Panics on invalid array indexing.</li>
+<li>Panics on integer overflow in debug mode.</li>
+<li>Enforces explicit type rules for constants and variables.</li>
 </ul>
-<p>Example:</p>
-<pre><code class="language-rust">let x = 42;   // i32 by default
-let y = 3.14; // f64 by default
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Numeric Suffixes</h2>
-<p>How can you explicitly specify numeric literal types in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>By adding a suffix to the literal:</p>
-<pre><code class="language-rust">let x = 42u8;    // unsigned 8-bit integer
-let y = 3.14f32; // 32-bit float
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Numeric Casting</h2>
-<p>How do you convert between numeric types in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Use the <code>as</code> keyword for explicit casting.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let x: u8 = 5;
-let y: u32 = x as u32;
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Slices</h2>
-<p>What is a slice in Rust and how is it used?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>A slice is a dynamically sized view into a contiguous sequence.
-It doesn’t own the data.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let arr = [1, 2, 3, 4];
-let slice: &amp;[i32] = &amp;arr[1..3]; // [2, 3]
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Strings</h2>
-<p>What are the two main string types in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>&amp;str</code>: immutable string slice, borrowed view into UTF-8 data.</li>
-<li><code>String</code>: growable, heap-allocated, owned string.</li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-rust">let s: &amp;str = &quot;hello&quot;;
-let mut t: String = String::from(&quot;world&quot;);
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Copy vs Move Types</h2>
-<p>Which types implement <code>Copy</code> in Rust, and which don’t?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><strong>Copy types</strong>: cheap to duplicate; ownership doesn’t move. Examples: integers, floats, bool, char, unit <code>()</code>.</p>
-<p><strong>Non-Copy types</strong>: ownership moves by default. Examples: <code>String</code>, <code>Vec&lt;T&gt;</code>, <code>Box&lt;T&gt;</code>.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Integer Overflow Gotcha</h2>
-<p>How does Rust handle integer overflow, and how can you manage it?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li>Debug mode: panics at runtime.</li>
-<li>Release mode: wraps with two’s complement.</li>
-</ul>
-<p>Helper methods for explicit handling:</p>
-<ul>
-<li><code>wrapping_*</code>, <code>checked_*</code>, <code>overflowing_*</code>, <code>saturating_*</code></li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-rust">let x: u8 = 255;
-let y = x.wrapping_add(1); // 0
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Float Comparison Gotcha</h2>
-<p>Why is comparing floats with <code>==</code> unreliable in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Floats use IEEE-754 and can’t represent some values exactly.
-Direct equality may fail. Use an epsilon check:</p>
-<pre><code class="language-rust">let a = 0.1 + 0.2;
-let b = 0.3;
-assert!((a - b).abs() &lt; f64::EPSILON);
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>String Indexing Gotcha</h2>
-<p>Why can’t you index into a Rust <code>String</code> with <code>s[0]</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Rust <code>String</code> is UTF-8 encoded; characters may use multiple bytes.
-Direct indexing is ambiguous and not allowed.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
-// println!(&quot;{}&quot;, s[0]); // error
-println!(&quot;{}&quot;, &amp;s[0..1]); // &quot;h&quot;
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Arrays vs Vec</h2>
-<p>When should you use an array versus a <code>Vec&lt;T&gt;</code> in Rust?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Array <code>[T; N]</code></strong>: fixed size known at compile time, stack-allocated, very fast.</li>
-<li><strong>Vec<T></strong>: dynamic size, heap-allocated, can grow/shrink at runtime.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Slices Lifetime Gotcha</h2>
-<p>Why must you be careful with slices and lifetimes?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Slices borrow the original data but don’t own it.
-If the owner goes out of scope, the slice becomes invalid.</p>
-<p>Example:</p>
-<pre><code class="language-rust">let slice: &amp;[i32];
-{
-    let arr = [1, 2, 3];
-    slice = &amp;arr[0..2]; // borrows arr
-}
-// println!(&quot;{:?}&quot;, slice); // error: arr dropped
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>When to Use Arrays and Vec</h2>
-<p>Give practical guidance on choosing between arrays and <code>Vec&lt;T&gt;</code>.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li>Use arrays for: fixed-size, small, compile-time data.</li>
-<li>Use Vec for: runtime-sized collections or data that grows/shrinks.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>When to Use \&amp;str vs String</h2>
-<p>When should you use <code>&amp;str</code> vs <code>String</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>&amp;str</strong>: read-only, borrowed string slices; function parameters when you don’t need ownership.</li>
-<li><strong>String</strong>: owned, growable string; when you need to store or modify text.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Tuples vs Structs</h2>
-<p>When should you use a tuple versus a struct?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Tuple</strong>: temporary grouping of values, especially when names would be redundant.</li>
-<li><strong>Struct</strong>: when values have meaning, names improve clarity, or the data is part of a stable API.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Data Type Decision Tree</h2>
-<p>How can you quickly decide between common Rust types like array, Vec, &amp;str, String, tuple, and struct?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Use this step-by-step guide:</p>
-<ol>
-<li>
-<p><strong>Numbers</strong></p>
-<ul>
-<li>Default: <code>i32</code> for integers, <code>f64</code> for floats.</li>
-<li>Need unsigned? Use <code>u*</code>.</li>
-<li>Need pointer-sized? Use <code>isize</code>/<code>usize</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Collections</strong></p>
-<ul>
-<li>Size fixed at compile time? → <strong>Array <code>[T; N]</code></strong>.</li>
-<li>Size dynamic at runtime? → <strong>Vec<T></strong>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Strings</strong></p>
-<ul>
-<li>Borrowed, read-only? → <strong>&amp;str</strong>.</li>
-<li>Owned, growable, modifiable? → <strong>String</strong>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Grouping values</strong></p>
-<ul>
-<li>Temporary grouping, no names needed? → <strong>Tuple</strong>.</li>
-<li>Data with meaning, clarity, or public API? → <strong>Struct</strong>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Return type when nothing</strong></p>
-<ul>
-<li>→ <strong>Unit <code>()</code></strong></li>
-</ul>
-</li>
-</ol>
-<p>This tree helps pick the right type based on ownership, size, and purpose.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Data Type Gotchas Decision Tree</h2>
-<p>What are common pitfalls with Rust data types and how do you avoid them?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Follow this quick guide:</p>
-<ol>
-<li>
-<p><strong>Integers</strong></p>
-<ul>
-<li>Could overflow?  </li>
-<li>Debug mode → panics.  </li>
-<li>Release mode → wraps.  </li>
-<li>Need control? → use <code>wrapping_*</code>, <code>checked_*</code>, <code>overflowing_*</code>, or <code>saturating_*</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Floats</strong></p>
-<ul>
-<li>Comparing with <code>==</code>? → Not reliable.  </li>
-<li>Use an epsilon check: <code>(a - b).abs() &lt; f64::EPSILON</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Strings</strong></p>
-<ul>
-<li>Trying <code>s[0]</code>? → Not allowed (UTF-8).  </li>
-<li>Use slicing (<code>&amp;s[0..1]</code>) or iteration instead.</li>
-</ul>
-</li>
-<li>
-<p><strong>Slices</strong></p>
-<ul>
-<li>Owner goes out of scope? → Slice becomes invalid.  </li>
-<li>Keep owner alive for slice lifetime.</li>
-</ul>
-</li>
-<li>
-<p><strong>Arrays vs Vec</strong></p>
-<ul>
-<li>Array size fixed? → Fine.  </li>
-<li>Need resizing? → Switch to <code>Vec&lt;T&gt;</code>.</li>
-</ul>
-</li>
-</ol>
-<p>This tree helps avoid runtime errors and common beginner mistakes.</p>
                                     </div>
                                 </div>
                             </div>
