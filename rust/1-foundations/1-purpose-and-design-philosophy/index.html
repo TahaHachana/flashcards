@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Dsa - Algorithms - 2-Analysis-Of-Algorithms</title>
+  <title>Flashcards - Rust - 1-Foundations - 1-Purpose-And-Design-Philosophy</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,16 +28,18 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Purpose Of Algorithm Analysis</h2>
-<p>Why do we analyze algorithms?</p>
+                                        <h2>Rust’s Core Problem Space</h2>
+<p>What long-standing problem in systems programming motivated the creation of Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>To predict efficiency, compare different approaches, and choose the right solution without relying only on implementation and timing.<br />
-It focuses on <strong>time</strong> (execution steps) and <strong>space</strong> (memory used).</p>
+                                        <p>Rust was created to bridge the gap between <strong>performance and safety</strong>.<br />
+Traditional systems languages (like C/C++) offer speed and control but allow memory and concurrency bugs,<br />
+while managed languages offer safety at the cost of control.<br />
+Rust provides both — <strong>C-level performance with compile-time memory safety</strong>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -51,18 +53,19 @@ It focuses on <strong>time</strong> (execution steps) and <strong>space</strong>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>A Priori Vs A Posteriori</h2>
-<p>What is the difference between a priori and a posteriori analysis of algorithms?</p>
+                                        <h2>Rust’s Three Design Pillars</h2>
+<p>What are Rust’s three core design goals and how are they achieved?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>A priori</strong>: Theoretical analysis before coding, based on counting steps. Independent of hardware/software.  </li>
-<li><strong>A posteriori</strong>: Experimental analysis after coding, based on execution time. Dependent on platform and environment.</li>
-</ul>
+                                        <ol>
+<li><strong>Safety</strong> – ownership, borrowing, and lifetimes enforce valid memory access.  </li>
+<li><strong>Speed</strong> – zero-cost abstractions compile to optimized machine code.  </li>
+<li><strong>Concurrency</strong> – the type system enforces thread safety through <code>Send</code> and <code>Sync</code> traits.</li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -76,154 +79,23 @@ It focuses on <strong>time</strong> (execution steps) and <strong>space</strong>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Time Complexity</h2>
-<p>What does time complexity measure?</p>
+                                        <h2>Memory Safety Without Garbage Collection</h2>
+<p>How does Rust guarantee memory safety without using a garbage collector?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The number of basic operations an algorithm performs as a function of input size <code>n</code>.<br />
-It shows how execution time grows as <code>n</code> increases.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Space Complexity</h2>
-<p>What are the main components of space complexity?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li>Fixed part: constants, program code, simple variables.  </li>
-<li>Variable part: dynamic memory, recursion stack, and function calls.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Asymptotic Notations</h2>
-<p>What are the three main asymptotic notations used in algorithm analysis?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>O (Big-O)</strong>: Upper bound, worst-case growth.  </li>
-<li><strong>Ω (Big-Omega)</strong>: Lower bound, best-case growth.  </li>
-<li><strong>Θ (Big-Theta)</strong>: Tight bound, both upper and lower.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Case Analysis</h2>
-<p>What are best case, worst case, and average case complexities?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Best Case</strong>: Minimum steps required (easiest input).  </li>
-<li><strong>Worst Case</strong>: Maximum steps required (hardest input).  </li>
-<li><strong>Average Case</strong>: Expected steps over all possible inputs.</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Common Growth Rates</h2>
-<p>List common algorithmic growth rates with examples.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li>O(1): Constant (array access)  </li>
-<li>O(log n): Logarithmic (binary search)  </li>
-<li>O(n): Linear (scanning an array)  </li>
-<li>O(n log n): Log-linear (mergesort, heapsort)  </li>
-<li>O(n^2): Quadratic (bubble sort, nested loops)  </li>
-<li>O(n^3): Cubic (matrix multiplication)  </li>
-<li>O(2^n): Exponential (subset generation, naïve Fibonacci)  </li>
-<li>O(n!): Factorial (brute-force traveling salesman)</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Loop Analysis</h2>
-<p>How do we analyze loops in algorithms?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Simple loop</strong>: iterations × cost per iteration.  </li>
-<li><strong>Nested loops</strong>: multiply complexities.  </li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-c">for (i=0; i&lt;n; i++)      // O(n)
-  for (j=0; j&lt;n; j++)    // O(n)
-    A[i][j] = 0;         // O(1)
-// Total: O(n^2)
+                                        <p>Rust’s <strong>ownership model</strong> defines who owns each value,<br />
+the <strong>borrow checker</strong> ensures valid references,<br />
+and memory is freed deterministically when ownership goes out of scope.  </p>
+<pre><code class="language-rust">fn main() {
+    let s = String::from(&quot;hi&quot;);
+    let t = s;         // ownership moves to t
+    // println!(&quot;{}&quot;, s); // ❌ compile-time error
+    println!(&quot;{}&quot;, t);  // ✅ safe
+}
 </code></pre>
                                     </div>
                                 </div>
@@ -238,17 +110,19 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Binary Search Recurrence</h2>
-<p>What is the recurrence relation for binary search and its complexity?</p>
+                                        <h2>Zero-Cost Abstractions</h2>
+<p>What does “zero-cost abstractions” mean in Rust?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code>T(n) = T(n/2) + O(1)
+                                        <p>High-level features (iterators, traits, pattern matching) are optimized away at compile time.
+They add <strong>no runtime overhead</strong> compared to equivalent low-level code.</p>
+<pre><code class="language-rust">let sum: i32 = vec![1,2,3].iter().map(|x| x * 2).sum();
 </code></pre>
-<p>Solution: O(log n)</p>
+<p>Compiles to a tight loop equivalent to manual iteration but with safer, more expressive syntax.</p>
                                     </div>
                                 </div>
                             </div>
@@ -262,17 +136,26 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Mergesort Recurrence</h2>
-<p>What is the recurrence relation for mergesort and its complexity?</p>
+                                        <h2>Fearless Concurrency</h2>
+<p>What is “fearless concurrency” in Rust and how does the compiler enforce it?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code>T(n) = 2T(n/2) + O(n)
+                                        <p>It means developers can write concurrent code safely because
+Rust’s ownership and type system prevent data races.
+Only one mutable reference or multiple immutable references may exist at a time.</p>
+<pre><code class="language-rust">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+    let handle = thread::spawn(move || for x in v { println!(&quot;{x}&quot;); });
+    handle.join().unwrap();
+}
 </code></pre>
-<p>Solution: O(n log n)</p>
+<p>Ownership ensures <code>v</code> is safely moved into the thread.</p>
                                     </div>
                                 </div>
                             </div>
@@ -286,17 +169,17 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Fibonacci Recurrence</h2>
-<p>What is the recurrence relation for the naïve recursive Fibonacci algorithm?</p>
+                                        <h2>Compiler as Teacher</h2>
+<p>How does the Rust compiler contribute to the learning process?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <pre><code>T(n) = T(n-1) + T(n-2) + O(1)
-</code></pre>
-<p>Solution: O(2^n)</p>
+                                        <p>The compiler provides <strong>detailed, actionable diagnostics</strong> explaining
+why code fails and how to fix it — turning errors into learning opportunities.
+It enforces safety while teaching correct patterns, enabling the “fearless” learning loop.</p>
                                     </div>
                                 </div>
                             </div>
@@ -310,19 +193,17 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Solving Recurrences</h2>
-<p>What are common techniques to solve recurrence relations?</p>
+                                        <h2>Safety as a Compile-Time Guarantee</h2>
+<p>Why is Rust’s approach to safety considered a compile-time guarantee rather than a runtime feature?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>Substitution method</strong> (guess and prove by induction).</li>
-<li><strong>Recursion tree method</strong> (expand and sum across levels).</li>
-<li><strong>Master theorem</strong> (applies to divide-and-conquer recurrences).</li>
-</ul>
+                                        <p>All memory and concurrency rules are enforced during compilation.
+Invalid ownership, borrowing, or thread usage prevents code from compiling,
+eliminating entire categories of runtime crashes.</p>
                                     </div>
                                 </div>
                             </div>
@@ -336,18 +217,16 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Polynomial Vs Exponential</h2>
-<p>Why are polynomial-time algorithms considered feasible while exponential ones are not?</p>
+                                        <h2>Rust’s Overall Philosophy</h2>
+<p>Summarize Rust’s guiding philosophy in one statement.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>Polynomial-time (O(n^k))</strong>: Growth is manageable even for large inputs.</li>
-<li><strong>Exponential-time (O(2^n), O(n!))</strong>: Growth explodes rapidly, making algorithms impractical for large <code>n</code>.</li>
-</ul>
+                                        <p>Rust aims to make <strong>safe systems programming practical</strong> — combining control, performance, and safety
+through compile-time guarantees, expressive abstractions, and a helpful compiler.</p>
                                     </div>
                                 </div>
                             </div>

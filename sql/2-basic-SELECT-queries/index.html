@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Dsa - Algorithms - 2-Analysis-Of-Algorithms</title>
+  <title>Flashcards - Sql - 2-Basic-Select-Queries</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,16 +28,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Purpose Of Algorithm Analysis</h2>
-<p>Why do we analyze algorithms?</p>
+                                        <h2>Purpose of the SELECT Statement</h2>
+<p>What is the main purpose of the SQL SELECT statement?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>To predict efficiency, compare different approaches, and choose the right solution without relying only on implementation and timing.<br />
-It focuses on <strong>time</strong> (execution steps) and <strong>space</strong> (memory used).</p>
+                                        <p>The SELECT statement retrieves data from one or more tables and returns it as a <strong>result set</strong>, a temporary virtual table.<br />
+It is the foundation of SQL and expresses what data to fetch, not how to fetch it.</p>
                                     </div>
                                 </div>
                             </div>
@@ -51,8 +51,8 @@ It focuses on <strong>time</strong> (execution steps) and <strong>space</strong>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>A Priori Vs A Posteriori</h2>
-<p>What is the difference between a priori and a posteriori analysis of algorithms?</p>
+                                        <h2>Basic SELECT Syntax</h2>
+<p>What are the two mandatory clauses in a simple SELECT statement?</p>
                                     </div>
                                 </div>
                             </div>
@@ -60,8 +60,10 @@ It focuses on <strong>time</strong> (execution steps) and <strong>space</strong>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ul>
-<li><strong>A priori</strong>: Theoretical analysis before coding, based on counting steps. Independent of hardware/software.  </li>
-<li><strong>A posteriori</strong>: Experimental analysis after coding, based on execution time. Dependent on platform and environment.</li>
+<li><strong>SELECT</strong> — lists the columns to retrieve.  </li>
+<li><strong>FROM</strong> — specifies the source table.<br />
+Example:
+<code>SELECT column_list FROM table_name;</code></li>
 </ul>
                                     </div>
                                 </div>
@@ -76,16 +78,17 @@ It focuses on <strong>time</strong> (execution steps) and <strong>space</strong>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Time Complexity</h2>
-<p>What does time complexity measure?</p>
+                                        <h2>Selecting All Columns</h2>
+<p>How do you select all columns from a table, and why should this be used cautiously?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The number of basic operations an algorithm performs as a function of input size <code>n</code>.<br />
-It shows how execution time grows as <code>n</code> increases.</p>
+                                        <p>Use the asterisk (<code>*</code>) wildcard:<br />
+<code>SELECT * FROM table_name;</code><br />
+It’s convenient for exploration but discouraged in production because it can return unnecessary data, slow performance, and cause maintenance issues.</p>
                                     </div>
                                 </div>
                             </div>
@@ -99,18 +102,16 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Space Complexity</h2>
-<p>What are the main components of space complexity?</p>
+                                        <h2>Specifying Columns Explicitly</h2>
+<p>Why is it better to list specific columns in a SELECT statement?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>Fixed part: constants, program code, simple variables.  </li>
-<li>Variable part: dynamic memory, recursion stack, and function calls.</li>
-</ul>
+                                        <p>Explicitly listing columns improves performance, clarity, and stability.<br />
+It ensures only needed data is returned and avoids problems if the table structure changes.</p>
                                     </div>
                                 </div>
                             </div>
@@ -124,19 +125,16 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Asymptotic Notations</h2>
-<p>What are the three main asymptotic notations used in algorithm analysis?</p>
+                                        <h2>Result Sets</h2>
+<p>What is a result set, and what are its key properties?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>O (Big-O)</strong>: Upper bound, worst-case growth.  </li>
-<li><strong>Ω (Big-Omega)</strong>: Lower bound, best-case growth.  </li>
-<li><strong>Θ (Big-Theta)</strong>: Tight bound, both upper and lower.</li>
-</ul>
+                                        <p>A <strong>result set</strong> is a temporary, tabular output produced by a SELECT query.<br />
+It has defined columns and rows, exists only during query execution, and has no guaranteed row order unless <code>ORDER BY</code> is used.</p>
                                     </div>
                                 </div>
                             </div>
@@ -150,19 +148,18 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Case Analysis</h2>
-<p>What are best case, worst case, and average case complexities?</p>
+                                        <h2>Column Aliases</h2>
+<p>What are column aliases, and how are they created?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>Best Case</strong>: Minimum steps required (easiest input).  </li>
-<li><strong>Worst Case</strong>: Maximum steps required (hardest input).  </li>
-<li><strong>Average Case</strong>: Expected steps over all possible inputs.</li>
-</ul>
+                                        <p>Aliases rename output columns for readability using the <code>AS</code> keyword.<br />
+Example:<br />
+<code>SELECT name AS student_name FROM students;</code><br />
+They exist only in the result set and do not alter the table schema.</p>
                                     </div>
                                 </div>
                             </div>
@@ -176,24 +173,18 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Common Growth Rates</h2>
-<p>List common algorithmic growth rates with examples.</p>
+                                        <h2>Expressions in SELECT</h2>
+<p>What kinds of expressions can be used in a SELECT clause?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>O(1): Constant (array access)  </li>
-<li>O(log n): Logarithmic (binary search)  </li>
-<li>O(n): Linear (scanning an array)  </li>
-<li>O(n log n): Log-linear (mergesort, heapsort)  </li>
-<li>O(n^2): Quadratic (bubble sort, nested loops)  </li>
-<li>O(n^3): Cubic (matrix multiplication)  </li>
-<li>O(2^n): Exponential (subset generation, naïve Fibonacci)  </li>
-<li>O(n!): Factorial (brute-force traveling salesman)</li>
-</ul>
+                                        <p>Arithmetic, string literals, or function calls.<br />
+Examples:<br />
+<code>price * quantity AS total_cost</code>, <code>'Active' AS status</code>, <code>UPPER(city)</code>.<br />
+Expressions let you transform or compute values during retrieval.</p>
                                     </div>
                                 </div>
                             </div>
@@ -207,147 +198,21 @@ It shows how execution time grows as <code>n</code> increases.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Loop Analysis</h2>
-<p>How do we analyze loops in algorithms?</p>
+                                        <h2>SELECT Key Principles</h2>
+<p>List key principles to remember when writing SELECT statements.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><strong>Simple loop</strong>: iterations × cost per iteration.  </li>
-<li><strong>Nested loops</strong>: multiply complexities.  </li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-c">for (i=0; i&lt;n; i++)      // O(n)
-  for (j=0; j&lt;n; j++)    // O(n)
-    A[i][j] = 0;         // O(1)
-// Total: O(n^2)
-</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Binary Search Recurrence</h2>
-<p>What is the recurrence relation for binary search and its complexity?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code>T(n) = T(n/2) + O(1)
-</code></pre>
-<p>Solution: O(log n)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Mergesort Recurrence</h2>
-<p>What is the recurrence relation for mergesort and its complexity?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code>T(n) = 2T(n/2) + O(n)
-</code></pre>
-<p>Solution: O(n log n)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Fibonacci Recurrence</h2>
-<p>What is the recurrence relation for the naïve recursive Fibonacci algorithm?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <pre><code>T(n) = T(n-1) + T(n-2) + O(1)
-</code></pre>
-<p>Solution: O(2^n)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Solving Recurrences</h2>
-<p>What are common techniques to solve recurrence relations?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Substitution method</strong> (guess and prove by induction).</li>
-<li><strong>Recursion tree method</strong> (expand and sum across levels).</li>
-<li><strong>Master theorem</strong> (applies to divide-and-conquer recurrences).</li>
-</ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Polynomial Vs Exponential</h2>
-<p>Why are polynomial-time algorithms considered feasible while exponential ones are not?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><strong>Polynomial-time (O(n^k))</strong>: Growth is manageable even for large inputs.</li>
-<li><strong>Exponential-time (O(2^n), O(n!))</strong>: Growth explodes rapidly, making algorithms impractical for large <code>n</code>.</li>
-</ul>
+                                        <ol>
+<li>Always specify a source table with <code>FROM</code>.  </li>
+<li>Avoid using <code>*</code> in production.  </li>
+<li>Column order follows the SELECT list order.  </li>
+<li>Every query produces a result set.  </li>
+<li>Use aliases and expressions for clarity.</li>
+</ol>
                                     </div>
                                 </div>
                             </div>

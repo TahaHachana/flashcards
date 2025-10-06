@@ -40,7 +40,7 @@ def sort_by_number(strings):
     return sorted(strings, key=lambda x: int(x.split("-")[0]))
 
 
-def write_index_html(path, title="Programming Syntax Flashcards"):
+def write_index_html(path, title="Flashcards"):
     hirearchy = [x.title() for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
@@ -63,7 +63,7 @@ def write_index_html(path, title="Programming Syntax Flashcards"):
         print(f"Created index.html in: {path}")
 
 
-def write_carousel_html(md_folder, path, title="Programming Syntax Flashcards"):
+def write_carousel_html(md_folder, path, title="Flashcards"):
     hirearchy = [x.title() for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
