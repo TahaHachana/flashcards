@@ -10,7 +10,7 @@ class Flashcard:
 
 
 def flashcard_from_md(md):
-    sections = md.split("---")
+    sections = md.split("---\n")
     sections = [part.strip() for part in sections]
     if len(sections) != 2:
         raise ValueError(

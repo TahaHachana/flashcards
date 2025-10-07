@@ -72,6 +72,7 @@ def write_carousel_html(md_folder, path, title="Flashcards"):
     )
     slides = []
     for markdown_file in markdown_files:
+        print(f"Processing markdown file: {markdown_file}")
         with open(os.path.join(md_folder, markdown_file)) as file:
             markdown_text = file.read()
             flashcard = flashcard_from_md(markdown_text)
