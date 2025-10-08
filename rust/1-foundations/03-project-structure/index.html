@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 1-Foundations - 03-Project-Structure</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Role of Cargo</h2>
+<p>What is Cargo’s role in a Rust project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cargo is Rust’s <strong>build system and package manager</strong>.<br />
+It controls project layout, dependency resolution, compilation, testing, and documentation.<br />
+Every standard Rust project is organized and built through Cargo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Project Structure</h2>
+<p>What is the default directory layout of a Cargo project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>
+my_project/
+├── Cargo.toml
+└── src/
+└── main.rs
+
+</code></pre>
+<ul>
+<li><strong><code>Cargo.toml</code></strong> — manifest describing package and dependencies.  </li>
+<li><strong><code>src/</code></strong> — Rust source code directory.  </li>
+<li><strong><code>target/</code></strong> — automatically generated build outputs.</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of Cargo.toml</h2>
+<p>What information is stored in <code>Cargo.toml</code>, and why is it important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Cargo.toml</code> is the <strong>manifest file</strong> defining:
+- Package metadata (<code>name</code>, <code>version</code>, <code>edition</code>).<br />
+- Dependencies from crates.io or local paths.<br />
+- Optional <code>[dev-dependencies]</code> for tests and <code>[features]</code> for configuration.<br />
+It tells Cargo how to build and link your project.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Example Cargo Manifest</h2>
+<p>Show an example of a simple Cargo manifest file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-toml">[package]
+name = &quot;my_project&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+rand = &quot;0.8&quot;
+serde = { version = &quot;1.0&quot;, features = [&quot;derive&quot;] }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Definition of a Crate</h2>
+<p>What is a crate in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <strong>crate</strong> is the smallest unit of compilation and distribution in Rust.
+It can be either:</p>
+<ul>
+<li>a <strong>binary crate</strong> with an entry point (<code>main.rs</code>), or</li>
+<li>a <strong>library crate</strong> defining reusable code (<code>lib.rs</code>).
+  Each crate has its own namespace and build output.</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Definition of a Package</h2>
+<p>What is a package in Rust, and how does it relate to crates?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <strong>package</strong> is a collection of one or more crates managed by a single <code>Cargo.toml</code>.
+Every package must contain at least one crate (binary or library).
+Example: a package with a library crate and one binary crate.</p>
+<pre><code>src/lib.rs
+src/main.rs
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a Workspace</h2>
+<p>What is a Cargo workspace, and what are its advantages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <strong>workspace</strong> is a collection of related packages that share:</p>
+<ul>
+<li>One <code>Cargo.lock</code> for dependency resolution.</li>
+<li>One <code>target/</code> directory for builds.</li>
+</ul>
+<p>Advantages:</p>
+<ul>
+<li>Unified builds (<code>cargo build</code> applies to all members).</li>
+<li>Consistent dependency versions.</li>
+<li>Simplified cross-crate development.</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Workspace Example</h2>
+<p>Show an example of a simple workspace layout and configuration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>my_workspace/
+├── Cargo.toml        # workspace root
+├── core_lib/
+│   └── Cargo.toml
+└── cli_app/
+    └── Cargo.toml
+</code></pre>
+<p>Root manifest:</p>
+<pre><code class="language-toml">[workspace]
+members = [&quot;core_lib&quot;, &quot;cli_app&quot;]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Directories in src</h2>
+<p>What are common subdirectories or files found inside the <code>src</code> folder of a Cargo project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Path        | Purpose                  |
+| ----------- | ------------------------ |
+| <code>main.rs</code>   | Binary crate entry point |
+| <code>lib.rs</code>    | Library crate root       |
+| <code>bin/</code>      | Extra binaries           |
+| <code>tests/</code>    | Integration tests        |
+| <code>examples/</code> | Example programs         |
+| <code>benches/</code>  | Benchmarks               |</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>File-to-Module Mapping</h2>
+<p>How does Rust map modules to files and folders?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each <code>mod</code> declaration corresponds to a file or folder:</p>
+<pre><code class="language-rust">// src/main.rs
+mod utils;
+</code></pre>
+<p>Maps to:</p>
+<pre><code>src/utils.rs
+</code></pre>
+<p>A folder module uses <code>mod.rs</code>:</p>
+<pre><code>src/network/
+├── mod.rs
+└── client.rs
+</code></pre>
+<p><code>mod.rs</code> is the parent, exposing submodules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Adding and Managing Dependencies</h2>
+<p>How can you add or update dependencies in a Cargo project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Add automatically:</p>
+<pre><code class="language-bash">cargo add rand
+cargo add serde --features derive
+</code></pre>
+<p>Update or remove:</p>
+<pre><code class="language-bash">cargo update
+cargo remove rand
+</code></pre>
+<p>Dependencies are stored in <code>Cargo.toml</code> and cached in <code>~/.cargo/registry</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Target Directory</h2>
+<p>What is the purpose of the <code>target</code> directory in a Rust project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>target/</code> stores compiled artifacts, build caches, and test outputs.
+It contains <code>debug/</code> and <code>release/</code> builds.
+Clean it with:</p>
+<pre><code class="language-bash">cargo clean
+</code></pre>
+<p>Build optimized binaries with:</p>
+<pre><code class="language-bash">cargo build --release
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Cargo Commands Recap</h2>
+<p>List some essential Cargo commands and their purposes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Command                 | Purpose               |
+| ----------------------- | --------------------- |
+| <code>cargo new name</code>        | Create a new package  |
+| <code>cargo build</code>           | Compile (debug)       |
+| <code>cargo build --release</code> | Optimized build       |
+| <code>cargo run</code>             | Build and execute     |
+| <code>cargo test</code>            | Run all tests         |
+| <code>cargo doc --open</code>      | Generate docs         |
+| <code>cargo tree</code>            | View dependency graph |</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Installing cargo-edit Utilities</h2>
+<p>What is the <code>cargo-edit</code> package and why is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>cargo-edit</code> adds commands like:</p>
+<pre><code class="language-bash">cargo add
+cargo rm
+cargo upgrade
+</code></pre>
+<p>These make dependency management easier by editing <code>Cargo.toml</code> automatically.
+Install it with:</p>
+<pre><code class="language-bash">cargo install cargo-edit
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Takeaways — Project Structure</h2>
+<p>Summarize the key ideas about Rust project structure and organization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>Cargo organizes projects using a manifest (<code>Cargo.toml</code>) and <code>src/</code> directory.</li>
+<li>Each <strong>package</strong> can contain multiple <strong>crates</strong>.</li>
+<li><strong>Workspaces</strong> group related packages under one build system.</li>
+<li>Modules mirror the file layout inside <code>src/</code>.</li>
+<li>The <code>target/</code> directory stores all compiled artifacts.</li>
+<li>Cargo automates builds, testing, documentation, and dependency management.</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
