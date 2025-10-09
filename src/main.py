@@ -49,7 +49,7 @@ def write_index_html(path, title="Flashcards"):
     ]
     folder_names = sorted(list(filter(not_excluded_folder, folder_names)))
     links = [
-        {"href": f"./{folder}/", "text": folder.replace("-", " ").title()}
+        {"href": f"./{folder}/", "text": folder.replace("_", " ").title()}
         for folder in folder_names
     ]
     context = {
