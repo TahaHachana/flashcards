@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Dsa - 02_Analysis_Of_Algorithms</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>A Priori vs A Posteriori Analysis</h2>
+<p>What are the key differences between a priori (theoretical) and a posteriori (empirical) analysis? Which is preferred and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>A Posteriori (Empirical)</strong>: Implement and execute algorithms, measure actual execution times. Disadvantages: machine-dependent, language-dependent, programmer-dependent, limited to testable input sizes.</p>
+<p><strong>A Priori (Theoretical)</strong>: Mathematically determine resources needed as function of input size. Advantages: machine/language/programmer-independent, can analyze for any input size.</p>
+<p><strong>Preferred</strong>: A priori analysis because it provides objective, implementation-independent measurements that work for any input size.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Frequency Count Method Core Principle</h2>
+<p>In a priori analysis, why do we compute only frequency counts and ignore actual execution times of statements?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ignoring execution times maintains <strong>machine independence</strong>. The time taken for a single statement execution depends on the machine's instruction set and configuration. By counting only how many times statements execute (frequency count), the analysis remains valid regardless of hardware, making results comparable across different systems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Loop Frequency Count Rule</h2>
+<p>For a top-tested loop "for i = low to high do", why does the loop header execute (high - low + 2) times while the body executes (high - low + 1) times?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The loop header executes one <strong>extra time</strong> to test the exit condition. </p>
+<ul>
+<li>Body executes: (high - low + 1) times</li>
+<li>Header executes: (high - low + 1) + 1 = (high - low + 2) times</li>
+</ul>
+<p>The additional test determines that the loop should terminate, so the header is evaluated one more time than the body is executed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Big O Notation Definition</h2>
+<p>Define Big O notation mathematically and explain what it means for f(n) = O(g(n)).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Definition</strong>: f(n) = O(g(n)) if there exists a positive integer n₀ and positive constant C such that |f(n)| ≤ C|g(n)| for all n ≥ n₀.</p>
+<p><strong>Meaning</strong>: g(n) serves as an <strong>upper bound</strong> for f(n). The function f(n) grows no faster than g(n) (times some constant) for sufficiently large n. This is the most commonly used notation in algorithm analysis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Big Omega Notation</h2>
+<p>What does Ω (Big Omega) notation represent, and how does it differ from Big O?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Ω(g(n))</strong> represents a <strong>lower bound</strong>: f(n) = Ω(g(n)) if |f(n)| ≥ C|g(n)| for all n ≥ n₀.</p>
+<p><strong>Difference from O</strong>:
+- <strong>O (Big O)</strong>: Upper bound - function grows no faster than g(n)
+- <strong>Ω (Omega)</strong>: Lower bound - function grows no slower than g(n)</p>
+<p>Example: 16n³ + 24n = Ω(n³) means the function grows at least as fast as n³.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Big Theta Notation</h2>
+<p>What is the significance of Θ (Big Theta) notation, and what must be true for f(n) = Θ(g(n))?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Θ (Theta)</strong> represents a <strong>tight bound</strong> - both upper and lower bound simultaneously.</p>
+<p>f(n) = Θ(g(n)) means:
+- C₁|g(n)| ≤ |f(n)| ≤ C₂|g(n)| for all n ≥ n₀
+- Equivalently: f(n) = O(g(n)) AND f(n) = Ω(g(n))</p>
+<p><strong>Significance</strong>: The growth rate of f(n) is exactly g(n) (within constant factors). Example: 28n + 9 = Θ(n) because it's bounded both above and below by linear functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Little o Notation</h2>
+<p>How does little o notation differ from Big O, and what does lim(n→∞) f(n)/g(n) = 0 tell us?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Little o</strong>: f(n) = o(g(n)) means f(n) = O(g(n)) but f(n) ≠ Ω(g(n))</p>
+<p>The limit condition lim(n→∞) f(n)/g(n) = 0 means f(n) grows <strong>strictly slower</strong> than g(n).</p>
+<p><strong>Key difference</strong>: 
+- Big O: f can grow at same rate as g (or slower)
+- Little o: f must grow strictly slower than g</p>
+<p>Example: 18n + 9 = o(n²) because linear grows strictly slower than quadratic, but 18n + 9 ≠ o(n).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Polynomial Simplification Rule</h2>
+<p>For a polynomial A(n) = aₘnᵐ + aₘ₋₁nᵐ⁻¹ + ... + a₁n + a₀, what is its Big O complexity and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A(n) = O(nᵐ)</p>
+<p><strong>Why</strong>: Only the <strong>highest-order term</strong> matters in asymptotic analysis. Lower-order terms become negligible as n grows large. The dominant term nᵐ determines the growth rate.</p>
+<p>Example: 5n⁴ + 3n² + 7 = O(n⁴) because n⁴ dominates for large n.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Time Complexities Ordering</h2>
+<p>Order these time complexities from most efficient to least efficient: O(2ⁿ), O(n²), O(n log n), O(1), O(log n), O(n³), O(n)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>From most efficient to least efficient:</p>
+<p>O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(n³) &lt; O(2ⁿ)</p>
+<p><strong>Key insight</strong>: Logarithmic is better than linear, linearithmic (n log n) is better than quadratic, and exponential is dramatically worse than any polynomial complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Polynomial vs Exponential Growth</h2>
+<p>Why are exponential time algorithms (O(2ⁿ), O(3ⁿ)) considered impractical while polynomial algorithms (O(n²), O(n³)) are generally acceptable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Exponential algorithms</strong> have rapid growth that quickly exceeds any computer's capacity:
+- For n=50: O(2ⁿ) takes ~35 years at 1μs per operation
+- For n=50: O(3ⁿ) takes ~2000 centuries</p>
+<p><strong>Polynomial algorithms</strong> scale reasonably:
+- For n=50: O(n²) takes 25×10⁻⁴ seconds
+- For n=50: O(n³) takes 125×10⁻³ seconds</p>
+<p>Exponential growth makes algorithms essentially unusable for even moderate input sizes, regardless of hardware improvements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Worst Average Case Definitions</h2>
+<p>Define best case, worst case, and average case complexity. Which is most commonly analyzed and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best Case</strong>: Minimum time over all possible inputs of size n (optimistic)
+<strong>Worst Case</strong>: Maximum time over all possible inputs of size n (pessimistic)
+<strong>Average Case</strong>: Average time over all possible inputs of size n (realistic but hardest)</p>
+<p><strong>Most commonly analyzed</strong>: Worst case
+<strong>Why</strong>: Provides guaranteed upper bound on performance, critical for real-time and safety-critical systems where you must ensure response within time limits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Average vs Worst Case</h2>
+<p>Under what circumstances should you prefer average case analysis over worst case analysis?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Prefer Average Case when</strong>:
+- Input instances are varied and unpredictable
+- No prior knowledge of input distribution
+- Want measure of typical performance
+- Not dealing with real-time constraints</p>
+<p><strong>Prefer Worst Case when</strong>:
+- Real-time systems requiring guaranteed response time
+- Safety-critical systems
+- Need absolute upper bound on performance
+- System failure on timeout is unacceptable</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursion Requirements</h2>
+<p>What two properties must any valid recursive procedure satisfy to avoid infinite loops?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Base Case(s)</strong>: One or more criteria where the procedure does not call itself (directly or indirectly)</p>
+</li>
+<li>
+<p><strong>Progress</strong>: Each recursive call must move closer to the base case</p>
+</li>
+</ol>
+<p>Without these, the recursion would never terminate. Example: factorial has base case (n=1) and progresses by calling factorial(n-1), moving toward base case.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Direct vs Indirect Recursion</h2>
+<p>What is the difference between direct recursion and indirect recursion?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Direct Recursion</strong>: A procedure P contains a call statement to itself</p>
+<pre><code>procedure P()
+    ...
+    P()  // calls itself
+    ...
+</code></pre>
+<p><strong>Indirect Recursion</strong>: Procedure P calls another procedure that eventually results in a call back to P</p>
+<pre><code>procedure P()     procedure Q()
+    ...               ...
+    Q()               P()
+    ...               ...
+</code></pre>
+<p>Both are valid recursion forms requiring base cases and progress toward base case.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recurrence Relation to Complexity</h2>
+<p>What are the three steps to analyze the time complexity of a recursive algorithm?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Formulate recurrence relation</strong> T(n): Express running time in terms of T(k) for smaller values k, including base case</p>
+</li>
+<li>
+<p><strong>Solve recurrence relation</strong>: Use repeated substitution to obtain closed form where T doesn't appear on right side</p>
+</li>
+<li>
+<p><strong>Apply asymptotic notation</strong>: Express the closed form solution using O, Ω, or Θ notation</p>
+</li>
+</ol>
+<p>Example: T(n) = c + T(n-1) with T(1) = d solves to T(n) = (n-1)c + d = O(n)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tower of Hanoi Complexity</h2>
+<p>What is the recurrence relation and final time complexity for the Tower of Hanoi puzzle with N disks? Why is this significant?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Recurrence Relation</strong>:
+T(N) = 0, if N = 0
+T(N) = 2T(N-1) + 1, if N &gt; 0</p>
+<p><strong>Solution</strong>: T(N) = 2ᴺ - 1</p>
+<p><strong>Time Complexity</strong>: O(2ᴺ) - Exponential!</p>
+<p><strong>Significance</strong>: For 64 disks (legendary puzzle), requires 2⁶⁴ - 1 ≈ 1.8 × 10¹⁹ moves. At 1 move/second, takes 585 billion years - demonstrating why exponential algorithms are impractical.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Factorial Recurrence Analysis</h2>
+<p>Derive the time complexity of the recursive factorial function from its recurrence relation T(n) = c + T(n-1), T(1) = d.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Solution by repeated substitution</strong>:</p>
+<pre><code>T(n) = c + T(n-1)
+     = c + (c + T(n-2)) = 2c + T(n-2)
+     = 3c + T(n-3)
+     ...
+     = kc + T(n-k)
+</code></pre>
+<p>When k = n-1:</p>
+<pre><code>T(n) = (n-1)c + T(1)
+     = (n-1)c + d
+     = O(n)
+</code></pre>
+<p><strong>Result</strong>: Linear time complexity despite being recursive.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Recurrence Patterns</h2>
+<p>What are the time complexities for these three common recurrence patterns: (1) T(n) = T(n-1) + c, (2) T(n) = 2T(n/2) + c, (3) T(n) = 2T(n-1) + c?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>T(n) = T(n-1) + c</strong> → O(n) - Linear recurrence
+   (e.g., simple recursive countdown)</p>
+</li>
+<li>
+<p><strong>T(n) = 2T(n/2) + c</strong> → O(n log n) - Binary divide-and-conquer
+   (e.g., merge sort, efficient sorting)</p>
+</li>
+<li>
+<p><strong>T(n) = 2T(n-1) + c</strong> → O(2ⁿ) - Exponential growth
+   (e.g., Tower of Hanoi, inefficient)</p>
+</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Repeated Substitution Method</h2>
+<p>Describe the repeated substitution method for solving recurrence relations. What should you do if you can't get an exact sum?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Steps</strong>:
+1. Replace T(k) on right side with the recurrence relation itself
+2. Adjust parameters appropriately
+3. Continue substituting until reaching base case
+4. Sum any resulting series (arithmetic, geometric, etc.)
+5. If exact sum unavailable, find an upper bound</p>
+<p><strong>If no exact sum</strong>: Work to obtain a close upper bound on the sum, which acts as an upper bound for T(n). This is acceptable for Big O analysis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Master Theorem Overview</h2>
+<p>For recurrences of the form T(n) = aT(n/b) + f(n), what are the three cases of the Master Theorem and their outcomes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Case 1</strong>: If f(n) = O(n^(log_b(a) - ε)) for ε &gt; 0
+→ T(n) = Θ(n^(log_b a))</p>
+<p><strong>Case 2</strong>: If f(n) = Θ(n^(log_b a))
+→ T(n) = Θ(n^(log_b a) log n)</p>
+<p><strong>Case 3</strong>: If f(n) = Ω(n^(log_b(a) + ε)) for ε &gt; 0 and af(n/b) ≤ cf(n)
+→ T(n) = Θ(f(n))</p>
+<p>The Master Theorem provides a quick way to solve divide-and-conquer recurrences without repeated substitution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Loop Analysis Example</h2>
+<p>For a nested loop where outer loop runs n times and inner loop runs from 1 to outer loop index, what is the frequency count and time complexity?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>:</p>
+<pre><code>for j = 1 to n do
+    for k = 1 to j do
+        statement
+    end
+end
+</code></pre>
+<p><strong>Inner statement executes</strong>:
+Σ(j=1 to n) j = n(n+1)/2 times</p>
+<p><strong>Frequency count</strong>: n²/2 + n/2 + (other terms)</p>
+<p><strong>Time Complexity</strong>: O(n²) - quadratic, because only highest order term (n²) matters</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Big O Most Common</h2>
+<p>Why is Big O notation more commonly used in practice than Ω or Θ notations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Practical reasons</strong>:
+1. <strong>Upper bound is most useful</strong>: Guarantees algorithm won't exceed certain time
+2. <strong>Easier to derive</strong>: Finding tight bounds (Θ) requires proving both upper and lower bounds
+3. <strong>Risk management</strong>: Knowing worst-case upper bound helps ensure systems meet requirements
+4. <strong>Industry standard</strong>: Big O became conventional for communicating algorithm efficiency</p>
+<p>While Θ provides more precise information, O is sufficient for most practical algorithm comparisons and system design decisions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Time vs Space Complexity Trade-off</h2>
+<p>What is the relationship between time complexity and space complexity? When might you prioritize one over the other?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both measure algorithm efficiency but focus on different resources:
+- <strong>Time complexity</strong>: How long algorithm takes
+- <strong>Space complexity</strong>: How much memory algorithm uses</p>
+<p><strong>Prioritize time when</strong>: Real-time constraints, user responsiveness critical, memory abundant</p>
+<p><strong>Prioritize space when</strong>: Memory-constrained systems (embedded, mobile), data too large for RAM, multiple concurrent processes</p>
+<p>Often there's a <strong>trade-off</strong>: Using more memory (e.g., caching, memoization) can reduce time complexity, while using less memory may increase execution time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Logarithmic Complexity</h2>
+<p>Why is O(log n) considered very efficient, and what type of algorithms typically achieve logarithmic time complexity?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Why efficient</strong>: Logarithmic growth is extremely slow. Doubling input size only adds one operation. For n=1,000,000, log₂(n) ≈ 20.</p>
+<p><strong>Typical algorithms</strong>:
+- <strong>Binary search</strong>: Halve search space each step
+- <strong>Balanced tree operations</strong>: Height proportional to log n
+- <strong>Algorithms that divide problem size</strong>: Each step reduces problem by constant factor</p>
+<p><strong>Key pattern</strong>: Any algorithm that repeatedly divides the problem by a constant factor (usually 2) achieves O(log n) time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Linearithmic Complexity</h2>
+<p>What does O(n log n) complexity represent, and why is it considered the optimal complexity for comparison-based sorting?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>O(n log n)</strong> = "linearithmic" complexity, combining linear and logarithmic growth.</p>
+<p><strong>Why optimal for sorting</strong>: 
+- Must examine all n elements (at least O(n))
+- Comparison-based sorting has proven lower bound of Ω(n log n)
+- Efficient sorts (merge sort, heap sort, quick sort average case) achieve this</p>
+<p><strong>Growth rate</strong>: Better than O(n²) but worse than O(n). For n=1000:
+- n² = 1,000,000 operations
+- n log n ≈ 10,000 operations
+- Huge improvement over quadratic!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Amortized Analysis Concept</h2>
+<p>What does "amortized" time complexity mean, and how does it differ from worst-case analysis?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Amortized Analysis</strong>: Average time per operation over a sequence of operations, even if individual operations vary in cost.</p>
+<p><strong>Difference from worst-case</strong>:
+- <strong>Worst-case</strong>: Maximum time for any single operation
+- <strong>Amortized</strong>: Average time per operation over sequence</p>
+<p><strong>Example</strong>: Dynamic array resizing
+- Most insertions: O(1)
+- Occasional resize: O(n)
+- Amortized: O(1) per insertion</p>
+<p>Useful when expensive operations are rare and "paid for" by many cheap operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Constant Factors in Big O</h2>
+<p>Why does Big O notation ignore constant factors and lower-order terms? When might constants actually matter in practice?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Why ignore</strong>:
+- Focus on growth rate as n→∞
+- Constants vary by implementation/hardware
+- Asymptotic behavior is what scales</p>
+<p><strong>Example</strong>: 100n and n are both O(n)</p>
+<p><strong>When constants matter</strong>:
+1. <strong>Small input sizes</strong>: 100n vs n makes huge difference when n=10
+2. <strong>Embedded systems</strong>: Limited resources make constants critical
+3. <strong>Comparing same complexity</strong>: O(n) vs O(n) might differ by factor of 100
+4. <strong>Real-time systems</strong>: 0.001n might meet deadline while 10n doesn't</p>
+<p>Big O is for scalability; real performance needs constant factor analysis too.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sequential Search Case Analysis</h2>
+<p>For sequential search in an array of n elements, what are the best, worst, and average case time complexities? Explain each scenario.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best Case</strong>: O(1)
+- Element found at first position
+- Only 1 comparison needed</p>
+<p><strong>Worst Case</strong>: O(n)
+- Element at last position OR not present
+- Must check all n elements</p>
+<p><strong>Average Case</strong>: O(n)
+- Element equally likely at any position
+- Average position: n/2
+- O(n/2) = O(n)</p>
+<p>Note: Even average case is O(n) because we still examine roughly half the array on average.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Summation Formulas for Analysis</h2>
+<p>What are the three fundamental summation formulas used in algorithm analysis, and when is each typically used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Σ(i=1 to n) 1 = n</strong>
+- Used for: Counting iterations of simple loops</p>
+<p><strong>2. Σ(i=1 to n) i = n(n+1)/2</strong>
+- Used for: Nested loops where inner bound depends on outer (triangular pattern)</p>
+<p><strong>3. Σ(i=1 to n) i² = n(n+1)(2n+1)/6</strong>
+- Used for: More complex nested loop patterns</p>
+<p>These formulas help convert frequency counts into closed-form expressions that can be analyzed asymptotically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Algorithm Scalability</h2>
+<p>What does it mean for an algorithm to be "scalable," and how does time complexity relate to scalability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Scalability</strong>: Algorithm's ability to handle growing input sizes efficiently without proportional increase in resource requirements.</p>
+<p><strong>Relationship to complexity</strong>:
+- <strong>Highly scalable</strong>: O(1), O(log n), O(n) - handle large inputs well
+- <strong>Moderately scalable</strong>: O(n log n), O(n²) - acceptable for moderate sizes
+- <strong>Not scalable</strong>: O(2ⁿ), O(n!) - break down quickly as input grows</p>
+<p><strong>Critical insight</strong>: A scalable algorithm maintains reasonable performance as data grows. This is why complexity analysis focuses on large n - it predicts whether the algorithm will work at scale.</p>
+<p>Choosing right complexity class determines if solution works in production.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
