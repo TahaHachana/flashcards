@@ -8,6 +8,31 @@ CONTENT_DIR = "./content"
 EXCLUDED_FOLDERS = ["content", ".git", "src", ".mypy_cache", "archive", "venv"]
 
 
+def preserve_acronyms_title(text):
+    """
+    Convert text to title case while preserving known acronyms.
+    If the text is all uppercase and 2-5 characters, treat it as an acronym.
+    """
+    # List of known acronyms that should stay uppercase
+    known_acronyms = {"DSA", "SQL", "API", "HTTP", "HTML", "CSS", "JS", "CSS", "XML", "JSON", "REST", "CRUD", "OOP", "TCP", "UDP", "IP", "DNS", "VPN", "SSL", "TLS", "SSH", "FTP", "SMTP", "POP", "IMAP", "AWS", "GCP", "AI", "ML", "NLP", "CV", "GPU", "CPU", "RAM", "SSD", "HDD", "USB", "PDF", "CSV", "YAML", "TOML"}
+    
+    # Split by underscores and spaces
+    words = text.replace("_", " ").split()
+    result_words = []
+    
+    for word in words:
+        # Check if it's a known acronym
+        if word.upper() in known_acronyms:
+            result_words.append(word.upper())
+        # Check if it looks like an acronym (all caps, 2-5 chars)
+        elif word.isupper() and 2 <= len(word) <= 5:
+            result_words.append(word.upper())
+        else:
+            result_words.append(word.title())
+    
+    return " ".join(result_words)
+
+
 def rec_list_folders_in_dir(dir):
     folders = []
     for folder in os.listdir(dir):
@@ -41,7 +66,7 @@ def sort_by_number(strings):
 
 
 def write_index_html(path, title="Flashcards"):
-    hirearchy = [x.title() for x in path.split("/")[1:]]
+    hirearchy = [preserve_acronyms_title(x) for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
     folder_names = [
@@ -49,7 +74,7 @@ def write_index_html(path, title="Flashcards"):
     ]
     folder_names = sorted(list(filter(not_excluded_folder, folder_names)))
     links = [
-        {"href": f"./{folder}/", "text": folder.replace("_", " ").title()}
+        {"href": f"./{folder}/", "text": preserve_acronyms_title(folder)}
         for folder in folder_names
     ]
     context = {
@@ -64,7 +89,7 @@ def write_index_html(path, title="Flashcards"):
 
 
 def write_carousel_html(md_folder, path, title="Flashcards"):
-    hirearchy = [x.title() for x in path.split("/")[1:]]
+    hirearchy = [preserve_acronyms_title(x) for x in path.split("/")[1:]]
     if len(hirearchy) > 0:
         title = title + " - " + " - ".join(hirearchy)
     markdown_files = sort_by_number(

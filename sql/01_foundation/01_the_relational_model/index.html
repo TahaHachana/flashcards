@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 01 Foundation - 01 The Relational Model</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Core Principle of Relational Databases</h2>
+<p>What is the core principle of relational databases regarding data placement?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>There is one unique place for each item of data.</p>
+<p>This means:
+- Data is never repeated (no duplicates of the same information)
+- There is never ambiguity about where to place or find an item of data</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Theory - No Duplicates Property</h2>
+<p>In set theory, what is the rule about duplicate elements, and how does this apply to database tables?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A set has no duplicates - each element appears exactly once.</p>
+<p>In databases:
+- A table is a set of rows
+- Each row must be distinct (unique)
+- This is why we need primary keys to ensure uniqueness</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Theory - Unordered Property</h2>
+<p>In set theory, what is the rule about element order, and how does this apply to database tables?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A set has no inherent order - elements have no meaningful sequence.</p>
+<p>In databases:
+- Rows in a table have no inherent order
+- You cannot rely on rows being in any particular sequence
+- This is why you must use ORDER BY to guarantee a specific ordering</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mathematical Relations Definition</h2>
+<p>What is a mathematical relation in the context of databases? (Explain using the concept of combinations)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A relation is a set of valid combinations of values.</p>
+<p>Each row represents ONE specific combination across all columns. For example, in a table with Name, Age, City:
+- Row: Alice | 25 | Paris means "There is a person named Alice, who is 25, who lives in Paris"
+- The row is not three separate facts, but one fact about a combination</p>
+<p>The table (relation) is the set of all valid combinations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Called Relational Databases</h2>
+<p>Why are they called "relational" databases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Not primarily because tables relate to each other (though they do), but because the fundamental structure is based on mathematical relations - sets of valid combinations of values.</p>
+<p>A relation defines what combinations of values are valid/true in the system.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hierarchical Database Problems</h2>
+<p>What were the main problems with hierarchical database systems (pre-1970)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Had to navigate through tree structures using pointers</li>
+<li>Same data could only be accessed via one path</li>
+<li>Physical storage structure was tightly coupled to logical data access</li>
+<li>Made queries complex and inflexible</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Codds Revolutionary Idea</h2>
+<p>What was Dr. E.F. Codd's revolutionary idea in 1970 that changed database design?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use simple tables and redundant data (like customer IDs) to link records instead of physical pointers.</p>
+<p>Key innovation: Separation of logical data structure from physical storage.</p>
+<p>This made databases:
+- Simpler to understand and query
+- More maintainable
+- Mathematically rigorous
+- Declarative (say WHAT you want, not HOW to get it)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Primary Key Definition</h2>
+<p>What is a primary key and what are its essential properties?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A primary key uniquely identifies each row in a table.</p>
+<p>Properties:
+- Must be unique (no two rows can have the same value)
+- Cannot be NULL (every row must have a value)
+- Should be unchanging (typically doesn't change once assigned)
+- Should be meaningless (best practice: arbitrary ID rather than meaningful data)</p>
+<p>Example: customer_id, order_id</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Foreign Key Definition</h2>
+<p>What is a foreign key and what is its purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A foreign key is a column that references the primary key of another table.</p>
+<p>Purpose: Creates relationships between tables</p>
+<p>Properties:
+- References a specific row in another table
+- Can be NULL (indicating no relationship)
+- Can repeat (many rows can reference the same parent)
+- Must match a valid primary key (referential integrity)</p>
+<p>Example: customer_id in Orders table pointing to customer_id in Customers table</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Controlled Redundancy Concept</h2>
+<p>What is "controlled redundancy" in relational databases, and why is it necessary?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Controlled redundancy means foreign keys are the ONLY data that is intentionally repeated across tables.</p>
+<p>Why it's necessary: Foreign keys are what create relationships between tables.</p>
+<p>Example:
+- Customer name appears ONCE in Customers table
+- But customer_id appears in both Customers and Orders tables
+- The customer_id is controlled redundancy that links the tables</p>
+<p>This is the foundation of how normalized tables stay connected.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Redundancy Problem Example</h2>
+<p>Why is data redundancy (storing the same information in multiple places) a problem? Give a concrete example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example: Storing an author's birth date in every book record</p>
+<p>Problems:
+1. If the birth date is wrong, you must update hundreds of records
+2. Miss one update, and now you have inconsistent data
+3. Wastes storage space
+4. Which copy is correct when they differ?</p>
+<p>Solution: Store author information once, reference it using author_id (foreign key) from books.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Spreadsheet vs Database Comparison</h2>
+<p>Why is storing data like "Order1: Widget ($10), Order2: Gadget ($20)" in a single spreadsheet cell problematic compared to a relational database approach?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Spreadsheet approach problems:
+1. Multiple values in one cell (violates atomicity)
+2. Can't easily answer "How many widgets were sold?"
+3. Can't sort orders independently of customers
+4. Updating prices requires finding every occurrence</p>
+<p>Database approach:
+- Separate Orders table with one row per order
+- Each piece of information appears once
+- Easy to query, sort, and update any entity independently</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Data Independence Concept</h2>
+<p>What is "data independence" and why is it an advantage of relational databases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Data independence means the logical structure of data is separated from its physical storage.</p>
+<p>Advantages:
+- Applications don't break when storage changes
+- Can optimize physical storage without changing queries
+- Can reorganize data without rewriting applications
+- Physical implementation details are hidden from users</p>
+<p>Example: The database can move tables to faster disks or change indexing without affecting your SQL queries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Declarative vs Procedural Querying</h2>
+<p>What does it mean that SQL is "declarative" rather than "procedural"? Why is this important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declarative: You describe WHAT you want, not HOW to get it
+Procedural: You specify the exact steps to retrieve data</p>
+<p>Example:
+- Declarative SQL: "SELECT * FROM customers WHERE age &gt; 18"
+- Procedural: "Open customers file, read each record, check if age &gt; 18, if yes add to results..."</p>
+<p>Importance:
+- Simpler for users (don't need to know storage details)
+- Database can optimize the "how" automatically
+- Same query works even if storage structure changes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tables Rows and Columns Structure</h2>
+<p>In a relational database table, what do rows represent, what do columns represent, and how do they work together?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Columns: Define the attributes (what properties exist)
+- Example: Name, Age, City</p>
+<p>Rows: Provide instances (specific combinations of values)
+- Example: Alice | 25 | Paris</p>
+<p>Together: Each row is one valid combination of column values, representing one entity or fact in the system.</p>
+<p>The table is the complete set of all valid combinations for that type of entity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Separate Customer and Orders Tables</h2>
+<p>Explain why customer information and order information should be in separate tables rather than combined.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Reasons to separate:</p>
+<ol>
+<li>Eliminates redundancy: Customer name/email stored once, not in every order</li>
+<li>Prevents inconsistency: Update customer info in one place</li>
+<li>Follows normalization: Each table represents one type of entity</li>
+<li>Maintains independence: Can update customers without touching orders</li>
+<li>Enables flexibility: Customer can exist without orders; can query orders or customers independently</li>
+</ol>
+<p>Connection: customer_id (foreign key) links them together</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tuple Definition</h2>
+<p>What is a "tuple" in relational database terminology?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A tuple is a row - a specific combination of values for all attributes (columns) in a relation.</p>
+<p>Example: In a Person table with columns (Name, Age, City)
+- Tuple: (Alice, 25, Paris)</p>
+<p>The term comes from mathematics, where an n-tuple is an ordered list of n elements.</p>
+<p>In databases: Row = Tuple = Record (though "row" is the preferred SQL term)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Academic Citation Analogy for Keys</h2>
+<p>Using the academic citation analogy, explain how primary and foreign keys work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Like citations in academic papers:</p>
+<p>Primary Key = Paper's unique identifier (DOI, ISBN)
+- Each paper has one unique identifier
+- Used to reference that specific paper</p>
+<p>Foreign Key = Citation to another paper
+- When paper A references paper B, it uses B's identifier
+- You can look up the referenced paper independently
+- Papers don't physically contain each other, just references</p>
+<p>Same in databases:
+- Each row has unique primary key
+- Other tables reference it using foreign keys
+- Can look up related data independently
+- Tables don't duplicate data, just reference it</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Tables Solve Fundamental Problems</h2>
+<p>What four fundamental data management problems does the relational model solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Redundancy: Store each fact once, reference when needed</li>
+<li>
+<p>Solution: Normalization + foreign keys</p>
+</li>
+<li>
+<p>Inconsistency: Ensure data stays valid across system</p>
+</li>
+<li>
+<p>Solution: Constraints + relationships maintain integrity</p>
+</li>
+<li>
+<p>Complexity: Non-programmers can query data</p>
+</li>
+<li>
+<p>Solution: Declarative SQL (describe what, not how)</p>
+</li>
+<li>
+<p>Maintainability: Change structure without breaking everything</p>
+</li>
+<li>Solution: Data independence (logical separate from physical)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set vs Table Comparison</h2>
+<p>Compare a mathematical set to a database table, identifying the key similarities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Similarities:</p>
+<ol>
+<li>No duplicates</li>
+<li>Set: Each element appears once</li>
+<li>
+<p>Table: Each row is unique (enforced by primary key)</p>
+</li>
+<li>
+<p>No inherent order</p>
+</li>
+<li>Set: Elements have no sequence</li>
+<li>
+<p>Table: Rows have no guaranteed order (must use ORDER BY)</p>
+</li>
+<li>
+<p>Well-defined membership</p>
+</li>
+<li>Set: Clear rules for what belongs</li>
+<li>Table: Schema and constraints define valid rows</li>
+</ol>
+<p>This is why tables can be analyzed using set theory and why set operations (UNION, INTERSECT) work on query results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
