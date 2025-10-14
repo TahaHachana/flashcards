@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 02 Local Basics - 02 Stage And Commit Changes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Two-Step Commit Process</h2>
+<p>What are the two steps in Git's commit process and why does Git use this approach?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Stage changes with <code>git add</code> (select what to include)</li>
+<li>Commit staged changes with <code>git commit</code> (save the snapshot)</li>
+</ol>
+<p>This gives precise control over what goes into each commit, allowing you to commit only related changes together, review before committing, and create logical, focused commits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Three Areas of Git Workflow</h2>
+<p>What are the three areas changes flow through in Git, and what does each represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Working Directory: Your actual files where you make changes (modified state)</li>
+<li>Staging Area (Index): A holding area for changes you want to commit (staged state)</li>
+<li>Repository (.git directory): Permanent storage of committed snapshots (committed state)</li>
+</ol>
+<p>Flow: Working Directory → Staging Area → Repository</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of git add</h2>
+<p>What does <code>git add</code> do, and what does it NOT do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git add</code> DOES:
+- Take a snapshot of the file's current state
+- Store it in the staging area
+- Mark the file as "ready to commit"
+- Leave the working directory file unchanged</p>
+<p><code>git add</code> does NOT:
+- Commit anything (it only prepares files)
+- Automatically include future changes to the file
+- Add files to the repository permanently</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common git add Commands</h2>
+<p>What do these <code>git add</code> commands do: <code>git add .</code>, <code>git add -A</code>, and <code>git add -u</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git add .</code>: Add all files in current directory (new, modified, deleted)</li>
+<li><code>git add -A</code> or <code>git add --all</code>: Add all files in entire repository from any location</li>
+<li><code>git add -u</code> or <code>git add --update</code>: Add all modified and deleted files (NOT new untracked files)</li>
+</ul>
+<p>Most common: <code>git add .</code> for staging everything in current directory</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What git commit Does</h2>
+<p>What happens when you run <code>git commit</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Creates a snapshot of all staged changes</li>
+<li>Generates a unique SHA-1 hash (commit ID)</li>
+<li>Stores commit metadata (author, date, message)</li>
+<li>Links to parent commit (creating history chain)</li>
+<li>Moves the current branch pointer forward</li>
+<li>Clears the staging area</li>
+</ol>
+<p>Result: Changes are permanently saved in repository history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Commit Message Best Practices</h2>
+<p>What are the key guidelines for writing good Git commit messages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>DO:
+- Use imperative mood: "Add feature" not "Added feature"
+- Keep first line under 50 characters
+- Start with capital letter
+- Explain WHAT and WHY, not HOW
+- Be specific and descriptive</p>
+<p>DON'T:
+- Write vague messages ("fix bug", "update code")
+- Use past tense
+- Include unnecessary details
+- Commit unrelated changes together</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Four File States in Git</h2>
+<p>What are the four possible states of files in Git?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Untracked: New files Git doesn't know about (use <code>git add</code> to track)</li>
+<li>Tracked (Unmodified): Files in repository that haven't changed</li>
+<li>Tracked (Modified): Files Git tracks that have been changed but not staged</li>
+<li>Staged: Changes marked for next commit, ready to be committed</li>
+</ol>
+<p>Check state with <code>git status</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Modified File After Staging</h2>
+<p>What happens if you stage a file with <code>git add</code>, then modify it again before committing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The file appears in BOTH "Changes to be committed" and "Changes not staged for commit" in <code>git status</code>.</p>
+<p>The staged version has the first edit, the working directory has the second edit. You must run <code>git add</code> again to stage the latest changes. Git stages the file's state at the moment you run <code>git add</code>, not continuously.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The commit -a Flag</h2>
+<p>What does <code>git commit -a</code> or <code>git commit -am "message"</code> do, and what are its limitations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It stages all modified tracked files and commits them in one step, skipping the explicit <code>git add</code> step.</p>
+<p>LIMITATION: It ONLY works for files Git already tracks. It does NOT add new (untracked) files. New files still require explicit <code>git add</code>.</p>
+<p>Example: <code>git commit -am "Quick fix for styling"</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unstaging Files</h2>
+<p>How do you unstage a file that was added to the staging area by mistake?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Modern Git (2.23+):</p>
+<pre><code class="language-bash">git restore --staged filename
+</code></pre>
+<p>Older Git:</p>
+<pre><code class="language-bash">git reset HEAD filename
+</code></pre>
+<p>This removes the file from staging but keeps your changes in the working directory. The file returns to "modified but not staged" state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Viewing Changes</h2>
+<p>What's the difference between <code>git diff</code> and <code>git diff --staged</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git diff</code>: Shows unstaged changes (changes in working directory not yet staged)</li>
+<li><code>git diff --staged</code> (or <code>git diff --cached</code>): Shows staged changes (what will be included in next commit)</li>
+</ul>
+<p>Use <code>git diff --staged</code> to review exactly what you're about to commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Root Commit</h2>
+<p>What is special about the first commit in a Git repository?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The first commit is called the "root commit" and has these special properties:
+- It has no parent commit
+- Forms the base of the entire project history
+- Shown as <code>(root-commit)</code> in commit output
+- Convention: Often messaged as "Initial commit" or "Initial project setup"</p>
+<p>Every other commit descends from this root commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Amending Commits</h2>
+<p>What does <code>git commit --amend</code> do and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git commit --amend</code> replaces the last commit with a new one by:
+- Combining staged changes with the previous commit
+- Allowing you to change the commit message
+- Creating a new commit that replaces the old one</p>
+<p>WARNING: Only amend commits that haven't been pushed to a remote repository, as amending changes history.</p>
+<p>Example: <code>git commit --amend -m "Corrected message"</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Staging Best Practices</h2>
+<p>What are key best practices for staging and committing in Git?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Staging:
+- Stage related changes together
+- Review with <code>git diff --staged</code> before committing
+- Use <code>git add -p</code> for partial staging of large changes</p>
+<p>Committing:
+- One commit = one logical change
+- Commit often (small, focused commits)
+- Test before committing (don't commit broken code)
+- Write clear, descriptive messages
+- Commit complete features, not work-in-progress</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Verifying Commits</h2>
+<p>What are four ways to verify and view commits after committing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>git log</code>: View complete commit history</li>
+<li><code>git show</code> or <code>git show HEAD</code>: View last commit details</li>
+<li><code>git log --oneline</code>: View commit history in condensed one-line format</li>
+<li><code>git rev-list --count HEAD</code>: Count total number of commits</li>
+</ol>
+<p>These commands help verify your commit was successful and review what was committed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
