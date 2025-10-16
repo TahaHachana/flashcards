@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 02 Programming Fundamentals - 06 Comments And Basic Documentation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Comments</h2>
+<p>What are comments and why are they used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Text in source code that the compiler ignores, written for humans to read. They explain why code exists, document complex logic, temporarily disable code, and communicate with other developers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Single-Line Comments</h2>
+<p>How do you write single-line comments in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use // - everything after it on that line is ignored.</p>
+<pre><code class="language-rust">// This is a comment
+let x = 5;  // This is also a comment
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multi-Line Comments</h2>
+<p>How do you write multi-line comments in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use // on consecutive lines (most common) or /<em> </em>/ for block comments (rare).</p>
+<pre><code class="language-rust">// This is a multi-line comment
+// spanning several lines
+// using double slashes
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Explain Why Not What</h2>
+<p>Should comments describe what the code does or why it exists?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Explain why, not what. What the code does should be clear from the code itself.</p>
+<pre><code class="language-rust">// BAD: Add 1 to x
+x = x + 1;
+
+// GOOD: Increment by 1 to account for zero-indexing
+x = x + 1;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>TODO and FIXME</h2>
+<p>How do you mark incomplete work or known issues in code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use TODO and FIXME comments.</p>
+<pre><code class="language-rust">// TODO: Implement caching
+fn fetch_data() { }
+
+// FIXME: Panics when file doesn't exist
+fn read_config() { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation Comments Syntax</h2>
+<p>How do documentation comments differ from regular comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Doc comments use /// (three slashes) and generate HTML documentation with cargo doc.</p>
+<pre><code class="language-rust">/// Calculates the area of a rectangle.
+fn calculate_area(width: f64, height: f64) -&gt; f64 {
+    width * height
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation Sections</h2>
+<p>What are common sections in documentation comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arguments (parameters), Returns (return value), Examples (usage), Panics (panic conditions), Errors (error conditions), and Safety (for unsafe code).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation with Examples</h2>
+<p>How do you include code examples in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use code blocks in doc comments. They're automatically tested by cargo test.</p>
+<pre><code class="language-rust">/// # Examples
+/// ```
+/// let result = add(2, 3);
+/// assert_eq!(result, 5);
+/// ```
+fn add(a: i32, b: i32) -&gt; i32 { a + b }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documenting Structs</h2>
+<p>How do you document structs and their fields?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use /// before the struct and before each field.</p>
+<pre><code class="language-rust">/// Represents a user in the system.
+struct User {
+    /// The unique identifier
+    id: u64,
+    /// The user's username
+    username: String,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module-Level Documentation</h2>
+<p>How do you write module-level documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use //! (with exclamation mark) at the top of the file.</p>
+<pre><code class="language-rust">//! This module provides math utilities.
+//!
+//! It includes basic arithmetic functions.
+
+pub fn add(a: i32, b: i32) -&gt; i32 { a + b }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generating Documentation</h2>
+<p>How do you generate HTML documentation from doc comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use cargo doc to generate and cargo doc --open to generate and view in browser. Documentation is created in target/doc/.</p>
+<pre><code class="language-bash">cargo doc --open
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Markdown in Doc Comments</h2>
+<p>What formatting can you use in documentation comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Doc comments support Markdown: headings, bold, italic, lists, code blocks, and links.</p>
+<pre><code class="language-rust">/// # Heading
+/// **Bold** and *italic*
+/// - Bullet points
+/// `inline code`
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self-Documenting Code</h2>
+<p>Why should you write self-documenting code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Good naming reduces the need for comments. Clear code is better than unclear code with comments.</p>
+<pre><code class="language-rust">// Less clear
+let d = 86400;  // seconds in a day
+
+// More clear - no comment needed
+let seconds_in_day = 86400;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Keep Comments Updated</h2>
+<p>Why are outdated comments problematic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Outdated comments are worse than no comments - they mislead developers. Always update comments when code changes.</p>
+<pre><code class="language-rust">// BAD: Comment doesn't match code
+// Add 10 to the total
+total += 5;  // Code changed, comment didn't
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Don't Comment Out Code</h2>
+<p>Why shouldn't you comment out old code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use version control (git) instead. Commented code clutters the codebase. Delete old code and use git history if needed.</p>
+<pre><code class="language-rust">// BAD: Clutters codebase
+// fn old_implementation() { }
+
+// GOOD: Delete and use git history
+fn new_implementation() { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Public API Documentation</h2>
+<p>When should you use documentation comments vs regular comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use doc comments (///) for public APIs. Regular comments (//) are fine for internal/private code.</p>
+<pre><code class="language-rust">/// Public function - use doc comment
+pub fn calculate_total(price: f64) -&gt; f64 { }
+
+// Internal helper - regular comment fine
+fn helper() { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Not to Comment - Obvious Code</h2>
+<p>Should you comment obvious operations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Don't comment code that's self-explanatory.</p>
+<pre><code class="language-rust">// BAD: Adds no value
+// Increment i
+i += 1;
+
+// GOOD: No comment - code is clear
+i += 1;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Not to Comment - Paraphrasing</h2>
+<p>Should comments paraphrase what the code does?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Comments should explain why, not repeat what the code already shows.</p>
+<pre><code class="language-rust">// BAD: Just repeats code
+// Loop through all users
+for user in users { }
+
+// GOOD: Explains purpose
+// Send welcome emails to new users
+for user in users { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Code Examples in Docs - no_run</h2>
+<p>How do you include examples in documentation that shouldn't be executed during testing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use ```no_run to mark examples that shouldn't run.</p>
+<pre><code class="language-rust">/// # Examples
+/// ```no_run
+/// // Requires external setup
+/// connect_to_database();
+/// ```
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documenting Enums</h2>
+<p>How do you document enums and their variants?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use /// before the enum and before each variant.</p>
+<pre><code class="language-rust">/// Connection states
+enum ConnectionState {
+    /// Not connected
+    Disconnected,
+    /// Connection active
+    Connected,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documenting Panics</h2>
+<p>How should you document when a function can panic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use a # Panics section in doc comments.</p>
+<pre><code class="language-rust">/// Divides two numbers.
+///
+/// # Panics
+/// Panics if denominator is zero
+fn divide(a: f64, b: f64) -&gt; f64 {
+    if b == 0.0 { panic!(&quot;Division by zero&quot;); }
+    a / b
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>High-Level vs Low-Level Comments</h2>
+<p>What's the difference between high-level and low-level comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>High-level comments explain what a section does. Low-level comments explain tricky implementation details.</p>
+<pre><code class="language-rust">// High-level: Parse command line arguments
+let args = parse_args();
+
+// Low-level: Use wrapping to handle overflow
+let x = a.wrapping_sub(b);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Linking in Documentation</h2>
+<p>How do you link to other items in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use square brackets with backticks for intra-doc links.</p>
+<pre><code class="language-rust">/// Calculates using [`helper_function`].
+/// See also [`std::collections::HashMap`].
+fn calculate() { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation for Arguments</h2>
+<p>How do you document function arguments in doc comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use # Arguments section with bullet points.</p>
+<pre><code class="language-rust">/// Calculates area.
+///
+/// # Arguments
+/// * `width` - The width
+/// * `height` - The height
+fn area(width: f64, height: f64) -&gt; f64 { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rustdoc Tool</h2>
+<p>What is rustdoc?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust's built-in documentation generator that converts doc comments to HTML. Invoked via cargo doc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Comment Level Appropriateness</h2>
+<p>At what level should you write comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Write comments at the appropriate level of abstraction - high-level for sections, low-level for tricky details. Match the comment to what needs explaining.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documenting Complex Logic</h2>
+<p>When should you comment complex logic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When the implementation isn't obvious or uses a non-trivial algorithm. Explain the approach or formula used.</p>
+<pre><code class="language-rust">// Calculate using formula: A = P(1 + r)^t
+let amount = principal * (1.0 + rate).powf(years);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Workaround Documentation</h2>
+<p>How should you document workarounds or temporary solutions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Clearly mark them with explanation and removal conditions.</p>
+<pre><code class="language-rust">// Workaround for bug #1234 in external API
+// Remove once they fix in version 2.0
+if status == 500 { retry(); }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Block Comments Convention</h2>
+<p>Are block comments (/<em> </em>/) commonly used in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Most Rust code uses // even for multi-line comments. Block comments are rare and not idiomatic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation Testing</h2>
+<p>What happens to code examples in documentation comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They're automatically compiled and tested when you run cargo test, ensuring examples stay correct and up-to-date.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
