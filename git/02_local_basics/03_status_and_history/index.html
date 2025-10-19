@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 02 Local Basics - 03 Status And History</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of git status</h2>
+<p>What does <code>git status</code> show and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git status</code> shows the working tree status: what's changed, staged, or untracked. It displays:
+1. Current branch and tracking status
+2. Changes to be committed (staged, green)
+3. Changes not staged for commit (modified, red)
+4. Untracked files (new files Git doesn't know about, red)</p>
+<p>Best practice: Run <code>git status</code> constantly—before and after nearly every Git operation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git status Short Format</h2>
+<p>What does <code>git status -s</code> output and what do the status codes mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git status -s</code> shows condensed status with codes:
+- <code>??</code> = Untracked
+- <code>A</code> = Added (new file, staged)
+- <code>M</code> = Modified
+- <code>D</code> = Deleted
+- <code>R</code> = Renamed
+- First column = staging area status
+- Second column = working directory status</p>
+<p>Example: <code>MM file.txt</code> = Modified, staged, then modified again</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic git log Usage</h2>
+<p>What does <code>git log</code> display by default and what information does each commit show?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log</code> shows the commit history. Each commit displays:
+- Full commit hash (SHA-1 identifier)
+- Author name and email
+- Date and time
+- Commit message
+- Branch/tag references (if any)</p>
+<p>Commits are shown in reverse chronological order (newest first).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common git log Options</h2>
+<p>What do these git log options do: <code>--oneline</code>, <code>-n 5</code>, <code>-p</code>, <code>--stat</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git log --oneline</code>: Show one line per commit (abbreviated hash + message)</li>
+<li><code>git log -n 5</code> or <code>git log -5</code>: Show only last 5 commits</li>
+<li><code>git log -p</code> or <code>git log --patch</code>: Show commits with full diff of changes</li>
+<li><code>git log --stat</code>: Show commits with statistics (files changed, insertions/deletions)</li>
+</ul>
+<p>These help you focus on specific aspects of history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering git log</h2>
+<p>How can you filter <code>git log</code> by author, date, and commit message?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>By author: <code>git log --author="Jane"</code>
+By date: <code>git log --since="2 weeks ago"</code> or <code>git log --until="2025-12-31"</code>
+By message: <code>git log --grep="authentication"</code> (add <code>-i</code> for case insensitive)
+By file: <code>git log -- path/to/file.txt</code></p>
+<p>Combine filters: <code>git log --author="Jane" --since="1 week ago" --grep="bug"</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git log Graph View</h2>
+<p>How do you visualize branch structure with git log?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log --graph --oneline --all</code></p>
+<p>Shows ASCII graph of branch structure:</p>
+<pre><code>* a1b2c3d (HEAD -&gt; main) Add feature
+| * b2c3d4e (feature-branch) New feature
+|/
+* c3d4e5f Initial commit
+</code></pre>
+<p>Use <code>--graph --oneline --decorate --all</code> for more detail, or create an alias for a beautiful colored version.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of git show</h2>
+<p>What does <code>git show</code> do and what are common ways to use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git show</code> displays detailed information about a specific commit, including metadata (author, date, message) and the full diff of changes.</p>
+<p>Common usage:
+- <code>git show</code>: Show last commit
+- <code>git show HEAD</code>: Explicitly show last commit
+- <code>git show a1b2c3d</code>: Show specific commit by hash
+- <code>git show HEAD~3</code>: Show commit 3 commits ago
+- <code>git show --stat a1b2c3d</code>: Show commit with stats, no diff</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Commit References</h2>
+<p>What do these commit references mean: <code>HEAD</code>, <code>HEAD~1</code>, <code>HEAD~5</code>, <code>HEAD^</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>HEAD</code>: Current commit</li>
+<li><code>HEAD~1</code> or <code>HEAD~</code>: Parent of HEAD (1 commit back)</li>
+<li><code>HEAD~2</code>: Grandparent (2 commits back)</li>
+<li><code>HEAD~5</code>: 5 commits back</li>
+<li><code>HEAD^</code>: First parent (same as HEAD~1 for linear history)</li>
+</ul>
+<p>Examples: <code>git show HEAD~3</code>, <code>git show main~5</code>, <code>git show a1b2c3d~2</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git diff Basic Usage</h2>
+<p>What's the difference between <code>git diff</code>, <code>git diff --staged</code>, and <code>git diff HEAD</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git diff</code>: Shows unstaged changes (working directory vs staging area) - what you changed but haven't staged</li>
+<li><code>git diff --staged</code> (or <code>--cached</code>): Shows staged changes (staging area vs last commit) - what will go into next commit</li>
+<li><code>git diff HEAD</code>: Shows all changes (working directory vs last commit) - both staged and unstaged changes</li>
+</ul>
+<p>Use <code>--staged</code> to review before committing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Understanding diff Output</h2>
+<p>What do the symbols in git diff output mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-diff">--- a/file.txt    # Old version (before changes)
++++ b/file.txt    # New version (after changes)
+@@ -1,4 +1,5 @@  # Line numbers (old file, new file)
+-Line removed     # Line with - prefix was removed
++Line added       # Line with + prefix was added
+ Unchanged        # No prefix = context line
+</code></pre>
+<p>Focus on <code>+</code> (additions) and <code>-</code> (deletions) to see actual changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Comparing Commits and Branches</h2>
+<p>How do you compare two commits or branches with git diff?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Two commits: <code>git diff a1b2c3d b2c3d4e</code>
+Commit and its parent: <code>git diff a1b2c3d~1 a1b2c3d</code>
+Current branch vs another: <code>git diff main feature-branch</code>
+Specific file between branches: <code>git diff main feature -- path/to/file.txt</code></p>
+<p>Two dots (<code>..</code>): differences between endpoints
+Three dots (<code>...</code>): changes since branches diverged</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Useful git diff Options</h2>
+<p>What do these git diff options do: <code>--name-only</code>, <code>--stat</code>, <code>-w</code>, <code>--word-diff</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git diff --name-only</code>: Show only file names that changed</li>
+<li><code>git diff --name-status</code>: Show file names with status (M/A/D)</li>
+<li><code>git diff --stat</code>: Show statistics (files changed, insertions/deletions)</li>
+<li><code>git diff -w</code> or <code>--ignore-all-space</code>: Ignore whitespace changes</li>
+<li><code>git diff --word-diff</code>: Show word-level changes instead of line-level</li>
+</ul>
+<p>Use <code>--stat</code> for quick overview, <code>--word-diff</code> for prose/documentation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Practical Inspection Workflow</h2>
+<p>What is the recommended workflow for inspecting changes before committing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>git status</code> - Check overall state (which files changed)</li>
+<li><code>git diff</code> - Review unstaged changes (what exactly changed)</li>
+<li><code>git add &lt;files&gt;</code> - Stage related changes</li>
+<li><code>git diff --staged</code> - Review what will be committed</li>
+<li><code>git commit -m "message"</code> - Commit</li>
+<li><code>git show</code> - Verify last commit</li>
+</ol>
+<p>Always review before committing to catch mistakes and ensure logical commits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git log Custom Formatting</h2>
+<p>How do you customize git log output format and what are common format placeholders?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log --pretty=format:"%h - %an, %ar : %s"</code></p>
+<p>Common placeholders:
+- <code>%H</code> = Full commit hash
+- <code>%h</code> = Abbreviated hash
+- <code>%an</code> = Author name
+- <code>%ae</code> = Author email
+- <code>%ar</code> = Author date, relative ("2 hours ago")
+- <code>%s</code> = Commit subject (message)
+- <code>%b</code> = Commit body</p>
+<p>Create aliases for frequently used formats.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Inspection Commands Best Practices</h2>
+<p>What are the best practices for using Git inspection commands?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Status habits:
+- Run <code>git status</code> before and after every operation
+- Use <code>git diff --staged</code> before committing
+- Check <code>git diff</code> before staging to catch mistakes</p>
+<p>History review:
+- Review <code>git log</code> regularly to understand project history
+- Use <code>git show</code> to understand what a commit did
+- Use <code>--oneline</code> for quick scans, <code>-p</code> for detailed review</p>
+<p>These are read-only commands—use them liberally without fear.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
