@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 02 Reading Data - 03 Sorting And Distinctness</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tables Have No Inherent Order</h2>
+<p>Why can't you rely on the order of rows without an ORDER BY clause?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tables are sets, and sets have no inherent order (from set theory).</p>
+<p>This means:
+- Rows have no guaranteed sequence
+- Order might seem consistent but is not promised
+- Physical storage order can change as database optimizes
+- Without ORDER BY, database can return rows in any sequence</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT * FROM customers;
+</code></pre>
+<p>Might return rows in insertion order today, but differently tomorrow after database maintenance.</p>
+<p>Mental model: Rows are like balls in a bag - there's no inherent "first" or "last" until you arrange them.</p>
+<p>ORDER BY is the ONLY way to guarantee order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>ORDER BY Purpose</h2>
+<p>What does the ORDER BY clause do? When does it process in the query execution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ORDER BY sorts your result set in a specified order.</p>
+<p>Processing order:</p>
+<pre><code>1. FROM customers
+2. WHERE age &gt;= 18
+3. SELECT first_name, last_name
+4. ORDER BY last_name    ← Last step!
+</code></pre>
+<p>ORDER BY processes LAST, after all other clauses.</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers
+ORDER BY last_name;
+</code></pre>
+<p>What happens:
+1. Retrieve data (FROM, WHERE, SELECT)
+2. Sort the entire result by last_name
+3. Return sorted results</p>
+<p>ORDER BY is the only way to guarantee a specific order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ascending Order Default</h2>
+<p>What is the default sort direction in ORDER BY? What does ascending mean for different data types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Default is ascending (ASC is optional):</p>
+<pre><code class="language-sql">ORDER BY last_name
+ORDER BY last_name ASC  -- Same thing
+</code></pre>
+<p>Ascending means:
+- Numbers: Smallest to largest (1, 2, 3, 10, 100)
+- Text: Alphabetical (A, B, C... Z)
+- Dates: Oldest to newest (2020, 2021, 2024)</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Cheapest products first:
+ORDER BY price
+
+-- Alphabetical by name:
+ORDER BY last_name
+
+-- Oldest orders first:
+ORDER BY order_date
+</code></pre>
+<p>ASC keyword is redundant since it's default.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Descending Order</h2>
+<p>How do you sort in descending order? What does descending mean for different data types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use DESC keyword for descending order:</p>
+<pre><code class="language-sql">ORDER BY price DESC
+</code></pre>
+<p>Descending means:
+- Numbers: Largest to smallest (100, 10, 3, 2, 1)
+- Text: Reverse alphabetical (Z, Y, X... A)
+- Dates: Newest to oldest (2024, 2021, 2020)</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Most expensive products first:
+ORDER BY price DESC
+
+-- Reverse alphabetical:
+ORDER BY last_name DESC
+
+-- Newest orders first:
+ORDER BY order_date DESC
+</code></pre>
+<p>DESC must be explicit - there's no default for descending.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Column Sorting</h2>
+<p>How does sorting by multiple columns work? What is the second column used for?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple columns: first column sorts primarily, second breaks ties.</p>
+<pre><code class="language-sql">ORDER BY last_name, first_name
+</code></pre>
+<p>How it works:
+1. Sort by last_name first
+2. When last_name values are identical (tie), use first_name</p>
+<p>Example result:</p>
+<pre><code>last_name  | first_name
+-----------|------------
+Anderson   | Alice
+Anderson   | Bob        ← Same last name, sorted by first
+Johnson    | Carol
+Smith      | David
+Smith      | Emma       ← Same last name, sorted by first
+Smith      | Frank
+</code></pre>
+<p>The second column only matters when first column has duplicates.</p>
+<p>Called a "tiebreaker" column.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Independent Sort Directions</h2>
+<p>Can each column in ORDER BY have its own sort direction? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Each column can be ASC or DESC independently.</p>
+<pre><code class="language-sql">ORDER BY last_name ASC, first_name DESC
+</code></pre>
+<p>This means:
+- Sort last_name ascending (A-Z)
+- Within same last_name, sort first_name descending (Z-A)</p>
+<p>Example result:</p>
+<pre><code>last_name  | first_name
+-----------|------------
+Anderson   | Bob        ← Anderson's sorted Z-A
+Anderson   | Alice
+Smith      | Frank      ← Smith's sorted Z-A
+Smith      | Emma
+Smith      | David
+</code></pre>
+<p>Common pattern:</p>
+<pre><code class="language-sql">-- Highest rated first, then by price (cheapest to most expensive):
+ORDER BY rating DESC, price ASC
+</code></pre>
+<p>Each column's direction is independent.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sorting By Position Avoid</h2>
+<p>Can you sort by column position? Why should you avoid it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You CAN sort by position, but shouldn't:</p>
+<pre><code class="language-sql">SELECT last_name, first_name, age
+FROM customers
+ORDER BY 1, 2;  -- Sort by column 1 (last_name), then 2 (first_name)
+</code></pre>
+<p>Why avoid:
+1. Not clear what you're sorting by
+2. Breaks if you add/remove/reorder SELECT columns
+3. Makes code harder to maintain
+4. Obscures intent</p>
+<p>Better:</p>
+<pre><code class="language-sql">ORDER BY last_name, first_name  -- Clear and maintainable
+</code></pre>
+<p>Use column names, not positions.</p>
+<p>Exception: Acceptable in quick ad-hoc queries for exploration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sorting By Calculated Columns</h2>
+<p>Can you sort by calculated columns? Show two approaches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Two ways:</p>
+<ol>
+<li>Repeat the calculation:</li>
+</ol>
+<pre><code class="language-sql">SELECT first_name, price, quantity,
+       price * quantity AS total
+FROM order_items
+ORDER BY price * quantity DESC;
+</code></pre>
+<ol>
+<li>Use the alias (cleaner):</li>
+</ol>
+<pre><code class="language-sql">SELECT first_name, price, quantity,
+       price * quantity AS total
+FROM order_items
+ORDER BY total DESC;
+</code></pre>
+<p>Why alias works:
+Processing order:
+1. SELECT creates the <code>total</code> alias
+2. ORDER BY runs after SELECT, so sees the alias</p>
+<p>Using alias is cleaner and more maintainable (no repeated calculation).</p>
+<p>This sorts by the calculated total, most expensive first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sorting By Unselected Columns</h2>
+<p>Can you sort by columns that aren't in your SELECT clause? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! In most databases, you can sort by columns you didn't select.</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers
+ORDER BY registration_date DESC;
+</code></pre>
+<p>Returns names, but sorted by registration_date (even though it's not shown).</p>
+<p>Use case: "Show me customer names, newest registrations first"</p>
+<p>Why it works:
+ORDER BY processes after SELECT but can still see original table columns in most databases.</p>
+<p>Caveat: Doesn't work reliably with DISTINCT or GROUP BY - only sort by selected columns in those cases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Numbers Sort</h2>
+<p>How do numbers sort in ORDER BY? What's the difference between numeric and text sorting?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Numbers stored as numeric type:
+- Ascending: -100, -1, 0, 1, 2, 10, 100 (by magnitude)
+- Descending: 100, 10, 2, 1, 0, -1, -100</p>
+<p>Numbers stored as text type:
+- Ascending: '1', '10', '100', '2', '20' (alphabetically!)
+- Descending: '20', '2', '100', '10', '1'</p>
+<p>Problem with text:</p>
+<pre><code class="language-sql">-- If price is TEXT:
+ORDER BY price
+-- Result: '10', '100', '2', '5'  -- WRONG!
+
+-- If price is INT:
+ORDER BY price
+-- Result: 2, 5, 10, 100  -- CORRECT!
+</code></pre>
+<p>This is why using correct data types matters!</p>
+<p>Text compares character-by-character: '1' &lt; '2', but '10' &lt; '2' alphabetically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Text Sorts</h2>
+<p>How does text sort in ORDER BY? What affects the sort order?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Text sorts alphabetically:
+- Ascending: A, Apple, B, Banana, C, Cherry
+- Descending: Z, Zebra, Y, Yellow, X, Xylophone</p>
+<p>Factors affecting sort:
+1. Case handling (usually case-insensitive, but database-dependent)
+2. Special characters (sort before/after letters, varies by database)
+3. Collation settings (how characters are compared)</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Ascending:
+ORDER BY last_name
+-- Result: Anderson, Brown, Chen, Davis
+
+-- Descending:
+ORDER BY last_name DESC
+-- Result: Davis, Chen, Brown, Anderson
+</code></pre>
+<p>Note: Exact behavior (especially for accents, case, special chars) depends on database collation settings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Dates Sort</h2>
+<p>How do dates sort in ORDER BY? Give examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Dates sort chronologically:
+- Ascending: Oldest to newest (1990-01-01, 2000-01-01, 2024-01-01)
+- Descending: Newest to oldest (2024-01-01, 2000-01-01, 1990-01-01)</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Oldest orders first:
+ORDER BY order_date ASC
+-- Result: 2020-01-15, 2021-03-20, 2024-10-01
+
+-- Most recent orders first:
+ORDER BY order_date DESC
+-- Result: 2024-10-01, 2021-03-20, 2020-01-15
+</code></pre>
+<p>Common patterns:</p>
+<pre><code class="language-sql">-- Recent activity first:
+ORDER BY updated_at DESC
+
+-- Chronological history:
+ORDER BY transaction_date ASC
+</code></pre>
+<p>Dates must be stored as DATE/DATETIME type for correct chronological sorting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Values In Sorting</h2>
+<p>Where do NULL values appear when you ORDER BY a column containing NULLs? How can you control this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NULL placement varies by database:</p>
+<p>Most common (MySQL, SQL Server, SQLite):
+- NULLs appear first in both ASC and DESC</p>
+<p>PostgreSQL, Oracle:
+- ASC: NULLs last
+- DESC: NULLs first</p>
+<p>Controlling NULL position:</p>
+<p>PostgreSQL/Oracle:</p>
+<pre><code class="language-sql">ORDER BY age NULLS LAST
+ORDER BY age NULLS FIRST
+</code></pre>
+<p>SQL Server/MySQL (workaround):</p>
+<pre><code class="language-sql">-- Force NULLs last:
+ORDER BY CASE WHEN age IS NULL THEN 1 ELSE 0 END, age
+
+-- Force NULLs first:
+ORDER BY CASE WHEN age IS NULL THEN 0 ELSE 1 END, age DESC
+</code></pre>
+<p>Best practice: Test your database's behavior or explicitly control NULL placement.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT Purpose</h2>
+<p>What does DISTINCT do? Give an example of the problem it solves.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>DISTINCT removes duplicate rows from results.</p>
+<p>Without DISTINCT:</p>
+<pre><code class="language-sql">SELECT country FROM customers;
+</code></pre>
+<p>Returns:</p>
+<pre><code>USA
+Canada
+USA
+USA
+Mexico
+Canada
+USA
+</code></pre>
+<p>Many duplicates!</p>
+<p>With DISTINCT:</p>
+<pre><code class="language-sql">SELECT DISTINCT country FROM customers;
+</code></pre>
+<p>Returns:</p>
+<pre><code>USA
+Canada
+Mexico
+</code></pre>
+<p>One of each unique value.</p>
+<p>Use cases:
+- Getting unique values for dropdowns
+- Finding all categories/types
+- Counting unique values
+- Removing duplicate results</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT On Entire Row</h2>
+<p>Does DISTINCT operate on individual columns or entire rows? Explain with an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>DISTINCT operates on entire rows (all selected columns together).</p>
+<pre><code class="language-sql">SELECT DISTINCT last_name, first_name
+FROM customers;
+</code></pre>
+<p>Returns unique combinations of (last_name, first_name).</p>
+<p>Example:</p>
+<pre><code>last_name | first_name
+----------|------------
+Smith     | John       ← Unique combination
+Smith     | Jane       ← Different first_name, included
+Smith     | John       ← Duplicate combination, excluded
+Jones     | John       ← Different last_name, included
+</code></pre>
+<p>Result: 3 rows (the duplicate Smith+John is removed)</p>
+<p>Key point: It's not "distinct last names" or "distinct first names" - it's distinct COMBINATIONS of both.</p>
+<p>DISTINCT evaluates the entire SELECT list as one unit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT With Multiple Columns</h2>
+<p>What happens when you use DISTINCT with multiple columns? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>DISTINCT finds unique combinations of ALL selected columns.</p>
+<pre><code class="language-sql">SELECT DISTINCT state, city
+FROM customers;
+</code></pre>
+<p>Returns unique (state, city) pairs:</p>
+<pre><code>state | city
+------|-------------
+CA    | Los Angeles
+CA    | San Diego    ← Same state, different city = unique
+NY    | New York
+NY    | Buffalo      ← Same state, different city = unique
+TX    | Houston
+</code></pre>
+<p>Not distinct states, not distinct cities, but distinct COMBINATIONS.</p>
+<p>Example:
+- (CA, Los Angeles) appears once
+- (CA, San Diego) appears once (even though CA repeats)
+- (NY, New York) appears once
+- (NY, Buffalo) appears once (even though NY repeats)</p>
+<p>Each unique pairing appears only once in results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT vs GROUP BY Preview</h2>
+<p>What's the difference between DISTINCT and GROUP BY? When do you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They can produce the same result:</p>
+<pre><code class="language-sql">-- Using DISTINCT:
+SELECT DISTINCT country FROM customers;
+
+-- Using GROUP BY:
+SELECT country FROM customers GROUP BY country;
+</code></pre>
+<p>Both return unique countries.</p>
+<p>When to use which:</p>
+<p>Use DISTINCT when:
+- You just want unique values
+- Simple uniqueness requirement
+- No aggregation needed</p>
+<p>Use GROUP BY when:
+- You need aggregation (COUNT, SUM, AVG, etc.)
+- Want to calculate values per group
+- More complex grouping logic</p>
+<p>Example needing GROUP BY:</p>
+<pre><code class="language-sql">-- Count customers per country (can't use DISTINCT):
+SELECT country, COUNT(*) 
+FROM customers 
+GROUP BY country;
+</code></pre>
+<p>DISTINCT is simpler; GROUP BY is more powerful (covered in Phase 4).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT Performance Cost</h2>
+<p>Why can DISTINCT be expensive? When should you use it and when should you avoid it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>DISTINCT is expensive because it must:
+1. Retrieve all rows
+2. Sort or hash them to find duplicates
+3. Remove duplicates
+4. Return remaining rows</p>
+<p>When to use:
+- When you genuinely need unique values
+- For dropdowns/lists of options
+- When duplicates would confuse users
+- For counting unique values</p>
+<p>When to avoid:
+- As a "quick fix" for poorly designed queries
+- When data is already unique
+- On very large result sets without good reason
+- As a band-aid for bad joins creating duplicates</p>
+<p>Bad use:</p>
+<pre><code class="language-sql">-- Using DISTINCT to hide a join problem:
+SELECT DISTINCT customer_name FROM orders JOIN customers ...
+-- Better: Fix the join logic
+</code></pre>
+<p>Good use:</p>
+<pre><code class="language-sql">-- Getting unique categories for a dropdown:
+SELECT DISTINCT category FROM products ORDER BY category;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining ORDER BY And DISTINCT</h2>
+<p>Can you use ORDER BY and DISTINCT together? What's the processing order?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! You can use both together.</p>
+<pre><code class="language-sql">SELECT DISTINCT country
+FROM customers
+ORDER BY country;
+</code></pre>
+<p>Returns unique countries in alphabetical order.</p>
+<p>Processing order:
+1. FROM customers
+2. SELECT DISTINCT country (get unique countries)
+3. ORDER BY country (sort them)</p>
+<p>Example result:</p>
+<pre><code>country
+-------
+Canada
+Mexico
+USA
+</code></pre>
+<p>Important restriction:
+ORDER BY columns should be in your SELECT when using DISTINCT:</p>
+<pre><code class="language-sql">-- This might fail:
+SELECT DISTINCT country
+FROM customers
+ORDER BY registration_date;
+</code></pre>
+<p>Problem: Getting distinct countries, but sorting by registration_date. Which registration_date for each country?</p>
+<p>Safe: Only sort by selected columns when using DISTINCT.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Sorting Pattern Recent First</h2>
+<p>Show the common pattern for displaying most recent records first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Most recent first pattern:</p>
+<pre><code class="language-sql">SELECT *
+FROM orders
+ORDER BY order_date DESC;
+</code></pre>
+<p>DESC because you want newest (largest date values) first.</p>
+<p>Common variations:</p>
+<pre><code class="language-sql">-- Most recent 10 orders:
+SELECT *
+FROM orders
+ORDER BY order_date DESC
+LIMIT 10;
+
+-- Recent activity:
+SELECT *
+FROM user_activity
+ORDER BY timestamp DESC;
+
+-- Latest updates:
+SELECT *
+FROM products
+ORDER BY updated_at DESC;
+
+-- Newest customers:
+SELECT *
+FROM customers
+ORDER BY registration_date DESC;
+</code></pre>
+<p>DESC is key - puts newest dates at the top.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Sorting Pattern Alphabetical</h2>
+<p>Show the common pattern for alphabetical listings by name.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Alphabetical by name pattern:</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers
+ORDER BY last_name, first_name;
+</code></pre>
+<p>Why this order:
+1. Sort by last_name primarily
+2. Use first_name as tiebreaker</p>
+<p>Common variations:</p>
+<pre><code class="language-sql">-- Products alphabetically:
+SELECT product_name, price
+FROM products
+ORDER BY product_name;
+
+-- Employees by department, then name:
+SELECT department, last_name, first_name
+FROM employees
+ORDER BY department, last_name, first_name;
+
+-- Categories alphabetically:
+SELECT DISTINCT category
+FROM products
+ORDER BY category;
+</code></pre>
+<p>Last name first is convention for people; single name for other entities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Sorting Pattern Top N</h2>
+<p>Show the common pattern for getting top N results (most expensive, highest rated, etc.).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Top N pattern requires ORDER BY + LIMIT/TOP:</p>
+<pre><code class="language-sql">-- Most expensive products (top 10):
+SELECT product_name, price
+FROM products
+ORDER BY price DESC
+LIMIT 10;
+</code></pre>
+<p>Key elements:
+1. ORDER BY with DESC for "top"
+2. LIMIT to restrict count (LIMIT 10, TOP 10, etc.)</p>
+<p>Common variations:</p>
+<pre><code class="language-sql">-- Highest rated:
+ORDER BY rating DESC LIMIT 5
+
+-- Best sellers:
+ORDER BY units_sold DESC LIMIT 20
+
+-- Top earners:
+ORDER BY salary DESC LIMIT 10
+
+-- Lowest prices:
+ORDER BY price ASC LIMIT 10
+</code></pre>
+<p>Without ORDER BY, LIMIT gives random rows!</p>
+<p>Syntax varies: LIMIT (MySQL/PostgreSQL), TOP (SQL Server)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sorting Pattern Secondary Sort</h2>
+<p>Show the pattern for grouping by one column and sorting within groups by another.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Secondary sort pattern (group then sort within groups):</p>
+<pre><code class="language-sql">SELECT category, product_name, price
+FROM products
+ORDER BY category, price;
+</code></pre>
+<p>Result:</p>
+<pre><code>category     | product_name | price
+-------------|--------------|-------
+Electronics  | Radio        | 50
+Electronics  | TV Basic     | 800
+Electronics  | TV Pro       | 1200
+Furniture    | Chair        | 200
+Furniture    | Sofa         | 900
+</code></pre>
+<p>Products grouped by category, then sorted by price within each category.</p>
+<p>Common variations:</p>
+<pre><code class="language-sql">-- Employees by department, then salary:
+ORDER BY department, salary DESC
+
+-- Orders by customer, then date:
+ORDER BY customer_id, order_date
+
+-- Products by category, highest rated first:
+ORDER BY category, rating DESC, product_name
+</code></pre>
+<p>First column groups, subsequent columns sort within groups.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why ORDER BY Is Optional</h2>
+<p>Why is ORDER BY optional in SQL? When should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ORDER BY is optional because:
+- Sometimes order doesn't matter
+- Sorting can be expensive for large result sets
+- Application might sort after retrieval
+- Database makes no promises without it</p>
+<p>When you SHOULD use ORDER BY:
+- Results displayed to users
+- Order matters for business logic
+- Selecting top/bottom N records
+- Comparing sequences
+- Generating reports
+- Pagination</p>
+<p>When you CAN skip ORDER BY:
+- Order genuinely doesn't matter
+- Application will re-sort results
+- Performance critical and order unnecessary
+- Internal processing only</p>
+<p>Key principle: Never ASSUME order without ORDER BY, even if it seems consistent. Database makes no promises without explicit ORDER BY clause.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>ORDER BY Result Not A Set</h2>
+<p>Why is an ordered result technically no longer a "set"? Does this matter practically?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Sets are unordered by definition (set theory). Once you ORDER BY, result has sequence, so it's not technically a "set" anymore.</p>
+<p>Theoretical impact:
+- Some operations requiring sets might not work on ordered results
+- It's a reminder that ordering is presentation, not data structure</p>
+<p>Practical impact:
+- Mostly theoretical
+- Ordered results work in almost all SQL operations
+- You can still use ordered results normally
+- It's more of a conceptual distinction</p>
+<p>Key insight: ORDER BY transforms data from "set of rows" (unordered) to "sequence of rows" (ordered).</p>
+<p>In practice, don't worry about this distinction - just know that ORDER BY changes the fundamental nature of the result from mathematical perspective.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Aliases Work In ORDER BY</h2>
+<p>Why can you use column aliases in ORDER BY but not in WHERE? Explain using processing order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Processing order determines when aliases exist:</p>
+<pre><code>1. FROM table
+2. WHERE conditions    ← Aliases don't exist yet
+3. SELECT columns      ← Aliases created here
+4. ORDER BY columns    ← Aliases exist now
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT price * quantity AS total
+FROM orders
+WHERE total &gt; 100        -- ERROR! Alias doesn't exist
+ORDER BY total;          -- WORKS! Alias exists
+</code></pre>
+<p>Why aliases work in ORDER BY:
+- SELECT creates the alias
+- ORDER BY processes after SELECT
+- Therefore ORDER BY can see and use the alias</p>
+<p>Why aliases don't work in WHERE:
+- WHERE processes before SELECT
+- Aliases haven't been created yet
+- Therefore WHERE can't see them</p>
+<p>Solution for WHERE: Repeat the calculation</p>
+<pre><code class="language-sql">WHERE price * quantity &gt; 100
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multi-Column Sort Direction</h2>
+<p>In <code>ORDER BY last_name, first_name DESC</code>, which column sorts descending?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Only first_name sorts descending!</p>
+<pre><code class="language-sql">ORDER BY last_name, first_name DESC
+</code></pre>
+<p>Means:
+- last_name: ascending (default)
+- first_name: descending (explicit DESC)</p>
+<p>Each column's direction applies only to that column.</p>
+<p>Example result:</p>
+<pre><code>last_name  | first_name
+-----------|------------
+Anderson   | Zoe        ← Andersons sorted Z-A
+Anderson   | Bob
+Smith      | Xavier     ← Smiths sorted Z-A  
+Smith      | Alice
+</code></pre>
+<p>To make both descending:</p>
+<pre><code class="language-sql">ORDER BY last_name DESC, first_name DESC
+</code></pre>
+<p>To make both explicit:</p>
+<pre><code class="language-sql">ORDER BY last_name ASC, first_name ASC
+</code></pre>
+<p>Direction must be specified for each column you want to control.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>DISTINCT Problematic With ORDER BY</h2>
+<p>Why might <code>SELECT DISTINCT country ORDER BY registration_date</code> be problematic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: You're getting distinct countries, but sorting by registration_date.</p>
+<pre><code class="language-sql">SELECT DISTINCT country
+FROM customers
+ORDER BY registration_date;
+</code></pre>
+<p>Which registration_date should be used?
+- USA appears 100 times with 100 different registration dates
+- Which date determines where USA appears in sorted results?
+- Ambiguous and may cause errors</p>
+<p>Different databases handle this differently:
+- Some fail with an error
+- Some pick arbitrary date
+- Result is unpredictable</p>
+<p>Solution: Only sort by columns in your SELECT when using DISTINCT:</p>
+<pre><code class="language-sql">-- Safe:
+SELECT DISTINCT country
+FROM customers
+ORDER BY country;
+</code></pre>
+<p>Rule: With DISTINCT, ORDER BY columns should be in the SELECT clause.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Text Numbers Sort Wrong</h2>
+<p>Why do numbers stored as text sort incorrectly? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Text sorts character-by-character alphabetically, not numerically.</p>
+<p>As TEXT:</p>
+<pre><code class="language-sql">ORDER BY quantity_as_text
+</code></pre>
+<p>Result: '1', '10', '100', '2', '20', '5', '50'</p>
+<p>Why: Compares character by character:
+- '1' &lt; '2' (correct)
+- But '10' &lt; '2' (because '1' &lt; '2' in first position)
+- '100' &lt; '2' (because '1' &lt; '2' in first position)</p>
+<p>As INT:</p>
+<pre><code class="language-sql">ORDER BY quantity_as_int
+</code></pre>
+<p>Result: 1, 2, 5, 10, 20, 50, 100 (correct!)</p>
+<p>Why: Compares numerical magnitude.</p>
+<p>This is a critical reason to use correct data types!</p>
+<p>Fix: Store numbers as numeric types (INT, DECIMAL), not TEXT/VARCHAR.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Sorting Example</h2>
+<p>Explain how this query works:</p>
+<pre><code class="language-sql">SELECT category, product_name, price
+FROM products
+WHERE price &gt; 0
+ORDER BY category, price DESC;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Processing flow:</p>
+<ol>
+<li>FROM products</li>
+<li>
+<p>Start with products table</p>
+</li>
+<li>
+<p>WHERE price &gt; 0</p>
+</li>
+<li>Filter to only products with price greater than 0</li>
+<li>
+<p>Excludes free items and possibly NULL prices</p>
+</li>
+<li>
+<p>SELECT category, product_name, price</p>
+</li>
+<li>
+<p>Choose these three columns from filtered rows</p>
+</li>
+<li>
+<p>ORDER BY category, price DESC</p>
+</li>
+<li>First, group by category (alphabetically)</li>
+<li>Within each category, sort by price (highest first)</li>
+</ol>
+<p>Example result:</p>
+<pre><code>category     | product_name | price
+-------------|--------------|-------
+Electronics  | TV Pro       | 1200
+Electronics  | TV Basic     | 800
+Electronics  | Radio        | 50
+Furniture    | Sofa         | 900
+Furniture    | Chair        | 200
+</code></pre>
+<p>Products grouped by category, expensive items first within each category.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

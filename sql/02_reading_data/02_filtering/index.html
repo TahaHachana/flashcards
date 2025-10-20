@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 02 Reading Data - 02 Filtering</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>WHERE Clause Purpose</h2>
+<p>What does the WHERE clause do? Describe its role in the query processing order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE filters rows based on conditions. It determines which rows are included in the result.</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers
+WHERE age &gt;= 18;
+</code></pre>
+<p>Processing order:
+1. FROM customers (start with table)
+2. WHERE age &gt;= 18 (filter rows - keeps only TRUE)
+3. SELECT first_name, last_name (choose columns)</p>
+<p>Mental model: WHERE is a filter that lets some rows through and blocks others, based on whether they meet your criteria.</p>
+<p>Only rows where the condition evaluates to TRUE are included.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>WHERE Comes Before SELECT</h2>
+<p>Why does WHERE process before SELECT? What does this enable you to do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Processing order: FROM → WHERE → SELECT</p>
+<p>Why:
+- WHERE filters on the full table (all columns available)
+- SELECT then narrows to specific columns</p>
+<p>This enables:
+1. Filtering on columns you don't select</p>
+<pre><code class="language-sql">SELECT name FROM customers WHERE registration_date &gt; '2024-01-01';
+</code></pre>
+<ol>
+<li>WHERE sees original table columns, not SELECT calculations</li>
+</ol>
+<pre><code class="language-sql">-- This works:
+WHERE age &gt;= 18
+
+-- This doesn't work:
+SELECT age * 2 AS doubled
+WHERE doubled &gt;= 36  -- ERROR! doubled doesn't exist yet
+</code></pre>
+<p>WHERE operates on the source table, SELECT operates on filtered results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Six Basic Comparison Operators</h2>
+<p>What are the six basic comparison operators in SQL? Give examples of each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>= (Equal to)
+   <code>sql
+   WHERE age = 25</code></p>
+</li>
+<li>
+<p>&lt;&gt; (Not equal to, also !=)
+   <code>sql
+   WHERE status &lt;&gt; 'Cancelled'</code></p>
+</li>
+<li>
+<p>&lt; (Less than)
+   <code>sql
+   WHERE price &lt; 100</code></p>
+</li>
+<li>
+<blockquote>
+<p>(Greater than)
+   <code>sql
+   WHERE quantity &gt; 0</code></p>
+</blockquote>
+</li>
+<li>
+<p>&lt;= (Less than or equal)
+   <code>sql
+   WHERE age &lt;= 65</code></p>
+</li>
+<li>
+<blockquote>
+<p>= (Greater than or equal)
+   <code>sql
+   WHERE score &gt;= 90</code></p>
+</blockquote>
+</li>
+</ol>
+<p>These work on numbers, text (alphabetically), and dates (chronologically).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Text Comparison Case Sensitivity</h2>
+<p>Are text comparisons in WHERE clause case-sensitive? Give examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>String values are ALWAYS case-sensitive in most databases:</p>
+<pre><code class="language-sql">WHERE country = 'USA'     -- Matches 'USA' only
+WHERE country = 'usa'     -- Matches 'usa' only
+WHERE country = 'Usa'     -- Matches 'Usa' only
+</code></pre>
+<p>'USA' ≠ 'usa' ≠ 'Usa'</p>
+<p>To make case-insensitive:</p>
+<pre><code class="language-sql">-- Use UPPER or LOWER:
+WHERE UPPER(country) = 'USA'  -- Matches 'usa', 'USA', 'Usa'
+
+-- PostgreSQL: Use ILIKE instead of LIKE
+WHERE country ILIKE 'usa'
+</code></pre>
+<p>Important: Case-sensitivity applies to values, not column names (those are usually case-insensitive).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Cannot Use Equals</h2>
+<p>Why doesn't <code>WHERE age = NULL</code> work? What's the correct way to check for NULL?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>WHERE age = NULL</code> never matches anything, even rows with NULL!</p>
+<p>Why: NULL means "unknown". Is an unknown value equal to another unknown? We don't know, so the result is NULL (not TRUE).</p>
+<p>Correct way:</p>
+<pre><code class="language-sql">-- Find NULL values:
+WHERE phone IS NULL
+
+-- Find non-NULL values:
+WHERE phone IS NOT NULL
+</code></pre>
+<p>Wrong:</p>
+<pre><code class="language-sql">WHERE age = NULL     -- Never matches
+WHERE age &lt;&gt; NULL    -- Never matches
+</code></pre>
+<p>Right:</p>
+<pre><code class="language-sql">WHERE age IS NULL        -- Matches NULL
+WHERE age IS NOT NULL    -- Matches non-NULL
+</code></pre>
+<p>Remember: Use IS NULL / IS NOT NULL, never = NULL or &lt;&gt; NULL.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL In Comparisons</h2>
+<p>What happens when NULL is involved in comparisons? Why does this matter for filtering?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Any comparison with NULL results in NULL (not TRUE or FALSE):</p>
+<pre><code class="language-sql">NULL = 5      → NULL (not FALSE)
+NULL &lt;&gt; 5     → NULL (not TRUE)
+NULL &gt; 5      → NULL
+5 &gt; NULL      → NULL
+NULL = NULL   → NULL (even this!)
+</code></pre>
+<p>Impact on WHERE:
+Only rows where condition is TRUE are included. NULL is treated as "not TRUE", so rows are excluded.</p>
+<p>Example:</p>
+<pre><code class="language-sql">WHERE age &gt; 30
+</code></pre>
+<p>Rows with:
+- age = 35: TRUE → included
+- age = 25: FALSE → excluded<br />
+- age = NULL: NULL → excluded</p>
+<p>This is why NULL values often disappear from filtered results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>AND Operator Logic</h2>
+<p>How does the AND operator work? What must be true for a row to be included?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>AND requires ALL conditions to be TRUE.</p>
+<pre><code class="language-sql">WHERE age &gt;= 18 AND country = 'USA'
+</code></pre>
+<p>Both must be TRUE for row to be included.</p>
+<p>Truth table:</p>
+<pre><code>TRUE  AND TRUE  = TRUE  → Row included
+TRUE  AND FALSE = FALSE → Row excluded
+FALSE AND TRUE  = FALSE → Row excluded
+FALSE AND FALSE = FALSE → Row excluded
+TRUE  AND NULL  = NULL  → Row excluded
+FALSE AND NULL  = FALSE → Row excluded
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-sql">WHERE age &gt;= 21 AND state = 'CA'
+</code></pre>
+<p>Returns only customers who are:
+- 21 or older AND
+- In California</p>
+<p>If either condition is FALSE, row is excluded.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>OR Operator Logic</h2>
+<p>How does the OR operator work? When is a row included?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>OR requires AT LEAST ONE condition to be TRUE.</p>
+<pre><code class="language-sql">WHERE country = 'USA' OR country = 'Canada'
+</code></pre>
+<p>If either condition is TRUE, row is included.</p>
+<p>Truth table:</p>
+<pre><code>TRUE  OR TRUE  = TRUE  → Row included
+TRUE  OR FALSE = TRUE  → Row included
+FALSE OR TRUE  = TRUE  → Row included
+FALSE OR FALSE = FALSE → Row excluded
+TRUE  OR NULL  = TRUE  → Row included
+FALSE OR NULL  = NULL  → Row excluded
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-sql">WHERE category = 'Electronics' OR category = 'Computers'
+</code></pre>
+<p>Returns products that are:
+- Electronics OR
+- Computers OR
+- Both (if that were possible)</p>
+<p>Only excluded if BOTH conditions are FALSE.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT Operator Logic</h2>
+<p>What does the NOT operator do? Give examples of its use.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NOT reverses a condition (TRUE becomes FALSE, FALSE becomes TRUE).</p>
+<pre><code class="language-sql">WHERE NOT country = 'USA'
+-- Same as:
+WHERE country &lt;&gt; 'USA'
+</code></pre>
+<p>Truth table:</p>
+<pre><code>NOT TRUE  = FALSE
+NOT FALSE = TRUE
+NOT NULL  = NULL
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Customers who are NOT under 18:
+WHERE NOT (age &lt; 18)
+-- Same as: WHERE age &gt;= 18
+
+-- Products NOT discontinued:
+WHERE NOT discontinued
+
+-- Exclude specific countries:
+WHERE NOT (country = 'USA' OR country = 'Canada')
+-- Same as: WHERE country &lt;&gt; 'USA' AND country &lt;&gt; 'Canada'
+</code></pre>
+<p>Useful for negating complex conditions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Operator Precedence</h2>
+<p>What is the precedence order for logical operators? Why does this matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Precedence (highest to lowest):
+1. Parentheses ()
+2. NOT
+3. AND
+4. OR</p>
+<p>Without parentheses:</p>
+<pre><code class="language-sql">WHERE country = 'USA' OR country = 'Canada' AND age &gt;= 18
+</code></pre>
+<p>Evaluates as:</p>
+<pre><code class="language-sql">WHERE country = 'USA' OR (country = 'Canada' AND age &gt;= 18)
+</code></pre>
+<p>Result: All USA customers (any age) + Canadian customers 18+</p>
+<p>This is probably NOT what you wanted!</p>
+<p>With parentheses (explicit):</p>
+<pre><code class="language-sql">WHERE (country = 'USA' OR country = 'Canada') AND age &gt;= 18
+</code></pre>
+<p>Result: USA or Canadian customers who are 18+</p>
+<p>Best practice: Always use parentheses when mixing AND/OR, even if you know the precedence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parentheses For Clarity</h2>
+<p>Why should you always use parentheses when combining AND and OR operators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Parentheses make intent clear and control evaluation order.</p>
+<p>Ambiguous:</p>
+<pre><code class="language-sql">WHERE status = 'Active' OR status = 'Pending' AND age &gt;= 18
+</code></pre>
+<p>Could mean:
+1. Active OR (Pending AND 18+)  ← This is what happens (AND first)
+2. (Active OR Pending) AND 18+  ← Maybe what you wanted</p>
+<p>Clear with parentheses:</p>
+<pre><code class="language-sql">WHERE (status = 'Active' OR status = 'Pending') AND age &gt;= 18
+</code></pre>
+<p>Now there's no ambiguity!</p>
+<p>Benefits:
+- Makes intent explicit
+- Prevents bugs from precedence mistakes
+- Makes code more readable
+- Works same across all databases</p>
+<p>Rule: When mixing AND/OR, use parentheses. Period.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>IN Operator Purpose</h2>
+<p>What does the IN operator do? How is it better than multiple OR conditions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>IN tests whether a value matches any value in a list.</p>
+<p>Instead of:</p>
+<pre><code class="language-sql">WHERE country = 'USA' OR country = 'Canada' OR country = 'Mexico'
+</code></pre>
+<p>Use IN:</p>
+<pre><code class="language-sql">WHERE country IN ('USA', 'Canada', 'Mexico')
+</code></pre>
+<p>Much cleaner!</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Specific states:
+WHERE state IN ('CA', 'NY', 'TX')
+
+-- Specific IDs:
+WHERE product_id IN (101, 102, 103, 104)
+
+-- Dates:
+WHERE order_date IN ('2024-01-15', '2024-02-20')
+</code></pre>
+<p>Benefits:
+- More readable
+- Easier to maintain (add/remove values)
+- Shorter syntax
+- Clearer intent</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT IN Usage</h2>
+<p>How does NOT IN work? What's the caveat about NULL values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NOT IN excludes rows matching any value in the list.</p>
+<pre><code class="language-sql">WHERE country NOT IN ('USA', 'Canada')
+</code></pre>
+<p>Excludes USA and Canada, includes everything else.</p>
+<p>Equivalent to:</p>
+<pre><code class="language-sql">WHERE country &lt;&gt; 'USA' AND country &lt;&gt; 'Canada'
+</code></pre>
+<p>WARNING about NULL:
+If the list contains NULL, NOT IN can produce unexpected results:</p>
+<pre><code class="language-sql">WHERE id NOT IN (1, 2, NULL)
+-- Might return no rows!
+</code></pre>
+<p>Why: <code>id &lt;&gt; NULL</code> is always NULL, and NULL in an AND chain makes everything NULL.</p>
+<p>Best practice: Avoid NOT IN with lists that might contain NULL. Use NOT EXISTS or ensure no NULLs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>BETWEEN Operator Basics</h2>
+<p>What does the BETWEEN operator do? Is it inclusive or exclusive?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>BETWEEN tests if a value falls within a range. It is INCLUSIVE (includes both boundary values).</p>
+<pre><code class="language-sql">WHERE age BETWEEN 18 AND 65
+</code></pre>
+<p>Equivalent to:</p>
+<pre><code class="language-sql">WHERE age &gt;= 18 AND age &lt;= 65
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Ages 18 through 65 (includes 18 and 65):
+WHERE age BETWEEN 18 AND 65
+
+-- Prices $10 to $100 (includes $10 and $100):
+WHERE price BETWEEN 10.00 AND 100.00
+
+-- Dates in January 2024 (includes Jan 1 and Jan 31):
+WHERE order_date BETWEEN '2024-01-01' AND '2024-01-31'
+</code></pre>
+<p>Key point: BETWEEN is inclusive - both endpoints are included in the range.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>BETWEEN Order Matters</h2>
+<p>Does the order of values matter in BETWEEN? What happens if you reverse them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Order matters! Smaller value must come first.</p>
+<p>Correct:</p>
+<pre><code class="language-sql">WHERE age BETWEEN 18 AND 65  -- 18 to 65
+</code></pre>
+<p>Wrong:</p>
+<pre><code class="language-sql">WHERE age BETWEEN 65 AND 18  -- No results!
+</code></pre>
+<p>Why wrong version fails:
+It's interpreted as: <code>age &gt;= 65 AND age &lt;= 18</code>
+No value can be both &gt;= 65 and &lt;= 18, so no rows match.</p>
+<p>Rule: Always put the lower bound first, higher bound second.</p>
+<pre><code class="language-sql">-- Right:
+WHERE price BETWEEN 10 AND 100
+
+-- Wrong:
+WHERE price BETWEEN 100 AND 10  -- Returns nothing
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT BETWEEN</h2>
+<p>How does NOT BETWEEN work? What is it equivalent to?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NOT BETWEEN excludes values within the range.</p>
+<pre><code class="language-sql">WHERE age NOT BETWEEN 18 AND 65
+</code></pre>
+<p>Equivalent to:</p>
+<pre><code class="language-sql">WHERE age &lt; 18 OR age &gt; 65
+</code></pre>
+<p>Includes values OUTSIDE the range (both below and above).</p>
+<p>Examples:</p>
+<pre><code class="language-sql">-- Ages under 18 OR over 65:
+WHERE age NOT BETWEEN 18 AND 65
+
+-- Prices NOT in the $10-$100 range:
+WHERE price NOT BETWEEN 10 AND 100
+
+-- Dates NOT in January:
+WHERE order_date NOT BETWEEN '2024-01-01' AND '2024-01-31'
+</code></pre>
+<p>Note: It's OR logic (&lt; lower OR &gt; higher), not AND.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LIKE Operator Wildcards</h2>
+<p>What are the two wildcards used with LIKE? What does each match?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Two wildcards for pattern matching:</p>
+<ol>
+<li>% (percent) - Matches any sequence of characters (including zero)</li>
+<li>_ (underscore) - Matches exactly one character</li>
+</ol>
+<p>Examples with %:</p>
+<pre><code class="language-sql">-- Names starting with 'A':
+WHERE name LIKE 'A%'
+
+-- Names ending with 'son':
+WHERE name LIKE '%son'
+
+-- Names containing 'john' anywhere:
+WHERE name LIKE '%john%'
+
+-- Emails from example.com:
+WHERE email LIKE '%@example.com'
+</code></pre>
+<p>Examples with _:</p>
+<pre><code class="language-sql">-- Exactly 3 characters:
+WHERE code LIKE '___'
+
+-- Format A + any 2 chars + B:
+WHERE pattern LIKE 'A__B'
+</code></pre>
+<p>% = any amount, _ = exactly one</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LIKE Pattern Examples</h2>
+<p>Give examples of LIKE patterns and explain what each matches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-sql">-- Starts with 'A' (A, Apple, Arizona):
+WHERE name LIKE 'A%'
+
+-- Ends with 'son' (Johnson, Anderson):
+WHERE name LIKE '%son'
+
+-- Contains 'john' anywhere (John, Johnny, St. John):
+WHERE name LIKE '%john%'
+
+-- Exactly 3 characters (Tom, Sue, Bob):
+WHERE code LIKE '___'
+
+-- At least 5 characters starting with 'A':
+WHERE name LIKE 'A____%'  -- A + 4 more chars minimum
+
+-- Phone format (555) ####:
+WHERE phone LIKE '(555) ____'
+
+-- Email with at least 3 chars before @:
+WHERE email LIKE '___%@%'
+</code></pre>
+<p>Combining wildcards gives powerful pattern matching!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LIKE Case Sensitivity</h2>
+<p>Is LIKE case-sensitive? How does this vary by database?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Case sensitivity varies by database:</p>
+<p>Usually case-insensitive:
+- MySQL / MariaDB
+- SQL Server</p>
+<p>Usually case-sensitive:
+- PostgreSQL</p>
+<p>Examples:</p>
+<pre><code class="language-sql">WHERE last_name LIKE 'smith'
+</code></pre>
+<p>MySQL/SQL Server: Matches 'Smith', 'SMITH', 'smith'
+PostgreSQL: Matches only 'smith'</p>
+<p>PostgreSQL solution - use ILIKE:</p>
+<pre><code class="language-sql">WHERE last_name ILIKE 'smith'  -- Case-insensitive
+</code></pre>
+<p>Or use UPPER/LOWER:</p>
+<pre><code class="language-sql">WHERE UPPER(last_name) LIKE 'SMITH'  -- Works everywhere
+</code></pre>
+<p>Best practice: Don't assume - test your database's behavior or use UPPER/LOWER for consistency.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT LIKE</h2>
+<p>How does NOT LIKE work? Give practical examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NOT LIKE excludes rows matching the pattern.</p>
+<pre><code class="language-sql">-- Exclude names starting with 'A':
+WHERE name NOT LIKE 'A%'
+
+-- Exclude example.com emails:
+WHERE email NOT LIKE '%@example.com'
+
+-- Exclude codes starting with 'X':
+WHERE code NOT LIKE 'X%'
+
+-- Exclude anything containing 'test':
+WHERE description NOT LIKE '%test%'
+</code></pre>
+<p>Useful for:
+- Filtering out test data
+- Excluding specific patterns
+- Finding anomalies
+- Data cleanup</p>
+<p>Example use case:</p>
+<pre><code class="language-sql">-- Find non-example email addresses:
+WHERE email NOT LIKE '%@example.com'
+AND email NOT LIKE '%@test.com'
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complex Filter Example</h2>
+<p>Explain how this complex WHERE clause works:</p>
+<pre><code class="language-sql">WHERE (category = 'Electronics' OR category = 'Computers')
+  AND price BETWEEN 100 AND 1000
+  AND product_name LIKE '%Pro%'
+  AND discontinued IS NOT TRUE
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>This finds products matching ALL of these:</p>
+<ol>
+<li><code>(category = 'Electronics' OR category = 'Computers')</code></li>
+<li>
+<p>Must be in either category</p>
+</li>
+<li>
+<p><code>AND price BETWEEN 100 AND 1000</code></p>
+</li>
+<li>
+<p>Must cost $100-$1000</p>
+</li>
+<li>
+<p><code>AND product_name LIKE '%Pro%'</code></p>
+</li>
+<li>
+<p>Must have "Pro" in the name</p>
+</li>
+<li>
+<p><code>AND discontinued IS NOT TRUE</code></p>
+</li>
+<li>Must not be discontinued</li>
+</ol>
+<p>Processing:
+- Each condition evaluates to TRUE/FALSE/NULL for every row
+- All conditions connected with AND must be TRUE
+- Only rows where final result is TRUE are included</p>
+<p>Example matching row:
+- category: 'Electronics'
+- price: 599
+- product_name: 'MacBook Pro'
+- discontinued: FALSE</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Condition Evaluation Results</h2>
+<p>What three values can a condition evaluate to? Which rows are included in results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Every condition evaluates to one of three values:</p>
+<ol>
+<li>TRUE - Row passes this condition</li>
+<li>FALSE - Row fails this condition  </li>
+<li>NULL - Result is unknown (treated as "not TRUE")</li>
+</ol>
+<p>Only rows where the overall WHERE condition is TRUE are included.</p>
+<p>Example:</p>
+<pre><code class="language-sql">WHERE age &gt;= 18 AND country = 'USA'
+</code></pre>
+<p>For each row:
+- If age &gt;= 18 is TRUE AND country = 'USA' is TRUE → Row included
+- If either is FALSE → Row excluded
+- If either is NULL → Row excluded (NULL is "not TRUE")</p>
+<p>Key point: NULL is treated as FALSE for filtering purposes. Only TRUE rows make it through.</p>
+<p>This is why rows with NULL values often disappear from filtered results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Finding Recent Records Pattern</h2>
+<p>Give examples of common patterns for finding recent records using WHERE.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Recent records patterns:</p>
+<ol>
+<li>Orders from 2024 onward:</li>
+</ol>
+<pre><code class="language-sql">WHERE order_date &gt;= '2024-01-01'
+</code></pre>
+<ol>
+<li>Last 7 days:</li>
+</ol>
+<pre><code class="language-sql">WHERE created_at &gt;= CURRENT_DATE - 7
+</code></pre>
+<ol>
+<li>This year:</li>
+</ol>
+<pre><code class="language-sql">WHERE YEAR(order_date) = 2024
+-- Or better:
+WHERE order_date &gt;= '2024-01-01' AND order_date &lt; '2025-01-01'
+</code></pre>
+<ol>
+<li>Last 30 days:</li>
+</ol>
+<pre><code class="language-sql">WHERE order_date &gt;= CURRENT_DATE - INTERVAL 30 DAY
+</code></pre>
+<ol>
+<li>After specific timestamp:</li>
+</ol>
+<pre><code class="language-sql">WHERE updated_at &gt; '2024-10-01 00:00:00'
+</code></pre>
+<p>These patterns are very common in reports and dashboards.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Finding Missing Data Pattern</h2>
+<p>How do you find rows with missing (NULL) data? Give examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use IS NULL to find missing data:</p>
+<pre><code class="language-sql">-- Customers without email:
+WHERE email IS NULL
+
+-- Products without descriptions:
+WHERE description IS NULL
+
+-- Orders not yet shipped:
+WHERE ship_date IS NULL
+
+-- Either NULL or empty string:
+WHERE phone IS NULL OR phone = ''
+
+-- Multiple missing fields:
+WHERE email IS NULL AND phone IS NULL
+</code></pre>
+<p>Finding non-missing data:</p>
+<pre><code class="language-sql">-- Customers WITH email:
+WHERE email IS NOT NULL
+
+-- Products with prices:
+WHERE price IS NOT NULL
+
+-- Required fields filled:
+WHERE name IS NOT NULL 
+  AND email IS NOT NULL
+  AND phone IS NOT NULL
+</code></pre>
+<p>Common in data quality checks and validation queries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Excluding Values Pattern</h2>
+<p>Show different ways to exclude specific values in WHERE clauses.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple ways to exclude values:</p>
+<ol>
+<li>Not equal:</li>
+</ol>
+<pre><code class="language-sql">WHERE status &lt;&gt; 'Cancelled'
+WHERE status != 'Cancelled'  -- Same thing
+</code></pre>
+<ol>
+<li>NOT IN:</li>
+</ol>
+<pre><code class="language-sql">WHERE category NOT IN ('Discontinued', 'Out of Stock')
+</code></pre>
+<ol>
+<li>NOT LIKE:</li>
+</ol>
+<pre><code class="language-sql">WHERE email NOT LIKE '%@test.com'
+</code></pre>
+<ol>
+<li>NOT BETWEEN:</li>
+</ol>
+<pre><code class="language-sql">WHERE age NOT BETWEEN 0 AND 17  -- Exclude minors
+</code></pre>
+<ol>
+<li>Combining:</li>
+</ol>
+<pre><code class="language-sql">WHERE status &lt;&gt; 'Cancelled'
+  AND category NOT IN ('Test', 'Sample')
+  AND name NOT LIKE '%DELETE%'
+</code></pre>
+<p>Choose based on what you're excluding:
+- Single value: use &lt;&gt;
+- Multiple values: use NOT IN
+- Patterns: use NOT LIKE
+- Ranges: use NOT BETWEEN</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Active Status Pattern</h2>
+<p>Give examples of common patterns for filtering by active/inactive status.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Active/inactive patterns:</p>
+<ol>
+<li>Boolean flag:</li>
+</ol>
+<pre><code class="language-sql">WHERE is_active = TRUE
+WHERE is_active = 1
+WHERE is_deleted = 0
+</code></pre>
+<ol>
+<li>Status column:</li>
+</ol>
+<pre><code class="language-sql">WHERE status = 'Active'
+WHERE status IN ('Active', 'Pending')
+WHERE status &lt;&gt; 'Cancelled'
+</code></pre>
+<ol>
+<li>Date-based (no end date = still active):</li>
+</ol>
+<pre><code class="language-sql">WHERE end_date IS NULL
+WHERE termination_date IS NULL
+</code></pre>
+<ol>
+<li>Date range (currently active):</li>
+</ol>
+<pre><code class="language-sql">WHERE start_date &lt;= CURRENT_DATE 
+  AND (end_date IS NULL OR end_date &gt;= CURRENT_DATE)
+</code></pre>
+<ol>
+<li>Compound status:</li>
+</ol>
+<pre><code class="language-sql">WHERE is_active = TRUE
+  AND status = 'Approved'
+  AND deleted_at IS NULL
+</code></pre>
+<p>Choose pattern based on your data model.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Range Filtering Pattern</h2>
+<p>Show different ways to filter values within a range.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Range filtering options:</p>
+<ol>
+<li>Using BETWEEN (inclusive):</li>
+</ol>
+<pre><code class="language-sql">WHERE age BETWEEN 18 AND 65
+WHERE price BETWEEN 10 AND 100
+</code></pre>
+<ol>
+<li>Using AND with comparison operators:</li>
+</ol>
+<pre><code class="language-sql">WHERE age &gt;= 18 AND age &lt;= 65
+WHERE price &gt;= 10 AND price &lt;= 100
+</code></pre>
+<ol>
+<li>Exclusive ranges:</li>
+</ol>
+<pre><code class="language-sql">-- Exclude boundaries:
+WHERE age &gt; 18 AND age &lt; 65
+</code></pre>
+<ol>
+<li>One-sided ranges:</li>
+</ol>
+<pre><code class="language-sql">-- Just minimum:
+WHERE price &gt;= 50
+
+-- Just maximum:
+WHERE age &lt; 18
+</code></pre>
+<ol>
+<li>Multiple ranges:</li>
+</ol>
+<pre><code class="language-sql">-- Teenagers OR seniors:
+WHERE (age BETWEEN 13 AND 19) 
+   OR (age &gt;= 65)
+</code></pre>
+<p>BETWEEN is cleaner for inclusive ranges; use operators for exclusive or complex ranges.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why WHERE Before SELECT Matters</h2>
+<p>Explain with an example why it matters that WHERE processes before SELECT.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE sees original table columns, not SELECT calculations.</p>
+<p>This works:</p>
+<pre><code class="language-sql">SELECT first_name, last_name, age * 12 AS age_in_months
+FROM customers
+WHERE age &gt;= 18;
+-- WHERE can see 'age' because it's in the table
+</code></pre>
+<p>This doesn't work:</p>
+<pre><code class="language-sql">SELECT first_name, last_name, age * 12 AS age_in_months
+FROM customers
+WHERE age_in_months &gt;= 216;
+-- ERROR! age_in_months doesn't exist yet
+</code></pre>
+<p>Fix: Repeat the calculation in WHERE:</p>
+<pre><code class="language-sql">SELECT first_name, last_name, age * 12 AS age_in_months
+FROM customers
+WHERE age * 12 &gt;= 216;
+-- Now it works
+</code></pre>
+<p>Processing order:
+1. FROM - table available
+2. WHERE - sees table columns, not aliases
+3. SELECT - creates aliases</p>
+<p>This is why WHERE can't use SELECT aliases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filter On Unselected Columns</h2>
+<p>Can you filter on columns that aren't in your SELECT clause? Give a practical example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! WHERE can filter on any column in the table, even columns not in SELECT.</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT product_name, price
+FROM products
+WHERE category = 'Electronics'
+  AND stock_quantity &gt; 0
+  AND discontinued = FALSE;
+</code></pre>
+<p>Result shows product_name and price, but filters using:
+- category (not shown)
+- stock_quantity (not shown)
+- discontinued (not shown)</p>
+<p>Why this works:
+Processing order:
+1. FROM products (all columns available)
+2. WHERE filters using any columns
+3. SELECT chooses which columns to show</p>
+<p>Use case: "Show me product names and prices for in-stock, non-discontinued electronics"</p>
+<p>You don't need to show the filtering columns - you just need the data that meets those criteria.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Multiple Filter Patterns</h2>
+<p>Create a WHERE clause that finds: active customers from CA, NY, or TX, who registered in 2024, and have either an email or phone on file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-sql">WHERE status = 'Active'
+  AND state IN ('CA', 'NY', 'TX')
+  AND registration_date BETWEEN '2024-01-01' AND '2024-12-31'
+  AND (email IS NOT NULL OR phone IS NOT NULL);
+</code></pre>
+<p>Breaking it down:
+1. <code>status = 'Active'</code> - Active customers only
+2. <code>AND state IN ('CA', 'NY', 'TX')</code> - Specific states
+3. <code>AND registration_date BETWEEN '2024-01-01' AND '2024-12-31'</code> - 2024 registrations
+4. <code>AND (email IS NOT NULL OR phone IS NOT NULL)</code> - Have at least one contact method</p>
+<p>Key points:
+- All conditions connected with AND (must satisfy all)
+- Parentheses around OR make intent clear
+- Combines multiple filtering patterns:
+  - Equality (status)
+  - IN list (states)
+  - Date range (registration)
+  - NULL checking with OR (contact info)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

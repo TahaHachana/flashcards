@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 02 Reading Data - 01 Basic Select Mechanics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SELECT Statement Purpose</h2>
+<p>What does the SELECT statement do? What does it NOT mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SELECT retrieves data from a database. </p>
+<p>It does NOT mean "display" - it means "retrieve/get this data."</p>
+<p>What happens to the data depends on the client:
+- Database GUI displays it
+- Programming language receives it as data structures
+- Report generator formats it</p>
+<p>Mental model: SELECT asks the database a question, and the database answers with a result set.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Written Order vs Processing Order</h2>
+<p>What is the difference between the written order and the logical processing order of SELECT statement clauses?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Written order (how you type it):</p>
+<pre><code class="language-sql">SELECT columns
+FROM table
+WHERE conditions
+ORDER BY columns
+</code></pre>
+<p>Logical processing order (how database executes):</p>
+<pre><code>1. FROM table
+2. WHERE conditions
+3. SELECT columns
+4. ORDER BY columns
+</code></pre>
+<p>Why it matters: Understanding processing order explains why aliases work in ORDER BY but not WHERE, and why you can filter on columns you don't select.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Asterisk Means in SELECT</h2>
+<p>What does SELECT * mean? Why should you avoid it in production code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SELECT * means "all columns" (not all rows). It's shorthand for every column in the table.</p>
+<p>Why avoid in production:
+1. If table structure changes (new column added), code might break
+2. Retrieves unnecessary data, wasting resources
+3. Makes code unclear (what columns are actually used?)
+4. Performance: Usually don't need every column
+5. Not explicit about requirements</p>
+<p>Better: List specific columns you need.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Five Main Clauses</h2>
+<p>What are the five main clauses of a SELECT statement, and what does each do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>SELECT - Specifies which columns to retrieve</li>
+<li>FROM - Specifies which table to retrieve from</li>
+<li>WHERE - Filters which rows to include (optional)</li>
+<li>GROUP BY - Groups rows for aggregation (optional, later phase)</li>
+<li>ORDER BY - Sorts the results (optional)</li>
+</ol>
+<p>Critical: Must be written in this order, even though they execute in different order (FROM → WHERE → SELECT → ORDER BY).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why FROM Processes First</h2>
+<p>Why does the FROM clause process before SELECT? What does this enable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>FROM processes first because the database needs to know which table to work with before it can do anything else.</p>
+<p>Logical order:
+1. FROM - Identify the table
+2. WHERE - Filter rows from that table
+3. SELECT - Choose columns from filtered rows
+4. ORDER BY - Sort the results</p>
+<p>This enables:
+- Filtering on columns you don't select
+- WHERE seeing all table columns
+- Calculations and transformations in SELECT
+- ORDER BY seeing both table columns and SELECT aliases</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Selecting Specific Columns</h2>
+<p>How do you select specific columns? What are the benefits over SELECT *?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Syntax:</p>
+<pre><code class="language-sql">SELECT first_name, last_name, email FROM customers;
+</code></pre>
+<p>Benefits:
+1. Explicitly states what data you need
+2. More efficient (only retrieves needed columns)
+3. More maintainable (clear what the query does)
+4. Doesn't break if table adds new columns
+5. Better performance</p>
+<p>Key points:
+- Columns separated by commas
+- Can select in any order (doesn't have to match table order)
+- Column names are case-insensitive</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Column Order Independence</h2>
+<p>Can you select columns in a different order than they're defined in the table? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Column order in SELECT is independent of table definition.</p>
+<p>Table definition: id, first_name, last_name, email</p>
+<p>Valid SELECT:</p>
+<pre><code class="language-sql">SELECT email, last_name, first_name FROM customers;
+</code></pre>
+<p>Result has columns in the order you specified: email, last_name, first_name</p>
+<p>Why this matters:
+- Flexibility in presenting data
+- Can organize output logically for users
+- Order in result set ≠ order in table</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Selecting Expressions</h2>
+<p>Can you SELECT things other than column names? Give examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! You can SELECT:</p>
+<ol>
+<li>Literal values:</li>
+</ol>
+<pre><code class="language-sql">SELECT 'Hello', 42, 3.14;
+</code></pre>
+<ol>
+<li>Calculations:</li>
+</ol>
+<pre><code class="language-sql">SELECT price * quantity FROM order_items;
+</code></pre>
+<ol>
+<li>Function calls:</li>
+</ol>
+<pre><code class="language-sql">SELECT UPPER(name) FROM customers;
+</code></pre>
+<ol>
+<li>Combined expressions:</li>
+</ol>
+<pre><code class="language-sql">SELECT price * quantity * 1.08 AS total_with_tax FROM orders;
+</code></pre>
+<p>Result: Each expression creates a column in the result set (exists only in result, not in table).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Column Aliases Purpose</h2>
+<p>What are column aliases? Why use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Aliases give names to calculated columns or rename existing columns.</p>
+<p>Syntax:</p>
+<pre><code class="language-sql">SELECT price * quantity AS total FROM orders;
+SELECT height / 2.54 AS height_in_inches FROM customers;
+</code></pre>
+<p>Why use them:
+1. Make results clearer (column labeled "total" not "price * quantity")
+2. Required for calculations in ORDER BY
+3. Make query more readable
+4. Can rename confusing column names</p>
+<p>Notes:
+- AS keyword is optional but recommended
+- Alias names should be descriptive
+- Can't start with a number
+- Use quotes if name has spaces: AS "Total Price"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FROM Clause Purpose</h2>
+<p>What does the FROM clause do? Is it mandatory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>FROM specifies which table to query.</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers;
+</code></pre>
+<p>Key points:
+- FROM is mandatory (must specify data source)
+- Table names may be case-sensitive (depends on database)
+- Can query one table at a time (for now - JOINs come later)
+- Processes first logically (before WHERE, SELECT, ORDER BY)</p>
+<p>Without FROM, the database doesn't know where to get the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SQL is Declarative</h2>
+<p>What does it mean that SQL is "declarative" rather than "procedural"? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declarative: You describe WHAT you want, not HOW to get it
+Procedural: You specify exact steps to retrieve data</p>
+<p>Example comparison:</p>
+<p>Procedural (like Python):</p>
+<pre><code class="language-python">for customer in customers:
+    if customer.age &gt;= 18:
+        print(customer.name)
+</code></pre>
+<p>Declarative (SQL):</p>
+<pre><code class="language-sql">SELECT name FROM customers WHERE age &gt;= 18;
+</code></pre>
+<p>Why this matters:
+1. You describe the result you want
+2. Database decides HOW to retrieve it efficiently
+3. No need to specify loops, conditions, or algorithms
+4. Same query can be optimized differently based on data/indexes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Set Definition</h2>
+<p>What is a result set? What are its properties?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A result set is a temporary table containing data returned by a SELECT query.</p>
+<p>Properties:
+- It's a table (rows and columns)
+- It's temporary (exists only for your query)
+- It's not stored in the database
+- Each row represents data meeting your criteria
+- Columns are what you specified in SELECT</p>
+<p>Example result set:</p>
+<pre><code>first_name | age
+-----------|-----
+Alice      | 25
+Bob        | 30
+Carol      | 21
+</code></pre>
+<p>Key insight: Result sets are tables. This matters because many SQL operations work on tables, so you can treat result sets like tables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Case Sensitivity in SQL</h2>
+<p>What SQL elements are case-sensitive and which are case-insensitive?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Case-insensitive:
+- SQL keywords: SELECT, FROM, WHERE (can write select, from, where)
+- Column names: FirstName = firstname (usually)
+- Table names: Customers = customers (usually)</p>
+<p>Case-sensitive:
+- String values: 'John' ≠ 'john' ≠ 'JOHN' (ALWAYS)</p>
+<p>Convention: 
+- Write keywords in UPPERCASE for readability (optional with syntax highlighting)
+- Consistent casing for column/table names</p>
+<p>Note: Some databases (PostgreSQL with quotes) can be case-sensitive for identifiers, but most treat them as case-insensitive.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SQL Whitespace Rules</h2>
+<p>How flexible is SQL with spacing and line breaks? What's the best practice?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SQL is very flexible with whitespace - spaces, tabs, and line breaks are mostly ignored.</p>
+<p>These are equivalent:</p>
+<pre><code class="language-sql">SELECT first_name,last_name FROM customers WHERE age&gt;18;
+
+SELECT first_name, last_name
+FROM customers
+WHERE age &gt; 18;
+</code></pre>
+<p>Best practices:
+- Use whitespace for readability
+- Put each major clause on its own line
+- Indent sub-parts of clauses
+- Space around operators (age &gt; 18, not age&gt;18)
+- Be consistent within your codebase</p>
+<p>The semicolon (;) marks the end of a statement - always include it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SQL Comments</h2>
+<p>What are the two ways to write comments in SQL? When should you use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Two comment styles:</p>
+<p>Single-line:</p>
+<pre><code class="language-sql">-- This is a comment
+SELECT * FROM customers; -- This is also a comment
+</code></pre>
+<p>Multi-line:</p>
+<pre><code class="language-sql">/*
+This is a comment
+spanning multiple lines
+*/
+SELECT * FROM customers;
+</code></pre>
+<p>Use comments to:
+- Explain complex logic
+- Document business rules
+- Provide context for future maintainers
+- Temporarily disable code during testing
+- Add authorship/date information</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Alias Works in ORDER BY Not WHERE</h2>
+<p>Why can you use column aliases in ORDER BY but not in WHERE? Explain using processing order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Processing order determines when aliases exist:</p>
+<pre><code>1. FROM table
+2. WHERE conditions    ← Alias doesn't exist yet
+3. SELECT columns      ← Alias created here
+4. ORDER BY columns    ← Alias now exists
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT price * quantity AS total
+FROM orders
+WHERE total &gt; 100        -- ERROR! Alias doesn't exist yet
+ORDER BY total;          -- WORKS! Alias exists now
+</code></pre>
+<p>Fix for WHERE:</p>
+<pre><code class="language-sql">WHERE price * quantity &gt; 100  -- Repeat the calculation
+</code></pre>
+<p>ORDER BY can use aliases because SELECT creates them before ORDER BY executes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering on Unselected Columns</h2>
+<p>Can you filter (WHERE) on columns that aren't in your SELECT clause? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! You can filter on columns you don't select.</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT first_name, last_name
+FROM customers
+WHERE registration_date &gt;= '2024-01-01';
+</code></pre>
+<p>This returns only names, but filters by registration_date (which isn't shown).</p>
+<p>Why this works:
+Processing order:
+1. FROM customers (all columns available)
+2. WHERE registration_date &gt;= '2024-01-01' (can see all columns)
+3. SELECT first_name, last_name (narrows to these columns)</p>
+<p>Use case: "Show me customer names for people who registered this year"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Calculations Create New Columns</h2>
+<p>When you write <code>SELECT price * 2 FROM products</code>, where does this calculated column exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The calculated column exists ONLY in the result set (temporary table), NOT in the stored table.</p>
+<pre><code class="language-sql">SELECT price, price * 2 AS doubled
+FROM products;
+</code></pre>
+<p>Result set has two columns:
+- price (from table)
+- doubled (calculated, temporary)</p>
+<p>Key points:
+- Calculation happens during query execution
+- Result is not stored anywhere
+- Original table is unchanged
+- Each time you run the query, it recalculates
+- Useful for transforming data without modifying storage</p>
+<p>This is the difference between result sets and stored tables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Everything Is a Table Concept</h2>
+<p>Why is the concept "everything is a table" important in SQL?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Understanding that result sets are tables helps with advanced SQL.</p>
+<p>Key points:
+1. Tables in the database → contain stored data
+2. Result sets from queries → temporary tables
+3. Both have rows and columns
+4. Both can be operated on with SQL</p>
+<p>Why this matters:
+- Many SQL operations work on tables
+- You can nest queries (subqueries) because they return tables
+- You can JOIN result sets like you JOIN tables
+- Consistent mental model throughout SQL</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT * FROM customers;  -- Returns a table (result set)
+</code></pre>
+<p>This result set IS a table, just temporary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Semicolon Purpose</h2>
+<p>What does the semicolon do in SQL? When is it required?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The semicolon (;) marks the end of a SQL statement.</p>
+<p>Required when:
+- Executing multiple statements together
+- Standard practice even for single statements
+- Some tools require it</p>
+<p>Example:</p>
+<pre><code class="language-sql">SELECT * FROM customers;
+SELECT * FROM products;
+</code></pre>
+<p>Without semicolons, the database wouldn't know where one statement ends and another begins.</p>
+<p>Best practice: Always include semicolon, even for single statements. Makes code consistent and prevents errors when adding more statements.</p>
+<p>Exception: Some interactive tools make it optional for single statements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SELECT Processes After WHERE</h2>
+<p>Why does SELECT process after WHERE? What's the practical impact?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Processing order: FROM → WHERE → SELECT</p>
+<p>Why:
+1. FROM identifies the table
+2. WHERE filters rows from that table
+3. SELECT chooses columns from filtered rows</p>
+<p>Practical impact:</p>
+<p>Can do this:</p>
+<pre><code class="language-sql">SELECT name, age
+FROM customers
+WHERE registration_date &gt; '2024-01-01';
+</code></pre>
+<p>Can't do this:</p>
+<pre><code class="language-sql">SELECT name, age
+FROM customers
+WHERE name = 'John';  -- Works fine
+WHERE total &gt; 100;    -- ERROR if total is calculated in SELECT
+</code></pre>
+<p>WHERE sees original table columns, not SELECT calculations/aliases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Literal Values in SELECT</h2>
+<p>What are literal values in SELECT? Give examples of when you'd use them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Literal values are constants that appear directly in your query.</p>
+<p>Examples:</p>
+<pre><code class="language-sql">SELECT 'Hello World';           -- String literal
+SELECT 42;                      -- Number literal
+SELECT 3.14;                    -- Decimal literal
+SELECT 'Active' AS status, name FROM customers;  -- Combined
+</code></pre>
+<p>Use cases:
+1. Testing queries
+2. Adding fixed values to results
+3. Creating labels or categories
+4. Combining with actual data:</p>
+<pre><code class="language-sql">SELECT name, 'Customer' AS type FROM customers;
+</code></pre>
+<p>Result:</p>
+<pre><code>name    | type
+--------|----------
+Alice   | Customer
+Bob     | Customer
+</code></pre>
+<p>Every row gets the same literal value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Set vs Stored Table</h2>
+<p>What's the difference between a result set and a stored table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Stored table:
+- Permanently stored in database
+- Data persists between queries
+- Can be modified (INSERT, UPDATE, DELETE)
+- Has defined structure (schema)
+- Physical storage on disk</p>
+<p>Result set:
+- Temporary, exists only during query
+- Disappears after query completes
+- Cannot be modified (it's output)
+- Structure defined by SELECT clause
+- Exists only in memory</p>
+<p>Key insight:
+When you run <code>SELECT * FROM customers</code>, the customers table is stored, but the result you see is a temporary result set.</p>
+<p>Both are tables (rows + columns), but one is persistent, one is temporary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Column Names Are Case Insensitive</h2>
+<p>Are column and table names case-sensitive in SQL? Are there exceptions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Usually case-insensitive:</p>
+<pre><code class="language-sql">SELECT FirstName FROM Customers;
+-- Same as:
+SELECT firstname FROM customers;
+</code></pre>
+<p>Works in most databases (MySQL, SQL Server, SQLite).</p>
+<p>Exception: PostgreSQL with quoted identifiers</p>
+<pre><code class="language-sql">-- These are DIFFERENT in PostgreSQL:
+SELECT &quot;FirstName&quot; FROM &quot;Customers&quot;;  -- Case-sensitive
+SELECT FirstName FROM Customers;      -- Case-insensitive
+</code></pre>
+<p>String values ALWAYS case-sensitive:</p>
+<pre><code class="language-sql">WHERE name = 'John'  -- Matches 'John' only, not 'john'
+</code></pre>
+<p>Best practice: Be consistent with casing to avoid confusion, even though it usually doesn't matter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Clauses Required Order</h2>
+<p>What is the required order for writing SELECT statement clauses? Can you reorder them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Required written order (cannot change):</p>
+<pre><code class="language-sql">SELECT columns
+FROM table
+WHERE conditions
+ORDER BY columns
+</code></pre>
+<p>This order is mandatory - you'll get a syntax error if you write them differently.</p>
+<p>Example of WRONG order:</p>
+<pre><code class="language-sql">FROM customers        -- ERROR!
+WHERE age &gt; 18
+SELECT name
+</code></pre>
+<p>Why this order?
+SQL syntax rules require it, even though the logical execution order is different (FROM → WHERE → SELECT → ORDER BY).</p>
+<p>Remember: Written order ≠ Execution order, but written order is fixed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Database Decides How</h2>
+<p>What does it mean that "the database decides HOW to retrieve data"? Why does this matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When you write:</p>
+<pre><code class="language-sql">SELECT name FROM customers WHERE age &gt;= 18;
+</code></pre>
+<p>You specify WHAT (names of adults), not HOW:
+- Which index to use?
+- Read full table or use index?
+- In what order to process data?
+- How much memory to allocate?</p>
+<p>The database's query optimizer decides the HOW based on:
+- Table size
+- Available indexes
+- Data distribution
+- System resources</p>
+<p>Why this matters:
+1. Same query can execute differently over time (as data grows)
+2. Database can optimize automatically
+3. You don't need to know internal algorithms
+4. Adding indexes can speed up queries without changing SQL</p>
+<p>This is the power of declarative programming.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Asterisk Best Practices</h2>
+<p>When is it acceptable to use SELECT * and when should you avoid it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Acceptable uses:
+- Ad-hoc queries and exploration
+- Learning/testing with new tables
+- Quick checks during development
+- When you genuinely need all columns</p>
+<p>Avoid in production:
+- Application code
+- Stored procedures
+- Reports
+- Any code that will be maintained</p>
+<p>Why avoid:</p>
+<pre><code class="language-sql">-- Today: customers has 5 columns
+SELECT * FROM customers;
+
+-- Tomorrow: customers adds 6th column
+-- Your code might break or behave unexpectedly
+</code></pre>
+<p>Best practice:</p>
+<pre><code class="language-sql">-- Instead of:
+SELECT * FROM customers;
+
+-- Write:
+SELECT id, name, email, phone FROM customers;
+</code></pre>
+<p>Explicit is better than implicit in production code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Query As a Question</h2>
+<p>What does it mean to think of a SELECT query as "asking a question"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Mental model: You ask the database a question, it answers with a result set.</p>
+<p>Examples:</p>
+<pre><code class="language-sql">SELECT name FROM customers WHERE age &gt;= 21;
+</code></pre>
+<p>Question: "Who are the customers aged 21 or older?"
+Answer: Table of names</p>
+<pre><code class="language-sql">SELECT product, price FROM products WHERE price &lt; 50;
+</code></pre>
+<p>Question: "What products cost less than $50?"
+Answer: Table of products and prices</p>
+<p>Why this helps:
+1. Makes query intent clear
+2. Helps you write the right SQL
+3. Result set is the "answer"
+4. You're not commanding, you're inquiring</p>
+<p>The database is an expert that knows how to find the answer efficiently.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FROM Clause Mandatory</h2>
+<p>Is the FROM clause always required in a SELECT statement? Are there any exceptions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>FROM is almost always required - you must tell the database where to get data.</p>
+<p>Standard query:</p>
+<pre><code class="language-sql">SELECT name FROM customers;  -- FROM required
+</code></pre>
+<p>Exception (some databases):
+Testing or calculating without a table:</p>
+<pre><code class="language-sql">-- PostgreSQL, Oracle require FROM:
+SELECT 1 + 1 FROM dual;  -- dual is dummy table
+
+-- MySQL, SQL Server allow:
+SELECT 1 + 1;  -- No FROM needed
+SELECT 'Hello', 42;
+</code></pre>
+<p>But for actual data retrieval, FROM is always required because the database needs to know: "from which table?"</p>
+<p>Best practice: Always use FROM when retrieving actual data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Understanding Query Execution</h2>
+<p>Walk through the logical execution of this query:</p>
+<pre><code class="language-sql">SELECT name, age
+FROM customers  
+WHERE age &gt;= 18
+ORDER BY name;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Logical execution order:</p>
+<ol>
+<li>FROM customers</li>
+<li>Database starts with the customers table</li>
+<li>
+<p>All columns available</p>
+</li>
+<li>
+<p>WHERE age &gt;= 18</p>
+</li>
+<li>Filter to only rows where age is 18 or more</li>
+<li>
+<p>Still have all columns, fewer rows</p>
+</li>
+<li>
+<p>SELECT name, age</p>
+</li>
+<li>From filtered rows, choose only name and age columns</li>
+<li>
+<p>Now have 2 columns (name, age)</p>
+</li>
+<li>
+<p>ORDER BY name</p>
+</li>
+<li>Sort the results alphabetically by name</li>
+</ol>
+<p>Result: Names and ages of adult customers, sorted alphabetically.</p>
+<p>Understanding this order explains why WHERE can't see SELECT aliases and why ORDER BY can see them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
