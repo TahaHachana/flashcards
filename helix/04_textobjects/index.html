@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Data - 01 Database Concepts - 01 Data Structures</title>
+  <title>Flashcards - Helix - 04 Textobjects</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,20 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Structured Data</h2>
-<p>What is structured data and what are its key characteristics?</p>
+                                        <h2>What Are Textobjects</h2>
+<p>What are textobjects in Helix and what purpose do they serve?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Structured data is data that fits neatly into tables with clear structure, where fields of information are easily distinguishable and can be organized in a schema. Key characteristics include:
-- Organized in tabular format with column headings
-- Each data point fits within a specific field
-- Easy to search, query, and analyze
-- Follows a consistent schema
-- Can be restructured to fit into other structured data systems (e.g., data warehouses)</p>
+                                        <p>Textobjects are a way to select, manipulate, and operate on pieces of text in a structured way. They allow you to refer to blocks of text based on their structure or purpose (like words, functions, paragraphs) rather than selecting character-by-character.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,21 +50,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Structured Data</h2>
-<p>Provide at least four examples of structured data systems or sources.</p>
+                                        <h2>Select Around Textobject Command</h2>
+<p>What is the command to select around a textobject in Helix, and what does it do?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Examples of structured data include:
-- Relational databases
-- Excel spreadsheets
-- SharePoint lists
-- Account registration forms (e.g., email signup)
-- Manual data entry systems
-- Database records with defined fields</p>
+                                        <p><code>ma&lt;textobject&gt;</code> - Selects the textobject including its delimiters/boundaries. For example, <code>ma(</code> selects the parentheses and everything inside them.</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +72,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Types in Structured Data</h2>
-<p>What are the three main data types that can be stored in structured tables?</p>
+                                        <h2>Select Inside Textobject Command</h2>
+<p>What is the command to select inside a textobject in Helix, and what does it do?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The three main data types in structured tables are:
-1. Numeric: Numbers, integers, decimals
-2. Alphanumeric: Text and number combinations
-3. Date: Date and time information</p>
+                                        <p><code>mi&lt;textobject&gt;</code> - Selects the textobject excluding its delimiters/boundaries. For example, <code>mi(</code> selects only the content inside parentheses, not the parentheses themselves.</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +94,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Versus Structure</h2>
-<p>What is the important distinction between data and structure?</p>
+                                        <h2>Around vs Inside Quote Example</h2>
+<p>What is the difference between <code>ma"</code> and <code>mi"</code> when the cursor is inside <code>"hello"</code>?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data itself is not the structure; data is what exists inside the structure. Data remains data regardless of where it's stored or whether it's structured. The structure is simply the organizational framework, while the data is the actual content or information being stored.</p>
+                                        <p><code>ma"</code> selects everything including the quotes: <code>"hello"</code> (all characters selected)
+<code>mi"</code> selects only the content: <code>"hello"</code> (only "hello" selected, quotes excluded)</p>
                                     </div>
                                 </div>
                             </div>
@@ -130,21 +117,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Unstructured Data</h2>
-<p>What is unstructured data and how does it differ from structured data?</p>
+                                        <h2>Word Textobject</h2>
+<p>What is the difference between <code>w</code> and <code>W</code> textobjects?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is data that is not organized in a predefined manner to meet the standards for structured data. Key differences:
-- Does not fit neatly into tables
-- Has undefined fields
-- Cannot be stored in traditional relational databases
-- Stored in non-relational databases instead
-- Must be stored in data lakes or large object storage
-- There is far more unstructured data in the world than structured data</p>
+                                        <p><code>w</code> (word) follows standard word boundaries and stops at punctuation (e.g., "hello-world" is two words).
+<code>W</code> (WORD) includes all non-whitespace characters without stopping at punctuation (e.g., "hello-world" is one WORD).</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +140,17 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Types of Unstructured Data</h2>
-<p>List and briefly describe four types of unstructured data.</p>
+                                        <h2>Common Simple Textobjects</h2>
+<p>What do the textobject keys <code>w</code>, <code>p</code>, and <code>(</code> represent?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Four types of unstructured data:
-1. Image data: Must be viewed to understand contents; cannot be easily interpreted by systems without viewing
-2. Video data: Must be watched to understand content
-3. Audio data: Must be listened to for full context
-4. Documents and PDFs: Not easily structured into databases but commonly used in organizations</p>
+                                        <p><code>w</code> - Word (standard word boundaries)
+<code>p</code> - Paragraph (text block separated by blank lines)
+<code>(</code> - Content within parentheses (surround pair)</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,15 +164,18 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB Storage</h2>
-<p>What is BLOB storage and why is it used?</p>
+                                        <h2>Code Structure Textobjects</h2>
+<p>What do the textobject keys <code>f</code>, <code>t</code>, <code>a</code>, and <code>c</code> represent?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB (Binary Large Object) storage is a framework designed to store large amounts of unstructured data, like video, audio, and text. It is more effective for storage of unstructured data compared to a traditional database, which is optimized for structured data.</p>
+                                        <p><code>f</code> - Function (function definition and body)
+<code>t</code> - Type/Class (class or type definition)
+<code>a</code> - Argument (function/method parameter)
+<code>c</code> - Comment (comment block)</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,21 +189,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unstructured Data Storage Challenges</h2>
-<p>What are the main storage challenges associated with unstructured data?</p>
+                                        <h2>Closest Surround Pair Textobject</h2>
+<p>What does the <code>m</code> textobject do and why is it useful?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Storage challenges for unstructured data include:
-- File sizes vary based on quality and length
-- Image file size depends on image quality
-- Audio file size depends on both quality and length
-- Video file size depends on both quality and length
-- Long, high-quality videos may be difficult to store for some organizations
-- Requires specialized storage solutions like data lakes or BLOB storage</p>
+                                        <p>The <code>m</code> textobject automatically detects the nearest surrounding pair (quotes, parentheses, brackets, etc.). It's useful because you don't need to know which type of delimiter surrounds the cursor—Helix figures it out automatically.</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,20 +211,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Converting Unstructured to Structured Data</h2>
-<p>How can unstructured data be converted into structured data, and why is this valuable?</p>
+                                        <h2>Tree Sitter Dependent Textobjects</h2>
+<p>Which textobjects require tree-sitter grammar and query files to work?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data can be converted to structured data by:
-- Extracting specific information from unstructured sources
-- Entering that information into defined fields in a database or system
-- Maintaining the original unstructured source while creating structured records
-- Adding metadata and tags to make unstructured data searchable</p>
-<p>This is valuable because structured data is easier to search, analyze, and use for decision-making at scale.</p>
+                                        <p><code>f</code> (function), <code>t</code> (type/class), <code>a</code> (argument), <code>c</code> (comment), <code>T</code> (test), and <code>g</code> (change/git hunk) all require an active tree-sitter grammar and special query file for the current document's language.</p>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +233,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Volume Comparison of Data Types</h2>
-<p>Which type of data (structured or unstructured) is more prevalent in the world, and why?</p>
+                                        <h2>Navigate to Next Function</h2>
+<p>How do you navigate to the next function in a file?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is far more prevalent in the world than structured data. This is because:
-- Humans produce a huge volume of unstructured data daily
-- Modern technology makes creating unstructured data (videos, images, documents) extremely easy
-- Accessibility of creation tools has dramatically increased unstructured data production
-- Unstructured data is "here to stay"
-- There's ongoing effort to find ways to convert unstructured data into structured formats</p>
+                                        <p><code>]f</code> - Use <code>]</code> (next) followed by <code>f</code> (function). Similarly, <code>[f</code> moves to the previous function.</p>
                                     </div>
                                 </div>
                             </div>
@@ -288,20 +255,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Semi-Structured Data</h2>
-<p>What is semi-structured data and what makes it different from both structured and unstructured data?</p>
+                                        <h2>Navigation Pattern with Textobjects</h2>
+<p>What is the general pattern for navigating between textobjects in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is a hybrid mix of both structured and unstructured data. Differences:
-- Does not meet the rigid standards of structured data
-- Contains some organizational elements through tags and attributes
-- Uses these tags to group data and describe storage methods
-- Provides a bridge between structured and unstructured data
-- May require special data types like BLOB and CLOB for storage</p>
+                                        <p>Use <code>]</code> followed by the textobject key to move forward (next), or <code>[</code> followed by the textobject key to move backward (previous). For example: <code>]t</code> (next type), <code>[a</code> (previous argument).</p>
                                     </div>
                                 </div>
                             </div>
@@ -315,20 +277,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Semi-Structured Data</h2>
-<p>Provide five examples of semi-structured data formats.</p>
+                                        <h2>Delete Entire Function Example</h2>
+<p>How would you delete an entire function including its signature in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Five examples of semi-structured data:
-1. Emails: Structured metadata (sender, recipient, timestamp) + unstructured content (message body)
-2. JSON files: JavaScript Object Notation with key-value pairs
-3. XML files: Extensible Markup Language with tagged elements
-4. Zipped files: Compressed file containers
-5. Web pages (HTML): Hypertext Markup Language with tagged content</p>
+                                        <p><code>maf</code> followed by <code>d</code> - Select around (<code>ma</code>) the function textobject (<code>f</code>), then delete (<code>d</code>).</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +299,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB and CLOB Data Types</h2>
-<p>What are BLOB and CLOB data types, and when are they used?</p>
+                                        <h2>Change Text Inside Quotes Example</h2>
+<p>How would you replace text inside quotes while keeping the quotes themselves?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB and CLOB are special data types used for semi-structured data:
-- BLOB (Binary Large Object): Used for storing binary data
-- CLOB (Character Large Object): Used for storing character data</p>
-<p>These data types are required because semi-structured data does not meet the rigid standards of structured data and needs flexible storage solutions that can handle mixed or large objects.</p>
+                                        <p><code>mi"</code> followed by <code>c</code> - Select inside (<code>mi</code>) the quote surround pair (<code>"</code>), then change (<code>c</code>) which deletes and enters insert mode. The quotes remain intact.</p>
                                     </div>
                                 </div>
                             </div>
@@ -367,20 +321,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Role of Tags and Attributes</h2>
-<p>What are the main functions of tags and attributes in semi-structured data?</p>
+                                        <h2>Textobject Command Mnemonic</h2>
+<p>What do the <code>ma</code> and <code>mi</code> mnemonics stand for in Helix's textobject commands?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Tags and attributes in semi-structured data serve multiple functions:
-- Grouping: Organize related data together
-- Description: Describe storage methods and data properties
-- Searchability: Enable searching for specific data
-- Viewability: Allow data to be retrieved and displayed
-- Transformation: Help convert unstructured data into more structured datasets</p>
+                                        <p><code>ma</code> - <strong>m</strong>odify + <strong>a</strong>round (select including delimiters)
+<code>mi</code> - <strong>m</strong>odify + <strong>i</strong>nside (select excluding delimiters)</p>
                                     </div>
                                 </div>
                             </div>
@@ -394,19 +344,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Metadata in Semi-Structured Data</h2>
-<p>What is metadata in the context of semi-structured data, and why is it important?</p>
+                                        <h2>Helix vs Vim Textobject Commands</h2>
+<p>How do Helix's textobject commands compare to Vim's?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Metadata is structured information that is automatically added when images or other files are created and loaded into software and data systems. It is important because:
-- Provides structured information about unstructured content
-- Creates additional structured data points around unstructured data
-- Enhances searchability and organization
-- Acts as a bridge between unstructured content and structured systems</p>
+                                        <p>Helix uses <code>ma</code> (around) and <code>mi</code> (inside), while Vim uses <code>va</code> (visual around) and <code>vi</code> (visual inside). Helix's approach is more mnemonic with the "modify" prefix.</p>
                                     </div>
                                 </div>
                             </div>
@@ -420,73 +366,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Relational Database Storage</h2>
-<p>What type of data can be stored in a relational database, and what type cannot?</p>
+                                        <h2>Special Textobjects T and G</h2>
+<p>What do the textobject keys <code>T</code> (uppercase) and <code>g</code> represent?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Relational databases can store: Structured data
-Relational databases cannot store: Unstructured data</p>
-<p>Unstructured data must be stored in non-relational databases, data lakes, or large object storage systems. Semi-structured data may require special data types (BLOB, CLOB) even when stored in database systems.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Working with Different Data Types</h2>
-<p>Why is it important for data analysts to understand all three data structure types (structured, unstructured, and semi-structured)?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Data analysts need to understand all three types because:
-- All three types coexist in organizational systems
-- Working with structured data and putting data into structure is part of everyday work
-- Converting between types is often necessary for analysis
-- Different storage solutions are required for each type
-- Real-world data doesn't always fit neatly into one category
-- Understanding data types enables better decision-making about storage, analysis, and transformation strategies</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Practical Significance of Semi-Structured Data</h2>
-<p>Why is semi-structured data practically significant in modern data systems?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Semi-structured data is significant because:
-- Enables systems to handle diverse data types within the same framework
-- Provides flexibility while maintaining some organizational structure
-- Facilitates the transformation of unstructured data into structured formats
-- Common in modern applications that need to handle mixed data types
-- Bridges the gap between rigid structured systems and completely unstructured content
-- Allows organizations to work with real-world data that doesn't fit neatly into one category</p>
+                                        <p><code>T</code> - Test (test function/block)
+<code>g</code> - Change (git change/hunk)</p>
                                     </div>
                                 </div>
                             </div>

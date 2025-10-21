@@ -10,5 +10,5 @@ Examples of structured data include:
 - SharePoint lists
 - Account registration forms (e.g., email signup)
 - Manual data entry systems
-- Enrollment records with fields like enrollment ID
+- Database records with defined fields
 

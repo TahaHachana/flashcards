@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Data - 01 Database Concepts - 01 Data Structures</title>
+  <title>Flashcards - Helix - 06 Pickers</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,20 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Structured Data</h2>
-<p>What is structured data and what are its key characteristics?</p>
+                                        <h2>What Are Pickers</h2>
+<p>What are pickers in Helix and what are they used for?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Structured data is data that fits neatly into tables with clear structure, where fields of information are easily distinguishable and can be organized in a schema. Key characteristics include:
-- Organized in tabular format with column headings
-- Each data point fits within a specific field
-- Easy to search, query, and analyze
-- Follows a consistent schema
-- Can be restructured to fit into other structured data systems (e.g., data warehouses)</p>
+                                        <p>Pickers are interactive windows used to select various kinds of items. They provide a fuzzy-search interface for quickly finding and selecting files, search results, symbols, buffers, and other items within your project.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,21 +50,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Structured Data</h2>
-<p>Provide at least four examples of structured data systems or sources.</p>
+                                        <h2>Accessing Pickers via Space Mode</h2>
+<p>How are most pickers accessed in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Examples of structured data include:
-- Relational databases
-- Excel spreadsheets
-- SharePoint lists
-- Account registration forms (e.g., email signup)
-- Manual data entry systems
-- Database records with defined fields</p>
+                                        <p>Most pickers are accessed via keybindings in space mode (press Space in normal mode). For example: <code>Space-f</code> for file picker, <code>Space-/</code> for global search picker, <code>Space-b</code> for buffer picker.</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +72,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Types in Structured Data</h2>
-<p>What are the three main data types that can be stored in structured tables?</p>
+                                        <h2>Picker Fuzzy Matching Syntax</h2>
+<p>What syntax do most pickers use for filtering and what are the two exceptions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The three main data types in structured tables are:
-1. Numeric: Numbers, integers, decimals
-2. Alphanumeric: Text and number combinations
-3. Date: Date and time information</p>
+                                        <p>Most pickers use fzf (fuzzy finder) syntax for fuzzy matching. Two exceptions: (1) global search picker uses regex, and (2) workspace symbol picker passes search terms to the language server.</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +94,17 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Versus Structure</h2>
-<p>What is the important distinction between data and structure?</p>
+                                        <h2>fzf Syntax Basic Patterns</h2>
+<p>What do these fzf syntax patterns mean: <code>^term</code>, <code>term$</code>, and <code>!term</code>?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data itself is not the structure; data is what exists inside the structure. Data remains data regardless of where it's stored or whether it's structured. The structure is simply the organizational framework, while the data is the actual content or information being stored.</p>
+                                        <p><code>^term</code> - Prefix match (starts with "term")
+<code>term$</code> - Suffix match (ends with "term")
+<code>!term</code> - Negation (excludes "term")</p>
                                     </div>
                                 </div>
                             </div>
@@ -130,21 +118,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Unstructured Data</h2>
-<p>What is unstructured data and how does it differ from structured data?</p>
+                                        <h2>Column Specific Filtering</h2>
+<p>How do you apply a filter to a specific column in a picker?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is data that is not organized in a predefined manner to meet the standards for structured data. Key differences:
-- Does not fit neatly into tables
-- Has undefined fields
-- Cannot be stored in traditional relational databases
-- Stored in non-relational databases instead
-- Must be stored in data lakes or large object storage
-- There is far more unstructured data in the world than structured data</p>
+                                        <p>Use the <code>%</code> prefix followed by the column name (or any prefix of it). For example, <code>%p</code>, <code>%pa</code>, <code>%pat</code>, or <code>%path</code> all refer to the "path" column.</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +140,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Types of Unstructured Data</h2>
-<p>List and briefly describe four types of unstructured data.</p>
+                                        <h2>Column Filtering Example</h2>
+<p>What does the query <code>helix %p .toml !lang</code> mean in the global search picker?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Four types of unstructured data:
-1. Image data: Must be viewed to understand contents; cannot be easily interpreted by systems without viewing
-2. Video data: Must be watched to understand content
-3. Audio data: Must be listened to for full context
-4. Documents and PDFs: Not easily structured into databases but commonly used in organizations</p>
+                                        <p>Search for the term "helix" within files whose paths end in ".toml" but don't include "lang" in the path. It combines content search with path filtering.</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,15 +162,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB Storage</h2>
-<p>What is BLOB storage and why is it used?</p>
+                                        <h2>Insert Register Contents in Picker</h2>
+<p>How do you insert the contents of a register into a picker's filter?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB (Binary Large Object) storage is a framework designed to store large amounts of unstructured data, like video, audio, and text. It is more effective for storage of unstructured data compared to a traditional database, which is optimized for structured data.</p>
+                                        <p>Use <code>Ctrl-r</code> followed by the register name. For example, <code>Ctrl-r</code> <code>.</code> inserts the currently selected text, or <code>Ctrl-r</code> <code>%</code> inserts the current filename.</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,21 +184,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unstructured Data Storage Challenges</h2>
-<p>What are the main storage challenges associated with unstructured data?</p>
+                                        <h2>Search Register Default Behavior</h2>
+<p>What happens if you press Enter in the global search picker without typing a filter?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Storage challenges for unstructured data include:
-- File sizes vary based on quality and length
-- Image file size depends on image quality
-- Audio file size depends on both quality and length
-- Video file size depends on both quality and length
-- Long, high-quality videos may be difficult to store for some organizations
-- Requires specialized storage solutions like data lakes or BLOB storage</p>
+                                        <p>The picker uses the contents of the search register (<code>/</code>). This allows quick workflows like: select text, press <code>*</code> to add to search register, then <code>Space-/</code> <code>Enter</code> to search globally.</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,20 +206,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Converting Unstructured to Structured Data</h2>
-<p>How can unstructured data be converted into structured data, and why is this valuable?</p>
+                                        <h2>Search Selected Text Workflow</h2>
+<p>What is the quick workflow to perform a global search for currently selected text?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data can be converted to structured data by:
-- Extracting specific information from unstructured sources
-- Entering that information into defined fields in a database or system
-- Maintaining the original unstructured source while creating structured records
-- Adding metadata and tags to make unstructured data searchable</p>
-<p>This is valuable because structured data is easier to search, analyze, and use for decision-making at scale.</p>
+                                        <ol>
+<li>Select text</li>
+<li><code>*</code> - Add to search register</li>
+<li><code>Space-/</code> - Open global search picker</li>
+<li><code>Enter</code> - Start search
+Shortcut: <code>*</code> <code>Space-/</code> <code>Enter</code></li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +234,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Volume Comparison of Data Types</h2>
-<p>Which type of data (structured or unstructured) is more prevalent in the world, and why?</p>
+                                        <h2>Current File Directory in Picker</h2>
+<p>How can you insert the directory of the current file into a picker?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is far more prevalent in the world than structured data. This is because:
-- Humans produce a huge volume of unstructured data daily
-- Modern technology makes creating unstructured data (videos, images, documents) extremely easy
-- Accessibility of creation tools has dramatically increased unstructured data production
-- Unstructured data is "here to stay"
-- There's ongoing effort to find ways to convert unstructured data into structured formats</p>
+                                        <p>Use <code>Ctrl-r</code> <code>%</code> to insert the current filename, then <code>Ctrl-w</code> to remove the last path section (the filename), leaving just the directory path.</p>
                                     </div>
                                 </div>
                             </div>
@@ -288,20 +256,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Semi-Structured Data</h2>
-<p>What is semi-structured data and what makes it different from both structured and unstructured data?</p>
+                                        <h2>OR Operations Not Supported</h2>
+<p>What is a current limitation of picker filtering in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is a hybrid mix of both structured and unstructured data. Differences:
-- Does not meet the rigid standards of structured data
-- Contains some organizational elements through tags and attributes
-- Uses these tags to group data and describe storage methods
-- Provides a bridge between structured and unstructured data
-- May require special data types like BLOB and CLOB for storage</p>
+                                        <p>OR operations using <code>|</code> are not currently supported. You cannot create queries like <code>helix|vim</code> to match either term.</p>
                                     </div>
                                 </div>
                             </div>
@@ -315,20 +278,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Semi-Structured Data</h2>
-<p>Provide five examples of semi-structured data formats.</p>
+                                        <h2>Column Name Shortcuts</h2>
+<p>How can column names be shortened in picker filters?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Five examples of semi-structured data:
-1. Emails: Structured metadata (sender, recipient, timestamp) + unstructured content (message body)
-2. JSON files: JavaScript Object Notation with key-value pairs
-3. XML files: Extensible Markup Language with tagged elements
-4. Zipped files: Compressed file containers
-5. Web pages (HTML): Hypertext Markup Language with tagged content</p>
+                                        <p>Column names can be shortened to any prefix. For example, <code>%p</code>, <code>%pa</code>, <code>%pat</code>, and <code>%path</code> are all equivalent and refer to the "path" column.</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +300,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB and CLOB Data Types</h2>
-<p>What are BLOB and CLOB data types, and when are they used?</p>
+                                        <h2>Global Search Uses Regex</h2>
+<p>What type of search syntax does the global search picker use, and how does it differ from other pickers?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB and CLOB are special data types used for semi-structured data:
-- BLOB (Binary Large Object): Used for storing binary data
-- CLOB (Character Large Object): Used for storing character data</p>
-<p>These data types are required because semi-structured data does not meet the rigid standards of structured data and needs flexible storage solutions that can handle mixed or large objects.</p>
+                                        <p>The global search picker uses regex (regular expressions) instead of fuzzy matching. This provides full regular expression support for more powerful and complex search patterns.</p>
                                     </div>
                                 </div>
                             </div>
@@ -367,20 +322,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Role of Tags and Attributes</h2>
-<p>What are the main functions of tags and attributes in semi-structured data?</p>
+                                        <h2>Workspace Symbol Picker Behavior</h2>
+<p>How does the workspace symbol picker handle search terms?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Tags and attributes in semi-structured data serve multiple functions:
-- Grouping: Organize related data together
-- Description: Describe storage methods and data properties
-- Searchability: Enable searching for specific data
-- Viewability: Allow data to be retrieved and displayed
-- Transformation: Help convert unstructured data into more structured datasets</p>
+                                        <p>The workspace symbol picker passes search terms directly to the language server. The behavior depends on the language server implementation and may support different query syntax than other pickers.</p>
                                     </div>
                                 </div>
                             </div>
@@ -394,19 +344,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Metadata in Semi-Structured Data</h2>
-<p>What is metadata in the context of semi-structured data, and why is it important?</p>
+                                        <h2>Filter by File Type Example</h2>
+<p>How would you search for the term "function" only in Rust files?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Metadata is structured information that is automatically added when images or other files are created and loaded into software and data systems. It is important because:
-- Provides structured information about unstructured content
-- Creates additional structured data points around unstructured data
-- Enhances searchability and organization
-- Acts as a bridge between unstructured content and structured systems</p>
+                                        <p>In the global search picker, use: <code>function %p .rs</code> or <code>function %path .rs</code>
+This searches for "function" in files whose path ends with ".rs".</p>
                                     </div>
                                 </div>
                             </div>
@@ -420,73 +367,20 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Relational Database Storage</h2>
-<p>What type of data can be stored in a relational database, and what type cannot?</p>
+                                        <h2>Combining Multiple Filters</h2>
+<p>What types of filters can be combined in a picker query?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Relational databases can store: Structured data
-Relational databases cannot store: Unstructured data</p>
-<p>Unstructured data must be stored in non-relational databases, data lakes, or large object storage systems. Semi-structured data may require special data types (BLOB, CLOB) even when stored in database systems.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Working with Different Data Types</h2>
-<p>Why is it important for data analysts to understand all three data structure types (structured, unstructured, and semi-structured)?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Data analysts need to understand all three types because:
-- All three types coexist in organizational systems
-- Working with structured data and putting data into structure is part of everyday work
-- Converting between types is often necessary for analysis
-- Different storage solutions are required for each type
-- Real-world data doesn't always fit neatly into one category
-- Understanding data types enables better decision-making about storage, analysis, and transformation strategies</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Practical Significance of Semi-Structured Data</h2>
-<p>Why is semi-structured data practically significant in modern data systems?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Semi-structured data is significant because:
-- Enables systems to handle diverse data types within the same framework
-- Provides flexibility while maintaining some organizational structure
-- Facilitates the transformation of unstructured data into structured formats
-- Common in modern applications that need to handle mixed data types
-- Bridges the gap between rigid structured systems and completely unstructured content
-- Allows organizations to work with real-world data that doesn't fit neatly into one category</p>
+                                        <p>You can combine:
+- Content filters (fuzzy text or regex)
+- Column filters (<code>%column</code>)
+- Negation (<code>!</code>)
+- Prefix/suffix matching (<code>^</code>, <code>$</code>)
+Example: <code>impl %p src/ !test</code> finds "impl" in src/ directory but not in test files.</p>
                                     </div>
                                 </div>
                             </div>

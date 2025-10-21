@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Data - 01 Database Concepts - 01 Data Structures</title>
+  <title>Flashcards - Helix - 08 Command Line</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,20 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Structured Data</h2>
-<p>What is structured data and what are its key characteristics?</p>
+                                        <h2>Access Command Line</h2>
+<p>How do you access the command line in Helix and what is it used for?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Structured data is data that fits neatly into tables with clear structure, where fields of information are easily distinguishable and can be organized in a schema. Key characteristics include:
-- Organized in tabular format with column headings
-- Each data point fits within a specific field
-- Easy to search, query, and analyze
-- Follows a consistent schema
-- Can be restructured to fit into other structured data systems (e.g., data warehouses)</p>
+                                        <p>Press <code>:</code> in normal mode. The command line is used for executing typable commands like <code>:write</code> or <code>:quit</code>, which optionally accept arguments.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,21 +50,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Structured Data</h2>
-<p>Provide at least four examples of structured data systems or sources.</p>
+                                        <h2>Default Argument Splitting</h2>
+<p>How are command arguments split by default in Helix's command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Examples of structured data include:
-- Relational databases
-- Excel spreadsheets
-- SharePoint lists
-- Account registration forms (e.g., email signup)
-- Manual data entry systems
-- Database records with defined fields</p>
+                                        <p>Arguments are split on tabs and space characters. For example, <code>:open README.md CHANGELOG.md</code> opens two separate files.</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +72,16 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Types in Structured Data</h2>
-<p>What are the three main data types that can be stored in structured tables?</p>
+                                        <h2>Single Quotes vs Double Quotes</h2>
+<p>What is the difference between single quotes and double quotes in command line arguments?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The three main data types in structured tables are:
-1. Numeric: Numbers, integers, decimals
-2. Alphanumeric: Text and number combinations
-3. Date: Date and time information</p>
+                                        <p>Single quotes (<code>'</code>) and backticks interpret content literally without expansions (e.g., <code>'%{cursor_line}'</code> prints literally).
+Double quotes (<code>"</code>) support expansions within the quoted content (e.g., <code>"%{cursor_line}"</code> expands to the line number).</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +95,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Versus Structure</h2>
-<p>What is the important distinction between data and structure?</p>
+                                        <h2>Escape Space in Argument</h2>
+<p>How do you escape a space in an unquoted command argument on Unix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data itself is not the structure; data is what exists inside the structure. Data remains data regardless of where it's stored or whether it's structured. The structure is simply the organizational framework, while the data is the actual content or information being stored.</p>
+                                        <p>Use a backslash: <code>:open a\ b.txt</code> is equivalent to <code>:open 'a b.txt'</code>. The backslash escapes the space character to prevent argument splitting.</p>
                                     </div>
                                 </div>
                             </div>
@@ -130,21 +117,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Unstructured Data</h2>
-<p>What is unstructured data and how does it differ from structured data?</p>
+                                        <h2>Command Flags</h2>
+<p>What are command flags and how do you see available flags for a command?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is data that is not organized in a predefined manner to meet the standards for structured data. Key differences:
-- Does not fit neatly into tables
-- Has undefined fields
-- Cannot be stored in traditional relational databases
-- Stored in non-relational databases instead
-- Must be stored in data lakes or large object storage
-- There is far more unstructured data in the world than structured data</p>
+                                        <p>Flags are optional switches that modify command behavior (e.g., <code>--reverse</code> or <code>-r</code> for <code>:sort</code>). Type <code>-</code> after a command to see available flag completions.</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +139,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Types of Unstructured Data</h2>
-<p>List and briefly describe four types of unstructured data.</p>
+                                        <h2>End of Flags Marker</h2>
+<p>What does the <code>--</code> flag do in the command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Four types of unstructured data:
-1. Image data: Must be viewed to understand contents; cannot be easily interpreted by systems without viewing
-2. Video data: Must be watched to understand content
-3. Audio data: Must be listened to for full context
-4. Documents and PDFs: Not easily structured into databases but commonly used in organizations</p>
+                                        <p>The <code>--</code> flag specifies the end of flags. All arguments after <code>--</code> are treated as positional arguments. For example, <code>:open -- -a.txt</code> opens a file literally named "-a.txt".</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,15 +161,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB Storage</h2>
-<p>What is BLOB storage and why is it used?</p>
+                                        <h2>Expansion Syntax</h2>
+<p>What is the general syntax for expansions in Helix's command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB (Binary Large Object) storage is a framework designed to store large amounts of unstructured data, like video, audio, and text. It is more effective for storage of unstructured data compared to a traditional database, which is optimized for structured data.</p>
+                                        <p>Expansions start with <code>%</code> and follow the pattern: <code>%[&lt;kind&gt;]&lt;open&gt;&lt;contents&gt;&lt;close&gt;</code>. For example, <code>%sh{echo hi!}</code> where <code>sh</code> is the kind, and <code>{}</code>are the delimiters.</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,21 +183,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unstructured Data Storage Challenges</h2>
-<p>What are the main storage challenges associated with unstructured data?</p>
+                                        <h2>Expansion Delimiter Pairs</h2>
+<p>What delimiter pairs can be used for expansions in the command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Storage challenges for unstructured data include:
-- File sizes vary based on quality and length
-- Image file size depends on image quality
-- Audio file size depends on both quality and length
-- Video file size depends on both quality and length
-- Long, high-quality videos may be difficult to store for some organizations
-- Requires specialized storage solutions like data lakes or BLOB storage</p>
+                                        <p>Recognized pairs: <code>()</code>, <code>[]</code>, <code>{}</code>, <code>&lt;&gt;</code>. Single characters: <code>'</code>, <code>"</code>, <code>|</code>. For example, <code>%{cursor_line}</code>, <code>%&lt;cursor_line&gt;</code>, and <code>%|cursor_line|</code> are all equivalent.</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,20 +205,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Converting Unstructured to Structured Data</h2>
-<p>How can unstructured data be converted into structured data, and why is this valuable?</p>
+                                        <h2>Escape Percent Character</h2>
+<p>How do you escape a percent character in the command line instead of treating it as an expansion?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data can be converted to structured data by:
-- Extracting specific information from unstructured sources
-- Entering that information into defined fields in a database or system
-- Maintaining the original unstructured source while creating structured records
-- Adding metadata and tags to make unstructured data searchable</p>
-<p>This is valuable because structured data is easier to search, analyze, and use for decision-making at scale.</p>
+                                        <p>Use two percent characters consecutively: <code>%%</code>. For example, to use shell command <code>date -u +'%Y-%m-%d'</code>, write <code>:echo %sh{date -u +'%%Y-%%m-%%d'}</code>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +227,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Volume Comparison of Data Types</h2>
-<p>Which type of data (structured or unstructured) is more prevalent in the world, and why?</p>
+                                        <h2>Variable Expansion</h2>
+<p>How do you expand a variable in the command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is far more prevalent in the world than structured data. This is because:
-- Humans produce a huge volume of unstructured data daily
-- Modern technology makes creating unstructured data (videos, images, documents) extremely easy
-- Accessibility of creation tools has dramatically increased unstructured data production
-- Unstructured data is "here to stay"
-- There's ongoing effort to find ways to convert unstructured data into structured formats</p>
+                                        <p>Use <code>%{variable_name}</code> without specifying a kind. For example, <code>%{cursor_line}</code> expands to the current line number, so <code>:echo %{cursor_line}</code> might print <code>1</code>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -288,20 +249,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Semi-Structured Data</h2>
-<p>What is semi-structured data and what makes it different from both structured and unstructured data?</p>
+                                        <h2>Common Editor Variables</h2>
+<p>What are five commonly used editor variables for expansions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is a hybrid mix of both structured and unstructured data. Differences:
-- Does not meet the rigid standards of structured data
-- Contains some organizational elements through tags and attributes
-- Uses these tags to group data and describe storage methods
-- Provides a bridge between structured and unstructured data
-- May require special data types like BLOB and CLOB for storage</p>
+                                        <ol>
+<li><code>cursor_line</code> - Line number of primary cursor</li>
+<li><code>cursor_column</code> - Column number of primary cursor</li>
+<li><code>buffer_name</code> - Relative path of current document</li>
+<li><code>selection</code> - Contents of primary selection</li>
+<li><code>language</code> - Language name of current document</li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -315,20 +277,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Semi-Structured Data</h2>
-<p>Provide five examples of semi-structured data formats.</p>
+                                        <h2>Unicode Expansion</h2>
+<p>How do you insert a Unicode character using expansions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Five examples of semi-structured data:
-1. Emails: Structured metadata (sender, recipient, timestamp) + unstructured content (message body)
-2. JSON files: JavaScript Object Notation with key-value pairs
-3. XML files: Extensible Markup Language with tagged elements
-4. Zipped files: Compressed file containers
-5. Web pages (HTML): Hypertext Markup Language with tagged content</p>
+                                        <p>Use <code>%u{hex_code}</code> where hex_code is up to six hexadecimal numbers for a Unicode codepoint. For example, <code>:echo %u{25CF}</code> prints <code>●</code>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +299,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB and CLOB Data Types</h2>
-<p>What are BLOB and CLOB data types, and when are they used?</p>
+                                        <h2>Shell Expansion</h2>
+<p>How do you execute a shell command and use its output in the command line?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB and CLOB are special data types used for semi-structured data:
-- BLOB (Binary Large Object): Used for storing binary data
-- CLOB (Character Large Object): Used for storing character data</p>
-<p>These data types are required because semi-structured data does not meet the rigid standards of structured data and needs flexible storage solutions that can handle mixed or large objects.</p>
+                                        <p>Use <code>%sh{command}</code>. The contents are passed to the configured shell. For example, <code>:echo %sh{echo "20 * 5" | bc}</code> may print <code>100</code> on the statusline.</p>
                                     </div>
                                 </div>
                             </div>
@@ -367,20 +321,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Role of Tags and Attributes</h2>
-<p>What are the main functions of tags and attributes in semi-structured data?</p>
+                                        <h2>Recursive Shell Expansion</h2>
+<p>How are variables within shell expansions evaluated?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Tags and attributes in semi-structured data serve multiple functions:
-- Grouping: Organize related data together
-- Description: Describe storage methods and data properties
-- Searchability: Enable searching for specific data
-- Viewability: Allow data to be retrieved and displayed
-- Transformation: Help convert unstructured data into more structured datasets</p>
+                                        <p>Shell expansions are evaluated recursively—variables within the shell expansion are evaluated first, before executing the shell command. For example, <code>%sh{echo '%{buffer_name}:%{cursor_line}'}</code> executes <code>echo 'README.md:1'</code>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -394,19 +343,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Metadata in Semi-Structured Data</h2>
-<p>What is metadata in the context of semi-structured data, and why is it important?</p>
+                                        <h2>Expansion Evaluation Timing</h2>
+<p>When are expansions evaluated in command mode?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Metadata is structured information that is automatically added when images or other files are created and loaded into software and data systems. It is important because:
-- Provides structured information about unstructured content
-- Creates additional structured data points around unstructured data
-- Enhances searchability and organization
-- Acts as a bridge between unstructured content and structured systems</p>
+                                        <p>Expansions are only evaluated when the <code>Enter</code> key is pressed in command mode. They are not evaluated while typing.</p>
                                     </div>
                                 </div>
                             </div>
@@ -420,17 +365,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Relational Database Storage</h2>
-<p>What type of data can be stored in a relational database, and what type cannot?</p>
+                                        <h2>Shell Command Exception</h2>
+<p>What is special about how commands like <code>:insert-output</code>, <code>:pipe</code>, and <code>:run-shell-command</code> handle arguments?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Relational databases can store: Structured data
-Relational databases cannot store: Unstructured data</p>
-<p>Unstructured data must be stored in non-relational databases, data lakes, or large object storage systems. Semi-structured data may require special data types (BLOB, CLOB) even when stored in database systems.</p>
+                                        <p>These commands support expansions but pass arguments directly to the shell without interpreting quotes. For example, <code>:sh echo "%{buffer_name}"</code> passes <code>echo "README.md"</code> to the shell—expansions are evaluated but quotes are not.</p>
                                     </div>
                                 </div>
                             </div>
@@ -444,21 +387,15 @@ Relational databases cannot store: Unstructured data</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Working with Different Data Types</h2>
-<p>Why is it important for data analysts to understand all three data structure types (structured, unstructured, and semi-structured)?</p>
+                                        <h2>Toggle Option Boolean</h2>
+<p>How do you toggle a boolean config option?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data analysts need to understand all three types because:
-- All three types coexist in organizational systems
-- Working with structured data and putting data into structure is part of everyday work
-- Converting between types is often necessary for analysis
-- Different storage solutions are required for each type
-- Real-world data doesn't always fit neatly into one category
-- Understanding data types enables better decision-making about storage, analysis, and transformation strategies</p>
+                                        <p>Use <code>:toggle-option</code> with only the option name. For example, <code>:toggle-option auto-format</code> flips the boolean value of the <code>auto-format</code> option.</p>
                                     </div>
                                 </div>
                             </div>
@@ -472,21 +409,173 @@ Relational databases cannot store: Unstructured data</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Practical Significance of Semi-Structured Data</h2>
-<p>Why is semi-structured data practically significant in modern data systems?</p>
+                                        <h2>Toggle Option String</h2>
+<p>How do you cycle through multiple string values with <code>:toggle-option</code>?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is significant because:
-- Enables systems to handle diverse data types within the same framework
-- Provides flexibility while maintaining some organizational structure
-- Facilitates the transformation of unstructured data into structured formats
-- Common in modern applications that need to handle mixed data types
-- Bridges the gap between rigid structured systems and completely unstructured content
-- Allows organizations to work with real-world data that doesn't fit neatly into one category</p>
+                                        <p>Provide multiple values after the option name: <code>:toggle-option indent-heuristic hybrid tree-sitter simple</code> cycles through "hybrid", "tree-sitter", and "simple" on each invocation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Toggle Option Arrays</h2>
+<p>How do you toggle between array values with <code>:toggle-option</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Provide JSON array values: <code>:toggle-option rulers [81] [51, 73]</code> cycles between <code>[81]</code> and <code>[51, 73]</code>. The values are parsed as JSON.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Option Command</h2>
+<p>How does <code>:set-option</code> parse its arguments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The first argument (config option name) is parsed normally. The second argument is interpreted as a string for string options, and everything else is parsed as JSON.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Git Blame Example</h2>
+<p>What does this keybinding do: <code>":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}"</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It prints the git blame information for the current line to the statusline. The variables expand to line number and filename, then the shell executes git blame for that specific line.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Open File with Spaces</h2>
+<p>What are three ways to open a file named "my file.txt" (with a space)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>:open 'my file.txt'</code> (single quotes)</li>
+<li><code>:open "my file.txt"</code> (double quotes)</li>
+<li><code>:open my\ file.txt</code> (escaped space on Unix)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LSP Workspace Command</h2>
+<p>How does <code>:lsp-workspace-command</code> parse its arguments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The first argument (if present) is parsed normally. The rest of the line is parsed as JSON values. Unlike <code>:toggle-option</code>, string arguments must be quoted. Example: <code>:lsp-workspace-command lsp.Command "foo" "bar"</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Backslash on Windows</h2>
+<p>How does the backslash character behave differently on Windows vs Unix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>On Unix, backslash can escape spaces, tabs, quotes, and percent at argument beginning. On Windows, backslash is always treated literally. Additionally, <code>:echo \n</code> always prints <code>\n</code> literally on both systems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Buffer Name for Scratch Buffers</h2>
+<p>What value does the <code>%{buffer_name}</code> variable expand to for scratch buffers?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>For scratch buffers (unsaved/unnamed buffers), <code>%{buffer_name}</code> expands to <code>[scratch]</code> instead of a file path.</p>
                                     </div>
                                 </div>
                             </div>

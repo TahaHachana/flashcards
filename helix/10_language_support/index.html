@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Data - 01 Database Concepts - 01 Data Structures</title>
+  <title>Flashcards - Helix - 10 Language Support</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,20 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Structured Data</h2>
-<p>What is structured data and what are its key characteristics?</p>
+                                        <h2>Check Language Support Health</h2>
+<p>How do you check the language support status in your Helix installation?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Structured data is data that fits neatly into tables with clear structure, where fields of information are easily distinguishable and can be organized in a schema. Key characteristics include:
-- Organized in tabular format with column headings
-- Each data point fits within a specific field
-- Easy to search, query, and analyze
-- Follows a consistent schema
-- Can be restructured to fit into other structured data systems (e.g., data warehouses)</p>
+                                        <p>Run <code>hx --health</code> from the command line. This displays which language servers are found, which tree-sitter grammars are installed, and the configuration status for each language.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,21 +50,20 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Structured Data</h2>
-<p>Provide at least four examples of structured data systems or sources.</p>
+                                        <h2>Four Language Support Features</h2>
+<p>What are the four main types of language support features in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Examples of structured data include:
-- Relational databases
-- Excel spreadsheets
-- SharePoint lists
-- Account registration forms (e.g., email signup)
-- Manual data entry systems
-- Database records with defined fields</p>
+                                        <ol>
+<li>Syntax highlighting (via tree-sitter)</li>
+<li>Tree-sitter textobjects</li>
+<li>Auto-indentation</li>
+<li>Language Server Protocol (LSP) integration</li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +77,19 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Types in Structured Data</h2>
-<p>What are the three main data types that can be stored in structured tables?</p>
+                                        <h2>Tree Sitter Textobjects Purpose</h2>
+<p>What capabilities do tree-sitter textobjects enable?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The three main data types in structured tables are:
-1. Numeric: Numbers, integers, decimals
-2. Alphanumeric: Text and number combinations
-3. Date: Date and time information</p>
+                                        <ul>
+<li>Structural selection (functions, classes, parameters)</li>
+<li>Intelligent navigation between code elements (like <code>]f</code> for next function)</li>
+<li>Context-aware operations (like <code>maf</code> to select around function)</li>
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +103,23 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Versus Structure</h2>
-<p>What is the important distinction between data and structure?</p>
+                                        <h2>LSP Features Provided</h2>
+<p>What features does Language Server Protocol (LSP) provide in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data itself is not the structure; data is what exists inside the structure. Data remains data regardless of where it's stored or whether it's structured. The structure is simply the organizational framework, while the data is the actual content or information being stored.</p>
+                                        <ul>
+<li>Code completion</li>
+<li>Go to definition</li>
+<li>Find references</li>
+<li>Rename refactoring</li>
+<li>Diagnostics (errors and warnings)</li>
+<li>Code actions</li>
+<li>Documentation on hover</li>
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -130,21 +133,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Unstructured Data</h2>
-<p>What is unstructured data and how does it differ from structured data?</p>
+                                        <h2>Rust Language Support</h2>
+<p>What language server does Rust use in Helix and what level of support does it have?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is data that is not organized in a predefined manner to meet the standards for structured data. Key differences:
-- Does not fit neatly into tables
-- Has undefined fields
-- Cannot be stored in traditional relational databases
-- Stored in non-relational databases instead
-- Must be stored in data lakes or large object storage
-- There is far more unstructured data in the world than structured data</p>
+                                        <p>Rust uses <code>rust-analyzer</code> as its language server and has comprehensive support: syntax highlighting, tree-sitter textobjects, auto-indent, and full LSP features.</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +155,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Types of Unstructured Data</h2>
-<p>List and briefly describe four types of unstructured data.</p>
+                                        <h2>Python Language Servers</h2>
+<p>What are the default language servers available for Python in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Four types of unstructured data:
-1. Image data: Must be viewed to understand contents; cannot be easily interpreted by systems without viewing
-2. Video data: Must be watched to understand content
-3. Audio data: Must be listened to for full context
-4. Documents and PDFs: Not easily structured into databases but commonly used in organizations</p>
+                                        <p>Python supports multiple language servers: <code>ty</code>, <code>ruff</code>, <code>jedi-language-server</code>, and <code>pylsp</code>. Multiple servers can provide complementary features like general LSP support and linting.</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,15 +177,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB Storage</h2>
-<p>What is BLOB storage and why is it used?</p>
+                                        <h2>JavaScript TypeScript Server</h2>
+<p>What language server is used for both JavaScript and TypeScript in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB (Binary Large Object) storage is a framework designed to store large amounts of unstructured data, like video, audio, and text. It is more effective for storage of unstructured data compared to a traditional database, which is optimized for structured data.</p>
+                                        <p><code>typescript-language-server</code> is used for both JavaScript and TypeScript, providing full LSP support for both languages.</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,21 +199,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unstructured Data Storage Challenges</h2>
-<p>What are the main storage challenges associated with unstructured data?</p>
+                                        <h2>C and C Plus Plus Language Server</h2>
+<p>What language server is used for both C and C++ in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Storage challenges for unstructured data include:
-- File sizes vary based on quality and length
-- Image file size depends on image quality
-- Audio file size depends on both quality and length
-- Video file size depends on both quality and length
-- Long, high-quality videos may be difficult to store for some organizations
-- Requires specialized storage solutions like data lakes or BLOB storage</p>
+                                        <p><code>clangd</code> is the language server for both C and C++, providing comprehensive LSP support for both languages.</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,20 +221,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Converting Unstructured to Structured Data</h2>
-<p>How can unstructured data be converted into structured data, and why is this valuable?</p>
+                                        <h2>Go Language Server</h2>
+<p>What language servers are available for Go in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data can be converted to structured data by:
-- Extracting specific information from unstructured sources
-- Entering that information into defined fields in a database or system
-- Maintaining the original unstructured source while creating structured records
-- Adding metadata and tags to make unstructured data searchable</p>
-<p>This is valuable because structured data is easier to search, analyze, and use for decision-making at scale.</p>
+                                        <p>Go uses <code>gopls</code> (the official Go language server) and optionally <code>golangci-lint-langserver</code> for additional linting capabilities.</p>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +243,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Volume Comparison of Data Types</h2>
-<p>Which type of data (structured or unstructured) is more prevalent in the world, and why?</p>
+                                        <h2>Markdown Language Servers</h2>
+<p>What language servers are available for Markdown in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is far more prevalent in the world than structured data. This is because:
-- Humans produce a huge volume of unstructured data daily
-- Modern technology makes creating unstructured data (videos, images, documents) extremely easy
-- Accessibility of creation tools has dramatically increased unstructured data production
-- Unstructured data is "here to stay"
-- There's ongoing effort to find ways to convert unstructured data into structured formats</p>
+                                        <p>Markdown supports <code>marksman</code> and <code>markdown-oxide</code> as language servers, providing features like navigation, completion, and diagnostics for Markdown files.</p>
                                     </div>
                                 </div>
                             </div>
@@ -288,20 +265,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Semi-Structured Data</h2>
-<p>What is semi-structured data and what makes it different from both structured and unstructured data?</p>
+                                        <h2>TOML Language Server</h2>
+<p>What language servers are available for TOML files in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is a hybrid mix of both structured and unstructured data. Differences:
-- Does not meet the rigid standards of structured data
-- Contains some organizational elements through tags and attributes
-- Uses these tags to group data and describe storage methods
-- Provides a bridge between structured and unstructured data
-- May require special data types like BLOB and CLOB for storage</p>
+                                        <p>TOML files can use <code>taplo</code> or <code>tombi</code> as language servers, providing validation, completion, and formatting for TOML configuration files.</p>
                                     </div>
                                 </div>
                             </div>
@@ -315,20 +287,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Semi-Structured Data</h2>
-<p>Provide five examples of semi-structured data formats.</p>
+                                        <h2>YAML Language Servers</h2>
+<p>What language servers are available for YAML in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Five examples of semi-structured data:
-1. Emails: Structured metadata (sender, recipient, timestamp) + unstructured content (message body)
-2. JSON files: JavaScript Object Notation with key-value pairs
-3. XML files: Extensible Markup Language with tagged elements
-4. Zipped files: Compressed file containers
-5. Web pages (HTML): Hypertext Markup Language with tagged content</p>
+                                        <p>YAML supports <code>yaml-language-server</code> for general YAML support and <code>ansible-language-server</code> for Ansible-specific YAML files.</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +309,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB and CLOB Data Types</h2>
-<p>What are BLOB and CLOB data types, and when are they used?</p>
+                                        <h2>Docker Language Servers</h2>
+<p>What language servers are available for Docker-related files?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB and CLOB are special data types used for semi-structured data:
-- BLOB (Binary Large Object): Used for storing binary data
-- CLOB (Character Large Object): Used for storing character data</p>
-<p>These data types are required because semi-structured data does not meet the rigid standards of structured data and needs flexible storage solutions that can handle mixed or large objects.</p>
+                                        <p><code>docker-langserver</code> for Dockerfiles and <code>docker-compose-langserver</code> (along with yaml-language-server) for Docker Compose files.</p>
                                     </div>
                                 </div>
                             </div>
@@ -367,20 +331,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Role of Tags and Attributes</h2>
-<p>What are the main functions of tags and attributes in semi-structured data?</p>
+                                        <h2>Tree Sitter Foundation</h2>
+<p>Why does Helix use tree-sitter as the foundation for language support?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Tags and attributes in semi-structured data serve multiple functions:
-- Grouping: Organize related data together
-- Description: Describe storage methods and data properties
-- Searchability: Enable searching for specific data
-- Viewability: Allow data to be retrieved and displayed
-- Transformation: Help convert unstructured data into more structured datasets</p>
+                                        <p>Tree-sitter provides fast incremental parsing, accurate syntax understanding, and enables advanced features like textobjects and intelligent navigation. It's more reliable than regex-based highlighting.</p>
                                     </div>
                                 </div>
                             </div>
@@ -394,19 +353,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Metadata in Semi-Structured Data</h2>
-<p>What is metadata in the context of semi-structured data, and why is it important?</p>
+                                        <h2>LSP Optional Feature</h2>
+<p>Is LSP support required to use Helix for editing code?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Metadata is structured information that is automatically added when images or other files are created and loaded into software and data systems. It is important because:
-- Provides structured information about unstructured content
-- Creates additional structured data points around unstructured data
-- Enhances searchability and organization
-- Acts as a bridge between unstructured content and structured systems</p>
+                                        <p>No, language servers are optional but highly recommended. Helix can be used without LSP for quick edits, languages without servers, or lightweight environments. You still get syntax highlighting and tree-sitter features.</p>
                                     </div>
                                 </div>
                             </div>
@@ -420,17 +375,20 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Relational Database Storage</h2>
-<p>What type of data can be stored in a relational database, and what type cannot?</p>
+                                        <h2>Language Server Configuration</h2>
+<p>What are the basic steps to set up a language server in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Relational databases can store: Structured data
-Relational databases cannot store: Unstructured data</p>
-<p>Unstructured data must be stored in non-relational databases, data lakes, or large object storage systems. Semi-structured data may require special data types (BLOB, CLOB) even when stored in database systems.</p>
+                                        <ol>
+<li>Install the language server executable</li>
+<li>Ensure it's in your PATH or configure its location</li>
+<li>(Optional) Customize language server settings in <code>languages.toml</code></li>
+<li>Verify with <code>hx --health</code></li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -444,21 +402,15 @@ Relational databases cannot store: Unstructured data</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Working with Different Data Types</h2>
-<p>Why is it important for data analysts to understand all three data structure types (structured, unstructured, and semi-structured)?</p>
+                                        <h2>Multiple Language Servers</h2>
+<p>Why might a language have multiple language servers configured?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data analysts need to understand all three types because:
-- All three types coexist in organizational systems
-- Working with structured data and putting data into structure is part of everyday work
-- Converting between types is often necessary for analysis
-- Different storage solutions are required for each type
-- Real-world data doesn't always fit neatly into one category
-- Understanding data types enables better decision-making about storage, analysis, and transformation strategies</p>
+                                        <p>Multiple servers can provide complementary features: one for general LSP features, another for linting, and another for specialized tooling. For example, Python can use pylsp for LSP features and ruff for fast linting.</p>
                                     </div>
                                 </div>
                             </div>
@@ -472,21 +424,180 @@ Relational databases cannot store: Unstructured data</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Practical Significance of Semi-Structured Data</h2>
-<p>Why is semi-structured data practically significant in modern data systems?</p>
+                                        <h2>Support Level Full Featured</h2>
+<p>What does "full support" mean for a language in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is significant because:
-- Enables systems to handle diverse data types within the same framework
-- Provides flexibility while maintaining some organizational structure
-- Facilitates the transformation of unstructured data into structured formats
-- Common in modern applications that need to handle mixed data types
-- Bridges the gap between rigid structured systems and completely unstructured content
-- Allows organizations to work with real-world data that doesn't fit neatly into one category</p>
+                                        <p>Full support means a language has all four features: syntax highlighting, tree-sitter textobjects, auto-indentation, and language server integration (✓✓✓ + LSP).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Terraform HCL Language Server</h2>
+<p>What language server is used for Terraform/HCL files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>terraform-ls</code> is the language server for Terraform and HCL (HashiCorp Configuration Language) files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nix Language Servers</h2>
+<p>What language servers are available for Nix in Helix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Nix supports <code>nil</code> and <code>nixd</code> as language servers, both providing LSP features for the Nix expression language.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Latex Language Server</h2>
+<p>What language server is used for LaTeX files in Helix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>texlab</code> is the language server for LaTeX files, providing features like completion, diagnostics, and build support.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JSON Language Server</h2>
+<p>What language server is used for JSON files in Helix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>vscode-json-language-server</code> provides LSP support for JSON, JSONC (JSON with comments), and JSON-LD files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gradual Language Support Enhancement</h2>
+<p>What are the typical stages of language support enhancement in Helix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Basic syntax highlighting</li>
+<li>Tree-sitter textobjects</li>
+<li>Auto-indentation rules</li>
+<li>Language server integration
+Languages typically gain features in this order as the community contributes support.</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Health Command Output</h2>
+<p>What information does <code>hx --health</code> display?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>Which language servers are found in PATH (✓ or ✗)</li>
+<li>Whether tree-sitter grammars are installed</li>
+<li>Configuration status for each language</li>
+<li>Any issues with language setup</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Helix Wiki Language Servers</h2>
+<p>Where can you find community-maintained language server configurations for Helix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The Helix wiki contains community-maintained language server configurations at: https://github.com/helix-editor/helix/wiki/Language-Server-Configurations</p>
                                     </div>
                                 </div>
                             </div>

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Data - 01 Database Concepts - 01 Data Structures</title>
+  <title>Flashcards - Helix - 02 Registers</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,20 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Structured Data</h2>
-<p>What is structured data and what are its key characteristics?</p>
+                                        <h2>What Are Registers in Helix</h2>
+<p>What are registers in Helix editor and how are they accessed?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Structured data is data that fits neatly into tables with clear structure, where fields of information are easily distinguishable and can be organized in a schema. Key characteristics include:
-- Organized in tabular format with column headings
-- Each data point fits within a specific field
-- Easy to search, query, and analyze
-- Follows a consistent schema
-- Can be restructured to fit into other structured data systems (e.g., data warehouses)</p>
+                                        <p>Registers are storage locations for text and other data (such as search results). They function like clipboards and are accessed using the <code>"</code> character followed by the register name, similar to Vim's register system.</p>
                                     </div>
                                 </div>
                             </div>
@@ -55,21 +50,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Structured Data</h2>
-<p>Provide at least four examples of structured data systems or sources.</p>
+                                        <h2>Yank to Named Register</h2>
+<p>How do you yank the current selection to register <code>a</code> in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Examples of structured data include:
-- Relational databases
-- Excel spreadsheets
-- SharePoint lists
-- Account registration forms (e.g., email signup)
-- Manual data entry systems
-- Database records with defined fields</p>
+                                        <p><code>"ay</code> - The pattern is <code>"</code> (register prefix) + <code>a</code> (register name) + <code>y</code> (yank command).</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +72,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Types in Structured Data</h2>
-<p>What are the three main data types that can be stored in structured tables?</p>
+                                        <h2>Paste from Named Register</h2>
+<p>How do you paste text from register <code>o</code> after the current selection?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The three main data types in structured tables are:
-1. Numeric: Numbers, integers, decimals
-2. Alphanumeric: Text and number combinations
-3. Date: Date and time information</p>
+                                        <p><code>"op</code> - The pattern is <code>"</code> (register prefix) + <code>o</code> (register name) + <code>p</code> (paste command).</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +94,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Data Versus Structure</h2>
-<p>What is the important distinction between data and structure?</p>
+                                        <h2>Pre-Command Register Selection</h2>
+<p>What happens when you type <code>"hc</code> in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Data itself is not the structure; data is what exists inside the structure. Data remains data regardless of where it's stored or whether it's structured. The structure is simply the organizational framework, while the data is the actual content or information being stored.</p>
+                                        <p>It stores the current selection in register <code>h</code>, then changes it (deletes the selection and enters insert mode). Pre-selecting a register preserves the text before a destructive operation.</p>
                                     </div>
                                 </div>
                             </div>
@@ -130,21 +116,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Unstructured Data</h2>
-<p>What is unstructured data and how does it differ from structured data?</p>
+                                        <h2>Default Register for Last Yank</h2>
+<p>Which register contains the last yanked text when no register is specified?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is data that is not organized in a predefined manner to meet the standards for structured data. Key differences:
-- Does not fit neatly into tables
-- Has undefined fields
-- Cannot be stored in traditional relational databases
-- Stored in non-relational databases instead
-- Must be stored in data lakes or large object storage
-- There is far more unstructured data in the world than structured data</p>
+                                        <p>The <code>"</code> (double quote) register contains the last yanked text. This is the default register used by the yank command.</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +138,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Types of Unstructured Data</h2>
-<p>List and briefly describe four types of unstructured data.</p>
+                                        <h2>Last Search Register</h2>
+<p>Which register contains the last search pattern?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Four types of unstructured data:
-1. Image data: Must be viewed to understand contents; cannot be easily interpreted by systems without viewing
-2. Video data: Must be watched to understand content
-3. Audio data: Must be listened to for full context
-4. Documents and PDFs: Not easily structured into databases but commonly used in organizations</p>
+                                        <p>The <code>/</code> register contains the last search pattern.</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,15 +160,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB Storage</h2>
-<p>What is BLOB storage and why is it used?</p>
+                                        <h2>Last Command Register</h2>
+<p>Which register contains the last executed command?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB (Binary Large Object) storage is a framework designed to store large amounts of unstructured data, like video, audio, and text. It is more effective for storage of unstructured data compared to a traditional database, which is optimized for structured data.</p>
+                                        <p>The <code>:</code> register contains the last executed command.</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,21 +182,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unstructured Data Storage Challenges</h2>
-<p>What are the main storage challenges associated with unstructured data?</p>
+                                        <h2>Last Macro Register</h2>
+<p>Which register contains the last recorded macro?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Storage challenges for unstructured data include:
-- File sizes vary based on quality and length
-- Image file size depends on image quality
-- Audio file size depends on both quality and length
-- Video file size depends on both quality and length
-- Long, high-quality videos may be difficult to store for some organizations
-- Requires specialized storage solutions like data lakes or BLOB storage</p>
+                                        <p>The <code>@</code> register contains the last recorded macro.</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,20 +204,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Converting Unstructured to Structured Data</h2>
-<p>How can unstructured data be converted into structured data, and why is this valuable?</p>
+                                        <h2>Black Hole Register</h2>
+<p>What is the purpose of the <code>_</code> register in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data can be converted to structured data by:
-- Extracting specific information from unstructured sources
-- Entering that information into defined fields in a database or system
-- Maintaining the original unstructured source while creating structured records
-- Adding metadata and tags to make unstructured data searchable</p>
-<p>This is valuable because structured data is easier to search, analyze, and use for decision-making at scale.</p>
+                                        <p>The <code>_</code> register is a "black hole" register. When read, it returns no values. When written to, all values are discarded. Use it for deletions you don't want to store (e.g., <code>"_d</code>).</p>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +226,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Volume Comparison of Data Types</h2>
-<p>Which type of data (structured or unstructured) is more prevalent in the world, and why?</p>
+                                        <h2>Selection Indices Register</h2>
+<p>What does the <code>#</code> register contain and can it be written to?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Unstructured data is far more prevalent in the world than structured data. This is because:
-- Humans produce a huge volume of unstructured data daily
-- Modern technology makes creating unstructured data (videos, images, documents) extremely easy
-- Accessibility of creation tools has dramatically increased unstructured data production
-- Unstructured data is "here to stay"
-- There's ongoing effort to find ways to convert unstructured data into structured formats</p>
+                                        <p>The <code>#</code> register contains selection indices (first selection is 1, second is 2, etc.). It is read-only and cannot be written to.</p>
                                     </div>
                                 </div>
                             </div>
@@ -288,20 +248,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Definition of Semi-Structured Data</h2>
-<p>What is semi-structured data and what makes it different from both structured and unstructured data?</p>
+                                        <h2>Current Selection Register</h2>
+<p>What does the <code>.</code> register contain and can it be modified?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Semi-structured data is a hybrid mix of both structured and unstructured data. Differences:
-- Does not meet the rigid standards of structured data
-- Contains some organizational elements through tags and attributes
-- Uses these tags to group data and describe storage methods
-- Provides a bridge between structured and unstructured data
-- May require special data types like BLOB and CLOB for storage</p>
+                                        <p>The <code>.</code> register contains the contents of the current selections. It is read-only and cannot be written to.</p>
                                     </div>
                                 </div>
                             </div>
@@ -315,20 +270,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Examples of Semi-Structured Data</h2>
-<p>Provide five examples of semi-structured data formats.</p>
+                                        <h2>Current Filename Register</h2>
+<p>Which register contains the name of the current file?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Five examples of semi-structured data:
-1. Emails: Structured metadata (sender, recipient, timestamp) + unstructured content (message body)
-2. JSON files: JavaScript Object Notation with key-value pairs
-3. XML files: Extensible Markup Language with tagged elements
-4. Zipped files: Compressed file containers
-5. Web pages (HTML): Hypertext Markup Language with tagged content</p>
+                                        <p>The <code>%</code> register contains the name of the current file. It is read-only.</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +292,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>BLOB and CLOB Data Types</h2>
-<p>What are BLOB and CLOB data types, and when are they used?</p>
+                                        <h2>System Clipboard Register</h2>
+<p>What is the <code>+</code> register used for in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>BLOB and CLOB are special data types used for semi-structured data:
-- BLOB (Binary Large Object): Used for storing binary data
-- CLOB (Character Large Object): Used for storing character data</p>
-<p>These data types are required because semi-structured data does not meet the rigid standards of structured data and needs flexible storage solutions that can handle mixed or large objects.</p>
+                                        <p>The <code>+</code> register interacts with the system clipboard. When read, it reads from the system clipboard. When written to, it joins selections with newlines and yanks to the system clipboard (like Ctrl+C/Ctrl+V).</p>
                                     </div>
                                 </div>
                             </div>
@@ -367,20 +314,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Role of Tags and Attributes</h2>
-<p>What are the main functions of tags and attributes in semi-structured data?</p>
+                                        <h2>Primary Clipboard Register</h2>
+<p>What is the <code>*</code> register used for in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Tags and attributes in semi-structured data serve multiple functions:
-- Grouping: Organize related data together
-- Description: Describe storage methods and data properties
-- Searchability: Enable searching for specific data
-- Viewability: Allow data to be retrieved and displayed
-- Transformation: Help convert unstructured data into more structured datasets</p>
+                                        <p>The <code>*</code> register interacts with the primary clipboard (middle-click paste on X11 systems). When read, it reads from the primary clipboard. When written to, it joins selections with newlines and yanks to the primary clipboard.</p>
                                     </div>
                                 </div>
                             </div>
@@ -394,19 +336,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Metadata in Semi-Structured Data</h2>
-<p>What is metadata in the context of semi-structured data, and why is it important?</p>
+                                        <h2>Multiple Selections Clipboard Behavior</h2>
+<p>What happens when you yank multiple selections to the clipboard registers (<code>+</code> or <code>*</code>)?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Metadata is structured information that is automatically added when images or other files are created and loaded into software and data systems. It is important because:
-- Provides structured information about unstructured content
-- Creates additional structured data points around unstructured data
-- Enhances searchability and organization
-- Acts as a bridge between unstructured content and structured systems</p>
+                                        <p>The selections are joined with newlines. When pasting, if the clipboard was last yanked by the current Helix session, it pastes as multiple selections. Otherwise, clipboard contents are pasted as one selection.</p>
                                     </div>
                                 </div>
                             </div>
@@ -420,73 +358,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Relational Database Storage</h2>
-<p>What type of data can be stored in a relational database, and what type cannot?</p>
+                                        <h2>Register Command Pattern</h2>
+<p>What is the general syntax pattern for using registers in Helix?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Relational databases can store: Structured data
-Relational databases cannot store: Unstructured data</p>
-<p>Unstructured data must be stored in non-relational databases, data lakes, or large object storage systems. Semi-structured data may require special data types (BLOB, CLOB) even when stored in database systems.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Working with Different Data Types</h2>
-<p>Why is it important for data analysts to understand all three data structure types (structured, unstructured, and semi-structured)?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Data analysts need to understand all three types because:
-- All three types coexist in organizational systems
-- Working with structured data and putting data into structure is part of everyday work
-- Converting between types is often necessary for analysis
-- Different storage solutions are required for each type
-- Real-world data doesn't always fit neatly into one category
-- Understanding data types enables better decision-making about storage, analysis, and transformation strategies</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Practical Significance of Semi-Structured Data</h2>
-<p>Why is semi-structured data practically significant in modern data systems?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Semi-structured data is significant because:
-- Enables systems to handle diverse data types within the same framework
-- Provides flexibility while maintaining some organizational structure
-- Facilitates the transformation of unstructured data into structured formats
-- Common in modern applications that need to handle mixed data types
-- Bridges the gap between rigid structured systems and completely unstructured content
-- Allows organizations to work with real-world data that doesn't fit neatly into one category</p>
+                                        <p><code>"&lt;register&gt;&lt;command&gt;</code> - Start with <code>"</code> (double quote), followed by the register name/character, followed by the command to execute (like <code>y</code> for yank, <code>p</code> for paste, <code>d</code> for delete, etc.).</p>
                                     </div>
                                 </div>
                             </div>
