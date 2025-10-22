@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - DSA - 02 Analysis Of Algorithms</title>
+  <title>Flashcards - DSA - 03 Data Structures - 01 Arrays</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,17 +28,19 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Time Complexity vs Space Complexity</h2>
-<p>What is the difference between time complexity and space complexity in algorithm analysis?</p>
+                                        <h2>Array ADT Definition</h2>
+<p>What is an array as an Abstract Data Type (ADT), and what are its two fundamental operations?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Time complexity is a function of the running time of an algorithm, measuring how execution time grows as input size increases.</p>
-<p>Space complexity is a function of the memory space required for execution, measuring how memory usage grows as input size increases.</p>
-<p>Time complexity is typically the primary focus unless memory is severely constrained.</p>
+                                        <p>An array is an ADT whose data objects are a sequence of elements of the same type.</p>
+<p>The two fundamental operations are:
+1. STORE(array, index, element) - Write a value to a specific position
+2. RETRIEVE(array, index) - Read a value from a specific position</p>
+<p>In programming terms: array[i] = value (STORE) and value = array[i] (RETRIEVE)</p>
                                     </div>
                                 </div>
                             </div>
@@ -52,348 +54,8 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Posteriori Testing Approach</h2>
-<p>What is posteriori testing (empirical approach) and what are its main advantages and disadvantages?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Posteriori testing involves implementing all candidate algorithms, executing them on a computer with various inputs, and measuring actual execution times.</p>
-<p>Advantages: Provides real, concrete measurements on actual hardware.</p>
-<p>Disadvantages: Machine-dependent, language-dependent, programmer-dependent, labor-intensive, and limited to inputs that fit in available memory.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Apriori Analysis Approach</h2>
-<p>What is apriori analysis and why is it preferred over posteriori testing?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Apriori analysis mathematically determines resources needed and expresses performance as a function of input parameters using asymptotic notation.</p>
-<p>It is preferred because it is machine-independent, language-independent, programmer-independent, works for arbitrarily large inputs, and enables early decision-making before implementation.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Frequency Count Definition</h2>
-<p>What is a frequency count in algorithm analysis and how is it used?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Frequency count is the number of times a statement is executed during program execution.</p>
-<p>It is used in apriori analysis by: counting how many times each statement executes, summing all frequency counts to get total operations, expressing this sum as a mathematical function T(n), and then approximating T(n) using asymptotic notation.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Big O Notation Definition</h2>
-<p>Define Big O notation O(g(n)) and explain what it represents.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>f(n) = O(g(n)) if there exist positive constants C and n₀ such that |f(n)| ≤ C|g(n)| for all n ≥ n₀.</p>
-<p>Big O represents an upper bound on the growth rate of a function. It means that g(n) grows at least as fast as f(n) for sufficiently large n. In practical terms, it describes the worst-case performance of an algorithm.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Big Omega Notation Definition</h2>
-<p>Define Big Omega notation Ω(g(n)) and explain what it represents.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>f(n) = Ω(g(n)) if there exist positive constants C and n₀ such that |f(n)| ≥ C|g(n)| for all n ≥ n₀.</p>
-<p>Big Omega represents a lower bound on the growth rate. It means that f(n) grows at least as fast as g(n) for sufficiently large n. In practical terms, it describes the best-case or minimum performance of an algorithm.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Theta Notation Definition</h2>
-<p>Define Theta notation Θ(g(n)) and explain what it represents.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>f(n) = Θ(g(n)) if there exist positive constants c₁, c₂, and n₀ such that c₁|g(n)| ≤ |f(n)| ≤ c₂|g(n)| for all n ≥ n₀.</p>
-<p>Theta represents a tight bound - g(n) is both an upper and lower bound for f(n). Equivalently, f(n) = Θ(g(n)) if and only if f(n) = O(g(n)) AND f(n) = Ω(g(n)). It means f(n) grows at exactly the same rate as g(n).</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Little o Notation Definition</h2>
-<p>Define little o notation o(g(n)) and how does it differ from Big O?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>f(n) = o(g(n)) if f(n) = O(g(n)) AND f(n) ≠ Ω(g(n)). Mathematically: lim(n→∞)[f(n)/g(n)] = 0.</p>
-<p>Little o represents a strict upper bound - f(n) grows strictly slower than g(n). Unlike Big O which allows functions to grow at the same rate, little o requires f(n) to grow slower than g(n).</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Common Time Complexity Classes</h2>
-<p>List the common time complexity classes from best to worst and provide one example algorithm for each.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>From best to worst:
-- O(1) - Constant: Array access by index
-- O(log n) - Logarithmic: Binary search
-- O(n) - Linear: Linear search
-- O(n log n) - Linearithmic: Merge sort, heap sort
-- O(n²) - Quadratic: Bubble sort, selection sort
-- O(n³) - Cubic: Simple matrix multiplication
-- O(2ⁿ) - Exponential: Tower of Hanoi, generating all subsets</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Polynomial vs Exponential Time</h2>
-<p>What is the difference between polynomial and exponential time algorithms, and why does it matter?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Polynomial time algorithms have complexity O(nᵏ) where k is a constant (e.g., O(n), O(n²), O(n³)). They show manageable growth and are considered efficient.</p>
-<p>Exponential time algorithms have complexity O(kⁿ) where k is a constant (e.g., O(2ⁿ), O(3ⁿ)). They show explosive growth and quickly become impractical.</p>
-<p>For n=50, a polynomial O(n²) takes milliseconds while exponential O(2ⁿ) takes 35 years. Even fast computers cannot save exponential algorithms for moderately large inputs.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Best Case Complexity</h2>
-<p>What is best case complexity and when is it useful to analyze?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Best case complexity is the minimum time an algorithm takes over all possible input instances of size n. It represents the most favorable scenario for the algorithm.</p>
-<p>Example: In linear search, the best case is O(1) when the target element is the first element.</p>
-<p>Best case analysis is rarely used except for special algorithms where the best case scenario is common (e.g., insertion sort on nearly-sorted data).</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Worst Case Complexity</h2>
-<p>What is worst case complexity and when is it most important?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Worst case complexity is the maximum time an algorithm takes over all possible input instances of size n. It represents the least favorable scenario.</p>
-<p>Example: In linear search, the worst case is O(n) when the target element is the last element or not present.</p>
-<p>Worst case analysis is most important in safety-critical systems where response time limits must be guaranteed (e.g., nuclear plant controllers, medical devices, real-time systems).</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Average Case Complexity</h2>
-<p>What is average case complexity and what makes it challenging to compute?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Average case complexity is the expected performance across all possible input instances, weighted by their probability of occurrence.</p>
-<p>It is challenging to compute because:
-- It requires knowing or assuming the probability distribution of inputs
-- The mathematical analysis is often complex
-- It must account for all possible input configurations</p>
-<p>Average case is more realistic for general-purpose software but worst case is still preferred in academic analysis due to its simplicity and guaranteed bounds.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Rule of Sums in Big O</h2>
-<p>State the Rule of Sums for Big O notation and provide an example.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>If T₁(n) = O(f(n)) and T₂(n) = O(g(n)), then:
-T₁(n) + T₂(n) = O(max(f(n), g(n)))</p>
-<p>When adding complexities, keep only the dominant (fastest-growing) term.</p>
-<p>Example: O(n²) + O(n) = O(n²) because n² dominates n for large values of n.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Rule of Products in Big O</h2>
-<p>State the Rule of Products for Big O notation and provide an example.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>If T₁(n) = O(f(n)) and T₂(n) = O(g(n)), then:
-T₁(n) × T₂(n) = O(f(n) × g(n))</p>
-<p>When multiplying complexities, multiply the functions.</p>
-<p>Example: O(n) × O(log n) = O(n log n), which commonly occurs in efficient sorting algorithms.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Simplification Rules for Big O</h2>
-<p>What are the key simplification rules when expressing functions in Big O notation?</p>
+                                        <h2>Key Characteristics of Arrays</h2>
+<p>What are the five key characteristics that define arrays?</p>
                                     </div>
                                 </div>
                             </div>
@@ -401,13 +63,12 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ol>
-<li>Drop constant factors: 3n = O(n), not O(3n)</li>
-<li>Keep only the dominant term: 3n² + 5n + 7 = O(n²)</li>
-<li>For polynomials A(n) = aₘnᵐ + ... + a₁n + a₀, keep only highest degree: O(nᵐ)</li>
-<li>Constants become O(1)</li>
-<li>Lower-order terms are dropped: n² dominates n, which dominates log n</li>
+<li>Homogeneous elements - All elements must be of the same data type</li>
+<li>Fixed size - Number of elements determined at creation (for static arrays)</li>
+<li>Contiguous memory - Elements stored in adjacent memory locations</li>
+<li>Index-based access - Elements accessed by their position</li>
+<li>Random access - Can directly access any element in O(1) time without traversing previous elements</li>
 </ol>
-<p>Example: 6n log n + 110n + 9999 simplifies to O(n log n)</p>
                                     </div>
                                 </div>
                             </div>
@@ -421,19 +82,19 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Recursion Definition</h2>
-<p>What is recursion and what two properties must a valid recursive function satisfy?</p>
+                                        <h2>Array Index Range and Size</h2>
+<p>For an array A[l:u], what do l and u represent, and what is the formula for the number of elements?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Recursion is when a function calls itself, either directly or indirectly.</p>
-<p>Two required properties:
-1. Base case(s): Condition(s) where the function does not recurse, preventing infinite loops
-2. Progress toward base case: Each recursive call must move closer to the base case with a smaller or simpler problem</p>
-<p>Without these properties, the recursion will run infinitely or fail.</p>
+                                        <p>l = lower bound (first index)
+u = upper bound (last index)</p>
+<p>Number of elements = u - l + 1</p>
+<p>Example: A[1:5] has 5 - 1 + 1 = 5 elements
+Example: A[-2:3] has 3 - (-2) + 1 = 6 elements</p>
                                     </div>
                                 </div>
                             </div>
@@ -447,21 +108,19 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Recurrence Relations</h2>
-<p>What is a recurrence relation and what are the general steps to analyze a recursive algorithm?</p>
+                                        <h2>Base Address Definition</h2>
+<p>What is the base address of an array and why is it important?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>A recurrence relation is an equation that defines a function T(n) in terms of itself with smaller arguments.</p>
-<p>General steps:
-1. Define T(n) for the base case(s)
-2. Define T(n) for the recursive case(s) in terms of T(smaller values)
-3. Solve the recurrence by substitution to get a closed-form solution
-4. Express the solution using Big O notation</p>
-<p>Recurrence relations are essential for analyzing the time complexity of recursive algorithms.</p>
+                                        <p>The base address (α) is the memory address of the first element of the array.</p>
+<p>It is important because:
+- It determines where the array begins in memory
+- It is essential for calculating addresses of all other elements
+- Used in address calculation formulas for accessing any element</p>
                                     </div>
                                 </div>
                             </div>
@@ -475,22 +134,19 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Factorial Recurrence Analysis</h2>
-<p>For the factorial function where T(n) = c + T(n-1) for n &gt; 1 and T(n) = d for n ≤ 1, what is the time complexity and how is it derived?</p>
+                                        <h2>Multidimensional Array Size</h2>
+<p>What is the formula for calculating the number of elements in a two-dimensional array A[l₁:u₁, l₂:u₂] and a general n-dimensional array?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The recurrence T(n) = c + T(n-1) is solved by repeated substitution:
-- T(n) = c + T(n-1)
-- T(n) = 2c + T(n-2)
-- T(n) = 3c + T(n-3)
-- T(n) = kc + T(n-k)
-- When k = n-1: T(n) = (n-1)c + T(1) = (n-1)c + d</p>
-<p>Time complexity: O(n) - linear time</p>
-<p>This represents algorithms that recurse once with problem size reduced by 1.</p>
+                                        <p>Two-dimensional array A[l₁:u₁, l₂:u₂]:
+Number of elements = (u₁ - l₁ + 1) × (u₂ - l₂ + 1)</p>
+<p>N-dimensional array A[l₁:u₁, l₂:u₂, ..., lₙ:uₙ]:
+Number of elements = ∏(uᵢ - lᵢ + 1) for i = 1 to n</p>
+<p>Example: A[1:3, 1:4] has 3 × 4 = 12 elements</p>
                                     </div>
                                 </div>
                             </div>
@@ -504,22 +160,21 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Tower of Hanoi Recurrence Analysis</h2>
-<p>For the Tower of Hanoi problem where T(N) = 2·T(N-1) + 1 for N &gt; 0 and T(0) = 0, what is the time complexity and what does this imply?</p>
+                                        <h2>Row-Major vs Column-Major Order</h2>
+<p>What is the difference between row-major order and column-major order for storing multidimensional arrays in memory?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The recurrence T(N) = 2·T(N-1) + 1 is solved by substitution:
-- T(N) = 2·T(N-1) + 1
-- T(N) = 2²·T(N-2) + 2 + 1
-- T(N) = 2³·T(N-3) + 2² + 2 + 1
-- T(N) = 2^N·T(0) + (2^(N-1) + ... + 2 + 1)
-- T(N) = 2^N - 1</p>
-<p>Time complexity: O(2^N) - exponential time</p>
-<p>Implication: For N=64 disks, this requires about 1.8×10^19 moves, taking ~585 billion years at one move per second.</p>
+                                        <p>Row-major order: Store complete rows sequentially in memory
+- Used by: C, C++, Java
+- Example: For 2×3 array, store: Row1[all columns], then Row2[all columns]</p>
+<p>Column-major order: Store complete columns sequentially in memory
+- Used by: Fortran, MATLAB
+- Example: For 2×3 array, store: Col1[all rows], then Col2[all rows], etc.</p>
+<p>Computer memory is one-dimensional, so we need a systematic way to map multi-dimensional structures to linear memory.</p>
                                     </div>
                                 </div>
                             </div>
@@ -533,20 +188,23 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Common Recurrence Patterns</h2>
-<p>Match these common recurrence patterns to their Big O solutions: T(n) = T(n-1) + c, T(n) = T(n/2) + c, T(n) = 2T(n/2) + cn</p>
+                                        <h2>One-Dimensional Array Address Calculation</h2>
+<p>What is the formula for calculating the address of element A[i] in a one-dimensional array A[l:u] with base address α?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>T(n) = T(n-1) + c → O(n) - Linear recursion (e.g., factorial)</li>
-<li>T(n) = T(n/2) + c → O(log n) - Logarithmic (e.g., binary search)</li>
-<li>T(n) = 2T(n/2) + cn → O(n log n) - Linearithmic (e.g., merge sort)</li>
-</ul>
-<p>The pattern depends on: how many recursive calls are made, how much the problem size reduces, and what extra work is done per call.</p>
+                                        <p>Address(A[i]) = α + (i - l)</p>
+<p>Where:
+- α = base address
+- i = index of desired element
+- l = lower bound</p>
+<p>Example: A[1:17] with α = 100
+Address of A[7] = 100 + (7 - 1) = 106</p>
+<p>Example: A[-2:23] with α = 100
+Address of A[16] = 100 + (16 - (-2)) = 118</p>
                                     </div>
                                 </div>
                             </div>
@@ -560,21 +218,20 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Analyzing Nested Loops</h2>
-<p>How do you determine the time complexity of nested loops?</p>
+                                        <h2>Two-Dimensional Array Address Calculation</h2>
+<p>What is the formula for calculating the address of element A[i,j] in a two-dimensional array A[l₁:u₁, l₂:u₂] with base address α using row-major order?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>For nested loops, multiply the number of iterations:
-- Single loop from 1 to n: O(n)
-- Two nested loops, each 1 to n: O(n) × O(n) = O(n²)
-- Three nested loops, each 1 to n: O(n) × O(n) × O(n) = O(n³)</p>
-<p>For sequential (non-nested) loops, add the complexities:
-- Loop 1 to n, then another loop 1 to n: O(n) + O(n) = O(n)</p>
-<p>General rule: Nested loops multiply, sequential operations add.</p>
+                                        <p>Address(A[i,j]) = α + (i - l₁)(u₂ - l₂ + 1) + (j - l₂)</p>
+<p>For simplified case A[1:u₁, 1:u₂]:
+Address(A[i,j]) = α + (i - 1)·u₂ + (j - 1)</p>
+<p>Intuition: To reach row i, skip (i-1) complete rows, each containing u₂ elements, then move to column j within that row.</p>
+<p>Example: A[1:10, 1:5] with α = 220
+Address of A[8,3] = 220 + (8-1)×5 + (3-1) = 257</p>
                                     </div>
                                 </div>
                             </div>
@@ -588,18 +245,21 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Why Logarithmic Time is Fast</h2>
-<p>Why is O(log n) considered very fast, and what characteristic makes an algorithm logarithmic?</p>
+                                        <h2>Three-Dimensional Array Address Calculation</h2>
+<p>What is the formula for calculating the address of element A[i,j,k] in a three-dimensional array A[1:u₁, 1:u₂, 1:u₃] with base address α?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>O(log n) is very fast because the growth is extremely slow - doubling the input size only adds a constant number of operations.</p>
-<p>Example: For n = 1,000,000, log₂(n) ≈ 20 operations.</p>
-<p>Algorithms achieve logarithmic time when they repeatedly divide the problem size by a constant factor (usually 2) at each step. Binary search is the classic example: each comparison eliminates half of the remaining elements.</p>
-<p>Logarithmic algorithms can handle extremely large inputs efficiently.</p>
+                                        <p>Address(A[i,j,k]) = α + (i-1)·u₂·u₃ + (j-1)·u₃ + (k-1)</p>
+<p>Conceptual model (building-floor-room analogy):
+- i buildings (skip i-1 complete buildings)
+- j floors per building (skip j-1 floors)
+- k rooms per floor (move to room k)</p>
+<p>Each building has u₂×u₃ rooms total
+Each floor has u₃ rooms</p>
                                     </div>
                                 </div>
                             </div>
@@ -613,24 +273,20 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>When to Analyze Worst Case</h2>
-<p>In what scenarios is worst-case analysis most critical, and why is it the default in academic algorithm analysis?</p>
+                                        <h2>Array Access Time Complexity</h2>
+<p>Why is array access by index O(1) constant time, and what is this property called?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Worst-case analysis is critical when:
-- Response time limits must be guaranteed
-- System failures have serious consequences (nuclear plants, medical devices, aircraft control)
-- Real-time systems where missing deadlines is unacceptable
-- Security systems where worst-case attacks must be defended against</p>
-<p>It is the default in academic analysis because:
-- It provides guaranteed upper bounds
-- It is easier to compute than average case
-- It avoids assumptions about input distributions
-- It ensures the algorithm will never perform worse than the stated bound</p>
+                                        <p>Array access is O(1) because:
+1. Elements are stored contiguously in memory
+2. We can calculate any element's address directly using the formula: Address = α + (i - l)
+3. No need to traverse previous elements</p>
+<p>This property is called "random access" or "direct access."</p>
+<p>The address calculation involves only arithmetic operations (addition, multiplication) which take constant time, regardless of array size or element position.</p>
                                     </div>
                                 </div>
                             </div>
@@ -644,21 +300,26 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Frequency Count Example</h2>
-<p>For a loop "for i = 1 to n do sum = sum + i end", calculate the total frequency count and derive the Big O complexity.</p>
+                                        <h2>Array Insert and Delete Complexity</h2>
+<p>What is the time complexity of inserting or deleting an element in the middle of an array, and why?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Line-by-line frequency count:
-- sum = 0: executed 1 time (before loop)
-- for i = 1 to n: loop test executed (n + 1) times
-- sum = sum + i: executed n times
-- end: executed n times</p>
-<p>Total frequency count: 1 + (n + 1) + n + n = 3n + 2</p>
-<p>Big O complexity: O(3n + 2) = O(n) after dropping constants and lower-order terms.</p>
+                                        <p>Time complexity: O(n) for both insertion and deletion in the middle</p>
+<p>Insert operation:
+1. Find insertion position: O(1)
+2. Shift elements to make space: O(n)
+3. Insert new element: O(1)
+Total: O(n)</p>
+<p>Delete operation:
+1. Find element position: O(1) if by index, O(n) if by value
+2. Delete element: O(1)
+3. Shift elements to fill gap: O(n)
+Total: O(n)</p>
+<p>Reason: Must maintain sequential order by shifting up to n elements.</p>
                                     </div>
                                 </div>
                             </div>
@@ -672,21 +333,22 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Constant Time Operations</h2>
-<p>What types of operations are considered O(1) constant time, and why?</p>
+                                        <h2>Array Advantages</h2>
+<p>What are the five main advantages of using arrays?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>O(1) constant time operations include:
-- Array access by index: array[5]
-- Simple arithmetic: a + b, x * y
-- Variable assignment: x = 10
-- Comparison: if (a &gt; b)
-- Basic pointer operations</p>
-<p>These are O(1) because they take a fixed amount of time regardless of input size. They involve a fixed number of machine instructions that don't depend on the size of the data structure or input.</p>
+                                        <ol>
+<li>Fast Random Access - O(1) time to access any element by index</li>
+<li>Memory Efficiency - Minimal overhead, just stores data</li>
+<li>Cache Friendly - Contiguous memory improves cache performance</li>
+<li>Simple Implementation - Easy to understand and use</li>
+<li>Predictable Performance - Fixed size means predictable memory usage</li>
+</ol>
+<p>Arrays excel when you need direct access to elements and the size is known in advance.</p>
                                     </div>
                                 </div>
                             </div>
@@ -700,23 +362,472 @@ T₁(n) × T₂(n) = O(f(n) × g(n))</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Practical Implications of Algorithm Choice</h2>
-<p>Using a concrete example, demonstrate the practical difference between O(n) and O(n²) algorithms for n = 1,000,000.</p>
+                                        <h2>Array Disadvantages</h2>
+<p>What are the five main disadvantages of static arrays?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Example: Finding maximum element in an array</p>
-<p>O(n) algorithm: Single pass through array
-- Operations: ~1,000,000
-- Time: milliseconds</p>
-<p>O(n²) algorithm: Nested comparison approach
-- Operations: ~1,000,000,000,000 (one trillion)
-- Time: hours to days</p>
-<p>Speedup: 1,000,000× faster</p>
-<p>This demonstrates why algorithm analysis matters in practice - the right algorithm can make the difference between milliseconds and hours.</p>
+                                        <ol>
+<li>Fixed Size - Cannot grow or shrink after creation</li>
+<li>Expensive Insertion/Deletion - O(n) time for operations in the middle</li>
+<li>Wasted Space - Must allocate maximum needed size upfront</li>
+<li>Same Data Type - All elements must be of the same type (homogeneous)</li>
+<li>No Built-in Operations - Limited to STORE and RETRIEVE primitives</li>
+</ol>
+<p>These limitations make arrays unsuitable for collections with frequently changing sizes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sparse Matrix Problem and Solution</h2>
+<p>What is a sparse matrix, what problem does it create, and how is it solved efficiently?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Sparse matrix: A matrix where most elements are zero.</p>
+<p>Problem: Storing a 1000×1000 sparse matrix with only 100 non-zero elements wastes 999,900 memory locations!</p>
+<p>Solution: Use 3-tuple representation
+- Store only non-zero elements as (row, column, value) triplets
+- First row stores matrix metadata: (rows, columns, count of non-zeros)
+- Subsequent rows store each non-zero element</p>
+<p>Benefit: Stores only meaningful data, reducing memory usage dramatically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ordered List Operations</h2>
+<p>What is an ordered list and what are its three main operations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ordered list: A linear sequence where the order of elements matters, implemented as a one-dimensional array.</p>
+<p>Three main operations:</p>
+<ol>
+<li>
+<p>Insertion - Insert element at specific position
+   Example: (a₁, a₂, a₇, a₉) → Insert a₆ → (a₁, a₂, a₆, a₇, a₉)</p>
+</li>
+<li>
+<p>Deletion - Remove element at specific position
+   Example: (a₁, a₂, a₇, a₉) → Delete a₉ → (a₁, a₂, a₇)</p>
+</li>
+<li>
+<p>Update - Replace element at specific position
+   Example: (a₁, a₂, a₇, a₉) → Update a₂ to a₅ → (a₁, a₅, a₇, a₉)</p>
+</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String as Array of Characters</h2>
+<p>How are strings represented as arrays, and what is the null character?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A string is an array of characters representing text.</p>
+<p>Representation:
+- Each character occupies one array position
+- May end with null character '\0' to mark the end</p>
+<p>Example: "HELLO"
+[H][E][L][L][O][\0]</p>
+<p>Multi-string storage uses a 2D array:
+- Each row is one string
+- All strings must have same maximum length
+- Shorter strings padded with null characters</p>
+<p>String operations include: length, concatenation, substring, prefix, suffix.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Bit Array Operations</h2>
+<p>What is a bit array and what are the four main bitwise operations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Bit array: An array where each element is a single bit (0 or 1), used for space-efficient storage of boolean values.</p>
+<p>Four main operations:
+1. NOT - Invert all bits: NOT [0,1,0,1] = [1,0,1,0]
+2. AND - Both bits must be 1: [0,1,0,1] AND [1,1,0,0] = [0,1,0,0]
+3. OR - At least one bit is 1: [0,1,0,1] OR [1,1,0,0] = [1,1,0,1]
+4. XOR - Exactly one bit is 1: [0,1,0,1] XOR [1,1,0,0] = [1,0,0,1]</p>
+<p>Common uses: sets, bloom filters, boolean flags, bitmap graphics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Array Memory Overhead</h2>
+<p>What is the memory overhead for an array A[1:n] storing elements of a given data type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>For array A[1:n]:</p>
+<p>Memory required:
+- n × (size of data type) for the elements
+- Plus: pointer to base address (4 or 8 bytes typically)</p>
+<p>No per-element overhead:
+- Unlike linked structures, arrays don't store pointers with each element
+- Just the raw data in contiguous locations</p>
+<p>This minimal overhead makes arrays very memory-efficient for storing collections.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Array Cache Performance</h2>
+<p>Why do arrays have excellent cache performance?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arrays have excellent cache performance because of three factors:</p>
+<ol>
+<li>Spatial locality - Adjacent elements are stored in adjacent memory locations</li>
+<li>Sequential access is fast - Processor can prefetch next elements automatically</li>
+<li>Minimal pointer chasing - Direct address calculation without following pointers</li>
+</ol>
+<p>When you access array[i], the CPU likely loads array[i+1], array[i+2], etc. into cache automatically.</p>
+<p>This makes array traversal much faster in practice than O(n) analysis might suggest, especially compared to pointer-based structures like linked lists.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Arrays</h2>
+<p>When should you use arrays, and when should you avoid them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use arrays when:
+✓ Maximum size is known in advance
+✓ Need fast random access to elements
+✓ Primarily read/traverse data
+✓ Memory is at a premium
+✓ Elements are of the same type</p>
+<p>Avoid arrays when:
+✗ Size changes frequently
+✗ Many insertions/deletions in the middle
+✗ Need to store heterogeneous data
+✗ Need to frequently grow the collection</p>
+<p>Consider dynamic arrays or linked structures for scenarios where arrays are unsuitable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Array Index Out of Bounds</h2>
+<p>What is the array index out of bounds problem, and what are its consequences?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Accessing A[i] when i &lt; l or i &gt; u (outside valid index range)</p>
+<p>Consequences:
+- Undefined behavior
+- Program crash or segmentation fault
+- Memory corruption
+- Security vulnerabilities
+- Accessing or modifying unrelated data</p>
+<p>Solution: Always validate indices before access
+- Check: l ≤ i ≤ u before accessing A[i]
+- Use bounds-checking functions when available
+- Many modern languages provide automatic bounds checking</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arrays vs Linked Lists Comparison</h2>
+<p>Compare arrays and linked lists across key performance metrics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arrays vs Linked Lists:</p>
+<p>Access time: O(1) vs O(n)
+Insert/Delete at end: O(1) vs O(1)
+Insert/Delete in middle: O(n) vs O(1)* 
+Memory overhead: Minimal vs High (pointers)
+Memory layout: Contiguous vs Scattered
+Size: Fixed (static) vs Dynamic
+Cache performance: Excellent vs Poor</p>
+<p>*O(1) for linked lists only if position is already known</p>
+<p>Key insight: Arrays excel at random access and memory efficiency; linked lists excel at dynamic size changes and middle insertions/deletions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Array Operations Performance Summary</h2>
+<p>Summarize the time complexity of all major array operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Array Operations Time Complexity:</p>
+<p>| Operation | Time | Notes |
+|-----------|------|-------|
+| Access/Update | O(1) | Direct calculation |
+| Traverse | O(n) | Visit each element |
+| Search (unsorted) | O(n) | Linear scan |
+| Search (sorted) | O(log n) | Binary search |
+| Insert/Delete (middle) | O(n) | Requires shifting |
+| Insert/Delete (end) | O(1) | No shifting |</p>
+<p>The O(1) access time is arrays' superpower, making them ideal for random access patterns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Building-Floor-Room Analogy for 2D Arrays</h2>
+<p>Explain the building-floor-room analogy for understanding 2D array address calculation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>For 2D array A[i,j]:</p>
+<p>Think of it as a building with:
+- i floors (rows)
+- j rooms per floor (columns)</p>
+<p>To reach room A[i,j]:
+1. Skip (i-1) complete floors to reach floor i
+2. Each floor has u₂ rooms
+3. So skip (i-1)×u₂ rooms total
+4. Then move to room j on floor i (skip j-1 more rooms)</p>
+<p>Formula: Address = α + (i-1)×u₂ + (j-1)</p>
+<p>This mental model helps understand why we multiply the row index by the number of columns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Arrays Must Be Homogeneous</h2>
+<p>Why must all elements in a static array be of the same data type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arrays require homogeneous elements (same data type) for three reasons:</p>
+<ol>
+<li>Memory allocation - Compiler needs to know exactly how much space to allocate</li>
+<li>Address calculation - Formula depends on uniform element size</li>
+<li>Address = base + index × element_size</li>
+<li>If sizes varied, direct calculation would be impossible</li>
+<li>Performance optimization - Enables O(1) random access</li>
+</ol>
+<p>If element sizes differed, we'd need to traverse from the beginning to find each element (O(n) access time), defeating the purpose of arrays.</p>
+<p>Some languages (like Python) relax this requirement but sacrifice some performance benefits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Row-Major Address Calculation Pattern</h2>
+<p>What is the general pattern for address calculation in row-major order for multidimensional arrays?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>General pattern for n-dimensional array:</p>
+<p>Address(A[i₁, i₂, ..., iₙ]) = α + Σ(iⱼ - lⱼ)·aⱼ</p>
+<p>Where aⱼ represents the "stride" for dimension j:
+- aⱼ = product of all dimension sizes after j
+- Last dimension: aₙ = 1</p>
+<p>The pattern: For each dimension, multiply the offset (iⱼ - lⱼ) by the number of elements in all remaining dimensions.</p>
+<p>This ensures elements are stored row by row, with rightmost indices varying fastest.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Array Applications Summary</h2>
+<p>What are the four main applications of arrays discussed, and what problem does each solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Four main array applications:</p>
+<ol>
+<li>Sparse Matrices</li>
+<li>Problem: Wasted memory for mostly-zero matrices</li>
+<li>
+<p>Solution: Store only non-zero elements as (row, col, value) triplets</p>
+</li>
+<li>
+<p>Ordered Lists</p>
+</li>
+<li>Problem: Need sequential data with order preservation</li>
+<li>
+<p>Solution: Use 1D array with insert/delete/update operations</p>
+</li>
+<li>
+<p>Strings</p>
+</li>
+<li>Problem: Need to store and manipulate text</li>
+<li>
+<p>Solution: Array of characters with null terminator</p>
+</li>
+<li>
+<p>Bit Arrays</p>
+</li>
+<li>Problem: Space-efficient boolean storage</li>
+<li>Solution: Each element is a single bit, with bitwise operations</li>
+</ol>
+<p>Each leverages arrays' strengths while addressing specific use cases.</p>
                                     </div>
                                 </div>
                             </div>

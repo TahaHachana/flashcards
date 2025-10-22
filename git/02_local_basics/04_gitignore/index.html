@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 02 Local Basics - 04 Gitignore</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of .gitignore</h2>
+<p>What is the purpose of .gitignore and what types of files should be ignored?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>.gitignore tells Git which files to ignore—they won't be staged, committed, or shown as untracked.</p>
+<p>Files to ignore:</p>
+<ul>
+<li>Generated files (build artifacts, compiled code)</li>
+<li>Temporary files (cache, logs)</li>
+<li>Local files (IDE settings, OS files)</li>
+<li>Sensitive data (passwords, API keys, .env files)</li>
+</ul>
+<p>KEY: .gitignore only affects untracked files. Already-tracked files remain tracked even if added to .gitignore.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating and Using .gitignore</h2>
+<p>How do you create a .gitignore file and what are the basic steps to use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Create file in repository root: <code>touch .gitignore</code></li>
+<li>Add patterns (one per line):
+   <code>*.log
+   node_modules/
+   .env</code></li>
+<li>Save and commit:
+   <code>bash
+   git add .gitignore
+   git commit -m "Add .gitignore file"</code></li>
+</ol>
+<p>The .gitignore file is committed and shared with collaborators.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic .gitignore Patterns</h2>
+<p>What do these basic .gitignore patterns do: <code>*.log</code>, <code>node_modules/</code>, <code>temp/*</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>*.log</code>: Ignore all files ending with .log extension</li>
+<li><code>node_modules/</code>: Ignore the node_modules directory and all its contents</li>
+<li><code>temp/*</code>: Ignore all files inside the temp directory (but not the directory itself)</li>
+</ul>
+<p>Add trailing slash to directory patterns for clarity: <code>build/</code> (directory) vs <code>build</code> (ambiguous).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Wildcard Patterns in .gitignore</h2>
+<p>What do these wildcard patterns mean in .gitignore: <code>*</code>, <code>?</code>, <code>**</code>, <code>[abc]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>*</code>: Matches zero or more characters except <code>/</code> (e.g., <code>*.txt</code> matches all .txt files)</li>
+<li><code>?</code>: Matches exactly one character (e.g., <code>file?.txt</code> matches file1.txt, fileA.txt)</li>
+<li><code>**</code>: Matches zero or more directories (e.g., <code>**/*.log</code> matches .log files anywhere)</li>
+<li><code>[abc]</code>: Character class, matches a, b, or c (e.g., <code>file[123].txt</code>)</li>
+<li><code>[!abc]</code>: Negated class, matches anything except a, b, c</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Negation in .gitignore</h2>
+<p>How do you use negation in .gitignore to make exceptions, and what's the limitation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>!</code> to negate a pattern (include files that were previously ignored):</p>
+<pre><code class="language-gitignore">*.log              # Ignore all .log files
+!important.log     # But don't ignore important.log
+</code></pre>
+<p>LIMITATION: Can't un-ignore a file if its parent directory is ignored:</p>
+<pre><code class="language-gitignore">logs/              # Wrong: directory ignored
+!logs/important.log  # This won't work
+
+logs/*             # Right: ignore contents
+!logs/important.log  # This works
+</code></pre>
+<p>Order matters!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Patterns by Language</h2>
+<p>What are common .gitignore patterns for Node.js and Python projects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Node.js:</p>
+<pre><code class="language-gitignore">node_modules/
+dist/
+.env
+*.log
+coverage/
+</code></pre>
+<p>Python:</p>
+<pre><code class="language-gitignore">__pycache__/
+*.py[cod]
+venv/
+.env
+.pytest_cache/
+*.egg-info/
+</code></pre>
+<p>Use GitHub's templates (github.com/github/gitignore) or gitignore.io for comprehensive lists.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Global .gitignore</h2>
+<p>What is a global .gitignore file and how do you set it up?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A global ignore file applies to ALL your repositories for personal patterns (OS files, IDE settings, personal notes).</p>
+<p>Setup:</p>
+<pre><code class="language-bash"># Create global ignore file
+touch ~/.gitignore_global
+
+# Configure Git to use it
+git config --global core.excludesfile ~/.gitignore_global
+
+# Add personal patterns
+echo &quot;.DS_Store&quot; &gt;&gt; ~/.gitignore_global
+echo &quot;.vscode/&quot; &gt;&gt; ~/.gitignore_global
+</code></pre>
+<p>Use for patterns that apply everywhere but aren't project-specific.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Checking What's Ignored</h2>
+<p>What are three ways to check which files are ignored by Git?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>git status --ignored</code>: Shows all ignored files</li>
+<li><code>git check-ignore -v filename.txt</code>: Check if specific file is ignored and which rule matched</li>
+<li><code>git ls-files --ignored --exclude-standard --others</code>: List all ignored files</li>
+</ol>
+<p>Example output from check-ignore:</p>
+<pre><code>.gitignore:3:*.txt    filename.txt
+</code></pre>
+<p>Shows file matched by rule on line 3 of .gitignore.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Untracking Already-Tracked Files</h2>
+<p>How do you stop tracking a file that's already committed, but keep it in your working directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>git rm --cached</code> (removes from Git but keeps file locally):</p>
+<p>Remove specific file:</p>
+<pre><code class="language-bash">git rm --cached filename.txt
+git commit -m &quot;Stop tracking filename.txt&quot;
+</code></pre>
+<p>Remove directory:</p>
+<pre><code class="language-bash">git rm -r --cached directory/
+</code></pre>
+<p>Remove all ignored files:</p>
+<pre><code class="language-bash">git rm -r --cached .
+git add .
+git commit -m &quot;Remove all ignored files&quot;
+</code></pre>
+<p>The <code>--cached</code> flag is critical—without it, the file is deleted from your filesystem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Force Adding Ignored Files</h2>
+<p>How do you add a file to Git that's listed in .gitignore?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use the <code>-f</code> or <code>--force</code> flag:</p>
+<pre><code class="language-bash">git add -f ignored-file.txt
+# or
+git add --force ignored-file.txt
+</code></pre>
+<p>WARNING: Only do this if you're certain the file should be committed despite being ignored. This overrides the .gitignore rule.</p>
+<p>Common use case: Committing a specific config file that matches a broader ignore pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>.gitignore Best Practices</h2>
+<p>What should always be ignored in .gitignore and what should never be ignored?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ALWAYS ignore:</p>
+<ul>
+<li>Dependencies (node_modules/, venv/)</li>
+<li>Build artifacts (dist/, build/, *.class)</li>
+<li>IDE settings (personal, not shared)</li>
+<li>OS files (.DS_Store, Thumbs.db)</li>
+<li>Logs (*.log)</li>
+<li>Sensitive data (.env, API keys)</li>
+</ul>
+<p>NEVER ignore:</p>
+<ul>
+<li>Source code</li>
+<li>Configuration templates (.env.example)</li>
+<li>Documentation</li>
+<li>Tests</li>
+<li>Shared project settings</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Directory-Specific .gitignore</h2>
+<p>Can you have multiple .gitignore files in a repository and how do they work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! You can place .gitignore files in subdirectories:</p>
+<pre><code>project/
+├── .gitignore       # Applies to entire repo
+├── docs/
+│   └── .gitignore   # Only applies to docs/ directory
+└── src/
+    └── .gitignore   # Only applies to src/ directory
+</code></pre>
+<p>Patterns in subdirectory .gitignore are relative to that directory. Git checks patterns from specific to general (innermost directory outward).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Handling Accidentally Committed Secrets</h2>
+<p>What should you do if you accidentally commit sensitive data like API keys?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Add to .gitignore immediately:
+   <code>bash
+   echo ".env" &gt;&gt; .gitignore
+   git add .gitignore
+   git commit -m "Add .env to gitignore"</code></p>
+</li>
+<li>
+<p>If NOT pushed, remove and amend:
+   <code>bash
+   git rm --cached .env
+   git commit --amend --no-edit</code></p>
+</li>
+<li>
+<p>If ALREADY pushed:</p>
+</li>
+<li>Change ALL secrets immediately (consider them compromised)</li>
+<li>Rewrite history with git filter-branch or BFG Repo-Cleaner (advanced)</li>
+<li>Consider repository compromised</li>
+</ol>
+<p>PREVENTION: Add sensitive files to .gitignore BEFORE first commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>.git/info/exclude vs .gitignore</h2>
+<p>What is .git/info/exclude and how does it differ from .gitignore?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>.git/info/exclude is for personal ignore patterns you don't want to share:</p>
+<pre><code class="language-bash"># Edit exclude file
+nano .git/info/exclude
+
+# Add personal patterns
+TODO-personal.txt
+NOTES-*.md
+</code></pre>
+<p>Differences from .gitignore:
+- NOT committed (stays local to your repo)
+- Only affects YOUR local repository
+- Useful for personal workflow files
+- Same pattern syntax as .gitignore</p>
+<p>Use for patterns specific to your workflow that teammates don't need.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>.gitignore Pattern Testing</h2>
+<p>How can you test if your .gitignore patterns work correctly before committing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Create test files matching your patterns</li>
+<li>Run <code>git status</code> to see what appears</li>
+<li>Use <code>git check-ignore -v</code> to verify specific files:
+   <code>bash
+   git check-ignore -v test.log
+   # Output: .gitignore:3:*.log    test.log</code></li>
+</ol>
+<p>Test workflow:</p>
+<pre><code class="language-bash">touch test.log test.txt
+echo &quot;*.log&quot; &gt; .gitignore
+git status  # Only test.txt should appear as untracked
+</code></pre>
+<p>Pattern precedence: command-line → .gitignore (same dir) → .gitignore (parent dirs) → .git/info/exclude → global</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
