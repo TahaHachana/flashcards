@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 03 Relationships - 01 Keys And Relationships</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Foreign Key Definition</h2>
+<p>What is a foreign key? How does it differ from a primary key?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Foreign key: A column that references the primary key of another table.</p>
+<p>Differences:
+- Primary key: Uniquely identifies rows in THIS table
+- Foreign key: Points to rows in ANOTHER table</p>
+<p>Example:</p>
+<pre><code>Customers:
+customer_id (PK) - identifies customers
+
+Orders:
+order_id (PK) - identifies orders
+customer_id (FK) - points to Customers table
+</code></pre>
+<p>Foreign keys create relationships between tables.</p>
+<p>Mental model: Foreign keys are "pointers" from one table to another.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Foreign Key Properties</h2>
+<p>What are the key properties of foreign keys? Can they be NULL? Can they repeat?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Foreign key properties:</p>
+<ol>
+<li>References a primary key in another table</li>
+<li>CAN be NULL (indicates no relationship, if allowed)</li>
+<li>CAN repeat (many rows can point to same parent)</li>
+<li>Must match a valid primary key value (or be NULL)</li>
+</ol>
+<p>Example:</p>
+<pre><code>Orders:
+order_id | customer_id (FK)
+---------|------------------
+101      | 1                ← Points to customer 1
+102      | 1                ← Points to customer 1 (repeat OK!)
+103      | 2                ← Points to customer 2
+104      | NULL             ← No customer (if allowed)
+</code></pre>
+<p>Unlike primary keys, foreign keys are not unique.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Primary Key Review</h2>
+<p>Review: What are the four essential properties of a primary key?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Must be UNIQUE - No two rows have the same value</li>
+<li>Cannot be NULL - Every row must have a value</li>
+<li>Should not CHANGE - Once assigned, stays the same</li>
+<li>Should be MEANINGLESS - Best practice: arbitrary IDs</li>
+</ol>
+<p>Example:</p>
+<pre><code>customer_id (PK) | name
+-----------------|------------
+1                | Alice
+2                | Bob
+3                | Carol
+</code></pre>
+<p>Good: customer_id (surrogate key)
+Problematic: email (can change), name (not unique)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Natural vs Surrogate Keys</h2>
+<p>What's the difference between natural keys and surrogate keys? When should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Natural key: Uses real data
+- Examples: email, ISBN, country code ('US', 'CA')
+- Pro: Has meaning
+- Con: Can change (people change emails)</p>
+<p>Surrogate key: Arbitrary identifier
+- Examples: customer_id (1, 2, 3...)
+- Pro: Never needs to change
+- Con: No inherent meaning</p>
+<p>When to use:
+- Surrogate: Most tables (customer_id, order_id, product_id)
+- Natural: Only when guaranteed stable (country codes, ISBN)</p>
+<p>Best practice: Default to surrogate keys unless you have a stable natural key.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Foreign Keys Work</h2>
+<p>Explain how foreign keys solve the normalization problem. Compare storing customer info in Orders vs using a foreign key.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Without foreign key (BAD):</p>
+<pre><code>Orders:
+order_id | customer_name | customer_email    | product
+101      | Alice Smith   | alice@example.com | Widget
+102      | Alice Smith   | alice@example.com | Gadget
+</code></pre>
+<p>Problem: Alice's info repeated (redundancy, update anomalies)</p>
+<p>With foreign key (GOOD):</p>
+<pre><code>Customers:
+customer_id | name        | email
+1           | Alice Smith | alice@example.com
+
+Orders:
+order_id | customer_id (FK) | product
+101      | 1                | Widget
+102      | 1                | Gadget
+</code></pre>
+<p>Benefits:
+- Alice's info stored once
+- Update in one place
+- No redundancy
+- Relationship maintained</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>One-to-Many Definition</h2>
+<p>What is a one-to-many relationship? Give three real-world examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>One-to-many: One parent can have many children.</p>
+<p>The MOST COMMON relationship pattern in databases.</p>
+<p>Examples:
+1. One customer → many orders
+2. One author → many books
+3. One department → many employees
+4. One artist → many paintings
+5. One category → many products</p>
+<p>Key characteristic: The parent (one side) can be referenced by multiple children (many side), but each child belongs to exactly one parent.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>One-to-Many Foreign Key Placement</h2>
+<p>In a one-to-many relationship, which table holds the foreign key? Why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The foreign key goes on the MANY side.</p>
+<p>Example: Customers and Orders (one customer, many orders)</p>
+<pre><code>Customers (ONE):
+customer_id (PK) | name
+
+Orders (MANY):
+order_id (PK) | customer_id (FK) | product
+</code></pre>
+<p>Why:
+- Can't store multiple order IDs in one customer row (violates atomicity)
+- Instead, each order stores which customer it belongs to
+- Foreign key can repeat (customer_id appears multiple times in Orders)</p>
+<p>Rule: Many points to One
+Direction: FK on MANY side → PK on ONE side</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>One-to-Many Foreign Key Repetition</h2>
+<p>In a one-to-many relationship, why can the foreign key value repeat in the "many" table? Is this data redundancy?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Foreign keys CAN and SHOULD repeat in the many table.</p>
+<p>Example:</p>
+<pre><code>Orders:
+order_id | customer_id (FK)
+---------|------------------
+101      | 1                ← Customer 1
+102      | 1                ← Customer 1 (repeats!)
+103      | 1                ← Customer 1 (repeats!)
+104      | 2                ← Customer 2
+</code></pre>
+<p>Customer 1 has 3 orders, so customer_id = 1 appears 3 times.</p>
+<p>Is this redundancy? NO!
+- It's controlled redundancy (foreign keys)
+- Necessary to maintain the relationship
+- Only the ID repeats, not all customer data
+- This is the whole point of foreign keys</p>
+<p>Without repetition, you couldn't have one customer with multiple orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Many-to-Many Problem</h2>
+<p>Why can't you represent a many-to-many relationship with just two tables? What goes wrong?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example: Students and Courses
+- One student takes many courses
+- One course has many students</p>
+<p>Can't use single foreign key:</p>
+<p>Wrong - Multiple values in one column:</p>
+<pre><code>Students:
+student_id | courses
+1          | &quot;Math, English, History&quot;  ← Violates atomicity!
+</code></pre>
+<p>Wrong - Multiple foreign key columns:</p>
+<pre><code>Students:
+student_id | course1 | course2 | course3
+1          | 101     | 102     | 103     ← Fixed limit, lots of NULLs
+</code></pre>
+<p>Problems:
+- Can't query efficiently
+- Can't find all students in a course
+- Violates normalization
+- Inflexible</p>
+<p>Solution: Junction table needed!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Junction Table Definition</h2>
+<p>What is a junction table? What other names is it known by?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Junction table: A table that sits between two tables to create a many-to-many relationship.</p>
+<p>Also called:
+- Join table
+- Bridge table
+- Associative entity
+- Link table
+- Intersection table</p>
+<p>Structure:
+- Has foreign keys to BOTH tables
+- Each row represents ONE connection
+- Breaks many-to-many into TWO one-to-many relationships</p>
+<p>Example:</p>
+<pre><code>Students ←→ Enrollments ←→ Courses
+(one-to-many)   (many-to-one)
+</code></pre>
+<p>The junction table connects the two sides.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Junction Table Structure</h2>
+<p>Show the structure of a junction table for Students and Courses. What columns does it have?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Students:
+student_id (PK) | name
+1               | John
+2               | Jane
+
+Courses:
+course_id (PK) | course_name
+101            | Math
+102            | English
+
+Enrollments (junction table):
+enrollment_id (PK) | student_id (FK) | course_id (FK)
+1                  | 1               | 101
+2                  | 1               | 102
+3                  | 2               | 101
+</code></pre>
+<p>Junction table has:
+1. Its own primary key (optional but recommended)
+2. Foreign key to Students
+3. Foreign key to Courses</p>
+<p>Each row = one student taking one course.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reading Junction Table Data</h2>
+<p>Given this junction table data, answer: What courses is John taking? What students are in Math?</p>
+<pre><code>Enrollments:
+1 | student:1(John) | course:101(Math)
+2 | student:1(John) | course:102(English)
+3 | student:2(Jane) | course:101(Math)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>What courses is John (student 1) taking?
+- Look for rows with student_id = 1
+- Rows 1 and 2
+- Courses: 101 (Math), 102 (English)</p>
+<p>What students are in Math (course 101)?
+- Look for rows with course_id = 101
+- Rows 1 and 3
+- Students: 1 (John), 2 (Jane)</p>
+<p>Mental model: Junction table is a list of connections.
+- Row 1: "John is taking Math"
+- Row 2: "John is taking English"<br />
+- Row 3: "Jane is taking Math"</p>
+<p>Can query in both directions!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Junction Tables Work</h2>
+<p>Explain why junction tables solve the many-to-many problem. What problems do they fix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problems solved:</p>
+<ol>
+<li>No repeated data</li>
+<li>Student info stored once</li>
+<li>
+<p>Course info stored once</p>
+</li>
+<li>
+<p>Unlimited connections</p>
+</li>
+<li>Add as many rows as needed</li>
+<li>
+<p>No fixed limit</p>
+</li>
+<li>
+<p>Easy queries</p>
+</li>
+<li>Find all courses for a student: filter by student_id</li>
+<li>
+<p>Find all students in a course: filter by course_id</p>
+</li>
+<li>
+<p>Flexible</p>
+</li>
+<li>Add/remove connections without changing table structure</li>
+<li>Can add extra info (enrollment_date, grade)</li>
+</ol>
+<p>How it works:
+- Breaks many-to-many into TWO one-to-many relationships
+- Students → Enrollments (one-to-many)
+- Courses → Enrollments (one-to-many)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Junction Table Primary Key Options</h2>
+<p>What are the two approaches for primary keys in junction tables? What are the pros/cons of each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Option 1: Compound primary key (both FKs)</p>
+<pre><code>student_id (PK, FK) | course_id (PK, FK)
+1                   | 101
+1                   | 102
+</code></pre>
+<p>Pro: Automatically prevents duplicate enrollments
+Con: Compound keys can be awkward to reference</p>
+<p>Option 2: Separate surrogate key</p>
+<pre><code>enrollment_id (PK) | student_id (FK) | course_id (FK)
+1                  | 1               | 101
+2                  | 1               | 102
+</code></pre>
+<p>Pro: Simpler, can reference specific enrollment easily
+Con: Need separate UNIQUE constraint to prevent duplicates</p>
+<p>Best practice: Use surrogate key (enrollment_id) + UNIQUE constraint on (student_id, course_id).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Junction Tables With Extra Data</h2>
+<p>Can junction tables have columns beyond just the foreign keys? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Junction tables often store additional information about the relationship.</p>
+<p>Example - E-commerce OrderItems:</p>
+<pre><code>Orders:
+order_id (PK) | customer_id | order_date
+
+Products:
+product_id (PK) | name | price
+
+OrderItems (junction + extra data):
+item_id (PK) | order_id (FK) | product_id (FK) | quantity | price_at_purchase
+</code></pre>
+<p>Extra columns:
+- quantity: How many of this product in this order
+- price_at_purchase: Price when ordered (might differ from current price)</p>
+<p>Other examples:
+- Enrollments: grade, enrollment_date
+- Assignments: assigned_date, due_date, status
+- Likes: timestamp, reaction_type</p>
+<p>Junction tables are full tables that can store any relevant data about the relationship.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Identifying Relationship Type</h2>
+<p>What two questions should you ask to identify the relationship type? How do the answers determine the pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Questions:
+1. Can A have multiple B's?
+2. Can B have multiple A's?</p>
+<p>Decision tree:</p>
+<p>Both YES → Many-to-many (junction table needed)
+Example: Students ↔ Courses</p>
+<p>One YES, one NO → One-to-many (FK on "many" side)
+Example: Customer → Orders</p>
+<p>Both NO → One-to-one (rare, might combine into one table)
+Example: Person → Passport</p>
+<p>Practice:
+- Customer/Orders: Customer has many orders? YES. Order has many customers? NO. → One-to-many
+- Books/Authors: Book has many authors? YES. Author has many books? YES. → Many-to-many</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Referential Integrity Definition</h2>
+<p>What is referential integrity? Why does it matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Referential integrity: The guarantee that foreign keys always point to valid primary keys.</p>
+<p>Rules enforced:
+1. Can't insert orphaned rows (FK must match existing PK)
+2. Can't delete parents with children (by default)
+3. Can't update PK if FKs reference it (by default)</p>
+<p>Example violations:</p>
+<pre><code class="language-sql">-- This fails if customer 999 doesn't exist:
+INSERT INTO orders (customer_id) VALUES (999);  -- ERROR!
+
+-- This fails if customer 1 has orders:
+DELETE FROM customers WHERE customer_id = 1;  -- ERROR!
+</code></pre>
+<p>Why it matters:
+- Prevents orphaned data
+- Maintains relationship validity
+- Ensures data consistency</p>
+<p>Mental model: Foreign keys are contracts that guarantee relationships stay valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Insert Orphaned Rows</h2>
+<p>Why can't you insert a row with a foreign key that doesn't match any primary key? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Referential integrity prevents orphaned rows (children without parents).</p>
+<p>Example:</p>
+<pre><code class="language-sql">Customers:
+customer_id | name
+1           | Alice
+2           | Bob
+
+-- This fails:
+INSERT INTO orders (order_id, customer_id, product)
+VALUES (105, 999, 'Widget');
+-- ERROR: customer_id 999 doesn't exist!
+</code></pre>
+<p>Why this matters:
+- Order 105 would reference non-existent customer 999
+- Creates "orphaned" row - order with no customer
+- Breaks relationship integrity
+- Makes data unreliable</p>
+<p>Must insert valid customer_id (1 or 2), or NULL if allowed.</p>
+<p>This is referential integrity protecting your data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Delete Parents With Children</h2>
+<p>What happens (by default) if you try to delete a row that has foreign keys pointing to it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Default behavior: DELETE RESTRICTED - cannot delete parent if children exist.</p>
+<p>Example:</p>
+<pre><code class="language-sql">-- Customer 1 has orders:
+Orders:
+order_id | customer_id (FK)
+101      | 1
+102      | 1
+
+-- This fails:
+DELETE FROM customers WHERE customer_id = 1;
+-- ERROR: Cannot delete because orders reference this customer
+</code></pre>
+<p>Why:
+- Deleting customer 1 would orphan orders 101 and 102
+- They would point to non-existent customer
+- Violates referential integrity</p>
+<p>Solutions:
+1. Delete children first, then parent
+2. Use ON DELETE CASCADE (deletes children automatically)
+3. Use ON DELETE SET NULL (sets FK to NULL)</p>
+<p>Default (RESTRICT) is safest - forces you to handle children explicitly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cascade Options</h2>
+<p>What are the three main ON DELETE options for foreign keys? When would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>ON DELETE RESTRICT (default)</li>
+<li>Prevent deletion if children exist</li>
+<li>Must delete children first</li>
+<li>
+<p>Use: When children should be handled explicitly
+   <code>sql
+   DELETE FROM customers WHERE customer_id = 1;  -- ERROR if has orders</code></p>
+</li>
+<li>
+<p>ON DELETE CASCADE</p>
+</li>
+<li>Automatically delete children when parent deleted</li>
+<li>
+<p>Use: When children can't exist without parent
+   <code>sql
+   DELETE FROM customers WHERE customer_id = 1;  -- Also deletes all orders</code></p>
+</li>
+<li>
+<p>ON DELETE SET NULL</p>
+</li>
+<li>Set foreign key to NULL when parent deleted</li>
+<li>Use: When children can exist without parent
+   <code>sql
+   DELETE FROM customers WHERE customer_id = 1;  -- Orders remain, customer_id → NULL</code></li>
+</ol>
+<p>Choose based on business rules. RESTRICT is safest.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Real Example Blog System</h2>
+<p>Design a blog system with Users, Posts, and Tags. Identify the relationships and where foreign keys go.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Entities and relationships:
+- Users write Posts: one-to-many
+- Posts have Tags: many-to-many
+- Tags on Posts: many-to-many</p>
+<p>Structure:</p>
+<pre><code>Users:
+user_id (PK) | username
+
+Posts:
+post_id (PK) | user_id (FK) | title | content
+
+Tags:
+tag_id (PK) | tag_name
+
+PostTags (junction):
+post_id (FK) | tag_id (FK)
+</code></pre>
+<p>Relationships:
+- Users → Posts: FK in Posts (one user, many posts)
+- Posts ↔ Tags: Junction table PostTags (posts have many tags, tags on many posts)</p>
+<p>Why this design:
+- User info stored once
+- Can find all posts by a user
+- Can find all tags on a post
+- Can find all posts with a tag</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Real Example E-commerce</h2>
+<p>Design an e-commerce system with Customers, Orders, and Products. Why do you need OrderItems as a junction table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structure:</p>
+<pre><code>Customers:
+customer_id (PK) | name | email
+
+Orders:
+order_id (PK) | customer_id (FK) | order_date
+
+Products:
+product_id (PK) | name | price
+
+OrderItems (junction):
+item_id (PK) | order_id (FK) | product_id (FK) | quantity
+</code></pre>
+<p>Why OrderItems needed:
+- One order contains many products → many-to-many
+- One product appears in many orders → many-to-many
+- Can't store multiple product_ids in Orders table
+- OrderItems also stores quantity for each product in each order</p>
+<p>Relationships:
+- Customers → Orders: one-to-many (FK in Orders)
+- Orders ↔ Products: many-to-many (via OrderItems)</p>
+<p>Extra data in junction: quantity (how many of this product in this order)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Real Example Library</h2>
+<p>Design a library system with Books, Authors, and Patrons (borrowers). Identify all the many-to-many relationships.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structure:</p>
+<pre><code>Authors:
+author_id (PK) | name
+
+Books:
+book_id (PK) | title | isbn
+
+BookAuthors (junction):
+book_id (FK) | author_id (FK)
+
+Patrons:
+patron_id (PK) | name
+
+Loans (junction):
+loan_id (PK) | book_id (FK) | patron_id (FK) | loan_date | return_date
+</code></pre>
+<p>Many-to-many relationships:
+1. Books ↔ Authors (via BookAuthors)
+   - Books can have multiple authors
+   - Authors can write multiple books</p>
+<ol>
+<li>Patrons ↔ Books (via Loans)</li>
+<li>Patrons can borrow multiple books</li>
+<li>Books can be borrowed by multiple patrons (over time)</li>
+</ol>
+<p>Note: Loans is both a junction table AND has its own data (dates). Very common pattern!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Direction of Relationships</h2>
+<p>In a relationship diagram, which direction does the arrow point? What does it represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arrow points FROM foreign key TO primary key.</p>
+<p>Visual:</p>
+<pre><code>Customers         Orders
+┌──────────┐      ┌──────────┐
+│ id (PK)  │←────┤ id (PK)  │
+│ name     │      │ cust_id  │ (FK)
+└──────────┘      │ product  │
+    ONE           └──────────┘
+                      MANY
+</code></pre>
+<p>Arrow direction: Orders.customer_id → Customers.id</p>
+<p>Reading the relationship:
+- Arrow starts at foreign key (many side)
+- Arrow points to primary key (one side)
+- Shows: "Many orders point to one customer"</p>
+<p>Remember: FK on MANY side, arrow points to ONE side.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Not To Use Separate Tables</h2>
+<p>When might you NOT separate data into multiple tables? Give an example of a one-to-one relationship.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>One-to-one relationships: Both sides have at most one of the other.</p>
+<p>Example: Person and Passport
+- One person has one passport
+- One passport belongs to one person</p>
+<p>Options:</p>
+<ol>
+<li>Single table (often best):</li>
+</ol>
+<pre><code>Persons:
+person_id | name | passport_number | passport_expiry
+</code></pre>
+<ol>
+<li>Separate tables (if needed):</li>
+</ol>
+<pre><code>Persons:
+person_id (PK) | name
+
+Passports:
+passport_id (PK) | person_id (FK, UNIQUE) | number | expiry
+</code></pre>
+<p>When to separate:
+- Optional data (not everyone has passport)
+- Different security requirements
+- Very large columns that aren't always needed</p>
+<p>When to combine:
+- Data always goes together
+- Simpler queries
+- Most cases</p>
+<p>One-to-one is rare; often indicates tables should be combined.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Foreign Keys Same Table</h2>
+<p>Can one table have multiple foreign keys? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! A table can have foreign keys to multiple different tables.</p>
+<p>Example - Orders table:</p>
+<pre><code>Customers:
+customer_id (PK) | name
+
+Employees:
+employee_id (PK) | name
+
+ShippingAddresses:
+address_id (PK) | street | city
+
+Orders:
+order_id (PK) | customer_id (FK) → Customers
+              | employee_id (FK) → Employees  
+              | ship_address_id (FK) → ShippingAddresses
+              | order_date
+</code></pre>
+<p>Each order has:
+- One customer (who placed it)
+- One employee (who processed it)
+- One shipping address</p>
+<p>Multiple relationships from one table - perfectly normal and common!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self-Referencing Foreign Key Preview</h2>
+<p>Can a foreign key reference the same table it's in? Give an example scenario.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Called a self-referencing foreign key or self-join.</p>
+<p>Example - Employees with managers:</p>
+<pre><code>Employees:
+employee_id (PK) | name     | manager_id (FK)
+1                | Alice    | NULL           (CEO, no manager)
+2                | Bob      | 1              (reports to Alice)
+3                | Carol    | 1              (reports to Alice)
+4                | David    | 2              (reports to Bob)
+</code></pre>
+<p>manager_id is a foreign key that references employee_id in the SAME table.</p>
+<p>Reading it:
+- Bob's manager is employee 1 (Alice)
+- Carol's manager is employee 1 (Alice)
+- David's manager is employee 2 (Bob)</p>
+<p>Other examples:
+- Categories with parent categories
+- Comments with parent comments (replies)
+- Forum threads with parent posts</p>
+<p>Covered in detail in Phase 3.3 (Self-joins).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Relationship Vocabulary</h2>
+<p>What are some alternative terms for describing one-to-many relationships?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>One-to-many can be described many ways:</p>
+<p>Formal:
+- One-to-many
+- Parent-child
+- Master-detail</p>
+<p>Informal (often clearer):
+- Container-contents (shopping cart → items)
+- Owner-owned (customer → orders)
+- Category-members (department → employees)
+- Collection-elements (playlist → songs)</p>
+<p>All describe the same pattern:
+- ONE parent/container/owner
+- MANY children/contents/owned items</p>
+<p>Use whichever terminology makes the relationship clearest in context.</p>
+<p>Example: "Shopping cart contains items" is clearer than "Shopping cart has one-to-many relationship with items."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Foreign Keys Enable Normalization</h2>
+<p>How do foreign keys make normalization possible? What would happen without them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Foreign keys are what make normalized databases work.</p>
+<p>Without foreign keys:
+- Must store all related data in one table
+- Massive redundancy (repeat customer info in every order)
+- Update anomalies (change email in 100 places)
+- Can't separate concerns</p>
+<p>With foreign keys:
+- Can separate entities into logical tables
+- Store each fact once
+- Maintain relationships through IDs
+- Update in one place</p>
+<p>Example:</p>
+<pre><code>WITHOUT FKs (denormalized):
+Orders: order_id | cust_name | cust_email | cust_phone | product
+        Repeat customer info in every order!
+
+WITH FKs (normalized):
+Customers: customer_id | name | email | phone
+Orders: order_id | customer_id (FK) | product
+        Reference customer once!
+</code></pre>
+<p>Foreign keys are the glue that holds normalized databases together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Relationships Are The Heart of SQL</h2>
+<p>Why are relationships considered "the heart of SQL"? What makes them fundamental to relational databases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Relationships are central because:</p>
+<ol>
+<li>Enable normalization</li>
+<li>Split data logically</li>
+<li>Store facts once</li>
+<li>
+<p>Eliminate redundancy</p>
+</li>
+<li>
+<p>Reflect reality</p>
+</li>
+<li>Real-world entities are related</li>
+<li>Databases model these relationships</li>
+<li>
+<p>Customers DO place orders, authors DO write books</p>
+</li>
+<li>
+<p>Enable powerful queries</p>
+</li>
+<li>JOINs reunite separated data</li>
+<li>Query across relationships</li>
+<li>
+<p>Answer complex questions</p>
+</li>
+<li>
+<p>Maintain data integrity</p>
+</li>
+<li>Referential integrity prevents orphans</li>
+<li>Ensures consistency</li>
+<li>Protects relationships</li>
+</ol>
+<p>Without relationships:
+- Just isolated tables
+- No connections
+- Can't model real world
+- Massive redundancy</p>
+<p>With relationships:
+- Connected data model
+- Normalized structure
+- Flexible queries
+- Data integrity</p>
+<p>This is why "relational" database - it's ALL about relationships!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Linux - 01 Basic Linux Concepts - 02 Linux Utils</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vim Text Editor Overview</h2>
+<p>What are the three operational modes in Vim, and what is the primary purpose of each mode?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Command Mode</strong> (default): Keyboard keys issue commands for navigation and text manipulation, not for inserting text</li>
+<li><strong>Insert Mode</strong>: Keyboard functions normally for text entry; accessed by pressing <code>i</code> from Command mode</li>
+<li><strong>Execute Mode</strong> (Command-Line Mode): Provides a command prompt accessed by typing <code>:</code> for saving, exiting, and advanced commands</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Vim File Operations</h2>
+<p>What are the four essential Vim commands for creating/opening, editing, saving, and closing files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Create/Open</strong>: <code>vim {filename}</code> - creates new empty file or opens existing file</li>
+<li><strong>Edit</strong>: <code>i</code> - enters Insert mode to begin editing</li>
+<li><strong>Save</strong>: <code>ESC</code> then <code>:w</code> - exits Insert mode and writes changes to disk</li>
+<li><strong>Close</strong>: <code>ESC</code> then <code>:q</code> - exits Vim (or <code>:wq</code> to save and exit together)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vim Insert Mode Indicator</h2>
+<p>How can you tell when Vim is in Insert mode, and how do you return to Command mode?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When in Insert mode, the word "INSERT" appears in the lower left corner of the screen. To return to Command mode, press the <code>ESC</code> key. This is essential before executing save or exit commands.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vim Text Manipulation Commands</h2>
+<p>What Vim commands are used to: (1) delete a word, (2) delete/cut a line, (3) paste, (4) undo, and (5) replace text?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Delete word</strong>: <code>dw</code> - deletes word under cursor including trailing space</li>
+<li><strong>Delete/cut line</strong>: <code>dd</code> - cuts entire line to buffer</li>
+<li><strong>Paste</strong>: <code>p</code> - pastes content at cursor position</li>
+<li><strong>Undo</strong>: <code>u</code> - undoes last change</li>
+<li><strong>Replace</strong>: <code>Shift+R</code> - enters Replace mode where new text overwrites existing text</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vim Search Functions</h2>
+<p>How do you search for text in Vim, and how do you navigate between search results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>/word</code> - searches forward for "word"</li>
+<li><code>?word</code> - searches backward for "word"</li>
+<li><code>n</code> - jumps to next search match</li>
+<li><code>N</code> - jumps to previous search match</li>
+</ul>
+<p>All searches are initiated from Command mode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vim Save and Exit Commands</h2>
+<p>What are the different Vim commands for saving and exiting, and when would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>:w</code> - save (write) changes only</li>
+<li><code>:wq</code> or <code>:exit</code> - save changes and exit</li>
+<li><code>:q</code> - quit without saving (only if no changes made)</li>
+<li><code>:q!</code> - force quit without saving, discarding all changes</li>
+</ul>
+<p>All commands require pressing <code>ESC</code> first to enter Command mode, then <code>:</code> to access Command-Line mode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nano Text Editor Overview</h2>
+<p>What are the key characteristics that distinguish nano from Vim, and why is it considered more beginner-friendly?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><strong>No modes</strong>: Can start typing immediately without mode switching</li>
+<li><strong>On-screen shortcuts</strong>: Menu at bottom displays available commands</li>
+<li><strong>Simpler interface</strong>: Keyboard functions normally for text entry</li>
+<li><strong>Ctrl-based shortcuts</strong>: Uses familiar Ctrl key combinations</li>
+<li><strong>Immediate editing</strong>: No learning curve for basic operations</li>
+<li><strong>Self-documenting</strong>: Commands visible at all times (using caret notation where ^ means Ctrl)</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Nano File Operations</h2>
+<p>What are the essential nano commands for creating/opening, editing, saving, and closing files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Create/Open</strong>: <code>nano {filename}</code> - creates new buffer or opens existing file</li>
+<li><strong>Edit</strong>: Just start typing; use arrow keys to move cursor</li>
+<li><strong>Save</strong>: <code>Ctrl+O</code> - Write Out (prompts for filename if new)</li>
+<li><strong>Close</strong>: <code>Ctrl+X</code> - exits nano (prompts to save if unsaved changes exist)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nano Navigation Commands</h2>
+<p>What nano commands are available for navigation beyond basic arrow keys?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><strong>Home</strong> - move to beginning of current line</li>
+<li><strong>End</strong> - move to end of current line</li>
+<li><strong>Ctrl+Right Arrow</strong> - move forward by word</li>
+<li><strong>Ctrl+Left Arrow</strong> - move backward by word</li>
+<li><strong>Ctrl+_</strong> (Ctrl+Underscore) - jump to specific line and column number</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nano Cut, Copy, and Paste</h2>
+<p>How do you cut, copy, and paste text in nano?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Mark text</strong>: <code>Ctrl+A</code> - sets mark at cursor position</li>
+<li>Move cursor to select text region</li>
+<li><strong>Cut</strong>: <code>Ctrl+K</code> - removes text to buffer</li>
+<li><strong>Copy</strong>: <code>Alt+6</code> - copies text to buffer without removing</li>
+<li>Move cursor to destination</li>
+<li><strong>Paste</strong>: <code>Ctrl+U</code> - inserts buffer content</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nano Search Function</h2>
+<p>How do you search for text in nano and move between search results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Press <code>Ctrl+W</code> to open search prompt</li>
+<li>Type the search term and press Enter</li>
+<li>Cursor moves to first match</li>
+<li>Press <code>Ctrl+W</code> then Enter again to find next occurrence</li>
+<li>Repeat to cycle through all matches</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Vim vs Nano</h2>
+<p>When should a Linux administrator choose Vim versus nano for editing tasks?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use nano when:</strong>
+- Making quick, simple edits
+- New to Linux administration
+- Need on-screen guidance
+- Time is limited and simplicity is priority</p>
+<p><strong>Use Vim when:</strong>
+- Performing complex text manipulations
+- Need advanced features (macros, multiple buffers)
+- Efficiency is paramount (after proficiency achieved)
+- Working with large files requiring precise navigation
+- Customization and extensibility are important</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Linux Account Types</h2>
+<p>What are the three types of accounts on Linux systems, and what is each used for?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>root</strong> - Administrator account with full system privileges and complete control</li>
+<li><strong>standard user</strong> - Regular user accounts with limited permissions for day-to-day tasks</li>
+<li><strong>service</strong> - Special accounts for running system services and daemons (not for human login)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Root Account Security Best Practice</h2>
+<p>Why is it NOT recommended to log in directly as root, and what is the recommended security practice?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Why not to log in as root:</strong>
+- Grants very broad, unrestricted permissions
+- Increases risk of accidental system damage
+- Makes it easier for malicious actors to compromise entire system
+- No protection against typos or command errors</p>
+<p><strong>Best practice:</strong>
+1. Log in as standard user
+2. Use <code>su</code> or <code>sudo</code> only when root access needed
+3. Perform specific administrative task
+4. Exit back to standard user immediately</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The su Command Purpose</h2>
+<p>What does "su" stand for, and what is its primary purpose in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>su</strong> stands for "Substitute User" (or "Switch User"). Its primary purpose is to allow users to switch from their current account to another user account (most commonly root) without logging out and back in. When no username is specified, <code>su</code> defaults to switching to the root account.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Difference Between su and su -</h2>
+<p>What is the difference between <code>su root</code> and <code>su - root</code> commands?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>su root</code>:</strong>
+- Switches to root but keeps current user's environment variables
+- Working directory remains the same
+- Partial switch to root context</p>
+<p><strong><code>su - root</code></strong> (or <code>su -l root</code>):**
+- Creates a login shell environment
+- Loads root's environment variables and profile
+- Changes working directory to <code>/root</code>
+- Simulates a fresh login as root
+- More complete switch (PREFERRED method)</p>
+<p>Note: Spaces required on each side of the dash: <code>su</code> [space] <code>-</code> [space] <code>root</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic su Command Workflow</h2>
+<p>Describe the complete workflow for using <code>su -</code> to perform an administrative task and return to your standard user account.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Log in as standard user</li>
+<li>Type <code>su -</code> (prompts for root password)</li>
+<li>Enter root password</li>
+<li>Verify with <code>whoami</code> - should show "root"</li>
+<li>Perform necessary administrative task(s)</li>
+<li>Type <code>exit</code> to leave root and return to standard user</li>
+<li>Verify with <code>whoami</code> - should show original username</li>
+</ol>
+<p>Key: Only stay in root account as long as necessary for the specific task.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Switching Between Standard Users with su</h2>
+<p>How do you switch from one standard user account to another using su, and why is the <code>-l</code> flag important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Command:</strong> <code>su -l username</code> or <code>su - username</code></p>
+<p><strong>Example:</strong> <code>su -l jsmith</code></p>
+<p><strong>Why <code>-l</code> (login) flag is important:</strong>
+- Starts new shell as login shell
+- Loads target user's complete environment
+- Changes to target user's home directory
+- Without <code>-l</code>, current user's environment persists (like HOME variable), which can cause unexpected behavior and issues</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Problem with su</h2>
+<p>What is the main security limitation of using <code>su</code> for privilege escalation, and what issues does this create?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>All-or-Nothing Privilege Model:</strong>
+- User either has NO administrative privileges (standard user)
+- Or has ALL administrative privileges (full root)
+- No middle ground for specific tasks</p>
+<p><strong>Issues created:</strong>
+- Must share root password with multiple administrators
+- Cannot restrict users to specific administrative tasks
+- Difficult to audit who performed which actions
+- Hard to revoke access (must change root password)
+- Cannot delegate specific responsibilities safely</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The sudo Command Purpose</h2>
+<p>What does sudo stand for, and how does it solve the problems associated with su?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>sudo</strong> stands for "Superuser Do"</p>
+<p><strong>How it solves su problems:</strong>
+- Allows execution of specific commands with root privileges
+- Users authenticate with their own password (not root password)
+- Granular control over which commands users can run
+- Full audit trail of all sudo usage
+- Easy to revoke access by editing <code>/etc/sudoers</code>
+- Can delegate specific tasks to users/groups
+- No need to share root password
+- Better accountability (tracks who did what and when)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic sudo Usage</h2>
+<p>How do you use sudo to execute a command with root privileges, and what happens when you run it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Syntax:</strong> <code>sudo &lt;command&gt;</code></p>
+<p><strong>Example:</strong> <code>sudo systemctl restart apache2</code></p>
+<p><strong>What happens:</strong>
+1. User types <code>sudo</code> before the command
+2. System prompts for user's own password (not root password)
+3. System checks <code>/etc/sudoers</code> to verify permission
+4. Warning message displayed ("be careful on the system")
+5. Command executes with root privileges
+6. Returns to standard user privileges immediately after</p>
+<p><strong>Note:</strong> Password typically cached for 15 minutes after first use</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /etc/sudoers File</h2>
+<p>What is the <code>/etc/sudoers</code> file, and what is the proper way to edit it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong>
+- Central configuration file for sudo permissions
+- Defines which users/groups can run which commands
+- Specifies exactly what root-level tasks are permitted</p>
+<p><strong>Proper editing method:</strong>
+- <strong>NEVER edit directly</strong> with vim or nano
+- <strong>ALWAYS use:</strong> <code>sudo visudo</code>
+- <code>visudo</code> prevents syntax errors that could lock out administrators
+- Performs validation before saving changes</p>
+<p><strong>Why this matters:</strong> A syntax error in <code>/etc/sudoers</code> could prevent all sudo access and lock you out of administrative functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Comparison of su vs sudo</h2>
+<p>Compare su and sudo across five key security and operational aspects.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Password Required:</strong></li>
+<li>su: Root password</li>
+<li>
+<p>sudo: User's own password</p>
+</li>
+<li>
+<p><strong>Privilege Level:</strong></p>
+</li>
+<li>su: Complete root access</li>
+<li>
+<p>sudo: Specific commands only</p>
+</li>
+<li>
+<p><strong>Duration:</strong></p>
+</li>
+<li>su: Until <code>exit</code> is typed</li>
+<li>
+<p>sudo: Single command execution</p>
+</li>
+<li>
+<p><strong>Auditing:</strong></p>
+</li>
+<li>su: Limited tracking</li>
+<li>
+<p>sudo: Comprehensive logging</p>
+</li>
+<li>
+<p><strong>Accountability:</strong></p>
+</li>
+<li>su: Difficult to track who did what</li>
+<li>sudo: Full audit trail of all actions</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Distribution-Specific Root Account Handling</h2>
+<p>How do some Linux distributions (like Ubuntu) handle the root account differently, and what are the implications?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Root Account Disabled by Default:</strong>
+- Root account exists but has no usable password
+- Cannot use <code>su - root</code> (no password set)
+- Forces exclusive use of sudo for administrative tasks</p>
+<p><strong>Implications:</strong>
+- First user created typically given full sudo privileges
+- Other users must be explicitly granted sudo access
+- Eliminates risk of direct root login
+- Enforces sudo's auditing and control mechanisms
+- Encourages security best practices</p>
+<p><strong>Security benefit:</strong> Prevents password-based root access, making the system more secure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use su vs sudo</h2>
+<p>When should a system administrator choose to use su versus sudo?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use su when:</strong>
+- Extended administrative session required
+- Multiple root commands need to be executed
+- Working in recovery or maintenance mode
+- System doesn't have sudo configured
+- Need complete root environment</p>
+<p><strong>Use sudo when: (PREFERRED)</strong>
+- Single or few administrative commands needed
+- Want to maintain audit trail
+- Don't want to share root password
+- Need granular permission control
+- Working on production systems
+- Following security best practices</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Additional sudo Commands</h2>
+<p>What are some useful sudo command variations beyond the basic <code>sudo &lt;command&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>sudo -i</code> - Start interactive root shell (similar to su -)</li>
+<li><code>sudo -s</code> - Start shell as root with current environment</li>
+<li><code>sudo -l</code> - List allowed sudo commands for current user</li>
+<li><code>sudo -u username command</code> - Execute command as specified user (not root)</li>
+<li><code>sudo visudo</code> - Safely edit the /etc/sudoers file</li>
+</ul>
+<p>These variations provide flexibility for different administrative scenarios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filesystem Hierarchy Standard (FHS)</h2>
+<p>What is the Filesystem Hierarchy Standard (FHS), and why is it important for Linux administrators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>FHS</strong> is a standard that defines the directory structure and organization in Linux systems, maintained by the Linux Foundation.</p>
+<p><strong>Why it's important:</strong>
+- <strong>Consistency</strong>: Provides uniformity across hundreds of distributions
+- <strong>Predictability</strong>: Administrators know where to find specific resources
+- <strong>Portability</strong>: Skills transfer seamlessly between distributions
+- <strong>Efficiency</strong>: Reduces learning curve when switching systems
+- <strong>Documentation</strong>: Standard locations simplify creating and following documentation</p>
+<p>Allows administrators to work confidently on any Linux distribution without relearning directory structures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /home Directory Structure</h2>
+<p>What is the purpose and structure of the <code>/home</code> directory in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> Contains personal workspace directories for each standard user</p>
+<p><strong>Structure:</strong> <code>/home/username</code></p>
+<p><strong>Examples:</strong> <code>/home/john</code>, <code>/home/sarah</code>, <code>/home/administrator</code></p>
+<p><strong>Typical Contents:</strong>
+- Personal files (documents, downloads, pictures, videos)
+- Profile settings and application configurations
+- Desktop environment settings
+- Hidden configuration files (dot files like <code>.bashrc</code>, <code>.ssh/</code>, <code>.config/</code>)
+- Email and browser data</p>
+<p><strong>Characteristics:</strong>
+- Each user can only access their own home directory (by default)
+- User owns all files in their home directory
+- Isolated from system files and other users</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Root User Home Directory Exception</h2>
+<p>Where is the root user's home directory located, and why is this different from standard users?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Root user's home directory is <code>/root</code>, NOT <code>/home/root</code></p>
+<p><strong>Why it's different:</strong>
+- Root is a special administrative account
+- Separated from standard user home directories
+- Located at top level of filesystem for system recovery purposes
+- Ensures root has access even if <code>/home</code> partition fails to mount
+- Clear distinction between administrative and standard user spaces</p>
+<p>This is an important exception to remember when navigating the filesystem as root.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Accessing Your Home Directory</h2>
+<p>What are three different ways to navigate to your own home directory in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Tilde shortcut:</strong> <code>cd ~</code></li>
+<li><strong>Environment variable:</strong> <code>cd $HOME</code></li>
+<li><strong>Full path:</strong> <code>cd /home/username</code></li>
+</ol>
+<p>All three methods accomplish the same goal. The tilde (<code>~</code>) is the quickest and most commonly used method. You can verify your current location with the <code>pwd</code> command after navigating.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /etc Directory Purpose</h2>
+<p>What is stored in the <code>/etc</code> directory, and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> Central repository for system-wide configuration files</p>
+<p><strong>Key Characteristics:</strong>
+- <strong>Text-based</strong>: Most files are plain text (editable with vim/nano)
+- <strong>Root access required</strong>: Typically need sudo/root to modify
+- <strong>System-wide impact</strong>: Changes affect all users
+- <strong>Careful editing required</strong>: Syntax errors can break system functionality
+- <strong>Backup critical</strong>: Always backup before modifying</p>
+<p><strong>Common contents:</strong>
+- System configuration files
+- Network configuration
+- User and group databases (<code>/etc/passwd</code>, <code>/etc/group</code>, <code>/etc/shadow</code>)
+- Service configurations
+- Security policies</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Important Files in /etc</h2>
+<p>List six important configuration files commonly found in <code>/etc</code> and their purposes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong><code>/etc/passwd</code></strong> - User account information</li>
+<li><strong><code>/etc/group</code></strong> - Group definitions</li>
+<li><strong><code>/etc/shadow</code></strong> - Encrypted passwords (secure)</li>
+<li><strong><code>/etc/sudoers</code></strong> - sudo permissions (edit with visudo)</li>
+<li><strong><code>/etc/hostname</code></strong> - System hostname</li>
+<li><strong><code>/etc/hosts</code></strong> - Static hostname-to-IP mappings</li>
+</ol>
+<p>Additional important files: <code>/etc/fstab</code> (filesystem mounts), <code>/etc/ssh/sshd_config</code> (SSH configuration), <code>/etc/resolv.conf</code> (DNS settings)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practices for Editing /etc Files</h2>
+<p>What are the best practices for safely editing configuration files in <code>/etc</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Backup first</strong>: Copy original file (e.g., <code>cp file file.bak</code>)</li>
+<li><strong>Comment changes</strong>: Document what was changed and why</li>
+<li><strong>Test syntax</strong>: Use configuration test commands when available</li>
+<li><strong>Version control</strong>: Consider using Git to track changes</li>
+<li><strong>Understand before modifying</strong>: Read documentation first</li>
+<li><strong>Use proper tools</strong>: Use <code>visudo</code> for <code>/etc/sudoers</code></li>
+<li><strong>Test thoroughly</strong>: Verify changes work before deploying to production</li>
+</ol>
+<p>These practices prevent system breakage and make troubleshooting easier.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /var/log Directory Purpose</h2>
+<p>What is the purpose of <code>/var/log</code>, and why is it called "var"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> Central location for system and application log files</p>
+<p><strong>Why "var":</strong>
+- Stands for "variable"
+- Contains files that change frequently
+- Size grows over time as logs accumulate
+- Dynamic content that varies during system operation</p>
+<p><strong>Contents:</strong>
+- System logs (kernel messages, boot logs, system events)
+- Application logs (web servers, databases, mail servers)
+- Security logs (authentication attempts, access logs)
+- Service logs (daemon-specific log files)
+- Error logs (application and system errors)</p>
+<p>Essential for troubleshooting, security monitoring, and system analysis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Log Files in /var/log</h2>
+<p>What are six important log files commonly found in <code>/var/log</code> and what does each contain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong><code>/var/log/syslog</code></strong> - Main system log (Debian/Ubuntu)</li>
+<li><strong><code>/var/log/messages</code></strong> - Main system log (Red Hat/CentOS)</li>
+<li><strong><code>/var/log/auth.log</code></strong> - Authentication and authorization logs</li>
+<li><strong><code>/var/log/kern.log</code></strong> - Kernel messages</li>
+<li><strong><code>/var/log/boot.log</code></strong> - Boot process logs</li>
+<li><strong><code>/var/log/secure</code></strong> - Security and authentication (Red Hat)</li>
+</ol>
+<p>Note: Different distributions may use different filenames for similar logs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Viewing Log Files Commands</h2>
+<p>What are five essential commands for viewing and monitoring log files in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong><code>cat /var/log/syslog</code></strong> - View entire log file</li>
+<li><strong><code>tail /var/log/syslog</code></strong> - View last 10 lines (default)</li>
+<li><strong><code>tail -n 50 /var/log/syslog</code></strong> - View last 50 lines</li>
+<li><strong><code>tail -f /var/log/syslog</code></strong> - Follow log in real-time (continuous monitoring)</li>
+<li><strong><code>grep "error" /var/log/syslog</code></strong> - Search for specific term</li>
+</ol>
+<p>Additional: <code>head -n 20</code> (first 20 lines), <code>less</code> (paginated viewing)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Log Rotation Concept</h2>
+<p>What is log rotation, and why is it necessary in Linux systems?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Log Rotation:</strong> Automated process that manages log file sizes to prevent them from consuming all disk space.</p>
+<p><strong>How it works:</strong>
+- Old logs are renamed and compressed (<code>.gz</code> extension)
+- Very old logs are deleted
+- New empty log file created
+- Configured in <code>/etc/logrotate.conf</code> and <code>/etc/logrotate.d/</code></p>
+<p><strong>Example:</strong>
+- <code>/var/log/syslog</code> - current log
+- <code>/var/log/syslog.1</code> - yesterday's log
+- <code>/var/log/syslog.2.gz</code> - two days ago (compressed)
+- <code>/var/log/syslog.3.gz</code> - three days ago (compressed)</p>
+<p><strong>Why necessary:</strong> Without rotation, logs would grow indefinitely and fill the disk.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Use Cases for Log Files</h2>
+<p>What are five common use cases for reviewing log files in <code>/var/log</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Troubleshooting</strong>: Diagnose system and application issues</li>
+<li><strong>Security monitoring</strong>: Detect unauthorized access attempts</li>
+<li><strong>Performance analysis</strong>: Identify bottlenecks and resource issues</li>
+<li><strong>Compliance</strong>: Meet regulatory requirements for logging</li>
+<li><strong>Auditing</strong>: Track user activities and system changes</li>
+</ol>
+<p>Log files tell the story of what happened on the system and are essential for understanding system behavior and resolving problems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Critical Directories Summary</h2>
+<p>Summarize the "rule of three" for Linux system administration directories: what type of information is found in each location?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong><code>/home/username</code></strong> - USER DATA</li>
+<li>Personal files and settings</li>
+<li>User-specific configurations</li>
+<li>
+<p>Private workspace for each user</p>
+</li>
+<li>
+<p><strong><code>/etc</code></strong> - CONFIGURATIONS</p>
+</li>
+<li>System-wide configuration files</li>
+<li>Service settings</li>
+<li>
+<p>Security policies</p>
+</li>
+<li>
+<p><strong><code>/var/log</code></strong> - LOGS (the story)</p>
+</li>
+<li>System and application logs</li>
+<li>Error messages</li>
+<li>Security events</li>
+</ol>
+<p><strong>Memory aid:</strong> User data in <code>/home</code>, configurations in <code>/etc</code>, and the story of what happened in <code>/var/log</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Directory Comparison Table</h2>
+<p>Compare <code>/home/username</code>, <code>/etc</code>, and <code>/var/log</code> in terms of typical size, access level, and change frequency.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>/home/username</code>:</strong>
+- Typical size: Varies (gigabytes)
+- Access level: User owner only
+- Change frequency: Constant</p>
+<p><strong><code>/etc</code>:</strong>
+- Typical size: Small (megabytes)
+- Access level: Root/sudo required
+- Change frequency: Infrequent (only when configuring)</p>
+<p><strong><code>/var/log</code>:</strong>
+- Typical size: Grows over time
+- Access level: Root/sudo (typically for reading)
+- Change frequency: Constant (logs written continuously)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
