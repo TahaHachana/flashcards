@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 01 Strings - 01 String Vs Str</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String vs &amp;str - Core Distinction</h2>
+<p>What are the two primary string types in Rust and what is the fundamental difference between them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>String and &amp;str. String is an owned, heap-allocated, growable string type that you control and can modify. &amp;str is a borrowed reference to UTF-8 data - an immutable view into existing string data that someone else owns. The distinction follows Rust's ownership philosophy: separating owned data from borrowed references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Memory Layout</h2>
+<p>What three components make up a String's memory layout and where are they stored?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A String has three components stored on the stack:
+1. Pointer to heap data
+2. Length (bytes currently used)
+3. Capacity (bytes allocated)</p>
+<p>The actual string data lives on the heap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str Memory Layout</h2>
+<p>What is a &amp;str's memory layout and why doesn't it have a capacity field?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A &amp;str is a fat pointer with two components:
+1. Pointer to the UTF-8 data
+2. Length (number of bytes)</p>
+<p>It has no capacity field because &amp;str is a fixed-size view into existing data - it can't grow or shrink. It's just a window into string data, not a growable buffer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating Strings - Four Methods</h2>
+<p>What are four different ways to create a String in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>String::from("hello") - from a string literal</li>
+<li>String::new() - empty string</li>
+<li>"hello".to_string() - from &amp;str using to_string()</li>
+<li>String::with_capacity(10) - with pre-allocated capacity</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Ownership and Move Semantics</h2>
+<p>What happens to s1 in this code and why?</p>
+<pre><code class="language-rust">let s1 = String::from(&quot;hello&quot;);
+let s2 = s1;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>s1 becomes invalid because String owns its data and follows move semantics. When s2 is assigned, ownership moves from s1 to s2. s1 can no longer be used. When s2 goes out of scope, the heap memory is freed. This prevents double-free errors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Growability</h2>
+<p>How can you grow a String dynamically and what happens if it exceeds capacity?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use push() to add a character or push_str() to add a string slice:</p>
+<pre><code class="language-rust">let mut s = String::from(&quot;hello&quot;);
+s.push(' ');
+s.push_str(&quot;world&quot;);
+</code></pre>
+<p>If the string exceeds its capacity, Rust automatically reallocates with more space.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Literals Are &amp;str</h2>
+<p>What type are string literals in Rust and why are they immutable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>String literals are &amp;str. They're immutable because they're hardcoded directly into the program binary. The &amp;str points to that location in the executable. Since they're baked into the binary, they cannot be modified at runtime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Borrowing Slices from String</h2>
+<p>How can you create a &amp;str that references part or all of a String?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+let slice: &amp;str = &amp;s[0..5];  // Part: &quot;hello&quot;
+let full: &amp;str = &amp;s;         // All: &quot;hello world&quot;
+</code></pre>
+<p>Use indexing with ranges for partial slices, or borrow the entire String with &amp;s.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str Cannot Own Data</h2>
+<p>Why does this function produce an error?</p>
+<pre><code class="language-rust">fn get_slice() -&gt; &amp;str {
+    let s = String::from(&quot;hello&quot;);
+    &amp;s[..]
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The function returns an error because &amp;str doesn't own data. The String s is dropped when the function ends, so returning &amp;str would create a dangling reference pointing to freed memory. The &amp;str would outlive the data it references, violating Rust's lifetime rules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str Lifetime Rules</h2>
+<p>Why does this code fail to compile?</p>
+<pre><code class="language-rust">let slice: &amp;str;
+{
+    let s = String::from(&quot;hello&quot;);
+    slice = &amp;s[..];
+}
+println!(&quot;{}&quot;, slice);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The code fails because &amp;str follows reference lifetime rules. The String s doesn't live long enough - it's dropped at the end of the inner scope, but slice tries to reference it outside that scope. This would create a dangling reference, so Rust prevents compilation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str Immutability</h2>
+<p>Can you have a mutable &amp;str reference? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, &amp;str is always immutable. There's no &amp;mut str in practice. You cannot modify data through a &amp;str:</p>
+<pre><code class="language-rust">let slice: &amp;str = &amp;s;
+slice.push_str(&quot; world&quot;);  // Error: &amp;str is immutable
+</code></pre>
+<p>For mutable string operations, you need a String or &amp;mut String.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use String</h2>
+<p>List five scenarios when you should use String instead of &amp;str.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>When you need to own the string data</li>
+<li>When the string will grow or shrink</li>
+<li>When you're building a string dynamically</li>
+<li>When you need to return string data from a function</li>
+<li>When you need to store strings in structs (often)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use &amp;str</h2>
+<p>List five scenarios when you should use &amp;str instead of String.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>When you're reading string data (read-only access)</li>
+<li>For function parameters (when you don't need ownership)</li>
+<li>When you don't need ownership of the data</li>
+<li>When you want maximum flexibility (works with String, literals, slices)</li>
+<li>When you want to avoid unnecessary allocations</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Function Parameter Guidelines</h2>
+<p>Why should you prefer &amp;str over &amp;String for function parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>&amp;str is more flexible because it works with String, &amp;str, and string literals:</p>
+<pre><code class="language-rust">fn process(text: &amp;str) { }  // Flexible
+
+process(&quot;Alice&quot;);                // Literal
+process(&amp;String::from(&quot;Bob&quot;));   // String
+process(&amp;s[..]);                 // Slice
+</code></pre>
+<p>&amp;String requires specifically a String, limiting what callers can pass. &amp;str provides maximum flexibility without requiring ownership.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String to &amp;str Conversion - Three Methods</h2>
+<p>What are three ways to convert a String to &amp;str and what is the performance cost?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Three ways:
+1. Automatic borrowing: let slice: &amp;str = &s;
+2. Explicit full slice: let slice = &amp;s[..];
+3. Using as_str method: let slice = s.as_str();</p>
+<p>Performance: Zero cost - no allocation, just creates a reference. The original String remains valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str to String Conversion</h2>
+<p>What are three ways to convert &amp;str to String and what is the performance cost?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Three ways:
+1. to_string(): let owned = slice.to_string();
+2. String::from(): let owned = String::from(slice);
+3. to_owned(): let owned = slice.to_owned();</p>
+<p>Performance: Expensive - allocates heap memory and copies data. All three methods do exactly the same thing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Automatic String to &amp;str Conversion</h2>
+<p>When does String automatically convert to &amp;str?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Automatic conversion happens:
+1. When passing &amp;String to function expecting &amp;str
+2. Through deref coercion
+3. When explicitly borrowing with &amp;</p>
+<p>Example:</p>
+<pre><code class="language-rust">fn process(text: &amp;str) { }
+let s = String::from(&quot;hello&quot;);
+process(&amp;s);  // Implicit conversion through borrowing
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Manual &amp;str to String Conversion</h2>
+<p>When converting from &amp;str to String, does Rust perform automatic conversion? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, &amp;str to String conversion always requires an explicit method call. This is because it must allocate heap memory and copy data, which is an expensive operation. Rust makes you explicit about this cost to prevent accidental performance issues. Use when you need ownership of the string data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Allocation Cost</h2>
+<p>What is the performance cost of creating a String and when does this matter most?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Creating a String requires heap allocation:</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);  // Heap allocation
+</code></pre>
+<p>This matters most when creating many short-lived Strings in a loop, as each allocation has overhead. Consider using &amp;str, string reuse, or pre-allocation with String::with_capacity() to minimize allocations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pre-allocating String Capacity</h2>
+<p>How does pre-allocating capacity improve String performance? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pre-allocating prevents multiple reallocations:</p>
+<pre><code class="language-rust">// May reallocate multiple times
+let mut s = String::new();
+for _ in 0..1000 {
+    s.push('a');
+}
+
+// No reallocations
+let mut s = String::with_capacity(1000);
+for _ in 0..1000 {
+    s.push('a');
+}
+</code></pre>
+<p>The second version is faster because memory is allocated once upfront.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>&amp;str Parameter Efficiency</h2>
+<p>Why is taking &amp;str as a parameter more efficient than taking String?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">fn process(text: &amp;str) { }    // More efficient
+fn process(text: String) { }   // Less efficient
+</code></pre>
+<p>&amp;str doesn't require ownership transfer or allocation if the caller already has &amp;str or a String reference. Taking String forces the caller to either move their String or clone it, potentially causing unnecessary allocations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Owned Strings in Structs Pattern</h2>
+<p>Why do structs typically store String rather than &amp;str, and how do you handle this in a constructor?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structs store String to own their data - the struct's lifetime shouldn't depend on external string data:</p>
+<pre><code class="language-rust">struct Config {
+    host: String,  // Owned data
+    port: u16,
+}
+
+impl Config {
+    fn new(host: &amp;str, port: u16) -&gt; Self {
+        Config {
+            host: host.to_string(),  // Convert &amp;str to String
+            port,
+        }
+    }
+}
+</code></pre>
+<p>The constructor accepts &amp;str for flexibility, then converts to String for ownership.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Borrowed Strings in Functions Pattern</h2>
+<p>What is the advantage of this function signature and what types can call it?</p>
+<pre><code class="language-rust">fn validate_email(email: &amp;str) -&gt; bool {
+    email.contains('@') &amp;&amp; email.contains('.')
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The function accepts &amp;str, making it flexible - it works with both String and &amp;str:</p>
+<pre><code class="language-rust">let s = String::from(&quot;user@example.com&quot;);
+validate_email(&amp;s);                    // Works with String
+validate_email(&quot;user@example.com&quot;);    // Works with &amp;str literal
+</code></pre>
+<p>This flexibility allows callers to pass any string type without forcing conversions or ownership transfers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Building and Returning Strings Pattern</h2>
+<p>Why should functions that create strings return String rather than &amp;str?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Functions return String to transfer ownership of newly created data:</p>
+<pre><code class="language-rust">fn create_message(name: &amp;str, age: u32) -&gt; String {
+    format!(&quot;{} is {} years old&quot;, name, age)
+}
+
+let msg = create_message(&quot;Alice&quot;, 30);
+// msg owns the String
+</code></pre>
+<p>Returning &amp;str would require the string to outlive the function, which is impossible for locally created data. String transfers ownership to the caller.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Taking Ownership vs Borrowing</h2>
+<p>What's the difference between these two function signatures and their effects?</p>
+<pre><code class="language-rust">fn consume(s: String) { }
+fn borrow(s: &amp;str) { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>consume() takes ownership - it consumes the String and drops it at the end. The caller can't use the String afterwards.
+borrow() borrows a reference - the String remains valid after the call.</p>
+<pre><code class="language-rust">let text = String::from(&quot;hello&quot;);
+borrow(&amp;text);   // text still valid
+consume(text);   // text moved, no longer valid
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Mistake - Returning Local &amp;str</h2>
+<p>Why is this function wrong and how do you fix it?</p>
+<pre><code class="language-rust">fn get_hello() -&gt; &amp;str {
+    let s = String::from(&quot;hello&quot;);
+    &amp;s
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>This returns a reference to a local variable that will be dropped. The &amp;str would be dangling. Fix by returning owned String:</p>
+<pre><code class="language-rust">fn get_hello() -&gt; String {
+    String::from(&quot;hello&quot;)  // Returns owned String
+}
+</code></pre>
+<p>The caller receives ownership and the data remains valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Mistake - Unnecessary Allocations</h2>
+<p>What's inefficient about this function and how can you improve it?</p>
+<pre><code class="language-rust">fn check(text: String) -&gt; bool {
+    text.len() &gt; 5
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Taking String requires ownership transfer, forcing callers to move or clone their strings unnecessarily. Better to borrow:</p>
+<pre><code class="language-rust">fn check(text: &amp;str) -&gt; bool {
+    text.len() &gt; 5
+}
+</code></pre>
+<p>This version just borrows, avoiding ownership transfer and allowing the caller to keep using their string.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Mistake - Forgetting Conversion</h2>
+<p>Why does this code fail and how do you fix it?</p>
+<pre><code class="language-rust">struct User {
+    name: String,
+}
+
+let u = User {
+    name: &quot;Alice&quot;,
+};
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>"Alice" is a &amp;str literal, but the struct expects String. Fix by converting:</p>
+<pre><code class="language-rust">let u = User {
+    name: &quot;Alice&quot;.to_string(),  // Convert &amp;str to String
+};
+</code></pre>
+<p>Or use String::from("Alice"). The struct owns the data, so it needs String, not a reference.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conversion Asymmetry</h2>
+<p>Why is conversion asymmetric between String and &amp;str?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>String → &amp;str is cheap (borrow): just creates a reference, no allocation.
+&amp;str → String is expensive (allocate): must allocate heap memory and copy data.</p>
+<p>This asymmetry reflects the underlying operations: borrowing is free, but creating owned copies requires resources. Rust makes the expensive direction explicit to prevent accidental performance issues.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Capacity vs Length</h2>
+<p>What's the difference between a String's length and capacity? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Length is bytes currently used, capacity is bytes allocated:</p>
+<pre><code class="language-rust">let mut s = String::with_capacity(10);
+println!(&quot;{}, {}&quot;, s.len(), s.capacity());
+// Length: 0, Capacity: 10
+
+s.push_str(&quot;hello&quot;);
+println!(&quot;{}, {}&quot;, s.len(), s.capacity());
+// Length: 5, Capacity: 10 (no reallocation needed)
+</code></pre>
+<p>Capacity ≥ length. Extra capacity allows growth without reallocation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 02 Collections - 01 Vectors</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vector Type Definition</h2>
+<p>What is the full type signature of a Rust vector, and what does the <code>&lt;T&gt;</code> represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Vec&lt;T&gt;</code> where <code>T</code> is a generic type parameter. The <code>&lt;T&gt;</code> means the vector can hold any single type (i32, String, etc.). All elements in a vector must be the same type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vec vs Array Key Differences</h2>
+<p>What are the three main differences between <code>Vec&lt;T&gt;</code> and arrays <code>[T; N]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Size</strong>: Arrays have fixed size at compile time; vectors are dynamic and can grow/shrink</li>
+<li><strong>Memory</strong>: Arrays on stack (if small); vectors always heap-allocated</li>
+<li><strong>Type</strong>: Array size is part of type <code>[i32; 5]</code>; vector size is not <code>Vec&lt;i32&gt;</code></li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating Vectors with vec! Macro</h2>
+<p>Show three ways to create vectors using the <code>vec!</code> macro, including creating a vector with repeated values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let v1 = vec![1, 2, 3];           // Normal initialization
+let v2 = vec![&quot;a&quot;, &quot;b&quot;];          // With string slices
+let v3 = vec![0; 100];            // 100 zeros (repeat syntax)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vec::new() Requires Type Annotation</h2>
+<p>Why does <code>Vec::new()</code> require a type annotation while <code>vec![]</code> often doesn't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Vec::new()</code> creates an empty vector with no elements for the compiler to infer the type from, so you must specify it: <code>Vec::new::&lt;i32&gt;()</code> or <code>let v: Vec&lt;i32&gt; = Vec::new();</code>. With <code>vec![]</code>, Rust can infer the type from the initial elements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Push Method Mutability</h2>
+<p>What happens if you try to use <code>.push()</code> on an immutable vector? How do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It causes a compile error because <code>.push()</code> requires <code>&amp;mut self</code>. Fix by declaring the vector as mutable: <code>let mut vec = Vec::new();</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pop Method Return Type</h2>
+<p>What does <code>.pop()</code> return and why is this design safer than panicking?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.pop()</code> returns <code>Option&lt;T&gt;</code>: <code>Some(value)</code> if the vector has elements, <code>None</code> if empty. This forces you to handle the empty case explicitly instead of panicking, making your code safer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Remove Method Performance</h2>
+<p>Why is <code>.remove(0)</code> slow on large vectors, and what's the alternative for efficient front removal?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.remove(index)</code> shifts all elements after the index one position left, making it O(n). For frequent front removals, use <code>VecDeque</code> which has <code>O(1)</code> <code>pop_front()</code> using a ring buffer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Safe Indexing with get()</h2>
+<p>Compare <code>vec[5]</code> vs <code>vec.get(5)</code>. When should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>vec[5]</code> panics if index out of bounds; returns direct value.
+<code>vec.get(5)</code> returns <code>Option&lt;&amp;T&gt;</code>: <code>Some(&amp;value)</code> or <code>None</code>; never panics.
+Use <code>vec[i]</code> when you're certain index exists; use <code>.get()</code> when index might be invalid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vector Slicing Syntax</h2>
+<p>Given <code>let v = vec![0,1,2,3,4,5];</code>, what do these slices return?
+- <code>&amp;v[2..5]</code>
+- <code>&amp;v[..3]</code>
+- <code>&amp;v[2..]</code>
+- <code>&amp;v[2..=4]</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>&amp;v[2..5]</code> → <code>[2, 3, 4]</code> (indices 2,3,4 - exclusive end)</li>
+<li><code>&amp;v[..3]</code> → <code>[0, 1, 2]</code> (start to index 2)</li>
+<li><code>&amp;v[2..]</code> → <code>[2, 3, 4, 5]</code> (index 2 to end)</li>
+<li><code>&amp;v[2..=4]</code> → <code>[2, 3, 4]</code> (indices 2,3,4 - inclusive end)</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Slices Need Reference</h2>
+<p>Why do you need <code>&amp;</code> when slicing a vector (e.g., <code>&amp;vec[2..5]</code> not <code>vec[2..5]</code>)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Slices are unsized types (<code>[T]</code>) - the compiler doesn't know their size at compile time. The <code>&amp;</code> creates a reference which is a fat pointer containing both the data address and the length, making it a sized type the compiler can work with.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Iterator Methods</h2>
+<p>Explain the difference between <code>.iter()</code>, <code>.iter_mut()</code>, and <code>.into_iter()</code> on vectors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>.iter()</code>: Borrows immutably, yields <code>&amp;T</code>, vector still usable after</li>
+<li><code>.iter_mut()</code>: Borrows mutably, yields <code>&amp;mut T</code>, can modify elements</li>
+<li><code>.into_iter()</code>: Consumes vector, yields <code>T</code> (owned values), vector no longer exists after</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>For Loop Default Iterator</h2>
+<p>When you write <code>for item in vec</code>, which iterator method is implicitly called?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.into_iter()</code> - the for loop takes ownership and consumes the vector. To keep the vector, explicitly use <code>for item in &amp;vec</code> (calls <code>.iter()</code>) or <code>for item in &amp;mut vec</code> (calls <code>.iter_mut()</code>).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Capacity vs Length</h2>
+<p>Define <code>.len()</code> and <code>.capacity()</code> for vectors. Why are they different?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>.len()</code>: Current number of elements in the vector</li>
+<li><code>.capacity()</code>: Total allocated space (can hold this many elements without reallocating)</li>
+</ul>
+<p>They differ because vectors pre-allocate extra space to avoid frequent reallocations as you add elements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Initial Vector Capacity</h2>
+<p>What capacity does a new vector get when you first <code>.push()</code> an element? What happens when you exceed capacity?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>First push gives capacity 4. When capacity is exceeded, Rust allocates new memory with <strong>double the previous capacity</strong> and copies all elements over (reallocation).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reallocation Process</h2>
+<p>Describe the three steps that happen during vector reallocation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Allocate new memory space with double the current capacity</li>
+<li>Copy all existing elements to the new memory location</li>
+<li>Free the old memory</li>
+</ol>
+<p>This is why frequent reallocations hurt performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vec::with_capacity Purpose</h2>
+<p>When and why should you use <code>Vec::with_capacity(n)</code> instead of <code>Vec::new()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use it when you know approximately how many elements you'll add. It pre-allocates enough space, avoiding multiple reallocations and improving performance. Example: <code>let mut v = Vec::with_capacity(1000);</code> for 1000 elements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shrink to Fit Warning</h2>
+<p>What does <code>.shrink_to_fit()</code> do, and what's the gotcha with using it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It reduces capacity to match length, freeing unused memory. <strong>Gotcha</strong>: Adding even one element after shrinking will double the capacity again, potentially wasting the optimization. Only shrink when you're done growing the vector.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Converting Array to Vector</h2>
+<p>Show two ways to convert an array <code>[1, 2, 3]</code> into a <code>Vec&lt;i32&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Method 1: Using .into()
+let v1: Vec&lt;i32&gt; = [1, 2, 3].into();
+
+// Method 2: Using vec! macro
+let v2 = vec![1, 2, 3];
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type Inference with Vec&lt;_&gt;</h2>
+<p>What does <code>Vec&lt;_&gt;</code> mean in <code>let v: Vec&lt;_&gt; = [1, 2, 3].into();</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The underscore <code>_</code> tells Rust to infer the inner type from context. Here it infers <code>Vec&lt;i32&gt;</code> from the array. It's a way to specify "this is a Vec but you figure out what's inside."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Homogeneous Type Requirement</h2>
+<p>Can you create <code>vec![1, "hello", 3.14]</code>? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. All elements in a <code>Vec&lt;T&gt;</code> must be the same type. The compiler will reject this. To store different types, use an enum wrapper or trait objects (covered later).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Vector Syntax</h2>
+<p>What is the type of a vector containing vectors of strings? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Vec&lt;Vec&lt;String&gt;&gt;</code> - a vector of vectors.
+Example:</p>
+<pre><code class="language-rust">let books: Vec&lt;Vec&lt;String&gt;&gt; = vec![
+    vec![String::from(&quot;Book1&quot;), String::from(&quot;Book2&quot;)],
+    vec![String::from(&quot;Book3&quot;)],
+];
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vector of Tuples</h2>
+<p>How do you create a vector of coordinate pairs (tuples of two integers)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let coords: Vec&lt;(i32, i32)&gt; = vec![
+    (0, 0),
+    (1, 2),
+    (3, 4),
+];
+</code></pre>
+<p>The type is <code>Vec&lt;(i32, i32)&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership During Iteration</h2>
+<p>What's wrong with this code?</p>
+<pre><code class="language-rust">let vec = vec![String::from(&quot;hello&quot;)];
+for item in vec {
+    println!(&quot;{}&quot;, item);
+}
+println!(&quot;{:?}&quot;, vec);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The for loop consumes the vector (calls <code>.into_iter()</code>), moving ownership of each String. After the loop, <code>vec</code> no longer exists. Fix: Use <code>for item in &amp;vec</code> to borrow instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Modifying During Mutable Iteration</h2>
+<p>How do you double every element in a <code>Vec&lt;i32&gt;</code> in place?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut vec = vec![1, 2, 3, 4];
+for num in vec.iter_mut() {
+    *num *= 2;  // Dereference to modify
+}
+// vec is now [2, 4, 6, 8]
+</code></pre>
+<p>Use <code>.iter_mut()</code> and dereference with <code>*</code> to modify.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Modify Size While Borrowing</h2>
+<p>Why does this fail to compile?</p>
+<pre><code class="language-rust">let mut vec = vec![1, 2, 3];
+for num in &amp;vec {
+    vec.push(*num * 2);  // ERROR!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The for loop borrows <code>vec</code> immutably (<code>&amp;vec</code>). While borrowed, you cannot modify it with <code>.push()</code> (requires <code>&amp;mut self</code>). The borrow checker prevents this to avoid iterator invalidation. Solution: collect changes in a separate vector first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Empty Vector Pattern</h2>
+<p>Write a while loop that repeatedly pops from a vector and prints values until empty.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut vec = vec![1, 2, 3, 4, 5];
+while let Some(val) = vec.pop() {
+    println!(&quot;{}&quot;, val);
+}
+// Prints 5, 4, 3, 2, 1
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Building Vector in Loop</h2>
+<p>Create a vector containing squares of numbers from 1 to 10 using a for loop.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut squares = Vec::new();
+for i in 1..=10 {
+    squares.push(i * i);
+}
+// squares = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering Into New Vector</h2>
+<p>Given <code>let nums = vec![1,2,3,4,5,6];</code>, create a new vector with only even numbers using a loop.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let nums = vec![1, 2, 3, 4, 5, 6];
+let mut evens = Vec::new();
+for &amp;num in &amp;nums {
+    if num % 2 == 0 {
+        evens.push(num);
+    }
+}
+// evens = [2, 4, 6]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>First and Last Element Access</h2>
+<p>What are the two ways to safely access the first element of a vector?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let vec = vec![1, 2, 3];
+
+// Method 1: Using .get()
+if let Some(&amp;first) = vec.get(0) {
+    println!(&quot;{}&quot;, first);
+}
+
+// Method 2: Using .first()
+if let Some(&amp;first) = vec.first() {
+    println!(&quot;{}&quot;, first);
+}
+</code></pre>
+<p>Both return <code>Option&lt;&amp;T&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vector Memory Location</h2>
+<p>Where is a vector's data stored in memory? What about the vector struct itself?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The vector's <strong>elements</strong> are stored on the <strong>heap</strong>. The vector struct itself (containing pointer, length, capacity) is stored on the <strong>stack</strong>. This is why vectors can grow dynamically - only the pointer needs to be updated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance O(1) Operations</h2>
+<p>Which vector operations are O(1) (constant time)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>.push()</code> - add to end (amortized O(1))</li>
+<li><code>.pop()</code> - remove from end</li>
+<li><code>vec[index]</code> - direct access by index</li>
+<li><code>.len()</code> - get length</li>
+<li><code>.capacity()</code> - get capacity</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance O(n) Operations</h2>
+<p>Which vector operations are O(n) (linear time) and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>.remove(index)</code> - shifts all elements after index left</li>
+<li><code>.insert(index, value)</code> - shifts all elements after index right</li>
+<li>Reallocation - copies all n elements to new memory</li>
+<li><code>.contains()</code> - must check each element</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Slice to Vec Conversion</h2>
+<p>How do you convert a slice <code>&amp;[i32]</code> into an owned <code>Vec&lt;i32&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let slice = &amp;[1, 2, 3, 4];
+let vec = slice.to_vec();  // Creates owned copy
+// or
+let vec2: Vec&lt;i32&gt; = slice.into();  // Also works
+</code></pre>
+<p>Both clone the data into a new heap-allocated vector.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Clearing a Vector</h2>
+<p>What's the difference between <code>.clear()</code> and <code>vec = Vec::new()</code> for clearing a vector?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.clear()</code> removes all elements but keeps the allocated capacity:</p>
+<pre><code class="language-rust">vec.clear();  // len=0, capacity unchanged
+</code></pre>
+<p><code>vec = Vec::new()</code> replaces with new empty vector:</p>
+<pre><code class="language-rust">vec = Vec::new();  // len=0, capacity=0, old memory freed
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Append vs Extend</h2>
+<p>What's the difference between <code>.append()</code> and <code>.extend()</code> for adding multiple elements?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.extend()</code> takes an iterator and adds elements:</p>
+<pre><code class="language-rust">vec.extend([1, 2, 3]);  // Can use arrays, iterators
+</code></pre>
+<p><code>.append()</code> takes another vector and moves all its elements:</p>
+<pre><code class="language-rust">vec1.append(&amp;mut vec2);  // vec2 becomes empty
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Collecting Iterator to Vec</h2>
+<p>Show how to collect an iterator into a Vec, including type annotation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let vec: Vec&lt;i32&gt; = (1..=5).collect();
+// or with turbofish
+let vec = (1..=5).collect::&lt;Vec&lt;i32&gt;&gt;();
+// or let Rust infer
+let vec = (1..=5).collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use VecDeque</h2>
+<p>When should you use <code>VecDeque</code> instead of <code>Vec</code>? What's the tradeoff?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>VecDeque</code> when you need efficient operations on <strong>both ends</strong> (front and back). It has O(1) <code>push_front()</code> and <code>pop_front()</code> unlike Vec. Tradeoff: Slightly slower for other operations due to ring buffer implementation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vec Generic Constraint</h2>
+<p>Can you create a <code>Vec&lt;T&gt;</code> where T is an unsized type like <code>str</code>? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. <code>Vec&lt;T&gt;</code> requires <code>T</code> to be <code>Sized</code> (known size at compile time). You can't have <code>Vec&lt;str&gt;</code>, only <code>Vec&lt;String&gt;</code> or <code>Vec&lt;&amp;str&gt;</code>. The vector needs to know element size for memory layout.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Clone vs Copy Elements</h2>
+<p>What happens differently when you iterate with <code>.into_iter()</code> over <code>Vec&lt;i32&gt;</code> vs <code>Vec&lt;String&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Vec&lt;i32&gt;</code>: Elements are <code>Copy</code>, so even though moved, it's a bitwise copy (cheap).
+<code>Vec&lt;String&gt;</code>: Elements are not <code>Copy</code>, so ownership truly transfers. Each String is moved out. Both consume the vector, but internal behavior differs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vector as Function Parameter</h2>
+<p>What are three ways to pass a vector to a function, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">fn consume(v: Vec&lt;i32&gt;) {}      // Takes ownership
+fn borrow(v: &amp;Vec&lt;i32&gt;) {}      // Borrows immutably
+fn modify(v: &amp;mut Vec&lt;i32&gt;) {}  // Borrows mutably
+</code></pre>
+<p>Use owned when function needs to own/consume it; <code>&amp;</code> for read-only; <code>&amp;mut</code> for modification.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

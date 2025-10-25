@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 02 Collections - 02 Hashmaps</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Type Definition</h2>
+<p>What is the full type signature of a Rust HashMap, and what do K and V represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>HashMap&lt;K, V&gt;</code> where K is the key type and V is the value type. Both must be consistent - all keys must be the same type, and all values must be the same type. Example: <code>HashMap&lt;String, i32&gt;</code> maps Strings to integers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Import Requirement</h2>
+<p>Why does HashMap require <code>use std::collections::HashMap;</code> while Vec doesn't need an import?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HashMap is not in the prelude (the set of items Rust automatically imports into every program), while Vec is. You must explicitly import HashMap with <code>use std::collections::HashMap;</code> at the top of your file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Ordering Property</h2>
+<p>Are keys in a HashMap ordered? What's the implication when iterating?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, HashMap keys are unordered and appear in unpredictable order. Iteration order is not guaranteed and can change between program runs. If you need ordered keys, use BTreeMap instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Lookup Complexity</h2>
+<p>What is the average time complexity for HashMap lookups and why is this better than Vec search?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Average O(1) constant time using hashing. This is much better than Vec linear search which is O(n). HashMap achieves this by hashing the key to compute its storage location directly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating Empty HashMap</h2>
+<p>Write code to create an empty HashMap that maps String keys to i32 values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::collections::HashMap;
+
+let mut map: HashMap&lt;String, i32&gt; = HashMap::new();
+</code></pre>
+<p>Or let Rust infer from first insertion:</p>
+<pre><code class="language-rust">let mut map = HashMap::new();
+map.insert(String::from(&quot;key&quot;), 10);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Insert Method Behavior</h2>
+<p>What does <code>.insert(key, value)</code> return, and what happens if the key already exists?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Returns <code>Option&lt;V&gt;</code>:
+- <code>None</code> if key didn't exist (new entry created)
+- <code>Some(old_value)</code> if key existed (value overwritten)</p>
+<p>If key exists, the old value is replaced and returned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Safe vs Unsafe Access</h2>
+<p>Compare <code>map["key"]</code> vs <code>map.get("key")</code> for accessing HashMap values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>map["key"]</code>: Direct indexing, panics if key doesn't exist, returns value directly.</p>
+<p><code>map.get("key")</code>: Safe access, returns <code>Option&lt;&amp;V&gt;</code> (<code>Some(&amp;value)</code> or <code>None</code>), never panics.</p>
+<p>Best practice: Use <code>.get()</code> unless you're certain the key exists.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Get Method Reference Requirement</h2>
+<p>Why do you write <code>map.get(&amp;1)</code> instead of <code>map.get(1)</code> when the key is an integer?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>.get()</code> method signature is <code>fn get(&amp;self, key: &amp;K)</code> - it takes a reference to the key, not an owned key. This avoids unnecessary moves/clones. Use <code>&amp;1</code> or <code>&amp;key_variable</code> when calling <code>.get()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Entry API Purpose</h2>
+<p>What does the <code>.entry(key)</code> method return and why is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Returns an <code>Entry&lt;K, V&gt;</code> enum with two variants:
+- <code>Occupied(OccupiedEntry)</code> if key exists
+- <code>Vacant(VacantEntry)</code> if key doesn't exist</p>
+<p>Useful because it provides efficient ways to insert/modify values based on key existence without multiple lookups.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Or Insert Method</h2>
+<p>What does <code>.or_insert(default)</code> do, and what type does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Returns <code>&amp;mut V</code> (mutable reference to the value):
+- If key exists: returns mutable reference to existing value
+- If key doesn't exist: inserts default value, returns mutable reference to it</p>
+<p>Always returns a mutable reference, allowing in-place modification.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Counting Pattern</h2>
+<p>Write code to count occurrences of each word in a Vec using HashMap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let words = vec![&quot;apple&quot;, &quot;banana&quot;, &quot;apple&quot;];
+let mut counts = HashMap::new();
+
+for word in words {
+    let count = counts.entry(word).or_insert(0);
+    *count += 1;  // Dereference to modify
+}
+// counts: {&quot;apple&quot;: 2, &quot;banana&quot;: 1}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Grouping Pattern</h2>
+<p>How do you group items into a Vec using the entry API? Show the pattern for grouping ratings by gender.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let data = vec![(&quot;male&quot;, 9), (&quot;female&quot;, 5), (&quot;male&quot;, 10)];
+let mut groups = HashMap::new();
+
+for (gender, rating) in data {
+    groups.entry(gender)
+          .or_insert(Vec::new())
+          .push(rating);
+}
+// {&quot;male&quot;: [9, 10], &quot;female&quot;: [5]}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Entry Dereferencing Requirement</h2>
+<p>Why do you need the <code>*</code> in <code>*counts.entry(key).or_insert(0) += 1</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Because <code>.or_insert()</code> returns <code>&amp;mut V</code> (a mutable reference), not <code>V</code>. To modify the actual value, you must dereference it with <code>*</code> before incrementing. Without <code>*</code>, you'd try to increment a reference, which doesn't work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership of Inserted Keys</h2>
+<p>What happens to ownership when you insert a String key and String value into a HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ownership is <strong>moved</strong> into the HashMap (for non-Copy types). After insertion, you can no longer use the original variables:</p>
+<pre><code class="language-rust">let key = String::from(&quot;k&quot;);
+let val = String::from(&quot;v&quot;);
+map.insert(key, val);
+// key and val are now moved, cannot use them
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copy Types in HashMap</h2>
+<p>What's the difference in ownership when using Copy types (i32) vs non-Copy types (String) as HashMap keys?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Copy types</strong>: Values are copied, originals remain usable</p>
+<pre><code class="language-rust">let k = 1;
+map.insert(k, 10);
+println!(&quot;{}&quot;, k); // OK
+</code></pre>
+<p><strong>Non-Copy types</strong>: Values are moved, originals become invalid</p>
+<pre><code class="language-rust">let k = String::from(&quot;key&quot;);
+map.insert(k, 10);
+// println!(&quot;{}&quot;, k); // ERROR: k was moved
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cloning to Preserve Ownership</h2>
+<p>How can you insert a String into a HashMap while keeping ownership of the original?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>.clone()</code> to create a copy before inserting:</p>
+<pre><code class="language-rust">let key = String::from(&quot;favorite&quot;);
+let value = String::from(&quot;blue&quot;);
+
+map.insert(key.clone(), value.clone());
+
+println!(&quot;{} {}&quot;, key, value); // OK, originals still owned
+</code></pre>
+<p>Trade-off: Uses more memory by creating copies.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Contains Key Method</h2>
+<p>How do you check if a key exists in a HashMap without retrieving the value?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>.contains_key(&amp;key)</code> which returns a boolean:</p>
+<pre><code class="language-rust">if map.contains_key(&amp;&quot;key&quot;) {
+    println!(&quot;Key exists&quot;);
+}
+</code></pre>
+<p>More idiomatic with entry API:</p>
+<pre><code class="language-rust">map.entry(&quot;key&quot;).or_insert(default_value);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Remove Method Return</h2>
+<p>What does <code>.remove(&amp;key)</code> return and why is this design useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Returns <code>Option&lt;V&gt;</code>:
+- <code>Some(value)</code> if key existed and was removed
+- <code>None</code> if key didn't exist</p>
+<p>This allows you to get the removed value and handle the "key not found" case gracefully without panicking.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterating HashMap</h2>
+<p>Show three ways to iterate over a HashMap: key-value pairs, keys only, and values only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Key-value pairs
+for (key, value) in &amp;map {
+    println!(&quot;{}: {}&quot;, key, value);
+}
+
+// Keys only
+for key in map.keys() {
+    println!(&quot;{}&quot;, key);
+}
+
+// Values only
+for value in map.values() {
+    println!(&quot;{}&quot;, value);
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutable Iteration</h2>
+<p>How do you modify all values in a HashMap using iteration?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">for (key, value) in map.iter_mut() {
+    *value *= 2;  // Dereference to modify
+}
+</code></pre>
+<p>Or to modify only values:</p>
+<pre><code class="language-rust">for value in map.values_mut() {
+    *value *= 2;
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap vs BTreeMap Ordering</h2>
+<p>When should you use BTreeMap instead of HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use BTreeMap when you need keys in sorted order. </p>
+<p><strong>HashMap</strong>: Unordered, O(1) average access, faster for most operations
+<strong>BTreeMap</strong>: Sorted by key, O(log n) access, guarantees iteration in key order</p>
+<p>APIs are nearly identical, making switching easy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Switching to BTreeMap</h2>
+<p>What changes are needed to convert HashMap code to use BTreeMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Usually just two changes:
+1. Change the import: <code>use std::collections::BTreeMap;</code>
+2. Change the type: <code>BTreeMap::new()</code> instead of <code>HashMap::new()</code></p>
+<p>Methods like <code>.insert()</code>, <code>.get()</code>, <code>.entry()</code> work identically. Iteration will now be in sorted order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Requirements Traits</h2>
+<p>What traits must HashMap keys implement and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Keys must implement:
+- <code>Eq</code>: For equality comparisons (is this key equal to that key?)
+- <code>Hash</code>: For hashing (compute storage location)</p>
+<p>Most built-in types (integers, strings, etc.) already implement these. Custom types need <code>#[derive(Eq, Hash)]</code> or manual implementation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Empty HashMap Type Inference</h2>
+<p>What's wrong with this code and how do you fix it?</p>
+<pre><code class="language-rust">let mut map = HashMap::new();
+// later...
+map.insert(&quot;key&quot;, 10);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Nothing is wrong if insertion happens in the same scope! Rust can infer types from usage. But if the HashMap is created far from first use, specify types explicitly:</p>
+<pre><code class="language-rust">let mut map: HashMap&lt;&amp;str, i32&gt; = HashMap::new();
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Or Insert With Closure</h2>
+<p>What's the difference between <code>.or_insert(value)</code> and <code>.or_insert_with(|| value)</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.or_insert(value)</code>: Evaluates <code>value</code> immediately, even if not needed</p>
+<p><code>.or_insert_with(|| value)</code>: Evaluates closure only if key is vacant (lazy evaluation)</p>
+<p>Use <code>.or_insert_with()</code> when creating the default value is expensive:</p>
+<pre><code class="language-rust">map.entry(key).or_insert_with(|| expensive_computation());
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Length and Capacity</h2>
+<p>What's the difference between <code>.len()</code> and <code>.capacity()</code> for HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.len()</code>: Number of key-value pairs currently stored</p>
+<p><code>.capacity()</code>: Total allocated space before needing to rehash</p>
+<p>Like Vec, HashMap pre-allocates space and grows (rehashes) when capacity is exceeded. Use <code>HashMap::with_capacity(n)</code> to pre-allocate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Clear vs Drain</h2>
+<p>What's the difference between <code>.clear()</code> and <code>.drain()</code> for HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.clear()</code>: Removes all entries, keeps allocated capacity</p>
+<pre><code class="language-rust">map.clear(); // Now empty but capacity unchanged
+</code></pre>
+<p><code>.drain()</code>: Removes and returns an iterator over all entries</p>
+<pre><code class="language-rust">for (k, v) in map.drain() {
+    println!(&quot;{}: {}&quot;, k, v);
+}
+// map is now empty
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Checking Before Insert</h2>
+<p>Show two ways to insert a value only if the key doesn't already exist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Method 1</strong>: Using <code>.contains_key()</code></p>
+<pre><code class="language-rust">if !map.contains_key(&amp;key) {
+    map.insert(key, value);
+}
+</code></pre>
+<p><strong>Method 2</strong>: Using <code>.entry()</code> (more idiomatic)</p>
+<pre><code class="language-rust">map.entry(key).or_insert(value);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Type Parameters</h2>
+<p>Can HashMap keys and values be different types? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! K and V are independent type parameters. Common patterns:</p>
+<pre><code class="language-rust">// String keys, integer values
+HashMap&lt;String, i32&gt;
+
+// Integer keys, vector values  
+HashMap&lt;i32, Vec&lt;String&gt;&gt;
+
+// Tuple keys, custom type values
+HashMap&lt;(i32, i32), Player&gt;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Building HashMap from Vectors</h2>
+<p>How do you create a HashMap from two vectors (keys and values) using iterators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let keys = vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
+let values = vec![1, 2, 3];
+
+let map: HashMap&lt;_, _&gt; = keys.into_iter()
+    .zip(values.into_iter())
+    .collect();
+</code></pre>
+<p><code>.zip()</code> pairs up elements, <code>.collect()</code> gathers into HashMap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Entry Occupied vs Vacant</h2>
+<p>Explain the Entry enum returned by <code>.entry()</code> and its two variants.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">enum Entry&lt;K, V&gt; {
+    Occupied(OccupiedEntry&lt;K, V&gt;),  // Key exists
+    Vacant(VacantEntry&lt;K, V&gt;),      // Key absent
+}
+</code></pre>
+<p>Occupied: Contains existing key-value pair
+Vacant: Represents empty slot for this key</p>
+<p>Methods like <code>.or_insert()</code> handle both cases automatically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Modifying Existing Values</h2>
+<p>How do you modify an existing value in a HashMap if the key exists, without inserting a default?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">if let Some(value) = map.get_mut(&amp;key) {
+    *value += 10;  // Modify in place
+}
+</code></pre>
+<p>Or with entry API:</p>
+<pre><code class="language-rust">map.entry(key).and_modify(|v| *v += 10);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct in HashMap</h2>
+<p>Can you store structs as HashMap values? What about as keys?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>As values</strong>: Yes, always possible</p>
+<pre><code class="language-rust">HashMap&lt;String, Player&gt;
+</code></pre>
+<p><strong>As keys</strong>: Only if struct implements <code>Eq</code> and <code>Hash</code></p>
+<pre><code class="language-rust">#[derive(Eq, PartialEq, Hash)]
+struct PlayerId(u32);
+
+HashMap&lt;PlayerId, Player&gt;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Lifetimes in HashMap</h2>
+<p>What's the lifetime constraint when storing references in a HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>References must live at least as long as the HashMap:</p>
+<pre><code class="language-rust">let value = String::from(&quot;data&quot;);
+let mut map = HashMap::new();
+map.insert(&quot;key&quot;, &amp;value);  // Stores reference
+
+// value must outlive map
+// drop(value); // Would cause error
+println!(&quot;{:?}&quot;, map.get(&quot;key&quot;)); // Still need value
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Modify While Borrowing</h2>
+<p>Why does this fail and how do you fix it?</p>
+<pre><code class="language-rust">for (key, value) in &amp;map {
+    map.insert(&quot;new&quot;, 10);  // ERROR
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The for loop borrows <code>map</code> immutably, so you can't modify it. </p>
+<p><strong>Fix</strong>: Collect keys first, then modify:</p>
+<pre><code class="language-rust">let keys: Vec&lt;_&gt; = map.keys().cloned().collect();
+for key in keys {
+    map.insert(&quot;new&quot;, 10);  // OK now
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Value Pattern</h2>
+<p>What's the idiomatic way to get a value from a HashMap or a default if the key doesn't exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Reading</strong>: Use <code>.get().unwrap_or(&amp;default)</code></p>
+<pre><code class="language-rust">let value = map.get(&amp;key).unwrap_or(&amp;0);
+</code></pre>
+<p><strong>Reading and inserting</strong>: Use <code>.entry().or_insert()</code></p>
+<pre><code class="language-rust">let value = map.entry(key).or_insert(0);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Collect Into HashMap</h2>
+<p>How do you collect an iterator of tuples into a HashMap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let pairs = vec![(&quot;a&quot;, 1), (&quot;b&quot;, 2), (&quot;c&quot;, 3)];
+
+let map: HashMap&lt;_, _&gt; = pairs.into_iter().collect();
+</code></pre>
+<p>The iterator must yield <code>(K, V)</code> tuples. Rust infers or you specify the HashMap type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Performance Characteristics</h2>
+<p>What are the time complexities for common HashMap operations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><strong>Insert</strong>: O(1) average, O(n) worst case (rehashing)</li>
+<li><strong>Get/lookup</strong>: O(1) average</li>
+<li><strong>Remove</strong>: O(1) average</li>
+<li><strong>Contains</strong>: O(1) average</li>
+<li><strong>Iteration</strong>: O(n) for all entries</li>
+</ul>
+<p>Worst case happens during hash collisions or resizing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String vs Str Keys</h2>
+<p>When should you use <code>HashMap&lt;String, V&gt;</code> vs <code>HashMap&lt;&amp;str, V&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>HashMap<String, V></strong>: Keys are owned, HashMap controls lifetime</p>
+<pre><code class="language-rust">map.insert(String::from(&quot;key&quot;), value);
+</code></pre>
+<p><strong>HashMap&lt;&amp;str, V&gt;</strong>: Keys are borrowed, must outlive HashMap</p>
+<pre><code class="language-rust">map.insert(&quot;key&quot;, value);  // &quot;key&quot; is &amp;'static str
+</code></pre>
+<p>Use String for dynamic keys, &amp;str for static/literal keys.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Debug Print HashMap</h2>
+<p>How do you print a HashMap for debugging and what's the output format?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>{:?}</code> with Debug trait:</p>
+<pre><code class="language-rust">let mut map = HashMap::new();
+map.insert(&quot;a&quot;, 1);
+map.insert(&quot;b&quot;, 2);
+println!(&quot;{:?}&quot;, map);
+</code></pre>
+<p>Output (order varies): <code>{"b": 2, "a": 1}</code> or <code>{"a": 1, "b": 2}</code></p>
+<p>Order is unpredictable because HashMap is unordered.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

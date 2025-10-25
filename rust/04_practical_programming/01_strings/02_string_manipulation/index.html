@@ -1,0 +1,1295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 01 Strings - 02 String Manipulation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Core String Operations</h2>
+<p>What are the three core string manipulation operations in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Concatenation - joining strings together to create larger strings</li>
+<li>Slicing - extracting parts of strings without copying data</li>
+<li>Iteration - processing strings character by character or byte by byte</li>
+</ol>
+<p>These fundamentals enable all text processing in Rust while maintaining safety and performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Plus Operator Concatenation</h2>
+<p>What happens to s1 and s2 in this code?</p>
+<pre><code class="language-rust">let s1 = String::from(&quot;Hello, &quot;);
+let s2 = String::from(&quot;world!&quot;);
+let s3 = s1 + &amp;s2;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>s1 is moved (ownership transferred, no longer valid), while s2 is borrowed (still valid). The + operator takes ownership of the left operand and borrows the right operand, returning a new String. This is why you can't use s1 afterwards but can still use s2.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Add Method Signature</h2>
+<p>What is the signature of the add method used by the + operator and what does each parameter mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">fn add(self, s: &amp;str) -&gt; String
+</code></pre>
+<ul>
+<li>First parameter: self (takes ownership of the left String)</li>
+<li>Second parameter: &amp;str (borrows the right string)</li>
+<li>Returns: new String</li>
+</ul>
+<p>This explains why the left operand is moved and the right is borrowed when using +.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chaining Plus Operators</h2>
+<p>What happens to s1, s2, and s3 in this code?</p>
+<pre><code class="language-rust">let s1 = String::from(&quot;tic&quot;);
+let s2 = String::from(&quot;tac&quot;);
+let s3 = String::from(&quot;toe&quot;);
+let s = s1 + &quot;-&quot; + &amp;s2 + &quot;-&quot; + &amp;s3;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>s1 is moved (no longer valid), while s2 and s3 are borrowed (still valid). The first + moves s1, subsequent + operators borrow the remaining strings. This gets awkward with many strings since ownership of the first is lost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Format Macro Advantages</h2>
+<p>Why is format! better than + for concatenating multiple strings? What are its advantages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = format!(&quot;{}-{}-{}&quot;, s1, s2, s3);
+</code></pre>
+<p>Advantages:
+1. All arguments are borrowed (nothing moved) - all original strings remain valid
+2. Clearer, more readable syntax
+3. More flexible - can include other types, not just strings
+4. Better for multiple concatenations</p>
+<p>Unlike +, format! doesn't take ownership of any arguments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Push_str vs Push</h2>
+<p>What's the difference between push_str and push methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>push_str appends a string slice:</p>
+<pre><code class="language-rust">let mut s = String::from(&quot;foo&quot;);
+s.push_str(&quot;bar&quot;);  // &quot;foobar&quot;
+</code></pre>
+<p>push appends a single character:</p>
+<pre><code class="language-rust">let mut s = String::from(&quot;lo&quot;);
+s.push('l');  // &quot;lol&quot;
+</code></pre>
+<p>Both modify the String in place without new allocation (unless capacity is exceeded).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Building Strings with Pre-allocation</h2>
+<p>Why should you pre-allocate capacity when building strings in loops? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pre-allocation avoids multiple reallocations:</p>
+<pre><code class="language-rust">// May reallocate multiple times
+let mut result = String::new();
+for i in 0..5 {
+    result.push_str(&amp;i.to_string());
+}
+
+// Single allocation
+let mut result = String::with_capacity(100);
+for i in 0..5 {
+    result.push_str(&amp;i.to_string());
+}
+</code></pre>
+<p>The second version is more efficient because memory is allocated once upfront.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Concatenation Methods Comparison</h2>
+<p>Compare the three concatenation methods: +, format!, and push_str/push in terms of ownership, performance, and when to use each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>operator: Moves left, borrows right. Fast. Use for two strings.
+format!: Borrows all. Allocates new string. Use for multiple strings or clarity.
+push_str/push: Requires mutable. Fast (in-place). Use for building incrementally.</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Slicing Syntax</h2>
+<p>What does this slicing code produce?</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+let hello = &amp;s[0..5];
+let world = &amp;s[6..11];
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>hello = "hello" (characters from index 0 to 4)
+world = "world" (characters from index 6 to 10)</p>
+<p>Range syntax [start..end] is exclusive of end. Slicing extracts parts without copying the data - it creates borrowed views.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Slicing Shortcuts</h2>
+<p>What do these four slicing patterns mean?</p>
+<pre><code class="language-rust">&amp;s[..n]
+&amp;s[n..]
+&amp;s[..]
+&amp;s[start..end]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>[..n] - From start to index n (exclusive)
+[n..] - From index n to end
+[..] - Entire string
+[start..end] - From start to end (exclusive)</p>
+<p>Examples:</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+&amp;s[..2]    // &quot;he&quot;
+&amp;s[3..]    // &quot;lo&quot;
+&amp;s[..]     // &quot;hello&quot;
+&amp;s[1..4]   // &quot;ell&quot;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Slicing is Borrowing</h2>
+<p>After creating a slice, can you still use the original String? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, both remain valid:</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+let hello = &amp;s[0..5];
+
+println!(&quot;{}&quot;, hello);  // Can use slice
+println!(&quot;{}&quot;, s);      // Original still valid
+</code></pre>
+<p>The slice borrows from the String - it's an immutable reference. The original String hasn't been moved or modified, just borrowed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Slices Prevent Mutation</h2>
+<p>Why does this code produce an error?</p>
+<pre><code class="language-rust">let mut s = String::from(&quot;hello world&quot;);
+let word = &amp;s[0..5];
+s.clear();
+println!(&quot;{}&quot;, word);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The immutable slice (word) prevents mutation of the source. While word exists as an immutable borrow, you cannot borrow s mutably (which clear() requires). This prevents use-after-free bugs where the slice would reference cleared/invalid data. Rust's borrow checker enforces this at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Dynamic Slicing with Variables</h2>
+<p>How can you create slices based on runtime values? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+let space_index = s.find(' ').unwrap();
+
+let first_word = &amp;s[..space_index];
+let second_word = &amp;s[space_index + 1..];
+</code></pre>
+<p>You can use variables in slice ranges to create dynamic slices based on runtime calculations, like finding delimiters or search positions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chars Iterator</h2>
+<p>What does the chars() method do and what does each iteration give you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>chars() iterates over Unicode scalar values (characters):</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+for ch in s.chars() {
+    println!(&quot;{}&quot;, ch);
+}
+// Prints: h, e, l, l, o
+</code></pre>
+<p>Each iteration gives you a char (4-byte Unicode scalar value). Use this when working with text and characters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Bytes Iterator</h2>
+<p>What does the bytes() method do and what does each iteration give you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>bytes() iterates over raw bytes:</p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+for byte in s.bytes() {
+    println!(&quot;{}&quot;, byte);
+}
+// Prints: 104, 101, 108, 108, 111 (ASCII values)
+</code></pre>
+<p>Each iteration gives you a u8. Use this when working with raw data rather than text characters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chars vs Bytes for Multi-byte Characters</h2>
+<p>What's the difference in count between chars() and bytes() for multi-byte characters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+s.chars().count()  // 5 characters
+s.bytes().count()  // 5 bytes
+
+let s = String::from(&quot;你好&quot;);  // Two Chinese characters
+s.chars().count()  // 2 characters
+s.bytes().count()  // 6 bytes (3 bytes per character)
+</code></pre>
+<p>chars() counts Unicode characters, bytes() counts raw bytes. Multi-byte UTF-8 characters have more bytes than characters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Collecting Characters into Vec</h2>
+<p>How do you convert a String into a vector of characters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+let chars: Vec&lt;char&gt; = s.chars().collect();
+// chars: ['h', 'e', 'l', 'l', 'o']
+</code></pre>
+<p>Use chars() to create an iterator over characters, then collect() to gather them into a Vec<char>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Enumerating Characters with Index</h2>
+<p>How do you iterate over characters while also getting their position/index?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+for (i, ch) in s.chars().enumerate() {
+    println!(&quot;Character {} is {}&quot;, i, ch);
+}
+// Character 0 is h
+// Character 1 is e
+// ...
+</code></pre>
+<p>Use enumerate() on the chars() iterator to get (index, character) tuples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering Characters</h2>
+<p>How do you filter characters from a string based on a condition?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;h3ll0 w0rld&quot;);
+let letters: String = s.chars()
+    .filter(|c| c.is_alphabetic())
+    .collect();
+println!(&quot;{}&quot;, letters);  // &quot;hllwrld&quot;
+</code></pre>
+<p>Chain chars(), filter() with a predicate, and collect() into a new String. The filter removes non-alphabetic characters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Transforming Characters with Map</h2>
+<p>How do you transform each character in a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+let upper: String = s.chars()
+    .map(|c| c.to_ascii_uppercase())
+    .collect();
+println!(&quot;{}&quot;, upper);  // &quot;HELLO&quot;
+</code></pre>
+<p>Chain chars(), map() with a transformation function, and collect() into a new String. Map applies the transformation to each character.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reversing Strings</h2>
+<p>How do you reverse a string in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+let reversed: String = s.chars().rev().collect();
+println!(&quot;{}&quot;, reversed);  // &quot;olleh&quot;
+</code></pre>
+<p>Use chars() to iterate over characters, rev() to reverse the iterator, then collect() into a new String.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Finding Character Positions</h2>
+<p>How do you find the position of a specific character in a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+
+// Find position
+if let Some(pos) = s.chars().position(|c| c == 'w') {
+    println!(&quot;Found 'w' at position {}&quot;, pos);  // 6
+}
+
+// Check if contains
+let has_o = s.chars().any(|c| c == 'o');
+</code></pre>
+<p>Use position() to find the index, or any() to check existence. Both work on the chars() iterator.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Split and Join Pattern</h2>
+<p>How do you split a string by a delimiter and then join the parts with a different delimiter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;apple,banana,cherry&quot;);
+let words: Vec&lt;&amp;str&gt; = s.split(',').collect();
+// words: [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+
+let joined = words.join(&quot; - &quot;);
+// &quot;apple - banana - cherry&quot;
+</code></pre>
+<p>Use split() to break into parts (returns iterator), collect() into Vec, then join() with new delimiter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Processing Words with Split_whitespace</h2>
+<p>How do you iterate over words in a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello world from rust&quot;);
+for word in s.split_whitespace() {
+    println!(&quot;{}&quot;, word.to_uppercase());
+}
+// HELLO
+// WORLD
+// FROM
+// RUST
+</code></pre>
+<p>Use split_whitespace() to iterate over words, automatically handling any whitespace as delimiters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common String Methods - Length and Empty</h2>
+<p>How do you check a string's length and whether it's empty?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut s = String::from(&quot;  hello  &quot;);
+s.len();        // 9 (includes spaces, returns byte count)
+s.is_empty();   // false
+
+s.clear();      // Makes string empty
+s.is_empty();   // true
+s.len();        // 0
+</code></pre>
+<p>len() returns byte count (not character count), is_empty() checks if length is zero.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trimming Whitespace</h2>
+<p>What are the three trim methods and what does each do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;  hello world  &quot;;
+s.trim();        // &quot;hello world&quot; - removes both ends
+s.trim_start();  // &quot;hello world  &quot; - removes left
+s.trim_end();    // &quot;  hello world&quot; - removes right
+</code></pre>
+<p>All return new &amp;str, original unchanged. Remove whitespace from the specified ends.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Contains and Pattern Matching</h2>
+<p>How do you check if a string contains a substring or starts/ends with a pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;  hello world  &quot;;
+s.contains(&quot;world&quot;);  // true
+
+s.starts_with(&quot;hello&quot;);  // false (has leading spaces)
+s.trim().starts_with(&quot;hello&quot;);  // true
+
+s.ends_with(&quot;world&quot;);  // false (has trailing spaces)
+</code></pre>
+<p>contains() checks anywhere, starts_with()/ends_with() check specific positions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Replace Method</h2>
+<p>How does the replace() method work and what does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;  hello world  &quot;;
+let new_s = s.replace(&quot;world&quot;, &quot;Rust&quot;);
+// new_s: &quot;  hello Rust  &quot;
+// s is unchanged
+</code></pre>
+<p>replace() returns a new String with all occurrences of the pattern replaced. The original string is not modified.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Case Conversion</h2>
+<p>How do you convert strings to uppercase or lowercase?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;  hello world  &quot;;
+s.to_uppercase();  // &quot;  HELLO WORLD  &quot;
+s.to_lowercase();  // &quot;  hello world  &quot;
+</code></pre>
+<p>Both return new Strings. The original is unchanged. Whitespace and punctuation are preserved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Word Count Pattern</h2>
+<p>How do you implement a word count function?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">fn word_count(s: &amp;str) -&gt; usize {
+    s.split_whitespace().count()
+}
+
+let text = &quot;hello world from rust&quot;;
+println!(&quot;{} words&quot;, word_count(text));  // 4 words
+</code></pre>
+<p>Use split_whitespace() to get an iterator over words, then count() to get the total.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Remove Whitespace Pattern</h2>
+<p>How do you remove all whitespace characters from a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;h e l l o&quot;;
+let no_spaces: String = s.chars()
+    .filter(|c| !c.is_whitespace())
+    .collect();
+println!(&quot;{}&quot;, no_spaces);  // &quot;hello&quot;
+</code></pre>
+<p>Iterate with chars(), filter out whitespace with is_whitespace(), then collect into String.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Count Specific Character Pattern</h2>
+<p>How do you count how many times a specific character appears in a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = &quot;hello world&quot;;
+let count = s.chars().filter(|&amp;c| c == 'l').count();
+println!(&quot;{} 'l' characters&quot;, count);  // 3 'l' characters
+</code></pre>
+<p>Use chars() to iterate, filter() to keep only matching characters, then count() the results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance - Avoid Cloning</h2>
+<p>Why is slicing more efficient than cloning when passing strings to functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Slow: copies entire string
+fn process(s: String) { }
+let s = long_string.clone();
+process(s);
+
+// Fast: just borrows
+fn process(s: &amp;str) { }
+process(&amp;long_string);
+</code></pre>
+<p>Slicing creates a borrowed view (pointer + length) with no copying. Cloning allocates new heap memory and copies all data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Format Macro for Readability</h2>
+<p>Why is format! more readable than chaining + operators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Harder to read, moves s1
+let result = s1 + &amp;s2 + &amp;s3;
+
+// Clearer, nothing moved
+let result = format!(&quot;{}{}{}&quot;, s1, s2, s3);
+</code></pre>
+<p>format! shows intent clearly, doesn't require &amp;, preserves all variables, and reads like a template. The + chain requires careful tracking of ownership and references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>String Methods Return New Data</h2>
+<p>Do most string methods modify the original string or return new data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Most string methods return new String or &amp;str without modifying the original:</p>
+<pre><code class="language-rust">let s = &quot;hello&quot;;
+let upper = s.to_uppercase();  // Returns new String
+// s is still &quot;hello&quot;
+
+let trimmed = s.trim();  // Returns new &amp;str
+// s is unchanged
+</code></pre>
+<p>Exception: mutable methods like push_str(), push(), clear() modify in place.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Truncate Method</h2>
+<p>What does the truncate() method do and does it modify the string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut s = String::from(&quot;hello world&quot;);
+s.truncate(5);  // s is now &quot;hello&quot;
+</code></pre>
+<p>truncate() modifies the String in place, keeping only the first n bytes and discarding the rest. Requires a mutable String. Does not deallocate capacity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Filter and Collect</h2>
+<p>How do you extract only letters from a mixed alphanumeric string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;a1b2c3&quot;);
+let letters: String = s.chars()
+    .filter(|c| c.is_alphabetic())
+    .collect();
+println!(&quot;{}&quot;, letters);  // &quot;abc&quot;
+</code></pre>
+<p>Chain chars() for character iteration, filter() with is_alphabetic() predicate, and collect() into a new String.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Extract and Transform Pattern</h2>
+<p>How do you extract part of a string and transform it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let s = String::from(&quot;hello world&quot;);
+let first = &amp;s[0..5];           // Extract: &quot;hello&quot;
+let upper = first.to_uppercase(); // Transform: &quot;HELLO&quot;
+</code></pre>
+<p>First slice to extract the desired part (creates &amp;str), then apply transformation methods which typically return new Strings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>First Word Pattern</h2>
+<p>How do you implement a function that returns the first word of a string?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">fn first_word(s: &amp;str) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+    for (i, &amp;byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+    &amp;s[..]  // Return whole string if no space
+}
+</code></pre>
+<p>Iterate over bytes to find the first space, return slice up to that point, or entire string if no space found.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Capacity Method</h2>
+<p>What does the capacity() method tell you and how does it differ from len()?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let mut s = String::with_capacity(10);
+s.push_str(&quot;hi&quot;);
+println!(&quot;len: {}, capacity: {}&quot;, s.len(), s.capacity());
+// len: 2, capacity: 10
+</code></pre>
+<p>len() returns bytes currently used in the string. capacity() returns total bytes allocated. Capacity is always ≥ length. Extra capacity allows growth without reallocation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
