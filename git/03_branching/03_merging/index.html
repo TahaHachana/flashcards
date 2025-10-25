@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 03 Branching - 03 Merging</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is Merging</h2>
+<p>What is merging in Git and what's the basic workflow?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Merging combines changes from different branches into one branch. It's how parallel lines of development come back together.</p>
+<p>Basic workflow:
+1. Switch to target branch (branch you want to merge INTO): <code>git switch main</code>
+2. Merge source branch: <code>git merge feature-branch</code>
+3. Git combines changes and creates merge commit
+4. Target branch now contains all changes</p>
+<p>Remember: You merge FROM another branch INTO your current branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Merge Command</h2>
+<p>What does <code>git merge branch-name</code> do and which branch must you be on?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git merge branch-name</code> merges <code>branch-name</code> INTO your current branch.</p>
+<p>Critical: You must be ON the branch you want to merge INTO (target branch).</p>
+<p>Example:</p>
+<pre><code class="language-bash">git switch main           # Switch to target
+git merge feature/login   # Merge feature INTO main
+</code></pre>
+<p>Common mistake: Being on the wrong branch. Always check with <code>git status</code> before merging.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Merge Commit</h2>
+<p>What is a merge commit and what makes it special?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A merge commit is created when divergent branches are merged. It's special because it has TWO parents (one from each branch):</p>
+<pre><code>    A --- B --- C (main)
+           \     \
+            D --- E (feature)
+                   \
+                    M (merge commit)
+</code></pre>
+<p>Merge commit M has:
+- Parent 1: C (from main)
+- Parent 2: E (from feature)
+- Default message: "Merge branch 'feature-name'"</p>
+<p>This preserves complete history of both branches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Merge Options</h2>
+<p>What do these merge options do: <code>--no-commit</code>, <code>--squash</code>, <code>-m "message"</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git merge --no-commit feature</code>: Merge but don't auto-commit (stage changes for review first)</li>
+<li><code>git merge --squash feature</code>: Combine all feature commits into one commit (flattens history)</li>
+<li><code>git merge feature -m "message"</code>: Merge with custom commit message</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="language-bash">git merge --no-commit feature  # Review before committing
+git merge --squash feature     # Single commit
+git commit -m &quot;Add feature&quot;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three-Way Merge</h2>
+<p>What is a three-way merge and what three points does Git use?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When branches have diverged, Git performs a three-way merge using:</p>
+<ol>
+<li>Common ancestor (base) - most recent shared commit</li>
+<li>Current branch tip (ours) - where you are now</li>
+<li>Branch being merged (theirs) - what you're merging in</li>
+</ol>
+<pre><code>        Base
+         /  \
+    Ours      Theirs
+         \  /
+        Merge
+</code></pre>
+<p>Git compares all three to determine the final result and creates a merge commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Listing Merged and Unmerged Branches</h2>
+<p>How do you list which branches have been merged and which haven't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Merged branches (safe to delete):</p>
+<pre><code class="language-bash">git branch --merged
+</code></pre>
+<p>Shows branches whose changes are in current branch.</p>
+<p>Unmerged branches (have unique commits):</p>
+<pre><code class="language-bash">git branch --no-merged
+</code></pre>
+<p>Shows branches with commits not yet in current branch.</p>
+<p>Use this before cleanup to avoid deleting branches with unmerged work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deleting Merged Branches</h2>
+<p>How and when should you delete feature branches after merging?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Delete after successful merge:</p>
+<pre><code class="language-bash">git branch -d feature/login
+</code></pre>
+<p>Why delete:
+- Keeps branch list clean
+- Merged changes preserved in main
+- Branch name no longer needed
+- Can recreate from history if needed</p>
+<p>Safe delete (<code>-d</code>): Only deletes if fully merged
+Force delete (<code>-D</code>): Deletes even if unmerged (careful!)</p>
+<p>Best practice: Delete feature branches immediately after merging.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Merge Conflict</h2>
+<p>What causes a merge conflict and how do you detect one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Conflict occurs when:
+- Both branches modify the same part of the same file
+- Git can't automatically determine which change to keep
+- Manual intervention required</p>
+<p>Detection:</p>
+<pre><code class="language-bash">git merge feature
+# CONFLICT (content): Merge conflict in file.txt
+# Automatic merge failed; fix conflicts and commit
+</code></pre>
+<p>Check status:</p>
+<pre><code class="language-bash">git status
+# Unmerged paths:
+#   both modified:   file.txt
+</code></pre>
+<p>(Conflict resolution covered in next topic)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aborting a Merge</h2>
+<p>How do you cancel a merge in progress and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cancel merge:</p>
+<pre><code class="language-bash">git merge --abort
+</code></pre>
+<p>This:
+- Cancels the merge operation
+- Returns to pre-merge state
+- Discards any conflict resolutions</p>
+<p>Use when:
+- You made a mistake (wrong branch)
+- Conflicts are too complex
+- You need to prepare differently
+- You want to start over</p>
+<p>Safe to use anytime during a merge before final commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Merge vs Rebase</h2>
+<p>What's the key difference between merge and rebase?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Merge:
+- Preserves complete history
+- Creates merge commit
+- Safe for shared branches
+- Standard way to integrate branches</p>
+<p>Rebase:
+- Rewrites history (linear)
+- No merge commit
+- Dangerous for shared branches
+- Used for cleaning up local history</p>
+<p>Use merge as default—it's safe and preserves full project history. Rebase is covered later in roadmap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pre-Merge Best Practices</h2>
+<p>What should you do before performing a merge?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Before merging:
+1. Clean working tree: <code>git status</code> (commit or stash changes)
+2. Update target branch: <code>git switch main &amp;&amp; git pull</code>
+3. Test feature branch (run tests, verify functionality)
+4. Review changes: <code>git log main..feature</code> or <code>git diff main...feature</code></p>
+<p>Example:</p>
+<pre><code class="language-bash">git status              # Check clean
+git switch main         # Switch to target
+git pull               # Update
+git merge feature      # Merge
+</code></pre>
+<p>Preparation prevents merge problems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Post-Merge Best Practices</h2>
+<p>What should you do after successfully merging?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>After merge:
+1. Test merged code (run tests, verify functionality)
+2. Verify merge: <code>git log --oneline --graph</code>
+3. Delete feature branch: <code>git branch -d feature-branch</code>
+4. Push changes (if using remote): <code>git push origin main</code></p>
+<p>Checklist:
+- [ ] Tests pass
+- [ ] History looks correct
+- [ ] Feature branch deleted
+- [ ] Remote updated</p>
+<p>Always test after merging to catch integration issues early.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Merge Scenarios</h2>
+<p>What are three common merge scenarios and their workflows?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Simple feature integration:
+   <code>bash
+   git switch main
+   git merge feature/login
+   git branch -d feature/login</code></p>
+</li>
+<li>
+<p>Keeping feature updated with main:
+   <code>bash
+   git switch feature/payment
+   git merge main  # Bring main changes into feature</code></p>
+</li>
+<li>
+<p>Merge with review:
+   <code>bash
+   git merge --no-commit feature/experimental
+   git diff --staged  # Review
+   git commit  # or git merge --abort</code></p>
+</li>
+</ol>
+<p>Each scenario addresses different workflow needs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Merge Troubleshooting</h2>
+<p>What do these merge messages mean: "Already up to date", "Please commit your changes", "Automatic merge failed"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>"Already up to date":
+- Current branch contains all commits from other branch
+- Nothing to merge</p>
+<p>"Please commit your changes or stash them":
+- Working tree has uncommitted changes
+- Solution: <code>git commit</code> or <code>git stash</code></p>
+<p>"Automatic merge failed; fix conflicts":
+- Merge conflict detected
+- Solution: Resolve conflicts manually (next topic)</p>
+<p>Each message indicates what action is needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Merge Key Principles</h2>
+<p>What are the essential principles to remember about Git merging?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Merge brings changes INTO current branch from another</li>
+<li>Always switch to target branch first before merging</li>
+<li>Merge commits have two parents (preserves full history)</li>
+<li>Clean working tree required before merging</li>
+<li>Delete feature branches after merging for cleanliness</li>
+<li>Conflicts require manual resolution</li>
+<li><code>git merge --abort</code> cancels problematic merges</li>
+<li>Always test after merging</li>
+</ol>
+<p>Remember: <code>git switch target</code> then <code>git merge source</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

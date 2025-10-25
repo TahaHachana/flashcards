@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 03 Branching - 01 Create And Switch</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Git Branch</h2>
+<p>What is a Git branch and why are branches considered lightweight?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A branch is a movable pointer to a commit. It's not a copy of files or a new directory—just a 40-character SHA-1 hash stored in a file.</p>
+<p>Branches are lightweight because:
+- Creating a branch writes only a 41-byte file
+- No disk space used (no file copying)
+- Switching is instant
+- You can create unlimited branches with no performance penalty</p>
+<p>This makes branching cheap and encourages creating branches liberally.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HEAD Pointer</h2>
+<p>What is HEAD in Git and what does it indicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HEAD is a special pointer that indicates which branch (and commit) you're currently on.</p>
+<pre><code>main    →  [commit C]
+            ↑
+          HEAD
+</code></pre>
+<p>HEAD always points to your current branch. When you switch branches, HEAD moves to point to the new branch. When you commit, the branch that HEAD points to moves forward.</p>
+<p>Check HEAD location: <code>git status</code> or <code>cat .git/HEAD</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Listing Branches</h2>
+<p>What do these commands show: <code>git branch</code>, <code>git branch -a</code>, <code>git branch -v</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git branch</code>: List all local branches (<code>*</code> indicates current branch)</li>
+<li><code>git branch -a</code> or <code>--all</code>: List all branches (local and remote)</li>
+<li><code>git branch -v</code>: Verbose output showing last commit on each branch</li>
+<li><code>git branch -r</code>: List only remote branches</li>
+</ul>
+<p>Example output:</p>
+<pre><code>* main           a1b2c3d Fix bug
+  feature-login  b2c3d4e Add form
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating Branches</h2>
+<p>What's the difference between <code>git branch feature-name</code> and <code>git switch -c feature-name</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>git branch feature-name</code>: Creates a new branch but stays on current branch</li>
+<li><code>git switch -c feature-name</code>: Creates a new branch AND switches to it</li>
+</ul>
+<p><code>git switch -c</code> is equivalent to:</p>
+<pre><code class="language-bash">git branch feature-name
+git switch feature-name
+</code></pre>
+<p>Use <code>git switch -c</code> when you want to immediately start working on the new branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Branch Naming Conventions</h2>
+<p>What are best practices for naming Git branches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Good practices:
+- Descriptive and concise
+- Use lowercase
+- Use hyphens (kebab-case) or slashes
+- Include context (type, ticket number)</p>
+<p>Examples:
+- <code>feature/user-authentication</code>
+- <code>bugfix/login-error</code>
+- <code>hotfix/security-patch</code>
+- <code>feature/JIRA-123-add-search</code></p>
+<p>Avoid:
+- Spaces (use <code>user-auth</code> not <code>user auth</code>)
+- Vague names (<code>fix</code>, <code>update</code>)
+- Special characters except <code>-</code>, <code>/</code>, <code>_</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Switching Branches with git switch</h2>
+<p>How do you switch branches with git switch and what happens to uncommitted changes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Basic switch: <code>git switch branch-name</code></p>
+<p>With uncommitted changes:</p>
+<p>Scenario 1: Changes don't conflict with target branch
+- Git allows the switch
+- Changes carry over to new branch</p>
+<p>Scenario 2: Changes conflict with target branch
+- Git prevents the switch
+- Error: "Your local changes would be overwritten"
+- Must commit, stash, or discard changes first</p>
+<p>Modern command (Git 2.23+): <code>git switch</code> replaces <code>git checkout</code> for clarity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Handling Uncommitted Changes When Switching</h2>
+<p>What are three ways to handle uncommitted changes when Git prevents branch switching?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Commit changes:
+   <code>bash
+   git add .
+   git commit -m "Work in progress"
+   git switch other-branch</code></p>
+</li>
+<li>
+<p>Stash changes (temporary storage):
+   <code>bash
+   git stash
+   git switch other-branch
+   git stash pop  # Later retrieve</code></p>
+</li>
+<li>
+<p>Discard changes (careful!):
+   <code>bash
+   git restore file.txt
+   git switch other-branch</code></p>
+</li>
+</ol>
+<p>Choose based on whether you want to keep the changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git checkout vs git switch</h2>
+<p>What's the difference between git checkout and git switch, and why was git switch introduced?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Before Git 2.23, <code>git checkout</code> did many things (switch branches, restore files, create branches)—it was confusing.</p>
+<p>Git 2.23+ split checkout into focused commands:
+- <code>git switch</code> - Switch branches
+- <code>git restore</code> - Restore files</p>
+<p>Comparison:
+- Switch: <code>git checkout branch</code> → <code>git switch branch</code>
+- Create &amp; switch: <code>git checkout -b branch</code> → <code>git switch -c branch</code></p>
+<p>Both still work, but <code>git switch</code> is clearer and recommended for new users.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Renaming Branches</h2>
+<p>How do you rename a Git branch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rename current branch:</p>
+<pre><code class="language-bash">git branch -m new-name
+</code></pre>
+<p>Rename specific branch:</p>
+<pre><code class="language-bash">git branch -m old-name new-name
+</code></pre>
+<p>Common use case (rename master to main):</p>
+<pre><code class="language-bash">git branch -m master main
+</code></pre>
+<p>The <code>-m</code> flag stands for "move" (rename). This is a local operation—remote branches need additional steps (covered later).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deleting Branches</h2>
+<p>What's the difference between <code>git branch -d</code> and <code>git branch -D</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>
+<p><code>git branch -d branch-name</code>: Safe delete—only deletes if branch is fully merged. Git protects you from losing work.</p>
+</li>
+<li>
+<p><code>git branch -D branch-name</code>: Force delete—deletes even if unmerged. Use carefully as you may lose unique commits.</p>
+</li>
+</ul>
+<p>Cannot delete current branch:</p>
+<pre><code class="language-bash">git branch -d main  # Error
+</code></pre>
+<p>Switch to another branch first.</p>
+<p>After merging a feature branch, use <code>-d</code> to clean up.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Feature Branch Workflow</h2>
+<p>What are the steps in a typical feature branch workflow?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Start on main: <code>git switch main</code></li>
+<li>Create feature branch: <code>git switch -c feature/user-profile</code></li>
+<li>Work and commit: <code>git add . &amp;&amp; git commit -m "Add profile"</code></li>
+<li>More commits as needed</li>
+<li>Switch back: <code>git switch main</code></li>
+<li>Merge feature: <code>git merge feature/user-profile</code></li>
+<li>Delete branch: <code>git branch -d feature/user-profile</code></li>
+</ol>
+<p>This keeps main stable while developing features in isolation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Branch Best Practices</h2>
+<p>What are key best practices for working with Git branches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>Create branches liberally (for every feature, bugfix, experiment)</li>
+<li>Keep branches short-lived (create → work → merge → delete)</li>
+<li>Use descriptive, consistent naming (feature/, bugfix/, hotfix/)</li>
+<li>One branch = one purpose (don't mix unrelated work)</li>
+<li>Don't accumulate stale branches</li>
+<li>Use prefixes for organization (feature/login, bugfix/navbar)</li>
+<li>Include ticket numbers when applicable (feature/JIRA-123-search)</li>
+</ul>
+<p>Branch hygiene prevents repository clutter and confusion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Detached HEAD State</h2>
+<p>What is detached HEAD state and how do you handle it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Detached HEAD occurs when HEAD points directly to a commit instead of a branch.</p>
+<p>Happens when: <code>git checkout a1b2c3d</code> (checking out specific commit)</p>
+<p>Problem: Commits made in detached HEAD aren't on any branch and can be lost.</p>
+<p>Solutions:
+1. Create branch from detached HEAD: <code>git switch -c new-branch-name</code>
+2. Return to a branch: <code>git switch main</code></p>
+<p>Detached HEAD is useful for examining old commits but risky for new work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Branch Visualization</h2>
+<p>How do you visualize branch structure and history in Git?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log --oneline --graph --all</code></p>
+<p>Shows ASCII graph of branches:</p>
+<pre><code>* d4e5f6g (HEAD -&gt; feature/payment) Add payment
+* c3d4e5f Add validation
+| * b2c3d4e (feature/login) Add login
+|/
+* a1b2c3d (main) Initial commit
+</code></pre>
+<p>This displays:
+- Current branch (HEAD)
+- Where branches diverged
+- Parallel development
+- Branch relationships</p>
+<p>Helps understand project structure and history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Branching is Essential</h2>
+<p>Why is branching considered essential to Git workflows?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Branching enables:
+1. <strong>Parallel development</strong>: Multiple features simultaneously without interference
+2. <strong>Safe experimentation</strong>: Try ideas without affecting main code
+3. <strong>Isolation</strong>: Keep work-in-progress separate from stable code
+4. <strong>Collaboration</strong>: Each developer works on their own branch
+5. <strong>Organization</strong>: Separate features, bugfixes, and releases
+6. <strong>Risk-free</strong>: Easy to discard failed experiments</p>
+<p>Git's lightweight branches (just pointers) make this workflow fast and efficient. Master branching early—it's fundamental to professional Git usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
