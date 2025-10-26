@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 03 Structuring Data - 02 Methods And Associated Functions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Methods vs Associated Functions</h2>
+<p>What is the difference between methods and associated functions in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Methods</strong>: Functions defined in an impl block that take some form of <code>self</code> as the first parameter. Called on instances using dot notation.</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn area(&amp;self) -&gt; f64 {  // Method
+        self.width * self.height
+    }
+}
+rect.area();  // Called with .
+</code></pre>
+<p><strong>Associated functions</strong>: Functions in impl blocks that don't take <code>self</code>. Called on the type itself using <code>::</code> notation.</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn new(width: f64, height: f64) -&gt; Self {  // Associated function
+        Rectangle { width, height }
+    }
+}
+Rectangle::new(10.0, 20.0);  // Called with ::
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Forms of Self</h2>
+<p>What are the three forms of <code>self</code> in Rust methods, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong><code>&amp;self</code></strong> (immutable borrow) - Most common</li>
+<li>Use for reading data, calculations</li>
+<li>Doesn't modify the instance</li>
+<li>
+<p>Multiple calls allowed</p>
+</li>
+<li>
+<p><strong><code>&amp;mut self</code></strong> (mutable borrow) - For modifications</p>
+</li>
+<li>Use when you need to change the instance</li>
+<li>
+<p>Only one mutable borrow at a time</p>
+</li>
+<li>
+<p><strong><code>self</code></strong> (takes ownership) - Consumes the value</p>
+</li>
+<li>Use for transforming or consuming the instance</li>
+<li>Original value can't be used afterward</li>
+<li>Common in builder patterns</li>
+</ol>
+<pre><code class="language-rust">impl Rectangle {
+    fn area(&amp;self) -&gt; f64 { }           // Borrow
+    fn scale(&amp;mut self, f: f64) { }     // Mutate
+    fn into_square(self) -&gt; Square { }  // Consume
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Method Call Syntax Sugar</h2>
+<p>How does Rust's automatic referencing and dereferencing work with method calls?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust automatically adds <code>&amp;</code>, <code>&amp;mut</code>, or <code>*</code> to make method calls work:</p>
+<pre><code class="language-rust">let mut rect = Rectangle::new(10.0, 20.0);
+
+// These are equivalent:
+rect.area();
+(&amp;rect).area();
+
+// These are equivalent:
+rect.scale(2.0);
+(&amp;mut rect).scale(2.0);
+</code></pre>
+<p>This works with smart pointers too:</p>
+<pre><code class="language-rust">let boxed = Box::new(Rectangle::new(5.0, 10.0));
+boxed.area();  // Rust auto-dereferences Box
+</code></pre>
+<p>This "method call syntax sugar" makes code cleaner and more ergonomic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self vs self</h2>
+<p>What is the difference between <code>Self</code> (capital S) and <code>self</code> (lowercase s) in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>Self</code></strong> (capital) = The type itself (alias for the type name)</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn new(width: f64, height: f64) -&gt; Self {  // Returns Rectangle
+        Self {  // Same as Rectangle {
+            width,
+            height,
+        }
+    }
+}
+</code></pre>
+<p><strong><code>self</code></strong> (lowercase) = The instance</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn double(&amp;self) -&gt; Self {  // Takes instance, returns Rectangle
+        Self {
+            width: self.width * 2.0,  // self = this instance
+            height: self.height * 2.0,
+        }
+    }
+}
+</code></pre>
+<p><code>Self</code> is particularly useful in generic contexts where the type name is complex.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Associated Function Constructors</h2>
+<p>What is the conventional naming pattern for constructor associated functions in Rust, and why use associated functions for construction?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Convention</strong>: Use <code>new</code> for the primary constructor:</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn new(width: f64, height: f64) -&gt; Self {
+        Rectangle { width, height }
+    }
+
+    // Alternative constructors
+    fn square(size: f64) -&gt; Self {
+        Rectangle { width: size, height: size }
+    }
+
+    fn default() -&gt; Self {
+        Rectangle { width: 1.0, height: 1.0 }
+    }
+}
+</code></pre>
+<p><strong>Why use associated functions</strong>:
+- Provide a clear, ergonomic API
+- Can validate inputs before construction
+- Can have multiple constructors with different names
+- Can return Result<Self, Error> for fallible construction
+- Called with <code>Type::new()</code> syntax</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Builder Pattern with Method Chaining</h2>
+<p>How do you implement the builder pattern with method chaining in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Consume <code>self</code> and return <code>Self</code> to enable chaining:</p>
+<pre><code class="language-rust">struct Config {
+    host: String,
+    port: u16,
+    debug: bool,
+}
+
+impl Config {
+    fn new() -&gt; Self {
+        Config {
+            host: String::from(&quot;localhost&quot;),
+            port: 8080,
+            debug: false,
+        }
+    }
+
+    fn host(mut self, host: String) -&gt; Self {
+        self.host = host;
+        self  // Return self for chaining
+    }
+
+    fn port(mut self, port: u16) -&gt; Self {
+        self.port = port;
+        self
+    }
+}
+
+// Usage - beautiful chaining
+let config = Config::new()
+    .host(String::from(&quot;example.com&quot;))
+    .port(3000);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple impl Blocks</h2>
+<p>Can you have multiple impl blocks for the same type in Rust? When might this be useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Yes</strong>, you can have multiple impl blocks:</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn area(&amp;self) -&gt; f64 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn perimeter(&amp;self) -&gt; f64 {
+        2.0 * (self.width + self.height)
+    }
+}
+</code></pre>
+<p><strong>Useful for</strong>:
+- Organizing related methods into logical groups
+- Separating trait implementations from inherent methods
+- Adding methods conditionally with <code>#[cfg]</code> attributes
+- Keeping impl blocks focused and readable
+- Generic implementations for specific type parameters</p>
+<p>All methods are equally accessible regardless of which impl block they're in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Getter and Setter Patterns</h2>
+<p>What are the Rust conventions for getter and setter methods, and why use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Getter conventions</strong>:</p>
+<pre><code class="language-rust">impl BankAccount {
+    // For Copy types - return the value
+    pub fn balance(&amp;self) -&gt; f64 {
+        self.balance
+    }
+
+    // For non-Copy types - return a reference
+    pub fn owner(&amp;self) -&gt; &amp;str {
+        &amp;self.owner
+    }
+}
+</code></pre>
+<p><strong>Setter conventions</strong> (with validation):</p>
+<pre><code class="language-rust">impl BankAccount {
+    pub fn deposit(&amp;mut self, amount: f64) -&gt; Result&lt;(), String&gt; {
+        if amount &lt;= 0.0 {
+            return Err(String::from(&quot;Amount must be positive&quot;));
+        }
+        self.balance += amount;
+        Ok(())
+    }
+}
+</code></pre>
+<p><strong>Why use them</strong>:
+- Control access to private fields
+- Validate inputs
+- Maintain invariants
+- Can change internal representation without breaking API</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Method Call vs Associated Function Call Syntax</h2>
+<p>What syntax error occurs if you confuse method calls and associated function calls?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Error</strong>: Using <code>.</code> for associated functions or <code>::</code> for methods</p>
+<pre><code class="language-rust">impl Rectangle {
+    fn new(w: f64, h: f64) -&gt; Self { }  // Associated function
+    fn area(&amp;self) -&gt; f64 { }            // Method
+}
+
+// WRONG
+let rect = Rectangle.new(10.0, 20.0);  // ERROR
+let area = Rectangle::area();           // ERROR
+
+// CORRECT
+let rect = Rectangle::new(10.0, 20.0); // :: for associated functions
+let area = rect.area();                 // . for methods
+</code></pre>
+<p><strong>Rule</strong>:
+- <code>::</code> for associated functions (called on the type)
+- <code>.</code> for methods (called on instances)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Consuming Self for Transformations</h2>
+<p>When and why would you use <code>self</code> (taking ownership) instead of <code>&amp;self</code> or <code>&amp;mut self</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>self</code> when:</p>
+<ol>
+<li><strong>Transforming into another type</strong>:</li>
+</ol>
+<pre><code class="language-rust">impl Rectangle {
+    fn into_square(self) -&gt; Square {
+        Square { size: self.width.min(self.height) }
+    }
+}
+</code></pre>
+<ol>
+<li><strong>Builder pattern</strong> (consume and return):</li>
+</ol>
+<pre><code class="language-rust">fn with_width(mut self, width: f64) -&gt; Self {
+    self.width = width;
+    self
+}
+</code></pre>
+<ol>
+<li><strong>Preventing further use</strong> after consumption:</li>
+</ol>
+<pre><code class="language-rust">impl File {
+    fn close(self) {
+        // Release resources
+        // File can't be used after this
+    }
+}
+</code></pre>
+<p>After calling a method that takes <code>self</code>, the original value is moved and can't be used anymore. This provides compile-time enforcement of usage patterns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type Conversion Method Naming</h2>
+<p>What are the Rust naming conventions for type conversion methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Three common prefixes:</p>
+<ol>
+<li><strong><code>to_*</code></strong> - Creates a new value, potentially expensive</li>
+</ol>
+<pre><code class="language-rust">fn to_string(&amp;self) -&gt; String { }
+fn to_vec(&amp;self) -&gt; Vec&lt;T&gt; { }
+</code></pre>
+<ol>
+<li><strong><code>into_*</code></strong> - Consumes self, converts ownership</li>
+</ol>
+<pre><code class="language-rust">fn into_bytes(self) -&gt; Vec&lt;u8&gt; { }
+fn into_iter(self) -&gt; IntoIter&lt;T&gt; { }
+</code></pre>
+<ol>
+<li><strong><code>as_*</code></strong> - Cheap reference-to-reference conversion</li>
+</ol>
+<pre><code class="language-rust">fn as_str(&amp;self) -&gt; &amp;str { }
+fn as_bytes(&amp;self) -&gt; &amp;[u8] { }
+</code></pre>
+<p>The prefix signals the cost and ownership semantics to the caller.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Methods with Additional Parameters</h2>
+<p>How do you define methods that take additional parameters beyond self?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Add parameters after <code>self</code> like regular function parameters:</p>
+<pre><code class="language-rust">impl Rectangle {
+    // One additional parameter
+    fn scale(&amp;mut self, factor: f64) {
+        self.width *= factor;
+        self.height *= factor;
+    }
+
+    // Multiple additional parameters
+    fn resize(&amp;mut self, width: f64, height: f64) {
+        self.width = width;
+        self.height = height;
+    }
+
+    // Reference parameter
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+
+// Usage
+rect.scale(2.0);
+rect.resize(30.0, 40.0);
+if rect1.can_hold(&amp;rect2) { }
+</code></pre>
+<p><code>self</code> is always first, followed by any additional parameters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Encapsulation with Methods</h2>
+<p>How do methods enable encapsulation in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Methods provide controlled access to private data:</p>
+<pre><code class="language-rust">pub struct BankAccount {
+    balance: f64,  // Private field
+}
+
+impl BankAccount {
+    pub fn new() -&gt; Self {
+        BankAccount { balance: 0.0 }
+    }
+
+    // Read-only access
+    pub fn balance(&amp;self) -&gt; f64 {
+        self.balance
+    }
+
+    // Validated mutation
+    pub fn deposit(&amp;mut self, amount: f64) -&gt; Result&lt;(), String&gt; {
+        if amount &lt;= 0.0 {
+            return Err(String::from(&quot;Invalid amount&quot;));
+        }
+        self.balance += amount;
+        Ok(())
+    }
+}
+</code></pre>
+<p><strong>Benefits</strong>:
+- Private fields prevent direct access
+- Methods validate inputs
+- Maintain invariants (balance never goes negative)
+- Can change internal representation without breaking API
+- Users interact through a clean public interface</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>State Machine Pattern with Methods</h2>
+<p>How can you use methods with consuming self to implement a type-safe state machine?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use generic types and consuming methods to enforce valid transitions:</p>
+<pre><code class="language-rust">struct Connection&lt;State&gt; {
+    address: String,
+    state: State,
+}
+
+struct Disconnected;
+struct Connected;
+
+impl Connection&lt;Disconnected&gt; {
+    fn new(address: String) -&gt; Self {
+        Connection { address, state: Disconnected }
+    }
+
+    fn connect(self) -&gt; Connection&lt;Connected&gt; {
+        Connection {
+            address: self.address,
+            state: Connected,
+        }
+    }
+}
+
+impl Connection&lt;Connected&gt; {
+    fn send_data(&amp;self, data: &amp;str) { }
+
+    fn disconnect(self) -&gt; Connection&lt;Disconnected&gt; {
+        Connection {
+            address: self.address,
+            state: Disconnected,
+        }
+    }
+}
+</code></pre>
+<p>The compiler enforces that you can only call methods valid for the current state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Method Mistakes</h2>
+<p>What are three common mistakes when defining methods in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Consuming when you meant to borrow</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn area(self) -&gt; f64 { }  // WRONG - takes ownership
+fn area(&amp;self) -&gt; f64 { } // RIGHT - just borrows
+</code></pre>
+<ol>
+<li><strong>Forgetting self parameter</strong>:</li>
+</ol>
+<pre><code class="language-rust">// This is an associated function, not a method!
+fn describe(width: f64) -&gt; String { }
+// Should be:
+fn describe(&amp;self) -&gt; String { }
+</code></pre>
+<ol>
+<li><strong>Multiple mutable borrows through methods</strong>:</li>
+</ol>
+<pre><code class="language-rust">let w = rect.width_mut();  // Borrows rect mutably
+let h = rect.height_mut(); // ERROR: second mutable borrow
+// Must not hold onto multiple mutable references
+</code></pre>
+<p>Use <code>&amp;self</code> by default unless you specifically need mutation or consumption.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

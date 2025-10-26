@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 03 Structuring Data - 01 Structs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Structs and Why Do They Exist?</h2>
+<p>What is a struct in Rust and what are the three main reasons they exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A struct (structure) is a custom data type that packages together multiple related values into a meaningful group.</p>
+<p>Three main reasons structs exist:
+1. <strong>Data organization</strong> - Group related data into logical units
+2. <strong>Type safety</strong> - Create domain-specific types instead of using primitives
+3. <strong>Code clarity</strong> - Give meaningful names to collections of data</p>
+<p>Structs are Rust's primary way of creating custom types, similar to classes in other languages but without inheritance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Classic Struct Syntax</h2>
+<p>How do you define and instantiate a classic struct with named fields in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Define with named fields and types:</p>
+<pre><code class="language-rust">struct User {
+    username: String,
+    email: String,
+    age: u32,
+    active: bool,
+}
+</code></pre>
+<p>Instantiate by providing values for all fields:</p>
+<pre><code class="language-rust">let user = User {
+    username: String::from(&quot;alice&quot;),
+    email: String::from(&quot;alice@example.com&quot;),
+    age: 30,
+    active: true,
+};
+</code></pre>
+<p>Access fields using dot notation: <code>user.username</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Mutability Rules</h2>
+<p>How does mutability work with structs in Rust? Can you make individual fields mutable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <strong>entire instance</strong> must be mutable to change any field. Rust does not allow marking individual fields as mutable.</p>
+<pre><code class="language-rust">// Immutable - can't change any field
+let user = User { /* ... */ };
+// user.age = 31;  // ERROR
+
+// Mutable - can change any field
+let mut user = User { /* ... */ };
+user.age = 31;  // OK
+user.active = false;  // OK
+</code></pre>
+<p>This is an all-or-nothing approach to mutability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Field Init Shorthand</h2>
+<p>What is the field init shorthand in Rust and when can you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When variable names match field names, you can omit the field name:</p>
+<pre><code class="language-rust">fn create_user(username: String, email: String) -&gt; User {
+    User {
+        username,  // Instead of username: username
+        email,     // Instead of email: email
+        age: 0,
+        active: true,
+    }
+}
+</code></pre>
+<p>This only works when the variable name <strong>exactly matches</strong> the field name.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Update Syntax</h2>
+<p>How does the struct update syntax work in Rust, and what ownership consideration must you be aware of?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>..other_struct</code> to copy remaining fields from another instance:</p>
+<pre><code class="language-rust">let user2 = User {
+    username: String::from(&quot;bob&quot;),
+    email: String::from(&quot;bob@example.com&quot;),
+    ..user1  // Copy age and active from user1
+};
+</code></pre>
+<p><strong>Critical ownership consideration</strong>: Non-Copy types are <strong>moved</strong>. After this code, <code>user1.username</code> and <code>user1.email</code> are no longer valid (moved), but <code>user1.age</code> and <code>user1.active</code> are still usable (they're Copy types).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tuple Struct Definition and Use</h2>
+<p>What are tuple structs, when should you use them, and how do you access their fields?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tuple structs have a type name but no field names:</p>
+<pre><code class="language-rust">struct Color(u8, u8, u8);
+struct Point(f64, f64, f64);
+
+let black = Color(0, 0, 0);
+let origin = Point(0.0, 0.0, 0.0);
+</code></pre>
+<p><strong>When to use</strong>:
+- Creating distinct types from tuples
+- When field names would be redundant
+- Creating "newtype" patterns</p>
+<p><strong>Access fields</strong> using numeric indices:</p>
+<pre><code class="language-rust">let red = black.0;
+let green = black.1;
+</code></pre>
+<p>Even with identical fields, different tuple struct types are incompatible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unit Structs</h2>
+<p>What are unit structs and what are three common use cases for them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unit structs have no fields at all:</p>
+<pre><code class="language-rust">struct AlwaysEqual;
+let subject = AlwaysEqual;
+</code></pre>
+<p><strong>Three common use cases</strong>:
+1. <strong>Implementing traits</strong> without storing data
+2. <strong>Marker types</strong> for type-level programming
+3. <strong>State machines</strong> where some states carry no data</p>
+<p>Unit structs are zero-sized types (ZSTs) that take up no memory but provide type distinction at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Destructuring Structs</h2>
+<p>How can you destructure a struct in Rust and where can destructuring be used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Destructure using pattern syntax to extract fields:</p>
+<pre><code class="language-rust">struct Point { x: f64, y: f64 }
+let p = Point { x: 1.0, y: 2.0 };
+
+// In let statements
+let Point { x, y } = p;
+
+// In function parameters
+fn print(&amp;Point { x, y }: &amp;Point) {
+    println!(&quot;x: {}, y: {}&quot;, x, y);
+}
+
+// In match expressions
+match p {
+    Point { x: 0.0, y: 0.0 } =&gt; println!(&quot;origin&quot;),
+    Point { x, y } =&gt; println!(&quot;({}, {})&quot;, x, y),
+}
+</code></pre>
+<p>Destructuring can happen in let, function parameters, match arms, if let, and while let.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deriving Debug Trait</h2>
+<p>Why can't you print a struct by default and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structs don't implement the Debug trait by default, so <code>println!("{:?}", struct)</code> fails.</p>
+<p><strong>Solution</strong>: Derive the Debug trait:</p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+let p = Point { x: 1.0, y: 2.0 };
+println!(&quot;{:?}&quot;, p);       // Point { x: 1.0, y: 2.0 }
+println!(&quot;{:#?}&quot;, p);      // Pretty-printed version
+</code></pre>
+<p>The <code>#[derive(Debug)]</code> attribute tells the compiler to automatically generate a Debug implementation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Ownership and Drop</h2>
+<p>How does ownership work with structs, and what happens when a struct goes out of scope?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structs <strong>own their data</strong>. When a struct goes out of scope:
+1. The struct's <code>Drop</code> implementation runs (if any)
+2. All fields are dropped in declaration order
+3. Non-Copy types in the struct are moved when the struct is moved</p>
+<pre><code class="language-rust">struct User {
+    username: String,  // Owned data
+    age: u32,
+}
+
+{
+    let user = User { /* ... */ };
+    // user owns its String
+} // user goes out of scope, String is dropped
+</code></pre>
+<p>If the struct contains non-Copy types, moving the struct moves those fields, making the original invalid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Types of Structs Summary</h2>
+<p>What are the three types of structs in Rust and provide a one-line example of each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Classic structs</strong> - Named fields
+   <code>rust
+   struct User { username: String, age: u32 }</code></p>
+</li>
+<li>
+<p><strong>Tuple structs</strong> - Unnamed fields accessed by index
+   <code>rust
+   struct Color(u8, u8, u8);</code></p>
+</li>
+<li>
+<p><strong>Unit structs</strong> - No fields at all
+   <code>rust
+   struct Marker;</code></p>
+</li>
+</ol>
+<p>Each serves different purposes: classic for most cases, tuple for type distinction, unit for markers and trait implementations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Field Order in Initialization</h2>
+<p>Does the order of fields matter when instantiating a struct in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>No</strong>, field order doesn't matter during instantiation:</p>
+<pre><code class="language-rust">struct User {
+    username: String,
+    age: u32,
+    active: bool,
+}
+
+// All valid - any order works
+let user = User {
+    age: 30,
+    username: String::from(&quot;alice&quot;),
+    active: true,
+};
+</code></pre>
+<p>However, it's <strong>conventional</strong> to match the order in the struct definition for readability. The compiler only requires that all fields are initialized exactly once.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Private vs Public Struct Fields</h2>
+<p>What is the default visibility of struct fields in Rust, and how do you create a public API with controlled access?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Default</strong>: All fields are <strong>private</strong> to the module.</p>
+<p>To create controlled access:</p>
+<pre><code class="language-rust">pub struct BankAccount {
+    owner: String,      // private
+    balance: f64,       // private
+}
+
+impl BankAccount {
+    pub fn new(owner: String) -&gt; Self {
+        BankAccount { owner, balance: 0.0 }
+    }
+
+    pub fn balance(&amp;self) -&gt; f64 {
+        self.balance
+    }
+
+    pub fn deposit(&amp;mut self, amount: f64) {
+        if amount &gt; 0.0 {
+            self.balance += amount;
+        }
+    }
+}
+</code></pre>
+<p>Users can't directly access or modify private fields, ensuring data consistency through the public API.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Memory Layout</h2>
+<p>How are struct fields laid out in memory in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><strong>Classic structs</strong>: Fields stored in memory in declaration order (with potential padding for alignment)</li>
+<li><strong>Tuple structs</strong>: Similar to classic structs but without names</li>
+<li><strong>Unit structs</strong>: Zero-sized types (ZSTs) - take up <strong>no memory</strong></li>
+</ul>
+<p>The compiler may reorder fields to optimize memory layout (minimize padding) unless you use <code>#[repr(C)]</code> to enforce C-compatible layout.</p>
+<p>Example: A struct with <code>u8</code>, <code>u64</code>, <code>u8</code> might be reordered to reduce padding from alignment requirements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Each Struct Type</h2>
+<p>Given these scenarios, which struct type should you use: (1) modeling a user with name and email, (2) wrapping a single value for type safety, (3) implementing a trait without data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Classic struct</strong> - User with name and email
+   <code>rust
+   struct User { name: String, email: String }</code>
+   Use when fields have clear, distinct meanings.</p>
+</li>
+<li>
+<p><strong>Tuple struct</strong> - Wrapping for type safety
+   <code>rust
+   struct UserId(u64);</code>
+   Use for "newtype" pattern or when field names are obvious.</p>
+</li>
+<li>
+<p><strong>Unit struct</strong> - Trait implementation without data
+   <code>rust
+   struct Logger;
+   impl LogTrait for Logger { /* ... */ }</code>
+   Use when you need a type but no data storage.</p>
+</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

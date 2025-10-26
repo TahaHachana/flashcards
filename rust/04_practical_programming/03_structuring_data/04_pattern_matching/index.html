@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 03 Structuring Data - 04 Pattern Matching</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Pattern Matching?</h2>
+<p>What is pattern matching in Rust and what three operations does it combine into one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pattern matching compares a value against a series of patterns and executes code based on which pattern matches.</p>
+<p><strong>Three operations combined</strong>:
+1. <strong>Testing</strong> if a value matches a pattern
+2. <strong>Destructuring</strong> the value to extract parts
+3. <strong>Binding</strong> those parts to variables</p>
+<pre><code class="language-rust">match point {
+    (0, 0) =&gt; println!(&quot;origin&quot;),           // Test exact values
+    (x, 0) =&gt; println!(&quot;x-axis at {}&quot;, x),  // Extract and bind x
+    (x, y) =&gt; println!(&quot;at ({}, {})&quot;, x, y), // Extract both
+}
+</code></pre>
+<p>More powerful than simple conditionals because it can destructure complex types in a single expression.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Match Expression Basics</h2>
+<p>What are the four key properties of match expressions in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Exhaustive</strong>: Must handle all possible values (compiler enforced)</p>
+</li>
+<li>
+<p><strong>Returns a value</strong>: All arms must return the same type</p>
+</li>
+</ol>
+<pre><code class="language-rust">let result = match x {
+    1 =&gt; &quot;one&quot;,
+    2 =&gt; &quot;two&quot;,
+    _ =&gt; &quot;other&quot;,
+};
+</code></pre>
+<ol>
+<li><strong>First match wins</strong>: Patterns checked top-to-bottom</li>
+</ol>
+<pre><code class="language-rust">match x {
+    _ =&gt; println!(&quot;anything&quot;),  // Would match everything
+    5 =&gt; println!(&quot;five&quot;),      // Never reached - unreachable!
+}
+</code></pre>
+<ol>
+<li><strong>No fall-through</strong>: Unlike switch in other languages, only the matched arm executes</li>
+</ol>
+<p>Use <code>_</code> as a catch-all pattern for unhandled cases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binding Values in Patterns</h2>
+<p>How do you extract and bind data from enum variants in a match expression?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use pattern syntax to destructure variants and bind values:</p>
+<pre><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(u8, u8, u8),
+}
+
+match msg {
+    Message::Quit =&gt; println!(&quot;Quit&quot;),
+
+    Message::Move { x, y } =&gt; {  // Extract named fields
+        println!(&quot;Moving to ({}, {})&quot;, x, y);
+    }
+
+    Message::Write(text) =&gt; {  // Extract tuple data
+        println!(&quot;Text: {}&quot;, text);
+    }
+
+    Message::ChangeColor(r, g, b) =&gt; {  // Extract multiple values
+        println!(&quot;RGB({}, {}, {})&quot;, r, g, b);
+    }
+}
+</code></pre>
+<p>The pattern syntax mirrors the variant's structure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Underscore Pattern</h2>
+<p>What is the difference between _ and a named variable starting with _ in patterns?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>_</code> (underscore)</strong>: Doesn't bind, no ownership taken</p>
+<pre><code class="language-rust">let opt = Some(String::from(&quot;hello&quot;));
+
+if let Some(_) = opt {
+    println!(&quot;Got something&quot;);
+}
+println!(&quot;{:?}&quot;, opt);  // OK - opt not moved
+</code></pre>
+<p><strong><code>_name</code> (underscore prefix)</strong>: Does bind, takes ownership</p>
+<pre><code class="language-rust">let opt = Some(String::from(&quot;hello&quot;));
+
+if let Some(_s) = opt {
+    println!(&quot;Got something&quot;);
+}
+// println!(&quot;{:?}&quot;, opt);  // ERROR - value moved to _s
+</code></pre>
+<p><strong>Use <code>_</code></strong> when you don't need the value. The underscore prefix is for variables you want to bind but the compiler warns are unused.</p>
+<p>You can also ignore parts: <code>let (x, _, z) = (1, 2, 3);</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>if let Expression</h2>
+<p>When should you use if let instead of match, and what is its syntax?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use if let</strong> when you only care about one pattern and want to ignore the rest.</p>
+<p><strong>Syntax</strong>: <code>if let PATTERN = VALUE</code></p>
+<pre><code class="language-rust">// With match (verbose)
+match some_value {
+    Some(3) =&gt; println!(&quot;three&quot;),
+    _ =&gt; {},  // Must handle other cases
+}
+
+// With if let (concise)
+if let Some(3) = some_value {
+    println!(&quot;three&quot;);
+}
+
+// With else
+if let Some(value) = some_value {
+    println!(&quot;Got: {}&quot;, value);
+} else {
+    println!(&quot;Got nothing&quot;);
+}
+</code></pre>
+<p><strong>Guideline</strong>: 
+- Use <code>match</code> for multiple patterns
+- Use <code>if let</code> for single pattern (more readable)
+- Both are expressions that can return values</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>while let Loop</h2>
+<p>What does while let do and when is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>while let</strong> loops as long as a pattern continues to match:</p>
+<pre><code class="language-rust">let mut stack = vec![1, 2, 3];
+
+while let Some(top) = stack.pop() {
+    println!(&quot;{}&quot;, top);
+}
+// Prints: 3, 2, 1
+</code></pre>
+<p>More concise than:</p>
+<pre><code class="language-rust">loop {
+    match stack.pop() {
+        Some(top) =&gt; println!(&quot;{}&quot;, top),
+        None =&gt; break,
+    }
+}
+</code></pre>
+<p><strong>Useful for</strong>:
+- Processing iterators until exhausted
+- Popping from collections until empty
+- Any loop that continues while a pattern matches</p>
+<p>The loop ends when the pattern no longer matches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Patterns in let Statements</h2>
+<p>How are let statements actually pattern matching, and what kinds of destructuring can you do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Every <code>let</code> statement uses pattern matching:</p>
+<pre><code class="language-rust">// Simple binding (pattern: x)
+let x = 5;
+
+// Destructure tuples
+let (x, y, z) = (1, 2, 3);
+
+// Destructure structs
+struct Point { x: i32, y: i32 }
+let Point { x, y } = Point { x: 0, y: 7 };
+
+// Ignore values
+let (first, _, third) = (1, 2, 3);
+
+// Rest pattern
+let (first, .., last) = (1, 2, 3, 4, 5);
+// first=1, last=5, middle ignored
+</code></pre>
+<p><strong>Note</strong>: <code>let</code> requires <strong>irrefutable patterns</strong> (patterns that always match). Can't use <code>let Some(x) = opt</code> because it might be None.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Patterns with Pipe</h2>
+<p>How do you match multiple patterns in a single arm using the pipe operator?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>|</code> to match multiple patterns in one arm:</p>
+<pre><code class="language-rust">let x = 1;
+
+match x {
+    1 | 2 =&gt; println!(&quot;one or two&quot;),
+    3 | 4 | 5 =&gt; println!(&quot;three through five&quot;),
+    _ =&gt; println!(&quot;something else&quot;),
+}
+
+// Works with more complex patterns too
+match msg {
+    Message::Quit | Message::Exit =&gt; println!(&quot;shutting down&quot;),
+    Message::Write(text) =&gt; println!(&quot;{}&quot;, text),
+}
+</code></pre>
+<p>The <code>|</code> means "or" - if any pattern matches, that arm executes. All patterns in the arm must bind the same variables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Range Patterns</h2>
+<p>How do range patterns work in Rust and what types support them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>..=</code> for inclusive ranges in patterns:</p>
+<pre><code class="language-rust">let x = 5;
+
+match x {
+    1..=5 =&gt; println!(&quot;one through five&quot;),
+    6..=10 =&gt; println!(&quot;six through ten&quot;),
+    _ =&gt; println!(&quot;something else&quot;),
+}
+
+// Works with chars
+let c = 'c';
+
+match c {
+    'a'..='j' =&gt; println!(&quot;early letter&quot;),
+    'k'..='z' =&gt; println!(&quot;late letter&quot;),
+    _ =&gt; println!(&quot;something else&quot;),
+}
+</code></pre>
+<p><strong>Supported types</strong>: 
+- Numeric types (integers, floats)
+- <code>char</code></p>
+<p><strong>Not supported</strong>: Strings, custom types (without special implementations)</p>
+<p>Ranges are inclusive on both ends with <code>..=</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Destructuring Structs in Patterns</h2>
+<p>Show three different ways to destructure a struct in a match pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">struct Point { x: i32, y: i32 }
+let p = Point { x: 0, y: 7 };
+
+// 1. Match specific values
+match p {
+    Point { x: 0, y: 0 } =&gt; println!(&quot;origin&quot;),
+    Point { x: 0, y } =&gt; println!(&quot;on y-axis at {}&quot;, y),
+    Point { x, y: 0 } =&gt; println!(&quot;on x-axis at {}&quot;, x),
+    Point { x, y } =&gt; println!(&quot;({}, {})&quot;, x, y),
+}
+
+// 2. Shorthand when names match
+let Point { x, y } = p;
+
+// 3. Ignore some fields
+match p {
+    Point { x, .. } =&gt; println!(&quot;x is {}&quot;, x),
+}
+</code></pre>
+<p>The pattern mirrors the struct's structure. Use <code>..</code> to ignore remaining fields.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Match Guards</h2>
+<p>What are match guards and how do you use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Match guards add extra conditions to patterns using <code>if</code>:</p>
+<pre><code class="language-rust">let num = Some(4);
+
+match num {
+    Some(x) if x &lt; 5 =&gt; println!(&quot;less than five: {}&quot;, x),
+    Some(x) =&gt; println!(&quot;{}&quot;, x),
+    None =&gt; (),
+}
+
+// With multiple patterns
+let x = 4;
+let y = false;
+
+match x {
+    4 | 5 | 6 if y =&gt; println!(&quot;yes&quot;),  // Matches 4, 5, or 6 AND y is true
+    _ =&gt; println!(&quot;no&quot;),
+}
+</code></pre>
+<p><strong>Use cases</strong>:
+- Testing additional conditions beyond pattern structure
+- Comparing against outer variables
+- More complex logic than patterns alone can express</p>
+<p>The guard applies after the pattern matches, adding an extra boolean check.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>At Bindings (@)</h2>
+<p>What are @ bindings and why would you use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>@</code> lets you <strong>bind a value while also testing it</strong>:</p>
+<pre><code class="language-rust">enum Message {
+    Hello { id: i32 },
+}
+
+let msg = Message::Hello { id: 5 };
+
+match msg {
+    Message::Hello {
+        id: id_var @ 3..=7,  // Bind AND test range
+    } =&gt; println!(&quot;Found id {} in range&quot;, id_var),
+
+    Message::Hello { id: 10..=12 } =&gt; {
+        println!(&quot;In another range&quot;)
+        // Can't use the actual value here!
+    }
+
+    Message::Hello { id } =&gt; println!(&quot;Other id: {}&quot;, id),
+}
+</code></pre>
+<p><strong>Without @</strong>: You can test a range but can't access the value
+<strong>With @</strong>: You can test a range AND bind the value to use it</p>
+<p>Syntax: <code>variable @ pattern</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Destructuring</h2>
+<p>How do you destructure nested enums and structs in a single pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Patterns can be arbitrarily nested:</p>
+<pre><code class="language-rust">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    ChangeColor(Color),
+}
+
+let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+match msg {
+    Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+        println!(&quot;RGB({}, {}, {})&quot;, r, g, b)
+    }
+    Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+        println!(&quot;HSV({}, {}, {})&quot;, h, s, v)
+    }
+    _ =&gt; {}
+}
+</code></pre>
+<p>The pattern structure mirrors the data structure exactly. You can nest as deeply as needed to extract the data you want.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Irrefutable vs Refutable Patterns</h2>
+<p>What is the difference between irrefutable and refutable patterns, and where can each be used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Irrefutable patterns</strong>: Always match, can't fail</p>
+<pre><code class="language-rust">let x = 5;           // x always matches any value
+let (x, y) = (1, 2); // Always destructures successfully
+</code></pre>
+<p><strong>Refutable patterns</strong>: Might not match</p>
+<pre><code class="language-rust">Some(x)    // Might be None
+Ok(value)  // Might be Err
+</code></pre>
+<p><strong>Where used</strong>:</p>
+<p>| Context | Requires | Example |
+|---------|----------|---------|
+| <code>let</code> statements | Irrefutable | <code>let x = 5;</code> ✓ |
+| Function parameters | Irrefutable | <code>fn f(x: i32)</code> ✓ |
+| <code>for</code> loops | Irrefutable | <code>for x in iter</code> ✓ |
+| <code>match</code> arms | Refutable | <code>Some(x) =&gt;</code> ✓ |
+| <code>if let</code> | Refutable | <code>if let Some(x)</code> ✓ |
+| <code>while let</code> | Refutable | <code>while let Some(x)</code> ✓ |</p>
+<pre><code class="language-rust">// ERROR: refutable pattern in let
+let Some(x) = some_option;
+
+// OK: refutable pattern in if let
+if let Some(x) = some_option { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Matching Best Practices</h2>
+<p>What are five best practices for using pattern matching in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Put specific patterns before general ones</strong></li>
+</ol>
+<pre><code class="language-rust">match x {
+    5 =&gt; {},      // Specific first
+    _ =&gt; {},      // General last
+}
+</code></pre>
+<ol>
+<li><strong>Use if let for single patterns</strong></li>
+</ol>
+<pre><code class="language-rust">// Clearer than match with _ =&gt; {}
+if let Some(value) = option {
+    // use value
+}
+</code></pre>
+<ol>
+<li><strong>Use references to avoid moving</strong></li>
+</ol>
+<pre><code class="language-rust">match &amp;opt {
+    Some(s) =&gt; {},  // s is &amp;String, opt not moved
+    None =&gt; {},
+}
+</code></pre>
+<ol>
+<li><strong>Leverage exhaustiveness checking</strong></li>
+</ol>
+<pre><code class="language-rust">// Compiler ensures all variants handled
+match msg {
+    Message::Quit =&gt; {},
+    Message::Move { .. } =&gt; {},
+    Message::Write(_) =&gt; {},
+}
+</code></pre>
+<ol>
+<li><strong>Use match guards for complex conditions</strong></li>
+</ol>
+<pre><code class="language-rust">match num {
+    x if x &lt; 0 =&gt; println!(&quot;negative&quot;),
+    x if x &gt; 100 =&gt; println!(&quot;large&quot;),
+    x =&gt; println!(&quot;{}&quot;, x),
+}
+</code></pre>
+<p>Pattern matching is safer than chains of if/else and catches logic errors at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
