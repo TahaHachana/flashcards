@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 04 Error Handling - 01 Option Type</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Option<T>?</h2>
+<p>What is <code>Option&lt;T&gt;</code> in Rust and why does it exist instead of using null/nil?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Option&lt;T&gt;</code> is an enum that represents a value that might or might not exist. It has two variants: <code>Some(T)</code> (contains a value) and <code>None</code> (no value).</p>
+<p>It exists because Rust has no null pointers, which eliminates entire classes of bugs like null pointer exceptions. The compiler forces you to explicitly handle the "nothing" case at compile time, making absence type-safe and explicit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option<T> Definition</h2>
+<p>How is <code>Option&lt;T&gt;</code> defined in Rust's standard library?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">enum Option&lt;T&gt; {
+    Some(T),  // Contains a value of type T
+    None,     // Contains no value
+}
+</code></pre>
+<p>It's part of the prelude, so <code>Some</code> and <code>None</code> can be used directly without importing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Matching With Option</h2>
+<p>How do you safely extract a value from an <code>Option&lt;T&gt;</code> using pattern matching?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use a <code>match</code> expression to handle both cases:</p>
+<pre><code class="language-rust">match some_option {
+    Some(value) =&gt; {
+        // Use value here
+    }
+    None =&gt; {
+        // Handle the absence case
+    }
+}
+</code></pre>
+<p>The compiler enforces that you handle both <code>Some</code> and <code>None</code> cases (exhaustive matching).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>If Let With Option</h2>
+<p>When should you use <code>if let</code> with <code>Option&lt;T&gt;</code> instead of <code>match</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>if let</code> when you only care about one case (usually the <code>Some</code> case):</p>
+<pre><code class="language-rust">if let Some(value) = maybe_value {
+    // Only handle Some case
+    println!(&quot;{}&quot;, value);
+}
+// No else needed if you don't care about None
+</code></pre>
+<p>It's more concise than <code>match</code> when you don't need to handle both variants.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Or Method</h2>
+<p>What does the <code>unwrap_or()</code> method do on an <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap_or(default)</code> returns the value inside <code>Some</code> if it exists, otherwise returns the provided default value:</p>
+<pre><code class="language-rust">let value = Some(10).unwrap_or(0);    // 10
+let value = None.unwrap_or(0);        // 0
+</code></pre>
+<p>It's a safe alternative to <code>unwrap()</code> because it never panics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Map Method On Option</h2>
+<p>How does the <code>map()</code> method work on <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>map()</code> applies a function to the value inside <code>Some</code>, returning a new <code>Option</code>. If the original is <code>None</code>, it returns <code>None</code>:</p>
+<pre><code class="language-rust">let maybe_number = Some(5);
+let doubled = maybe_number.map(|n| n * 2);  // Some(10)
+
+let nothing: Option&lt;i32&gt; = None;
+let result = nothing.map(|n| n * 2);  // None
+</code></pre>
+<p>It transforms the value without unwrapping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>And Then Method</h2>
+<p>What is <code>and_then()</code> used for with <code>Option&lt;T&gt;</code> and how does it differ from <code>map()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>and_then()</code> chains operations that themselves return <code>Option</code>. It's used when the transformation function returns an <code>Option</code>:</p>
+<pre><code class="language-rust">Some(10)
+    .and_then(|n| divide(n, 2))  // divide returns Option
+    .and_then(|n| divide(n, 5))  // can chain multiple operations
+</code></pre>
+<p>Unlike <code>map()</code> (which wraps the result in <code>Some</code>), <code>and_then()</code> expects the function to return an <code>Option</code>, preventing nested <code>Option&lt;Option&lt;T&gt;&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Danger</h2>
+<p>Why should you avoid using <code>unwrap()</code> on <code>Option&lt;T&gt;</code> in production code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap()</code> panics (crashes the program) if called on <code>None</code>:</p>
+<pre><code class="language-rust">let value: Option&lt;i32&gt; = None;
+let x = value.unwrap(); // PANIC!
+</code></pre>
+<p>Better alternatives:
+- <code>unwrap_or(default)</code> - provide a default
+- <code>match</code> or <code>if let</code> - handle both cases
+- <code>?</code> operator - propagate the None
+- <code>expect("message")</code> - only for debugging with a better error message</p>
+<p>Only use <code>unwrap()</code> in tests or when you're absolutely certain the value exists.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Operator With Option</h2>
+<p>How does the <code>?</code> operator work with <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator provides early return: if the <code>Option</code> is <code>None</code>, it immediately returns <code>None</code> from the function. If it's <code>Some</code>, it unwraps the value:</p>
+<pre><code class="language-rust">fn get_first_word(text: Option&lt;&amp;str&gt;) -&gt; Option&lt;&amp;str&gt; {
+    let text = text?;  // Returns None if text is None
+    text.split_whitespace().next()
+}
+</code></pre>
+<p>The function must return <code>Option&lt;T&gt;</code> to use <code>?</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>As Ref Method</h2>
+<p>Why would you use <code>as_ref()</code> on an <code>Option&lt;T&gt;</code> and what does it do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>as_ref()</code> converts <code>Option&lt;T&gt;</code> to <code>Option&lt;&amp;T&gt;</code>, allowing you to work with a reference to the inner value without moving/consuming it:</p>
+<pre><code class="language-rust">let owned = Some(String::from(&quot;hello&quot;));
+let length = owned.as_ref().map(|s| s.len());
+// owned is still usable here!
+println!(&quot;{:?}&quot;, owned);  // Some(&quot;hello&quot;)
+</code></pre>
+<p>Without <code>as_ref()</code>, methods like <code>map()</code> would consume the owned value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option Ownership</h2>
+<p>What happens to ownership when you move an <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Option&lt;T&gt;</code> owns its inner value <code>T</code>. When you move the <code>Option</code>, you move the inner value:</p>
+<pre><code class="language-rust">let opt = Some(String::from(&quot;hello&quot;));
+let moved = opt;  // opt is moved, can't use it anymore
+
+// opt is no longer valid here
+</code></pre>
+<p>To keep the original, use:
+- <code>as_ref()</code> to work with references
+- <code>.clone()</code> if <code>T</code> implements <code>Clone</code>
+- <code>.copied()</code> if <code>T</code> implements <code>Copy</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option Vs Result</h2>
+<p>How does <code>Option&lt;T&gt;</code> differ from <code>Result&lt;T, E&gt;</code> and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Option&lt;T&gt;</code>:
+- Represents presence or absence
+- <code>Some(T)</code> or <code>None</code>
+- No information about <em>why</em> there's no value</p>
+<p><code>Result&lt;T, E&gt;</code>:
+- Represents success or failure
+- <code>Ok(T)</code> or <code>Err(E)</code>
+- Includes error information explaining what went wrong</p>
+<p>Use <code>Option</code> when absence is expected and normal (e.g., finding an item in a collection). Use <code>Result</code> when you need to communicate why an operation failed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Or Else Method</h2>
+<p>When should you use <code>unwrap_or_else()</code> instead of <code>unwrap_or()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>unwrap_or_else()</code> when computing the default value is expensive or has side effects:</p>
+<pre><code class="language-rust">// unwrap_or evaluates the default immediately (eager)
+value.unwrap_or(expensive_computation())  // Always computed
+
+// unwrap_or_else only computes if needed (lazy)
+value.unwrap_or_else(|| expensive_computation())  // Only if None
+</code></pre>
+<p>The closure passed to <code>unwrap_or_else()</code> is only called when the <code>Option</code> is <code>None</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flatten Method</h2>
+<p>What does the <code>flatten()</code> method do on nested Options?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>flatten()</code> collapses <code>Option&lt;Option&lt;T&gt;&gt;</code> into <code>Option&lt;T&gt;</code>:</p>
+<pre><code class="language-rust">let nested = Some(Some(5));
+let flat = nested.flatten();  // Some(5)
+
+let none_inner = Some(None);
+let flat = none_inner.flatten();  // None
+
+let none_outer: Option&lt;Option&lt;i32&gt;&gt; = None;
+let flat = none_outer.flatten();  // None
+</code></pre>
+<p>Any <code>None</code> at either level results in <code>None</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ok Or Method</h2>
+<p>How do you convert an <code>Option&lt;T&gt;</code> to a <code>Result&lt;T, E&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>ok_or()</code> or <code>ok_or_else()</code>:</p>
+<pre><code class="language-rust">let some_value = Some(42);
+let result: Result&lt;i32, &amp;str&gt; = some_value.ok_or(&quot;No value&quot;);
+// Ok(42)
+
+let none_value: Option&lt;i32&gt; = None;
+let result: Result&lt;i32, &amp;str&gt; = none_value.ok_or(&quot;No value&quot;);
+// Err(&quot;No value&quot;)
+</code></pre>
+<p><code>ok_or()</code> transforms <code>Some(v)</code> → <code>Ok(v)</code> and <code>None</code> → <code>Err(e)</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option In Struct Fields</h2>
+<p>How do you use <code>Option&lt;T&gt;</code> for optional struct fields and what's a common pattern for accessing them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare optional fields with <code>Option&lt;T&gt;</code>:</p>
+<pre><code class="language-rust">struct Config {
+    port: u16,
+    host: Option&lt;String&gt;,  // Optional field
+}
+
+impl Config {
+    fn get_host(&amp;self) -&gt; &amp;str {
+        self.host.as_deref().unwrap_or(&quot;localhost&quot;)
+    }
+}
+</code></pre>
+<p>Common pattern: use <code>as_deref()</code> to convert <code>Option&lt;String&gt;</code> to <code>Option&lt;&amp;str&gt;</code>, then provide a default with <code>unwrap_or()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option With Collections</h2>
+<p>How can you filter out <code>None</code> values from a <code>Vec&lt;Option&lt;T&gt;&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>.flatten()</code> on the iterator:</p>
+<pre><code class="language-rust">let numbers: Vec&lt;Option&lt;i32&gt;&gt; = vec![Some(1), None, Some(3)];
+let valid: Vec&lt;i32&gt; = numbers.into_iter().flatten().collect();
+// [1, 3]
+</code></pre>
+<p>Alternatively, collect into <code>Option&lt;Vec&lt;T&gt;&gt;</code> to fail if any element is <code>None</code>:</p>
+<pre><code class="language-rust">let all_some = vec![Some(1), Some(2), Some(3)];
+let result: Option&lt;Vec&lt;i32&gt;&gt; = all_some.into_iter().collect();
+// Some([1, 2, 3])
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copied And Cloned Methods</h2>
+<p>What's the difference between <code>copied()</code> and <code>cloned()</code> on <code>Option&lt;&amp;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both convert <code>Option&lt;&amp;T&gt;</code> to <code>Option&lt;T&gt;</code> by obtaining ownership:</p>
+<p><code>copied()</code>: Only works when <code>T: Copy</code> (types that can be copied bitwise)</p>
+<pre><code class="language-rust">let opt_ref: Option&lt;&amp;i32&gt; = Some(&amp;5);
+let opt_owned: Option&lt;i32&gt; = opt_ref.copied();  // Some(5)
+</code></pre>
+<p><code>cloned()</code>: Works when <code>T: Clone</code> (may allocate/do expensive work)</p>
+<pre><code class="language-rust">let opt_ref: Option&lt;&amp;String&gt; = Some(&amp;String::from(&quot;hi&quot;));
+let opt_owned: Option&lt;String&gt; = opt_ref.cloned();  // Some(&quot;hi&quot;)
+</code></pre>
+<p>Use <code>copied()</code> when possible (it's more efficient).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option As Iterator</h2>
+<p>How does <code>Option&lt;T&gt;</code> behave as an iterator?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Option&lt;T&gt;</code> implements <code>IntoIterator</code>, yielding 0 or 1 element:</p>
+<pre><code class="language-rust">// Some yields one element
+for value in Some(5) {
+    println!(&quot;{}&quot;, value);  // Prints 5 once
+}
+
+// None yields zero elements
+for value in None {
+    println!(&quot;{}&quot;, value);  // Never executes
+}
+</code></pre>
+<p>This is useful with iterator combinators and allows Options to work seamlessly in iterator chains.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Option Reference Types</h2>
+<p>What's the difference between <code>Option&lt;&amp;T&gt;</code> and <code>&amp;Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Option&lt;&amp;T&gt;</code>: An Option containing a reference
+- You own the Option but not the data
+- Can move the Option without cloning the data
+- Common return type from methods</p>
+<p><code>&amp;Option&lt;T&gt;</code>: A reference to an Option
+- Borrowed access to the Option
+- Cannot move the inner value out
+- Common parameter type</p>
+<pre><code class="language-rust">fn takes_ref_opt(opt: &amp;Option&lt;String&gt;) {
+    // Can't move String out
+}
+
+fn takes_opt_ref(opt: Option&lt;&amp;String&gt;) {
+    // Can pass None or Some with borrowed String
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
