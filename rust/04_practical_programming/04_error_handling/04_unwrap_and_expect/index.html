@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 04 Error Handling - 04 Unwrap And Expect</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Unwrap And Expect?</h2>
+<p>What are <code>unwrap()</code> and <code>expect()</code> in Rust, and how do they differ from proper error handling?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap()</code> and <code>expect()</code> are methods on <code>Result&lt;T, E&gt;</code> and <code>Option&lt;T&gt;</code> that extract the success value but <strong>panic</strong> (crash) if there's an error or <code>None</code>.</p>
+<p>They are <strong>not</strong> error handling - they're the opposite. They convert errors into panics (unrecoverable crashes). They're "escape hatches" from Rust's safe error handling, meant for:
+- Prototyping
+- Tests
+- Proven invariants
+- Examples</p>
+<p>Use them sparingly in production code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Behavior</h2>
+<p>What exactly happens when you call <code>unwrap()</code> on a <code>Result</code> or <code>Option</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap()</code> extracts the success value or panics with a generic message:</p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Ok(42);
+let value = result.unwrap();  // 42
+
+let error: Result&lt;i32, &amp;str&gt; = Err(&quot;failed&quot;);
+let value = error.unwrap();  // PANIC: called `Result::unwrap()` on an `Err` value
+
+let some = Some(10);
+let value = some.unwrap();  // 10
+
+let none: Option&lt;i32&gt; = None;
+let value = none.unwrap();  // PANIC: called `Option::unwrap()` on a `None` value
+</code></pre>
+<p>When it panics: stack unwinds, destructors run, error printed to stderr, program terminates with non-zero exit code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expect Vs Unwrap</h2>
+<p>What's the difference between <code>unwrap()</code> and <code>expect()</code>, and when should you prefer one over the other?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>expect()</code> is like <code>unwrap()</code> but lets you provide a custom panic message:</p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Err(&quot;file not found&quot;);
+
+result.unwrap();  
+// PANIC: called `Result::unwrap()` on an `Err` value: &quot;file not found&quot;
+
+result.expect(&quot;Configuration file must exist&quot;);
+// PANIC: Configuration file must exist: &quot;file not found&quot;
+</code></pre>
+<p><strong>Prefer <code>expect()</code> over <code>unwrap()</code></strong> because:
+- It makes debugging easier with context
+- It documents why you believe it's safe
+- It explains the invariant being assumed</p>
+<p>Always use <code>expect()</code> with a meaningful message in production code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap In Tests</h2>
+<p>Why is it acceptable to use <code>unwrap()</code> and <code>expect()</code> liberally in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests are the ideal place for <code>unwrap()</code> and <code>expect()</code>:</p>
+<pre><code class="language-rust">#[test]
+fn test_parsing() {
+    let result = parse_input(&quot;42&quot;).unwrap();
+    assert_eq!(result, 42);
+
+    let config = load_config(&quot;test.toml&quot;)
+        .expect(&quot;Test config must be valid&quot;);
+    assert_eq!(config.port, 8080);
+}
+</code></pre>
+<p><strong>Why it's okay:</strong>
+- Test failures need to be obvious - panics make them clear
+- Panics in tests are caught and reported by the test framework
+- You want tests to stop immediately on unexpected errors
+- No need for error propagation in test code
+- The panic message becomes part of the test failure report</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap For Prototyping</h2>
+<p>When is it acceptable to use <code>unwrap()</code> in prototype or example code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>During prototyping or in example code to focus on the main concept:</p>
+<pre><code class="language-rust">// Example code - focus on JSON parsing, not error handling
+fn example_json_parsing() {
+    let json = r#&quot;{&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}&quot;#;
+    let value: serde_json::Value = serde_json::from_str(json).unwrap();
+    println!(&quot;Name: {}&quot;, value[&quot;name&quot;]);
+}
+</code></pre>
+<p><strong>Important caveats:</strong>
+- Add a TODO comment to replace it before production
+- This is temporary - not production-ready
+- Clearly mark it as example/prototype code
+- Replace with proper error handling (<code>?</code>, <code>match</code>, etc.) before shipping</p>
+<p>Use <code>unwrap()</code> to explore ideas quickly, but refactor before production.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documenting Proven Invariants</h2>
+<p>How should you use <code>expect()</code> when you've proven an error is logically impossible?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>expect()</code> with a clear message explaining the invariant:</p>
+<pre><code class="language-rust">fn get_middle_element(vec: &amp;Vec&lt;i32&gt;) -&gt; i32 {
+    let len = vec.len();
+    *vec.get(len / 2)
+        .expect(&quot;BUG: Middle element must exist for non-empty vec&quot;)
+}
+
+// Only called with non-empty vectors
+fn process_data(data: Vec&lt;i32&gt;) {
+    assert!(!data.is_empty(), &quot;Data must not be empty&quot;);
+    let middle = get_middle_element(&amp;data);
+}
+</code></pre>
+<p><strong>Key principles:</strong>
+- Always document <strong>why</strong> the unwrap is safe
+- Use "BUG:" prefix to indicate this should never happen
+- Explain the invariant or precondition
+- Make it clear this is a programming error if it panics</p>
+<p>Never use bare <code>unwrap()</code> without explanation in production.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap With Static Values</h2>
+<p>When is it safe to use <code>unwrap()</code> with compile-time or static values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When parsing static strings or constants you control at compile time:</p>
+<pre><code class="language-rust">use std::net::IpAddr;
+
+// Known at compile time to be valid
+const LOCALHOST: IpAddr = &quot;127.0.0.1&quot;.parse().unwrap();
+
+lazy_static! {
+    static ref REGEX: Regex = Regex::new(r&quot;^\d+$&quot;)
+        .expect(&quot;Regex pattern is valid&quot;);
+}
+</code></pre>
+<p><strong>Why it's safe:</strong>
+- The value is hardcoded and under your control
+- If it's invalid, the panic happens at initialization (early)
+- You can test it in development
+- It won't change based on user input or runtime conditions</p>
+<p>Still prefer <code>expect()</code> with a message to document the assumption.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Or Alternatives</h2>
+<p>What are the safe alternatives to <code>unwrap()</code> for providing default values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use the <code>unwrap_or*</code> family of methods that don't panic:</p>
+<p><strong><code>unwrap_or(default)</code></strong> - Provide a default:</p>
+<pre><code class="language-rust">let value = result.unwrap_or(0);  // Returns 0 on Err
+</code></pre>
+<p><strong><code>unwrap_or_else(fn)</code></strong> - Compute default lazily:</p>
+<pre><code class="language-rust">let value = result.unwrap_or_else(|err| {
+    eprintln!(&quot;Error: {}&quot;, err);
+    0
+});
+</code></pre>
+<p><strong><code>unwrap_or_default()</code></strong> - Use type's default:</p>
+<pre><code class="language-rust">let value = result.unwrap_or_default();  // 0 for numbers, &quot;&quot; for String
+</code></pre>
+<p>These are <strong>always preferred</strong> over <code>unwrap()</code> when you have a reasonable default value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap In Library Code</h2>
+<p>Why should library code almost never use <code>unwrap()</code> or <code>expect()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - library panics on user error:</strong></p>
+<pre><code class="language-rust">pub fn parse_user_input(input: &amp;str) -&gt; User {
+    let json = serde_json::from_str(input).unwrap();  // Panics!
+    User { name: json[&quot;name&quot;].as_str().unwrap().to_string() }
+}
+</code></pre>
+<p><strong>Good - returns Result:</strong></p>
+<pre><code class="language-rust">pub fn parse_user_input(input: &amp;str) -&gt; Result&lt;User, ParseError&gt; {
+    let json = serde_json::from_str(input)?;
+    Ok(User {
+        name: json[&quot;name&quot;].as_str()
+            .ok_or(ParseError::MissingName)?
+            .to_string()
+    })
+}
+</code></pre>
+<p><strong>Reason:</strong> Libraries should let callers decide how to handle errors. Panicking makes the library unusable for applications that need graceful error handling. Always return <code>Result</code> in public APIs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cascading Unwraps Problem</h2>
+<p>What's wrong with chaining multiple <code>unwrap()</code> calls and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - unclear which operation failed:</strong></p>
+<pre><code class="language-rust">let value = config.get(&quot;key&quot;).unwrap()
+    .parse::&lt;i32&gt;().unwrap();
+</code></pre>
+<p><strong>Good - clear error messages:</strong></p>
+<pre><code class="language-rust">let key = config.get(&quot;key&quot;)
+    .expect(&quot;Config must contain 'key'&quot;);
+let value = key.parse::&lt;i32&gt;()
+    .expect(&quot;Key value must be a valid integer&quot;);
+</code></pre>
+<p><strong>Better - proper error handling:</strong></p>
+<pre><code class="language-rust">let key = config.get(&quot;key&quot;)
+    .ok_or(&quot;Missing key&quot;)?;
+let value = key.parse::&lt;i32&gt;()
+    .map_err(|e| format!(&quot;Invalid integer: {}&quot;, e))?;
+</code></pre>
+<p>Cascading unwraps hide which operation failed. Use separate statements with <code>expect()</code> or proper error handling.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrapping User Input</h2>
+<p>Why should you never use <code>unwrap()</code> on user input?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - user controls whether program crashes:</strong></p>
+<pre><code class="language-rust">fn greet_user(name: Option&lt;String&gt;) {
+    println!(&quot;Hello, {}!&quot;, name.unwrap());  // Panics on None!
+}
+</code></pre>
+<p><strong>Good - provide default or handle error:</strong></p>
+<pre><code class="language-rust">fn greet_user(name: Option&lt;String&gt;) {
+    println!(&quot;Hello, {}!&quot;, name.unwrap_or_else(|| &quot;stranger&quot;.into()));
+}
+</code></pre>
+<p><strong>Why it's wrong:</strong>
+- Users can provide invalid/missing input
+- This gives users the ability to crash your program
+- Violates the principle of graceful error handling
+- Makes for a terrible user experience</p>
+<p>Always validate and handle user input safely. Use <code>unwrap_or()</code>, <code>match</code>, or return <code>Result</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap In Loops</h2>
+<p>What's the problem with using <code>unwrap()</code> inside loops and how do you handle it better?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - first error stops everything:</strong></p>
+<pre><code class="language-rust">fn process_all(items: Vec&lt;&amp;str&gt;) -&gt; Vec&lt;i32&gt; {
+    items.iter()
+        .map(|s| s.parse::&lt;i32&gt;().unwrap())  // Panics on first bad item
+        .collect()
+}
+</code></pre>
+<p><strong>Good - skip bad items:</strong></p>
+<pre><code class="language-rust">fn process_all(items: Vec&lt;&amp;str&gt;) -&gt; Vec&lt;i32&gt; {
+    items.iter()
+        .filter_map(|s| match s.parse::&lt;i32&gt;() {
+            Ok(n) =&gt; Some(n),
+            Err(e) =&gt; {
+                eprintln!(&quot;Warning: Can't parse '{}': {}&quot;, s, e);
+                None
+            }
+        })
+        .collect()
+}
+</code></pre>
+<p><strong>Or fail properly:</strong></p>
+<pre><code class="language-rust">fn process_all_strict(items: Vec&lt;&amp;str&gt;) -&gt; Result&lt;Vec&lt;i32&gt;, String&gt; {
+    items.iter()
+        .map(|s| s.parse::&lt;i32&gt;().map_err(|e| e.to_string()))
+        .collect()
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hiding Errors With Unwrap Or</h2>
+<p>What's the danger of silently providing defaults instead of handling errors?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - hides failures silently:</strong></p>
+<pre><code class="language-rust">fn load_data() -&gt; Vec&lt;Item&gt; {
+    load_from_file(&quot;data.json&quot;).unwrap_or(Vec::new())
+    // Silently returns empty vec on any error - hard to debug!
+}
+</code></pre>
+<p><strong>Better - log the error:</strong></p>
+<pre><code class="language-rust">fn load_data() -&gt; Vec&lt;Item&gt; {
+    match load_from_file(&quot;data.json&quot;) {
+        Ok(items) =&gt; items,
+        Err(e) =&gt; {
+            eprintln!(&quot;Warning: Failed to load data: {}&quot;, e);
+            Vec::new()
+        }
+    }
+}
+</code></pre>
+<p><strong>Best - propagate the error:</strong></p>
+<pre><code class="language-rust">fn load_data() -&gt; Result&lt;Vec&lt;Item&gt;, Error&gt; {
+    load_from_file(&quot;data.json&quot;)
+}
+</code></pre>
+<p>Silent failures make debugging impossible. Either log errors or propagate them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Vs Question Mark</h2>
+<p>When should you use <code>?</code> instead of <code>unwrap()</code> or <code>expect()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>?</code> when the error should be propagated to the caller:</p>
+<p><strong>Wrong - panics:</strong></p>
+<pre><code class="language-rust">fn load_config() -&gt; Config {
+    let contents = fs::read_to_string(&quot;config.toml&quot;).unwrap();
+    parse_config(&amp;contents).unwrap()
+}
+</code></pre>
+<p><strong>Right - propagates errors:</strong></p>
+<pre><code class="language-rust">fn load_config() -&gt; Result&lt;Config, Error&gt; {
+    let contents = fs::read_to_string(&quot;config.toml&quot;)?;
+    parse_config(&amp;contents)
+}
+</code></pre>
+<p><strong>General rule:</strong>
+- Use <code>?</code> for recoverable errors that callers might want to handle
+- Use <code>unwrap()</code>/<code>expect()</code> only when the error truly indicates a bug or when panicking is acceptable (tests, proven invariants)</p>
+<p><code>?</code> is almost always the better choice in production code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Decision Tree</h2>
+<p>What's the decision process for determining if you should use <code>unwrap()</code> or <code>expect()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ask these questions in order:</p>
+<ol>
+<li><strong>Is this test code?</strong> → YES: ✅ Use <code>unwrap()</code>/<code>expect()</code></li>
+<li><strong>Is this example/prototype?</strong> → YES: ✅ Use <code>unwrap()</code> (add TODO)</li>
+<li><strong>Can the error occur in production?</strong></li>
+<li>NO → Document invariant and use <code>expect("reason")</code></li>
+<li>YES → Continue...</li>
+<li><strong>Can you provide a sensible default?</strong> → YES: Use <code>unwrap_or()</code> family</li>
+<li><strong>Can you propagate the error?</strong> → YES: Use <code>?</code> operator</li>
+<li><strong>Is crashing acceptable?</strong> </li>
+<li>YES: Use <code>expect()</code> with clear message</li>
+<li>NO: Must handle error properly with <code>match</code>/<code>if let</code></li>
+</ol>
+<p><strong>Default answer:</strong> If unsure, use <code>?</code> or <code>match</code> - they're safer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expect Message Best Practices</h2>
+<p>What makes a good <code>expect()</code> message?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Good messages explain <strong>why</strong> the operation should succeed:</p>
+<p><strong>Bad messages:</strong></p>
+<pre><code class="language-rust">value.expect(&quot;error&quot;);  // Too vague
+value.expect(&quot;unwrap failed&quot;);  // Obvious
+value.expect(&quot;This should work&quot;);  // Not helpful
+</code></pre>
+<p><strong>Good messages:</strong></p>
+<pre><code class="language-rust">value.expect(&quot;Config file must exist at startup&quot;);
+value.expect(&quot;BUG: Vector guaranteed non-empty by precondition&quot;);
+value.expect(&quot;Regex pattern validated at compile time&quot;);
+value.expect(&quot;Database connection established in constructor&quot;);
+</code></pre>
+<p><strong>Elements of a good message:</strong>
+- Explains the invariant or precondition
+- States what went wrong
+- May include "BUG:" if this indicates a programming error
+- Provides debugging context
+- Written for the developer who sees the panic</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap With Ownership</h2>
+<p>How does ownership work with <code>unwrap()</code> and what if you need to keep the original?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap()</code> and <code>expect()</code> consume (take ownership of) the <code>Result</code>/<code>Option</code>:</p>
+<pre><code class="language-rust">let result = Ok(42);
+let value = result.unwrap();  // result is moved
+// Can't use result anymore
+</code></pre>
+<p><strong>If you need to keep the original:</strong></p>
+<pre><code class="language-rust">let result = Ok(42);
+let value = result.as_ref().unwrap();  // Borrows, doesn't move
+println!(&quot;{:?}&quot;, result);  // Still usable: Ok(42)
+</code></pre>
+<p>Or use pattern matching:</p>
+<pre><code class="language-rust">let result = Ok(42);
+match &amp;result {
+    Ok(v) =&gt; println!(&quot;Value: {}&quot;, v),
+    Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+}
+println!(&quot;{:?}&quot;, result);  // Still usable
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Unwrap Is Never Acceptable</h2>
+<p>In what situations should you <strong>never</strong> use <code>unwrap()</code> or <code>expect()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Never use in:</strong></p>
+<ol>
+<li><strong>Public library APIs</strong> - Let callers handle errors</li>
+</ol>
+<pre><code class="language-rust">pub fn parse(input: &amp;str) -&gt; Result&lt;Data, Error&gt;  // Good
+pub fn parse(input: &amp;str) -&gt; Data  // Bad if it can unwrap
+</code></pre>
+<ol>
+<li><strong>User input handling</strong> - Users control the input</li>
+</ol>
+<pre><code class="language-rust">// Never unwrap user-provided data
+user_input.parse().unwrap()  // ❌
+</code></pre>
+<ol>
+<li><strong>Network/IO operations</strong> - These can always fail</li>
+</ol>
+<pre><code class="language-rust">// Network is unreliable
+http_request().unwrap()  // ❌
+</code></pre>
+<ol>
+<li><strong>File operations</strong> - Files may not exist, be locked, etc.</li>
+</ol>
+<pre><code class="language-rust">// Unless it's a test resource
+File::open(user_path).unwrap()  // ❌
+</code></pre>
+<ol>
+<li><strong>Production servers</strong> - Crashes affect users</li>
+</ol>
+<pre><code class="language-rust">// In web handlers, background jobs, etc.
+db_query().unwrap()  // ❌
+</code></pre>
+<p><strong>Rule:</strong> If users, network, or external systems are involved, handle errors properly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Family Comparison</h2>
+<p>Compare the different unwrap-related methods and when to use each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Method | Panics? | Use Case |
+|--------|---------|----------|
+| <code>unwrap()</code> | Yes | Tests, proven invariants (but prefer expect) |
+| <code>expect("msg")</code> | Yes | Proven invariants with documentation |
+| <code>unwrap_or(val)</code> | No | Safe default available |
+| <code>unwrap_or_else(fn)</code> | No | Computed default, with logging |
+| <code>unwrap_or_default()</code> | No | Type has reasonable Default |
+| <code>?</code> operator | No | Error propagation (preferred) |
+| <code>match</code> / <code>if let</code> | No | Explicit error handling |</p>
+<p><strong>Priority:</strong>
+1. <code>?</code> for error propagation
+2. <code>unwrap_or*</code> for defaults
+3. <code>match</code> for custom handling
+4. <code>expect()</code> for documented invariants
+5. <code>unwrap()</code> only in tests</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Golden Rule</h2>
+<p>What's the "golden rule" for using <code>unwrap()</code> and <code>expect()</code> in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Golden Rule:</strong> </p>
+<p><em>"If you're writing <code>unwrap()</code> or <code>expect()</code>, pause and ask: Could this fail in production? Should I handle this error properly instead?"</em></p>
+<p><strong>Follow-up questions:</strong>
+- Is this test code? (If yes, it's okay)
+- Have I documented why this can't fail?
+- Could a user trigger this panic?
+- Am I just being lazy about error handling?
+- Would <code>?</code>, <code>unwrap_or()</code>, or <code>match</code> be better?</p>
+<p><strong>Remember:</strong>
+- <code>unwrap()</code>/<code>expect()</code> are not error handling - they're giving up
+- They convert errors into crashes
+- Use them consciously and sparingly
+- In production libraries: almost never
+- In production applications: only for proven invariants
+- In tests: freely</p>
+<p>When in doubt, use <code>?</code> or proper error handling.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

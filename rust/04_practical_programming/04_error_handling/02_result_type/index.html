@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 04 Error Handling - 02 Result Type</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Result<T, E>?</h2>
+<p>What is <code>Result&lt;T, E&gt;</code> in Rust and how does it differ from <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Result&lt;T, E&gt;</code> is an enum that represents operations that can succeed or fail. It has two variants: <code>Ok(T)</code> (success with value) and <code>Err(E)</code> (failure with error).</p>
+<p>Unlike <code>Option&lt;T&gt;</code> which only indicates presence/absence, <code>Result&lt;T, E&gt;</code> provides context about <em>why</em> something failed through the error type <code>E</code>. This makes errors explicit in the type signature and impossible to ignore.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result<T, E> Definition</h2>
+<p>How is <code>Result&lt;T, E&gt;</code> defined in Rust's standard library?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">enum Result&lt;T, E&gt; {
+    Ok(T),   // Success - contains the successful value
+    Err(E),  // Failure - contains the error value
+}
+</code></pre>
+<ul>
+<li><code>T</code> is the type of the success value</li>
+<li><code>E</code> is the type of the error value</li>
+<li>It's part of the prelude, so <code>Ok</code> and <code>Err</code> can be used directly</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Creating Results</h2>
+<p>How do you create <code>Result</code> values for success and failure cases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Success case
+let success: Result&lt;i32, &amp;str&gt; = Ok(42);
+
+// Error case
+let failure: Result&lt;i32, &amp;str&gt; = Err(&quot;something went wrong&quot;);
+
+// In functions
+fn divide(a: f64, b: f64) -&gt; Result&lt;f64, String&gt; {
+    if b == 0.0 {
+        Err(String::from(&quot;division by zero&quot;))
+    } else {
+        Ok(a / b)
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Matching With Result</h2>
+<p>How do you safely extract values from a <code>Result&lt;T, E&gt;</code> using pattern matching?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use a <code>match</code> expression to handle both cases:</p>
+<pre><code class="language-rust">match result {
+    Ok(value) =&gt; {
+        // Use the success value
+    }
+    Err(error) =&gt; {
+        // Handle the error
+    }
+}
+</code></pre>
+<p>The compiler enforces exhaustive matching, ensuring both <code>Ok</code> and <code>Err</code> cases are handled.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Map Method On Result</h2>
+<p>What does the <code>map()</code> method do on a <code>Result&lt;T, E&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>map()</code> transforms the success value if the Result is <code>Ok</code>, leaving <code>Err</code> unchanged:</p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Ok(10);
+let doubled = result.map(|x| x * 2);  // Ok(20)
+
+let error: Result&lt;i32, &amp;str&gt; = Err(&quot;failed&quot;);
+let still_error = error.map(|x| x * 2);  // Err(&quot;failed&quot;)
+</code></pre>
+<p>It only applies the function to the <code>Ok</code> value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Map Err Method</h2>
+<p>What does the <code>map_err()</code> method do on a <code>Result&lt;T, E&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>map_err()</code> transforms the error value if the Result is <code>Err</code>, leaving <code>Ok</code> unchanged:</p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Err(&quot;file not found&quot;);
+
+let mapped = result.map_err(|e| format!(&quot;Error: {}&quot;, e));
+// Err(&quot;Error: file not found&quot;)
+</code></pre>
+<p>Useful for adding context to errors or converting between error types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>And Then Method On Result</h2>
+<p>What is <code>and_then()</code> used for with <code>Result&lt;T, E&gt;</code> and why is it needed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>and_then()</code> chains operations that themselves return <code>Result</code>. It's used when your transformation function returns a <code>Result</code>:</p>
+<pre><code class="language-rust">fn parse(s: &amp;str) -&gt; Result&lt;i32, String&gt; { ... }
+fn validate(n: i32) -&gt; Result&lt;i32, String&gt; { ... }
+
+let result = parse(&quot;42&quot;)
+    .and_then(|n| validate(n));  // Chain results
+</code></pre>
+<p>Unlike <code>map()</code>, it prevents nested <code>Result&lt;Result&lt;T, E&gt;, E&gt;</code> by flattening the result.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Operator Basics</h2>
+<p>What does the <code>?</code> operator do when used with <code>Result&lt;T, E&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator provides early return on error:</p>
+<ol>
+<li>If the Result is <code>Ok(value)</code>, it unwraps and returns the value</li>
+<li>If the Result is <code>Err(e)</code>, it immediately returns <code>Err(e)</code> from the function</li>
+</ol>
+<pre><code class="language-rust">fn read_number() -&gt; Result&lt;i32, Error&gt; {
+    let contents = std::fs::read_to_string(&quot;file.txt&quot;)?;
+    let number = contents.trim().parse()?;
+    Ok(number)
+}
+</code></pre>
+<p>The function must return <code>Result</code> or <code>Option</code> to use <code>?</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Operator Error Conversion</h2>
+<p>How does the <code>?</code> operator handle different error types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator automatically converts error types using the <code>From</code> trait:</p>
+<pre><code class="language-rust">fn complex() -&gt; Result&lt;String, Box&lt;dyn Error&gt;&gt; {
+    let contents = std::fs::read_to_string(&quot;file.txt&quot;)?;  // io::Error
+    let number: i32 = contents.trim().parse()?;            // ParseIntError
+    Ok(format!(&quot;{}&quot;, number))
+}
+</code></pre>
+<p>Both errors are automatically converted to <code>Box&lt;dyn Error&gt;</code> through <code>From</code> implementations, allowing different error types to work together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap And Expect Danger</h2>
+<p>Why should you avoid <code>unwrap()</code> and when is <code>expect()</code> appropriate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap()</code> panics (crashes) if the Result is <code>Err</code>, making it dangerous in production:</p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Err(&quot;failed&quot;);
+// let x = result.unwrap(); // PANIC!
+</code></pre>
+<p><strong>When to use:</strong>
+- In tests
+- In examples/prototypes
+- When you've proven the error is impossible (document why!)</p>
+<p><strong>Better alternatives:</strong>
+- <code>expect("context message")</code> for debugging (includes your message)
+- Pattern matching or <code>?</code> for production
+- <code>unwrap_or()</code> or <code>unwrap_or_else()</code> to provide defaults</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwrap Or Methods</h2>
+<p>What's the difference between <code>unwrap_or()</code> and <code>unwrap_or_else()</code> on Results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>unwrap_or(default)</code>: Returns the value or a provided default (eager evaluation)</p>
+<pre><code class="language-rust">let value = result.unwrap_or(0);  // Always evaluates 0
+</code></pre>
+<p><code>unwrap_or_else(closure)</code>: Computes default only if needed (lazy evaluation)</p>
+<pre><code class="language-rust">let value = result.unwrap_or_else(|err| {
+    eprintln!(&quot;Error: {}&quot;, err);  // Only runs on Err
+    0
+});
+</code></pre>
+<p>Use <code>unwrap_or_else()</code> when computing the default is expensive or has side effects.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Converting Result To Option</h2>
+<p>How do you convert between <code>Result&lt;T, E&gt;</code> and <code>Option&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Result to Option:</strong></p>
+<pre><code class="language-rust">let result: Result&lt;i32, &amp;str&gt; = Ok(42);
+let opt = result.ok();  // Some(42)
+
+let err_result: Result&lt;i32, &amp;str&gt; = Err(&quot;failed&quot;);
+let opt = err_result.ok();  // None
+</code></pre>
+<p><strong>Option to Result:</strong></p>
+<pre><code class="language-rust">let opt: Option&lt;i32&gt; = Some(42);
+let result = opt.ok_or(&quot;No value&quot;);  // Ok(42)
+
+let none: Option&lt;i32&gt; = None;
+let result = none.ok_or(&quot;No value&quot;);  // Err(&quot;No value&quot;)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Dyn Error Pattern</h2>
+<p>Why use <code>Box&lt;dyn Error&gt;</code> as an error type and when is it appropriate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;dyn Error&gt;</code> is a generic error type that can hold any error implementing the <code>Error</code> trait:</p>
+<pre><code class="language-rust">fn complex() -&gt; Result&lt;String, Box&lt;dyn Error&gt;&gt; {
+    let contents = std::fs::read_to_string(&quot;file.txt&quot;)?;  // io::Error
+    let number: i32 = contents.trim().parse()?;            // ParseIntError
+    Ok(format!(&quot;{}&quot;, number))
+}
+</code></pre>
+<p><strong>When to use:</strong>
+- Applications where you don't need to handle specific error types
+- When dealing with multiple error types
+- For prototyping or simple programs</p>
+<p><strong>Drawbacks:</strong> You lose type information about the specific error.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Early Return Pattern</h2>
+<p>How do you use early returns for validation in Rust functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Return <code>Err</code> immediately when validation fails:</p>
+<pre><code class="language-rust">fn validate_age(age: i32) -&gt; Result&lt;i32, String&gt; {
+    if age &lt; 0 {
+        return Err(&quot;Age cannot be negative&quot;.into());
+    }
+    if age &gt; 150 {
+        return Err(&quot;Age unrealistic&quot;.into());
+    }
+    Ok(age)
+}
+
+fn process(age: i32) -&gt; Result&lt;(), String&gt; {
+    let valid_age = validate_age(age)?;  // Propagates error
+    println!(&quot;Valid age: {}&quot;, valid_age);
+    Ok(())
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Collecting Results</h2>
+<p>How do you collect an iterator of Results into a Result of a collection?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>.collect()</code> which stops at the first error:</p>
+<pre><code class="language-rust">let strings = vec![&quot;1&quot;, &quot;2&quot;, &quot;3&quot;];
+let numbers: Result&lt;Vec&lt;i32&gt;, _&gt; = strings
+    .iter()
+    .map(|s| s.parse::&lt;i32&gt;())
+    .collect();
+// Ok([1, 2, 3])
+
+let bad = vec![&quot;1&quot;, &quot;bad&quot;, &quot;3&quot;];
+let result: Result&lt;Vec&lt;i32&gt;, _&gt; = bad
+    .iter()
+    .map(|s| s.parse::&lt;i32&gt;())
+    .collect();
+// Err(...) - stops at first error
+</code></pre>
+<p>If any element is <code>Err</code>, the entire collection becomes that <code>Err</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Or And Or Else Methods</h2>
+<p>What do <code>or()</code> and <code>or_else()</code> do with Results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They provide fallback Results if the original is an error:</p>
+<p><code>or()</code>: Returns the original if <code>Ok</code>, otherwise returns the provided alternative</p>
+<pre><code class="language-rust">let primary: Result&lt;i32, &amp;str&gt; = Err(&quot;failed&quot;);
+let backup: Result&lt;i32, &amp;str&gt; = Ok(42);
+let result = primary.or(backup);  // Ok(42)
+</code></pre>
+<p><code>or_else()</code>: Like <code>or()</code> but computes the alternative lazily</p>
+<pre><code class="language-rust">let result = primary.or_else(|_| Ok(0));  // Ok(0)
+</code></pre>
+<p>Useful for fallback strategies or retry logic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Error Context Loss</h2>
+<p>Why is it important to preserve error context when converting errors, and how do you do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Losing error context makes debugging harder:</p>
+<p><strong>Bad - loses information:</strong></p>
+<pre><code class="language-rust">s.parse().map_err(|_| &quot;Parse error&quot;.into())
+</code></pre>
+<p><strong>Better - preserves details:</strong></p>
+<pre><code class="language-rust">s.parse()
+    .map_err(|e| format!(&quot;Failed to parse '{}': {}&quot;, s, e))
+</code></pre>
+<p>Include relevant context (input values, operation being performed) in error messages to aid debugging.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Type Matching</h2>
+<p>What constraint does the <code>?</code> operator place on error types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The error type must be convertible to the function's error type via the <code>From</code> trait:</p>
+<p><strong>Won't compile:</strong></p>
+<pre><code class="language-rust">fn broken() -&gt; Result&lt;i32, String&gt; {
+    std::fs::read_to_string(&quot;file&quot;)?  // io::Error != String
+}
+</code></pre>
+<p><strong>Fixed with conversion:</strong></p>
+<pre><code class="language-rust">fn fixed() -&gt; Result&lt;i32, String&gt; {
+    std::fs::read_to_string(&quot;file&quot;)
+        .map_err(|e| e.to_string())?  // Convert to String
+}
+</code></pre>
+<p>Or use a compatible error type like <code>Box&lt;dyn Error&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result In Struct Methods</h2>
+<p>How do you design struct methods that can fail using Results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Return <code>Result</code> from methods that can fail:</p>
+<pre><code class="language-rust">struct DataStore {
+    data: Vec&lt;i32&gt;,
+}
+
+impl DataStore {
+    fn get(&amp;self, index: usize) -&gt; Result&lt;i32, String&gt; {
+        self.data
+            .get(index)
+            .copied()
+            .ok_or_else(|| format!(&quot;Index {} out of bounds&quot;, index))
+    }
+
+    fn add(&amp;mut self, value: i32) -&gt; Result&lt;(), String&gt; {
+        if value &lt; 0 {
+            return Err(&quot;Cannot add negative values&quot;.into());
+        }
+        self.data.push(value);
+        Ok(())
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ignoring Errors Silently</h2>
+<p>What's wrong with ignoring errors using <code>let _ = ...</code> and what should you do instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad - silently ignores:</strong></p>
+<pre><code class="language-rust">fn process() {
+    let _ = some_operation();  // Error thrown away!
+}
+</code></pre>
+<p><strong>Better options:</strong></p>
+<p>Propagate it:</p>
+<pre><code class="language-rust">fn process() -&gt; Result&lt;(), Error&gt; {
+    some_operation()?;
+    Ok(())
+}
+</code></pre>
+<p>Or explicitly handle/log:</p>
+<pre><code class="language-rust">if let Err(e) = some_operation() {
+    eprintln!(&quot;Warning: {}&quot;, e);
+}
+</code></pre>
+<p>Ignoring errors hides bugs and makes debugging difficult.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mixing Result And Option</h2>
+<p>How do you use the <code>?</code> operator when you have an <code>Option</code> but need to return a <code>Result</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Convert the <code>Option</code> to a <code>Result</code> first using <code>ok_or()</code> or <code>ok_or_else()</code>:</p>
+<pre><code class="language-rust">fn process() -&gt; Result&lt;i32, String&gt; {
+    let opt: Option&lt;i32&gt; = Some(5);
+
+    // Convert Option to Result
+    let value = opt.ok_or(&quot;No value found&quot;.to_string())?;
+
+    Ok(value * 2)
+}
+</code></pre>
+<p>You cannot directly use <code>?</code> on an <code>Option</code> in a function returning <code>Result</code> without conversion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Ownership In Errors</h2>
+<p>How does ownership affect values used in both success and error paths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Be careful not to move values when constructing errors if you need them later:</p>
+<p><strong>Problem:</strong></p>
+<pre><code class="language-rust">fn process(data: String) -&gt; Result&lt;String, String&gt; {
+    if data.is_empty() {
+        return Err(format!(&quot;Empty: {}&quot;, data));  // data moved!
+    }
+    Ok(data.to_uppercase())  // Can't use data here
+}
+</code></pre>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-rust">fn process(data: String) -&gt; Result&lt;String, String&gt; {
+    if data.is_empty() {
+        return Err(&quot;Data is empty&quot;.into());  // Don't move data
+    }
+    Ok(data.to_uppercase())  // data still available
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Vs Exceptions</h2>
+<p>How does Rust's <code>Result</code> approach differ from exception-based error handling?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Result (Rust):</strong>
+- Errors are explicit in function signatures
+- Compiler enforces handling
+- Errors are values, not control flow
+- Zero-cost when not used (no runtime overhead)</p>
+<p><strong>Exceptions (Java/Python):</strong>
+- Errors invisible in signatures
+- Easy to forget to catch
+- Control flow mechanism
+- Runtime overhead for stack unwinding</p>
+<p>Result makes errors visible and forces handling at compile time, preventing forgotten error cases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fallible Initialization Pattern</h2>
+<p>How do you create constructors (initialization functions) that can fail?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Return <code>Result</code> from a constructor (typically <code>new</code> or <code>try_new</code>):</p>
+<pre><code class="language-rust">struct Config {
+    port: u16,
+    host: String,
+}
+
+impl Config {
+    fn new(port: i32, host: String) -&gt; Result&lt;Self, String&gt; {
+        if port &lt; 0 || port &gt; 65535 {
+            return Err(format!(&quot;Invalid port: {}&quot;, port));
+        }
+        if host.is_empty() {
+            return Err(&quot;Host cannot be empty&quot;.into());
+        }
+        Ok(Config {
+            port: port as u16,
+            host,
+        })
+    }
+}
+</code></pre>
+<p>Convention: <code>new()</code> for infallible, <code>try_new()</code> for fallible constructors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result As Ref Pattern</h2>
+<p>How do you work with a Result without consuming it using <code>as_ref()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>as_ref()</code> to convert <code>Result&lt;T, E&gt;</code> to <code>Result&lt;&amp;T, &amp;E&gt;</code>:</p>
+<pre><code class="language-rust">let result = Ok(String::from(&quot;hello&quot;));
+
+// This consumes result
+// let len = result.map(|s| s.len());
+
+// This keeps result usable
+let len = result.as_ref().map(|s| s.len());
+println!(&quot;{:?}&quot;, result);  // Still usable: Ok(&quot;hello&quot;)
+println!(&quot;{:?}&quot;, len);     // Some(5)
+</code></pre>
+<p>Similar to <code>Option</code>, use <code>as_ref()</code> when you need to inspect the value without taking ownership.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

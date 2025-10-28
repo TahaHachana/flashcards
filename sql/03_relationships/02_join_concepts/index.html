@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 03 Relationships - 02 Join Concepts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a JOIN Operation</h2>
+<p>What does a JOIN operation do in SQL, and what is the fundamental mathematical concept behind it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A JOIN combines rows from two or more tables based on a related column between them. The fundamental mathematical concept is the Cartesian product - JOINs start by conceptually creating all possible combinations of rows from the tables, then filter these combinations based on the JOIN condition to keep only the meaningful matches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Cartesian Product Foundation</h2>
+<p>If Table A has 3 rows and Table B has 4 rows, how many row combinations does the Cartesian product produce, and what does a JOIN condition do to this result?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The Cartesian product produces 12 row combinations (3 × 4). The JOIN condition acts as a filter on this Cartesian product, keeping only the combinations where the JOIN condition evaluates to TRUE and discarding the rest.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>INNER JOIN Definition</h2>
+<p>What is an INNER JOIN and what rows does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>An INNER JOIN returns only the rows where there is a match in BOTH tables based on the JOIN condition. If a row in either table has no matching row in the other table, it is excluded from the results. This is the most restrictive type of JOIN.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>INNER JOIN Mental Model</h2>
+<p>Using the mental model of "only the overlap," what happens to customers with no orders and orders with no matching customer in an INNER JOIN between customers and orders tables?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both are excluded from the results. Customers with no orders don't appear because there's no matching order row. Orders with no matching customer don't appear because there's no matching customer row. Only customers who have orders (the overlap) appear in the result set.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LEFT JOIN Definition</h2>
+<p>What is a LEFT JOIN (LEFT OUTER JOIN) and what rows does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A LEFT JOIN returns ALL rows from the left (first) table, plus matching rows from the right (second) table. When there's no match in the right table, the result includes the left table row with NULL values for all right table columns. This ensures no rows from the left table are lost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>LEFT JOIN Mental Model</h2>
+<p>In a LEFT JOIN between customers (left) and orders (right), what appears in the result set for a customer who has never placed an order?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The customer's information appears with all their column values intact, but all columns from the orders table will be NULL for that row. This preserves the customer record while indicating there are no associated orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Finding Unmatched Rows with LEFT JOIN</h2>
+<p>How can you use a LEFT JOIN to find rows in the left table that have NO matching rows in the right table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Perform a LEFT JOIN and then add a WHERE clause that checks for NULL in the right table's primary key (or any NOT NULL column). For example: <code>WHERE orders.order_id IS NULL</code> would find all customers with no orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RIGHT JOIN Definition</h2>
+<p>What is a RIGHT JOIN and why is it less commonly used than LEFT JOIN?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A RIGHT JOIN returns ALL rows from the right (second) table plus matching rows from the left (first) table. It's less common because it's logically equivalent to a LEFT JOIN with the tables swapped - most developers prefer to rewrite queries using LEFT JOIN for consistency and readability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FULL OUTER JOIN Definition</h2>
+<p>What is a FULL OUTER JOIN and what rows does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A FULL OUTER JOIN returns ALL rows from BOTH tables. When there's a match, rows are combined. When there's no match, the row from one table appears with NULLs for the other table's columns. This means rows with matches appear once (combined), and rows without matches appear with NULLs on the side that didn't match.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FULL OUTER JOIN Use Cases</h2>
+<p>What is a common use case for FULL OUTER JOIN and why is it relatively rare?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A common use case is finding all mismatches - identifying rows that exist in either table but not both (such as customers with no orders AND orders with no valid customer). It's rare because most business questions focus on matched data or preserving just one side of the relationship, not both.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JOIN Types Venn Diagram</h2>
+<p>Using Venn diagram terminology, describe what each JOIN type returns: INNER, LEFT, RIGHT, and FULL OUTER.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>INNER JOIN: Only the overlap (intersection) of both circles</li>
+<li>LEFT JOIN: Entire left circle plus the overlap</li>
+<li>RIGHT JOIN: Entire right circle plus the overlap  </li>
+<li>FULL OUTER JOIN: Both entire circles (union of both sets)</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self JOIN Concept</h2>
+<p>What is a self-join and what does it allow you to do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A self-join is when a table is joined to itself. It allows you to compare rows within the same table or traverse hierarchical relationships. The table must be given different aliases to distinguish between the "left" and "right" instances in the JOIN.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self JOIN Use Cases</h2>
+<p>Name three common use cases for self-joins.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Hierarchical relationships - such as an employees table where each employee has a manager_id pointing to another employee</li>
+<li>Comparing rows - finding pairs of products in the same category or customers in the same city</li>
+<li>Finding sequences - identifying related events or transactions that follow certain patterns</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self JOIN Example Structure</h2>
+<p>In a self-join finding employees and their managers, why do you need table aliases and what would the JOIN condition typically look like?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You need aliases (like <code>e</code> for employee and <code>m</code> for manager) to distinguish between the two instances of the same table. The JOIN condition typically looks like: <code>e.manager_id = m.employee_id</code>, connecting each employee's manager_id to the corresponding manager's employee_id in the same table.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CROSS JOIN Definition</h2>
+<p>What is a CROSS JOIN and what does it produce?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A CROSS JOIN produces the complete Cartesian product - every possible combination of rows from both tables. If Table A has m rows and Table B has n rows, the result has m × n rows. It has NO JOIN condition or ON clause.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CROSS JOIN Use Cases</h2>
+<p>Name two legitimate use cases for CROSS JOIN despite it being rarely used.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Generating combinations - such as creating all possible pairings of products and sizes, or all date-category combinations for a reporting framework</li>
+<li>Creating test data - generating large datasets by combining smaller lookup tables in all possible ways</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CROSS JOIN Warning</h2>
+<p>Why should CROSS JOIN be used with caution, and what's a common mistake that accidentally creates one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>CROSS JOIN should be used with caution because it can create enormous result sets very quickly (multiplying row counts). A common mistake is forgetting the ON clause in a regular JOIN, which some SQL dialects interpret as a CROSS JOIN, potentially causing performance issues or unexpected results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JOIN Syntax Variations</h2>
+<p>What are the two main syntax styles for writing JOINs, and which is recommended?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Explicit JOIN syntax (recommended): Uses JOIN keywords with ON clauses, like <code>FROM table1 JOIN table2 ON condition</code></li>
+<li>Implicit JOIN syntax (older): Uses comma-separated tables with WHERE conditions, like <code>FROM table1, table2 WHERE condition</code></li>
+</ol>
+<p>The explicit syntax is recommended because it's clearer, separates JOIN logic from filtering logic, and is the modern SQL standard.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple JOINs</h2>
+<p>How do you join three or more tables together, and in what order are the JOINs processed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Chain multiple JOINs together sequentially. JOINs are processed left-to-right: the first JOIN combines the first two tables, then the result is joined with the third table, and so on. Each JOIN operation builds on the result of the previous one.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Table Aliases Purpose</h2>
+<p>Why are table aliases important when writing JOINs, and when are they absolutely required?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Table aliases make queries shorter and more readable by providing abbreviated names for tables. They are REQUIRED in two situations: (1) self-joins, where you need to distinguish between different instances of the same table, and (2) when referencing ambiguous column names that exist in multiple joined tables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Qualifying Column Names</h2>
+<p>What does it mean to "qualify" a column name, and when should you do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Qualifying a column means prefixing it with its table name or alias (e.g., <code>customers.customer_id</code> or <code>c.customer_id</code>). You MUST qualify column names when the same column name exists in multiple joined tables to avoid ambiguity errors. It's best practice to always qualify columns in JOINs for clarity, even when not strictly required.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Behavior in JOINs</h2>
+<p>How do NULLs behave in JOIN conditions, and what's an important consideration when joining on nullable columns?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NULL never equals NULL in SQL comparison logic, so <code>NULL = NULL</code> evaluates to FALSE (or UNKNOWN). This means rows with NULL values in JOIN columns won't match each other, even if both sides have NULL. When joining on nullable foreign keys, rows with NULL foreign keys will appear in LEFT JOINs from the left table but won't match any right table rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JOIN Condition vs WHERE Filter</h2>
+<p>What is the difference between the JOIN condition (ON clause) and WHERE clause filters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The ON clause determines HOW tables are matched together - it defines which rows from the tables should be combined. The WHERE clause filters the RESULT after the JOIN is complete. For INNER JOINs, the distinction matters less, but for OUTER JOINs it's critical: WHERE filters can remove the "preserved" rows that OUTER JOINs are designed to keep.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>WHERE Clause After OUTER JOIN</h2>
+<p>What happens when you apply a WHERE clause filter to the right table after a LEFT JOIN?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Filtering the right table in WHERE can eliminate the unmatched rows that LEFT JOIN was meant to preserve. If you filter <code>WHERE right_table.column = value</code>, rows where right_table columns are NULL (the unmatched rows) will be excluded. To avoid this, include <code>OR right_table.column IS NULL</code> in the WHERE condition, or move the filter into the ON clause if you want to filter BEFORE joining.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complex JOIN Conditions</h2>
+<p>Can JOIN conditions use operators other than equality, and can they include multiple conditions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes. JOIN conditions can use any comparison operators (=, &lt;, &gt;, &lt;=, &gt;=, !=) and can combine multiple conditions using AND/OR. Examples include: range joins (<code>a.date BETWEEN b.start_date AND b.end_date</code>), inequality joins (<code>a.price &gt; b.price</code>), and compound conditions joining on multiple columns (<code>a.year = b.year AND a.month = b.month</code>).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JOIN Order and Performance</h2>
+<p>Does the order of tables in JOIN clauses affect query results or performance?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>For INNER JOINs, the order doesn't affect the logical result set (though it may affect column order in SELECT *). For OUTER JOINs, order matters because it determines which table's rows are preserved. For performance, modern query optimizers typically rearrange JOINs for efficiency regardless of how you write them, though starting with smaller tables or more selective filters can sometimes help the optimizer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unintentional Cartesian Product</h2>
+<p>What causes an unintentional Cartesian product, and what are the warning signs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>An unintentional Cartesian product occurs when you forget the JOIN condition (ON clause) or write an incorrect/too-broad condition that matches many rows. Warning signs include: (1) unexpectedly large result sets, (2) duplicate data appearing multiple times, (3) row counts equal to the product of the table sizes, and (4) slow query performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JOIN Mental Model Summary</h2>
+<p>Describe the mental model for understanding how JOINs work conceptually.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Think of JOINs as: (1) Start with the Cartesian product - all possible row combinations, (2) Apply the ON condition as a filter - keep only matching combinations, (3) For OUTER JOINs - preserve unmatched rows from specified table(s) with NULLs for the other side, (4) Result is a temporary combined dataset that you can then filter (WHERE), sort (ORDER BY), or aggregate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>One-to-Many JOIN Multiplication</h2>
+<p>What happens to row counts when you JOIN a customer table (one side) with an orders table (many side)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Row multiplication occurs on the "one" side. Each customer row appears multiple times in the result - once for each of their orders. A customer with 5 orders appears in 5 rows. A customer with 0 orders doesn't appear at all (in INNER JOIN) or appears once with NULL order columns (in LEFT JOIN). This is normal behavior for one-to-many relationships.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why JOINs Exist</h2>
+<p>Why do relational databases use JOINs instead of storing all related data in a single table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>JOINs exist because of normalization. Storing data in separate tables eliminates redundancy, maintains data integrity, and makes updates easier. JOINs are the mechanism that temporarily reunites this normalized data when you need to see it together. They allow you to benefit from normalized storage (efficient, consistent) while still being able to view and query related data as if it were in one table.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

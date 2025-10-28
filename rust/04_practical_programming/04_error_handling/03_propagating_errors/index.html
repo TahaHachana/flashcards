@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 04 Practical Programming - 04 Error Handling - 03 Propagating Errors</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is The Question Mark Operator?</h2>
+<p>What is the <code>?</code> operator in Rust and what problem does it solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator is syntactic sugar for propagating errors up the call stack. It's the idiomatic way to handle errors in Rust.</p>
+<p>It solves the problem of verbose error propagation by replacing repetitive match statements with clean, readable syntax. Instead of manually checking and returning errors, <code>?</code> automatically unwraps success values or returns errors.</p>
+<p>It's a zero-cost abstraction that compiles to the same code as manual propagation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Basic Behavior</h2>
+<p>What exactly happens when you use <code>?</code> on a <code>Result&lt;T, E&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When you use <code>?</code> on a Result:</p>
+<ol>
+<li><strong>If <code>Ok(value)</code></strong>: Unwraps and returns the value, execution continues</li>
+<li><strong>If <code>Err(e)</code></strong>: Converts the error (if needed) and immediately returns <code>Err(e)</code> from the function</li>
+</ol>
+<pre><code class="language-rust">// This:
+let value = some_operation()?;
+
+// Becomes:
+let value = match some_operation() {
+    Ok(v) =&gt; v,
+    Err(e) =&gt; return Err(e.into()),
+};
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Function Requirement</h2>
+<p>What requirement must a function meet to use the <code>?</code> operator?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The function must return a compatible type - either <code>Result&lt;T, E&gt;</code> or <code>Option&lt;T&gt;</code>:</p>
+<pre><code class="language-rust">// ERROR: Can't use ? in non-Result function
+fn broken() -&gt; i32 {
+    let value = some_result()?;  // Compile error!
+    value
+}
+
+// CORRECT: Function returns Result
+fn works() -&gt; Result&lt;i32, SomeError&gt; {
+    let value = some_result()?;
+    Ok(value)
+}
+</code></pre>
+<p>The <code>?</code> operator needs a way to return the error, which requires the function to return a compatible error type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Error Type Conversion</h2>
+<p>How does the <code>?</code> operator handle different error types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator automatically converts error types using the <code>From</code> trait via <code>.into()</code>:</p>
+<pre><code class="language-rust">fn flexible() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    std::fs::read_to_string(&quot;file&quot;)?;  // io::Error
+    &quot;123&quot;.parse::&lt;i32&gt;()?;              // ParseIntError
+    Ok(())
+    // Both automatically convert to Box&lt;dyn Error&gt;
+}
+</code></pre>
+<p>This is why implementing <code>From&lt;OtherError&gt; for YourError</code> enables automatic conversion when using <code>?</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark With Incompatible Types</h2>
+<p>What do you do when the error type from <code>?</code> doesn't match your function's return type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You have three options:</p>
+<ol>
+<li><strong>Change function's error type</strong> to match:</li>
+</ol>
+<pre><code class="language-rust">fn fixed1() -&gt; Result&lt;String, io::Error&gt; {
+    let contents = std::fs::read_to_string(&quot;file&quot;)?;
+    Ok(contents)
+}
+</code></pre>
+<ol>
+<li><strong>Convert the error explicitly</strong> with <code>map_err()</code>:</li>
+</ol>
+<pre><code class="language-rust">fn fixed2() -&gt; Result&lt;String, String&gt; {
+    let contents = std::fs::read_to_string(&quot;file&quot;)
+        .map_err(|e| e.to_string())?;
+    Ok(contents)
+}
+</code></pre>
+<ol>
+<li><strong>Use a generic error type</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn fixed3() -&gt; Result&lt;String, Box&lt;dyn Error&gt;&gt; {
+    let contents = std::fs::read_to_string(&quot;file&quot;)?;
+    Ok(contents)
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark In Main</h2>
+<p>Can you use the <code>?</code> operator in <code>main()</code> and if so, how?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Since Rust 1.26, <code>main()</code> can return <code>Result</code>:</p>
+<pre><code class="language-rust">// Modern style - main returns Result
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let config = load_config(&quot;config.txt&quot;)?;
+    process(config)?;
+    Ok(())
+}
+</code></pre>
+<p>If <code>main</code> returns an <code>Err</code>, the program exits with a non-zero status code and prints the error. This enables using <code>?</code> throughout your application, including in <code>main</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chaining Operations With Question Mark</h2>
+<p>How do you chain multiple fallible operations using <code>?</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Simply use <code>?</code> after each operation that can fail:</p>
+<pre><code class="language-rust">fn process_data(path: &amp;str) -&gt; Result&lt;usize, Box&lt;dyn Error&gt;&gt; {
+    let contents = std::fs::read_to_string(path)?;
+    let trimmed = contents.trim();
+    let number: usize = trimmed.parse()?;
+    Ok(number * 2)
+}
+</code></pre>
+<p>If any operation fails, the function immediately returns that error. Only if all succeed does execution reach the final <code>Ok(...)</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Early Return Behavior</h2>
+<p>What does it mean that <code>?</code> performs an "early return" and why is this important to remember?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>?</code> immediately returns from the function if it encounters an error - any code after the <code>?</code> won't execute:</p>
+<pre><code class="language-rust">fn tricky() -&gt; Result&lt;String, String&gt; {
+    let result = operation_that_fails()?;
+    println!(&quot;This never prints if operation fails!&quot;);
+    Ok(result)
+}
+</code></pre>
+<p>This is important for:
+- Cleanup code (do it before <code>?</code>)
+- Side effects (they won't happen after a failed <code>?</code>)
+- Resource management (use RAII patterns or ensure cleanup happens before <code>?</code>)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark With Option</h2>
+<p>Can you use <code>?</code> with <code>Option&lt;T&gt;</code> and what are the rules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! <code>?</code> works with <code>Option</code> in <code>Option</code>-returning functions:</p>
+<pre><code class="language-rust">fn works() -&gt; Option&lt;i32&gt; {
+    let opt: Option&lt;i32&gt; = Some(5);
+    let value = opt?;  // Returns None if opt is None
+    Some(value * 2)
+}
+</code></pre>
+<p><strong>Important:</strong> You cannot use <code>Option</code>'s <code>?</code> in a <code>Result</code>-returning function without converting first:</p>
+<pre><code class="language-rust">fn needs_conversion() -&gt; Result&lt;i32, String&gt; {
+    let opt: Option&lt;i32&gt; = Some(5);
+    let value = opt.ok_or(&quot;No value&quot;)?;  // Convert first
+    Ok(value)
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark In Tests</h2>
+<p>How and why do you use <code>?</code> in test functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests can return <code>Result</code> to enable using <code>?</code> for cleaner error handling:</p>
+<pre><code class="language-rust">#[test]
+fn test_parsing() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let config = parse_config(&quot;test.txt&quot;)?;
+    assert_eq!(config.port, 8080);
+    Ok(())
+}
+</code></pre>
+<p>Benefits:
+- Cleaner than unwrap/expect in complex setup
+- Test failures include the error message automatically
+- Enables using <code>?</code> with file I/O, parsing, etc. in tests</p>
+<p>If the test returns <code>Err</code>, the test framework marks it as failed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Method Chaining</h2>
+<p>How do you combine <code>?</code> with method chaining?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can use <code>?</code> at any point in a method chain:</p>
+<pre><code class="language-rust">fn get_first_word(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    Ok(std::fs::read_to_string(path)?
+        .split_whitespace()
+        .next()
+        .ok_or_else(|| io::Error::new(
+            io::ErrorKind::InvalidData, 
+            &quot;Empty file&quot;
+        ))?
+        .to_string())
+}
+</code></pre>
+<p>The <code>?</code> unwraps intermediate Results, allowing you to continue chaining methods on the success value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Vs Manual Propagation</h2>
+<p>Compare code with and without the <code>?</code> operator for error propagation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Without <code>?</code> (verbose):</strong></p>
+<pre><code class="language-rust">fn read_file() -&gt; Result&lt;String, io::Error&gt; {
+    let mut file = match File::open(&quot;file.txt&quot;) {
+        Ok(f) =&gt; f,
+        Err(e) =&gt; return Err(e),
+    };
+    let mut contents = String::new();
+    match file.read_to_string(&amp;mut contents) {
+        Ok(_) =&gt; Ok(contents),
+        Err(e) =&gt; Err(e),
+    }
+}
+</code></pre>
+<p><strong>With <code>?</code> (clean):</strong></p>
+<pre><code class="language-rust">fn read_file() -&gt; Result&lt;String, io::Error&gt; {
+    let mut file = File::open(&quot;file.txt&quot;)?;
+    let mut contents = String::new();
+    file.read_to_string(&amp;mut contents)?;
+    Ok(contents)
+}
+</code></pre>
+<p>Both compile to the same code - <code>?</code> is zero-cost abstraction.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark With Custom Error Types</h2>
+<p>How do you enable <code>?</code> to automatically convert to your custom error type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implement the <code>From</code> trait for automatic conversion:</p>
+<pre><code class="language-rust">#[derive(Debug)]
+enum MyError {
+    Io(io::Error),
+    Parse(String),
+}
+
+impl From&lt;io::Error&gt; for MyError {
+    fn from(err: io::Error) -&gt; Self {
+        MyError::Io(err)
+    }
+}
+
+fn my_function() -&gt; Result&lt;(), MyError&gt; {
+    std::fs::read_to_string(&quot;file&quot;)?;  // Auto-converts!
+    Ok(())
+}
+</code></pre>
+<p>The <code>?</code> operator calls <code>From::from()</code> automatically, converting <code>io::Error</code> to <code>MyError</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Multiple Errors Same Expression</h2>
+<p>Can you use <code>?</code> on both operands in a single expression like <code>a()? + b()?</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>While syntactically valid, it's not recommended and can be confusing:</p>
+<pre><code class="language-rust">// Compiles but unclear evaluation order
+fn unclear() -&gt; Result&lt;i32, String&gt; {
+    Ok(operation1()? + operation2()?)
+}
+
+// Better - explicit and clear
+fn clear() -&gt; Result&lt;i32, String&gt; {
+    let a = operation1()?;
+    let b = operation2()?;
+    Ok(a + b)
+}
+</code></pre>
+<p>The separate version makes it clear that <code>operation1</code> is evaluated first, and if it fails, <code>operation2</code> never runs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark In Iterators</h2>
+<p>How do you use <code>?</code> effectively with iterators and <code>collect()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>collect()</code> can automatically propagate errors from an iterator of Results:</p>
+<pre><code class="language-rust">fn parse_all(strings: Vec&lt;&amp;str&gt;) -&gt; Result&lt;Vec&lt;i32&gt;, String&gt; {
+    strings.iter()
+        .map(|s| s.parse::&lt;i32&gt;().map_err(|e| e.to_string()))
+        .collect()  // Returns Err at first error
+}
+</code></pre>
+<p>For more control, use <code>try_fold</code>:</p>
+<pre><code class="language-rust">fn sum_parsed(strings: Vec&lt;&amp;str&gt;) -&gt; Result&lt;i32, String&gt; {
+    strings.iter()
+        .try_fold(0, |acc, s| {
+            let num = s.parse::&lt;i32&gt;()
+                .map_err(|e| e.to_string())?;
+            Ok(acc + num)
+        })
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Error Creates New Value</h2>
+<p>Does the <code>?</code> operator return the same error value or create a new one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator may create a new error value due to the <code>From::from()</code> conversion:</p>
+<pre><code class="language-rust">let value = some_operation()?;
+// The error returned is From::from(original_error)
+</code></pre>
+<p>This means:
+- If types match, it's typically passed through unchanged
+- If conversion is needed, a new error value is created
+- You cannot rely on error value identity/pointer equality across <code>?</code></p>
+<p>This is usually not a concern, but matters if you're doing advanced error handling with pointer comparisons or using error values as keys.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Last Expression</h2>
+<p>Can you use <code>?</code> on the last expression of a function without wrapping in <code>Ok()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, if the types align correctly:</p>
+<pre><code class="language-rust">fn get_user_age(id: u32) -&gt; Result&lt;u32, String&gt; {
+    // Both return Result, so ? on last expression works
+    fetch_user(id)?.age.ok_or(&quot;No age specified&quot;.into())
+}
+</code></pre>
+<p>However, you usually need to wrap in <code>Ok()</code> when the last operation returns a non-Result value:</p>
+<pre><code class="language-rust">fn calculate() -&gt; Result&lt;i32, String&gt; {
+    let a = get_value()?;
+    let b = get_value()?;
+    Ok(a + b)  // Need Ok() because a + b is just i32
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark With Box Dyn Error</h2>
+<p>Why does <code>Box&lt;dyn Error&gt;</code> work so well with <code>?</code> for handling multiple error types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;dyn Error&gt;</code> can hold any error type that implements the <code>Error</code> trait:</p>
+<pre><code class="language-rust">fn process() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = std::fs::read_to_string(&quot;file&quot;)?;  // io::Error
+    let number: i32 = contents.trim().parse()?;        // ParseIntError
+    Ok(())
+}
+</code></pre>
+<p>The <code>?</code> operator automatically converts different error types to <code>Box&lt;dyn Error&gt;</code> via <code>From</code> implementations. This is convenient for applications but loses specific error type information (you can't match on specific error types later).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Try Trait Behind Question Mark</h2>
+<p>What trait powers the <code>?</code> operator and why does it work with both <code>Result</code> and <code>Option</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>?</code> operator is powered by the <code>Try</code> trait (currently unstable):</p>
+<pre><code class="language-rust">trait Try {
+    type Output;
+    type Residual;
+
+    fn branch(self) -&gt; ControlFlow&lt;Self::Residual, Self::Output&gt;;
+}
+</code></pre>
+<p>Both <code>Result&lt;T, E&gt;</code> and <code>Option&lt;T&gt;</code> implement <code>Try</code>, which is why <code>?</code> works with both. The <code>Try</code> trait abstracts over "types that represent success or early return."</p>
+<p>This is why <code>?</code> has consistent behavior across both types - it's using the same underlying mechanism.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Question Mark Best Practices</h2>
+<p>What are the best practices for using the <code>?</code> operator effectively?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>DO:</strong>
+- Use <code>?</code> for idiomatic error propagation
+- Make function signatures return <code>Result</code> when using <code>?</code>
+- Use <code>?</code> in tests for cleaner setup code
+- Let <code>?</code> handle automatic error conversion via <code>From</code></p>
+<p><strong>DON'T:</strong>
+- Use <code>?</code> just to hide error handling without thinking
+- Overuse <code>Box&lt;dyn Error&gt;</code> in libraries (loses type info)
+- Forget that <code>?</code> returns early (cleanup before <code>?</code>)
+- Mix <code>Option</code> and <code>Result</code> <code>?</code> without conversion</p>
+<p><strong>REMEMBER:</strong>
+<code>?</code> makes error propagation ergonomic while maintaining Rust's explicit error handling philosophy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
