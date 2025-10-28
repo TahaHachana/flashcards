@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Helix - 07 Keymap</title>
+  <title>Flashcards - SQL - 03 Relationships - 02 Joins</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,15 +28,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Return to Normal Mode</h2>
-<p>How do you return to Normal mode from any other mode in Helix?</p>
+                                        <h2>What Is a JOIN Operation</h2>
+<p>What does a JOIN operation do in SQL, and what is the fundamental mathematical concept behind it?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Press <code>Escape</code>. Normal mode is the default mode and you can always return to it from other modes using the Escape key.</p>
+                                        <p>A JOIN combines rows from two or more tables based on a related column between them. The fundamental mathematical concept is the Cartesian product - JOINs start by conceptually creating all possible combinations of rows from the tables, then filter these combinations based on the JOIN condition to keep only the meaningful matches.</p>
                                     </div>
                                 </div>
                             </div>
@@ -50,16 +50,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>LSP and TS Notation</h2>
-<p>What do the notations (LSP) and (TS) mean in Helix's keymap documentation?</p>
+                                        <h2>The Cartesian Product Foundation</h2>
+<p>If Table A has 3 rows and Table B has 4 rows, how many row combinations does the Cartesian product produce, and what does a JOIN condition do to this result?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>(LSP) - Requires an active language server for the file
-(TS) - Requires a tree-sitter grammar for the file type</p>
+                                        <p>The Cartesian product produces 12 row combinations (3 × 4). The JOIN condition acts as a filter on this Cartesian product, keeping only the combinations where the JOIN condition evaluates to TRUE and discarding the rest.</p>
                                     </div>
                                 </div>
                             </div>
@@ -73,18 +72,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Basic Movement hjkl</h2>
-<p>What do the keys <code>h</code>, <code>j</code>, <code>k</code>, <code>l</code> do for movement in Normal mode?</p>
+                                        <h2>INNER JOIN Definition</h2>
+<p>What is an INNER JOIN and what rows does it return?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>h</code> - Move left
-<code>j</code> - Move down
-<code>k</code> - Move up
-<code>l</code> - Move right</p>
+                                        <p>An INNER JOIN returns only the rows where there is a match in BOTH tables based on the JOIN condition. If a row in either table has no matching row in the other table, it is excluded from the results. This is the most restrictive type of JOIN.</p>
                                     </div>
                                 </div>
                             </div>
@@ -98,17 +94,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Word Movement Commands</h2>
-<p>What are the three basic word movement commands in Normal mode?</p>
+                                        <h2>INNER JOIN Mental Model</h2>
+<p>Using the mental model of "only the overlap," what happens to customers with no orders and orders with no matching customer in an INNER JOIN between customers and orders tables?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>w</code> - Move to next word start
-<code>b</code> - Move to previous word start
-<code>e</code> - Move to next word end</p>
+                                        <p>Both are excluded from the results. Customers with no orders don't appear because there's no matching order row. Orders with no matching customer don't appear because there's no matching customer row. Only customers who have orders (the overlap) appear in the result set.</p>
                                     </div>
                                 </div>
                             </div>
@@ -122,17 +116,15 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Find Character Commands</h2>
-<p>What is the difference between <code>f</code> and <code>t</code> in Helix?</p>
+                                        <h2>LEFT JOIN Definition</h2>
+<p>What is a LEFT JOIN (LEFT OUTER JOIN) and what rows does it return?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>f</code> - Find next character (cursor moves to the character)
-<code>t</code> - Find till next character (cursor stops before the character)
-Unlike Vim, these commands are NOT confined to the current line.</p>
+                                        <p>A LEFT JOIN returns ALL rows from the left (first) table, plus matching rows from the right (second) table. When there's no match in the right table, the result includes the left table row with NULL values for all right table columns. This ensures no rows from the left table are lost.</p>
                                     </div>
                                 </div>
                             </div>
@@ -146,18 +138,15 @@ Unlike Vim, these commands are NOT confined to the current line.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Undo and Redo</h2>
-<p>What are the commands for undo and redo in Helix?</p>
+                                        <h2>LEFT JOIN Mental Model</h2>
+<p>In a LEFT JOIN between customers (left) and orders (right), what appears in the result set for a customer who has never placed an order?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>u</code> - Undo change
-<code>U</code> - Redo change
-<code>Alt-u</code> - Move backward in history
-<code>Alt-U</code> - Move forward in history</p>
+                                        <p>The customer's information appears with all their column values intact, but all columns from the orders table will be NULL for that row. This preserves the customer record while indicating there are no associated orders.</p>
                                     </div>
                                 </div>
                             </div>
@@ -171,20 +160,15 @@ Unlike Vim, these commands are NOT confined to the current line.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Insert Mode Variants</h2>
-<p>What are the six main ways to enter insert mode from Normal mode?</p>
+                                        <h2>Finding Unmatched Rows with LEFT JOIN</h2>
+<p>How can you use a LEFT JOIN to find rows in the left table that have NO matching rows in the right table?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>i</code> - Insert before selection
-<code>a</code> - Insert after selection (append)
-<code>I</code> - Insert at line start
-<code>A</code> - Insert at line end
-<code>o</code> - Open new line below
-<code>O</code> - Open new line above</p>
+                                        <p>Perform a LEFT JOIN and then add a WHERE clause that checks for NULL in the right table's primary key (or any NOT NULL column). For example: <code>WHERE orders.order_id IS NULL</code> would find all customers with no orders.</p>
                                     </div>
                                 </div>
                             </div>
@@ -198,18 +182,15 @@ Unlike Vim, these commands are NOT confined to the current line.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Yank and Paste</h2>
-<p>What are the commands for yanking and pasting in Helix?</p>
+                                        <h2>RIGHT JOIN Definition</h2>
+<p>What is a RIGHT JOIN and why is it less commonly used than LEFT JOIN?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>y</code> - Yank (copy) selection
-<code>p</code> - Paste after selection
-<code>P</code> - Paste before selection
-<code>"&lt;reg&gt;</code> - Select register for yank/paste operations</p>
+                                        <p>A RIGHT JOIN returns ALL rows from the right (second) table plus matching rows from the left (first) table. It's less common because it's logically equivalent to a LEFT JOIN with the tables swapped - most developers prefer to rewrite queries using LEFT JOIN for consistency and readability.</p>
                                     </div>
                                 </div>
                             </div>
@@ -223,17 +204,15 @@ Unlike Vim, these commands are NOT confined to the current line.</p>
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Delete vs Change</h2>
-<p>What is the difference between <code>d</code> and <code>c</code> in Helix?</p>
+                                        <h2>FULL OUTER JOIN Definition</h2>
+<p>What is a FULL OUTER JOIN and what rows does it return?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>d</code> - Delete selection (stays in normal mode)
-<code>c</code> - Change selection (deletes and enters insert mode)
-Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank the deleted text.</p>
+                                        <p>A FULL OUTER JOIN returns ALL rows from BOTH tables. When there's a match, rows are combined. When there's no match, the row from one table appears with NULLs for the other table's columns. This means rows with matches appear once (combined), and rows without matches appear with NULLs on the side that didn't match.</p>
                                     </div>
                                 </div>
                             </div>
@@ -247,15 +226,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Select Entire File</h2>
-<p>How do you select the entire file in Helix?</p>
+                                        <h2>FULL OUTER JOIN Use Cases</h2>
+<p>What is a common use case for FULL OUTER JOIN and why is it relatively rare?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>%</code> - Select entire file. This is useful before performing operations on the whole document.</p>
+                                        <p>A common use case is finding all mismatches - identifying rows that exist in either table but not both (such as customers with no orders AND orders with no valid customer). It's rare because most business questions focus on matched data or preserving just one side of the relationship, not both.</p>
                                     </div>
                                 </div>
                             </div>
@@ -269,17 +248,20 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Split Selection on Regex</h2>
-<p>What are the two main commands for splitting selections in Helix?</p>
+                                        <h2>JOIN Types Venn Diagram</h2>
+<p>Using Venn diagram terminology, describe what each JOIN type returns: INNER, LEFT, RIGHT, and FULL OUTER.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>s</code> - Select all regex matches inside selections
-<code>S</code> - Split selection into sub-selections on regex matches
-<code>Alt-s</code> - Split selection on newlines</p>
+                                        <ul>
+<li>INNER JOIN: Only the overlap (intersection) of both circles</li>
+<li>LEFT JOIN: Entire left circle plus the overlap</li>
+<li>RIGHT JOIN: Entire right circle plus the overlap  </li>
+<li>FULL OUTER JOIN: Both entire circles (union of both sets)</li>
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -293,19 +275,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Search Commands</h2>
-<p>What are the main search commands in Helix?</p>
+                                        <h2>Self JOIN Concept</h2>
+<p>What is a self-join and what does it allow you to do?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>/</code> - Search for regex pattern
-<code>n</code> - Select next match
-<code>N</code> - Select previous match
-<code>*</code> - Use current selection as search pattern (with word boundaries)
-<code>Alt-*</code> - Use selection as search pattern (no word boundaries)</p>
+                                        <p>A self-join is when a table is joined to itself. It allows you to compare rows within the same table or traverse hierarchical relationships. The table must be given different aliases to distinguish between the "left" and "right" instances in the JOIN.</p>
                                     </div>
                                 </div>
                             </div>
@@ -319,22 +297,19 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Minor Modes Access Keys</h2>
-<p>What keys access the main minor modes in Helix?</p>
+                                        <h2>Self JOIN Use Cases</h2>
+<p>Name three common use cases for self-joins.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>v</code> - Select/extend mode
-<code>g</code> - Goto mode
-<code>m</code> - Match mode
-<code>z</code> - View mode
-<code>Z</code> - View mode (sticky)
-<code>Ctrl-w</code> - Window mode
-<code>Space</code> - Space mode
-<code>:</code> - Command mode</p>
+                                        <ol>
+<li>Hierarchical relationships - such as an employees table where each employee has a manager_id pointing to another employee</li>
+<li>Comparing rows - finding pairs of products in the same category or customers in the same city</li>
+<li>Finding sequences - identifying related events or transactions that follow certain patterns</li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -348,17 +323,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>View Mode Vertical Alignment</h2>
-<p>In View mode (<code>z</code>), how do you align the current line to different vertical positions?</p>
+                                        <h2>Self JOIN Example Structure</h2>
+<p>In a self-join finding employees and their managers, why do you need table aliases and what would the JOIN condition typically look like?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>z</code> or <code>c</code> - Center line vertically
-<code>t</code> - Align to top of screen
-<code>b</code> - Align to bottom of screen</p>
+                                        <p>You need aliases (like <code>e</code> for employee and <code>m</code> for manager) to distinguish between the two instances of the same table. The JOIN condition typically looks like: <code>e.manager_id = m.employee_id</code>, connecting each employee's manager_id to the corresponding manager's employee_id in the same table.</p>
                                     </div>
                                 </div>
                             </div>
@@ -372,19 +345,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Goto Mode Line Navigation</h2>
-<p>In Goto mode (<code>g</code>), what are the commands for navigating to different parts of the file?</p>
+                                        <h2>CROSS JOIN Definition</h2>
+<p>What is a CROSS JOIN and what does it produce?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>gg</code> - Start of file
-<code>ge</code> - End of file
-<code>gh</code> - Start of line
-<code>gl</code> - End of line
-<code>gs</code> - First non-whitespace character</p>
+                                        <p>A CROSS JOIN produces the complete Cartesian product - every possible combination of rows from both tables. If Table A has m rows and Table B has n rows, the result has m × n rows. It has NO JOIN condition or ON clause.</p>
                                     </div>
                                 </div>
                             </div>
@@ -398,18 +367,18 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Goto Mode LSP Navigation</h2>
-<p>In Goto mode (<code>g</code>), what are the LSP navigation commands?</p>
+                                        <h2>CROSS JOIN Use Cases</h2>
+<p>Name two legitimate use cases for CROSS JOIN despite it being rarely used.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>gd</code> - Go to definition
-<code>gy</code> - Go to type definition
-<code>gr</code> - Go to references
-<code>gi</code> - Go to implementation</p>
+                                        <ol>
+<li>Generating combinations - such as creating all possible pairings of products and sizes, or all date-category combinations for a reporting framework</li>
+<li>Creating test data - generating large datasets by combining smaller lookup tables in all possible ways</li>
+</ol>
                                     </div>
                                 </div>
                             </div>
@@ -423,17 +392,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Match Mode Surround Operations</h2>
-<p>In Match mode (<code>m</code>), what are the three surround commands?</p>
+                                        <h2>CROSS JOIN Warning</h2>
+<p>Why should CROSS JOIN be used with caution, and what's a common mistake that accidentally creates one?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>ms&lt;char&gt;</code> - Surround with character
-<code>mr&lt;from&gt;&lt;to&gt;</code> - Replace surround character
-<code>md&lt;char&gt;</code> - Delete surround character</p>
+                                        <p>CROSS JOIN should be used with caution because it can create enormous result sets very quickly (multiplying row counts). A common mistake is forgetting the ON clause in a regular JOIN, which some SQL dialects interpret as a CROSS JOIN, potentially causing performance issues or unexpected results.</p>
                                     </div>
                                 </div>
                             </div>
@@ -447,16 +414,19 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Match Mode Textobjects</h2>
-<p>In Match mode (<code>m</code>), how do you select textobjects?</p>
+                                        <h2>JOIN Syntax Variations</h2>
+<p>What are the two main syntax styles for writing JOINs, and which is recommended?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>ma&lt;object&gt;</code> - Select around textobject (including delimiters)
-<code>mi&lt;object&gt;</code> - Select inside textobject (excluding delimiters)</p>
+                                        <ol>
+<li>Explicit JOIN syntax (recommended): Uses JOIN keywords with ON clauses, like <code>FROM table1 JOIN table2 ON condition</code></li>
+<li>Implicit JOIN syntax (older): Uses comma-separated tables with WHERE conditions, like <code>FROM table1, table2 WHERE condition</code></li>
+</ol>
+<p>The explicit syntax is recommended because it's clearer, separates JOIN logic from filtering logic, and is the modern SQL standard.</p>
                                     </div>
                                 </div>
                             </div>
@@ -470,18 +440,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Window Mode Split Commands</h2>
-<p>In Window mode (<code>Ctrl-w</code>), what are the commands for creating splits?</p>
+                                        <h2>Multiple JOINs</h2>
+<p>How do you join three or more tables together, and in what order are the JOINs processed?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>v</code> or <code>Ctrl-v</code> - Vertical right split
-<code>s</code> or <code>Ctrl-s</code> - Horizontal bottom split
-<code>q</code> or <code>Ctrl-q</code> - Close current window
-<code>o</code> or <code>Ctrl-o</code> - Only keep current window</p>
+                                        <p>Chain multiple JOINs together sequentially. JOINs are processed left-to-right: the first JOIN combines the first two tables, then the result is joined with the third table, and so on. Each JOIN operation builds on the result of the previous one.</p>
                                     </div>
                                 </div>
                             </div>
@@ -495,18 +462,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Window Mode Navigation</h2>
-<p>In Window mode (<code>Ctrl-w</code>), how do you navigate between splits?</p>
+                                        <h2>Table Aliases Purpose</h2>
+<p>Why are table aliases important when writing JOINs, and when are they absolutely required?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>h</code> or <code>Ctrl-h</code> or <code>Left</code> - Move to left split
-<code>j</code> or <code>Ctrl-j</code> or <code>Down</code> - Move to split below
-<code>k</code> or <code>Ctrl-k</code> or <code>Up</code> - Move to split above
-<code>l</code> or <code>Ctrl-l</code> or <code>Right</code> - Move to right split</p>
+                                        <p>Table aliases make queries shorter and more readable by providing abbreviated names for tables. They are REQUIRED in two situations: (1) self-joins, where you need to distinguish between different instances of the same table, and (2) when referencing ambiguous column names that exist in multiple joined tables.</p>
                                     </div>
                                 </div>
                             </div>
@@ -520,18 +484,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Space Mode File Pickers</h2>
-<p>In Space mode, what are the main file and buffer picker commands?</p>
+                                        <h2>Qualifying Column Names</h2>
+<p>What does it mean to "qualify" a column name, and when should you do it?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Space-f</code> - File picker at LSP workspace root
-<code>Space-F</code> - File picker at current directory
-<code>Space-b</code> - Buffer picker
-<code>Space-g</code> - Changed file picker</p>
+                                        <p>Qualifying a column means prefixing it with its table name or alias (e.g., <code>customers.customer_id</code> or <code>c.customer_id</code>). You MUST qualify column names when the same column name exists in multiple joined tables to avoid ambiguity errors. It's best practice to always qualify columns in JOINs for clarity, even when not strictly required.</p>
                                     </div>
                                 </div>
                             </div>
@@ -545,18 +506,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Space Mode LSP Operations</h2>
-<p>In Space mode, what are the main LSP operation commands?</p>
+                                        <h2>NULL Behavior in JOINs</h2>
+<p>How do NULLs behave in JOIN conditions, and what's an important consideration when joining on nullable columns?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Space-k</code> - Show documentation (hover)
-<code>Space-r</code> - Rename symbol
-<code>Space-a</code> - Code action
-<code>Space-h</code> - Select references to symbol</p>
+                                        <p>NULL never equals NULL in SQL comparison logic, so <code>NULL = NULL</code> evaluates to FALSE (or UNKNOWN). This means rows with NULL values in JOIN columns won't match each other, even if both sides have NULL. When joining on nullable foreign keys, rows with NULL foreign keys will appear in LEFT JOINs from the left table but won't match any right table rows.</p>
                                     </div>
                                 </div>
                             </div>
@@ -570,19 +528,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Space Mode Clipboard Operations</h2>
-<p>In Space mode, what are the clipboard yank and paste commands?</p>
+                                        <h2>JOIN Condition vs WHERE Filter</h2>
+<p>What is the difference between the JOIN condition (ON clause) and WHERE clause filters?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Space-y</code> - Yank to clipboard
-<code>Space-Y</code> - Yank main selection to clipboard
-<code>Space-p</code> - Paste from clipboard after
-<code>Space-P</code> - Paste from clipboard before
-<code>Space-R</code> - Replace selections with clipboard</p>
+                                        <p>The ON clause determines HOW tables are matched together - it defines which rows from the tables should be combined. The WHERE clause filters the RESULT after the JOIN is complete. For INNER JOINs, the distinction matters less, but for OUTER JOINs it's critical: WHERE filters can remove the "preserved" rows that OUTER JOINs are designed to keep.</p>
                                     </div>
                                 </div>
                             </div>
@@ -596,15 +550,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Global Search Command</h2>
-<p>How do you open the global search in Helix and what is special about it?</p>
+                                        <h2>WHERE Clause After OUTER JOIN</h2>
+<p>What happens when you apply a WHERE clause filter to the right table after a LEFT JOIN?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Space-/</code> - Open global search picker. It uses regex (not fuzzy matching) and displays results in a fuzzy picker. Use <code>Space-'</code> to bring it back after opening a file.</p>
+                                        <p>Filtering the right table in WHERE can eliminate the unmatched rows that LEFT JOIN was meant to preserve. If you filter <code>WHERE right_table.column = value</code>, rows where right_table columns are NULL (the unmatched rows) will be excluded. To avoid this, include <code>OR right_table.column IS NULL</code> in the WHERE condition, or move the filter into the ON clause if you want to filter BEFORE joining.</p>
                                     </div>
                                 </div>
                             </div>
@@ -618,18 +572,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unimpaired Diagnostic Navigation</h2>
-<p>What are the unimpaired commands for navigating diagnostics?</p>
+                                        <h2>Complex JOIN Conditions</h2>
+<p>Can JOIN conditions use operators other than equality, and can they include multiple conditions?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>]d</code> - Next diagnostic
-<code>[d</code> - Previous diagnostic
-<code>]D</code> - Last diagnostic in document
-<code>[D</code> - First diagnostic in document</p>
+                                        <p>Yes. JOIN conditions can use any comparison operators (=, &lt;, &gt;, &lt;=, &gt;=, !=) and can combine multiple conditions using AND/OR. Examples include: range joins (<code>a.date BETWEEN b.start_date AND b.end_date</code>), inequality joins (<code>a.price &gt; b.price</code>), and compound conditions joining on multiple columns (<code>a.year = b.year AND a.month = b.month</code>).</p>
                                     </div>
                                 </div>
                             </div>
@@ -643,18 +594,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Unimpaired Tree Sitter Navigation</h2>
-<p>What are the unimpaired commands for navigating functions, types, and arguments using tree-sitter?</p>
+                                        <h2>JOIN Order and Performance</h2>
+<p>Does the order of tables in JOIN clauses affect query results or performance?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>]f</code> / <code>[f</code> - Next/previous function
-<code>]t</code> / <code>[t</code> - Next/previous type
-<code>]a</code> / <code>[a</code> - Next/previous argument
-<code>]c</code> / <code>[c</code> - Next/previous comment</p>
+                                        <p>For INNER JOINs, the order doesn't affect the logical result set (though it may affect column order in SELECT *). For OUTER JOINs, order matters because it determines which table's rows are preserved. For performance, modern query optimizers typically rearrange JOINs for efficiency regardless of how you write them, though starting with smaller tables or more selective filters can sometimes help the optimizer.</p>
                                     </div>
                                 </div>
                             </div>
@@ -668,18 +616,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Insert Mode Essential Commands</h2>
-<p>What are the essential commands in Insert mode?</p>
+                                        <h2>Unintentional Cartesian Product</h2>
+<p>What causes an unintentional Cartesian product, and what are the warning signs?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Escape</code> - Return to normal mode
-<code>Ctrl-s</code> - Commit undo checkpoint
-<code>Ctrl-x</code> - Autocomplete
-<code>Ctrl-r</code> - Insert register content</p>
+                                        <p>An unintentional Cartesian product occurs when you forget the JOIN condition (ON clause) or write an incorrect/too-broad condition that matches many rows. Warning signs include: (1) unexpectedly large result sets, (2) duplicate data appearing multiple times, (3) row counts equal to the product of the table sizes, and (4) slow query performance.</p>
                                     </div>
                                 </div>
                             </div>
@@ -693,16 +638,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Insert Mode Word Deletion</h2>
-<p>How do you delete words in Insert mode?</p>
+                                        <h2>JOIN Mental Model Summary</h2>
+<p>Describe the mental model for understanding how JOINs work conceptually.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>Ctrl-w</code> or <code>Alt-Backspace</code> - Delete previous word
-<code>Alt-d</code> or <code>Alt-Delete</code> - Delete next word</p>
+                                        <p>Think of JOINs as: (1) Start with the Cartesian product - all possible row combinations, (2) Apply the ON condition as a filter - keep only matching combinations, (3) For OUTER JOINs - preserve unmatched rows from specified table(s) with NULLs for the other side, (4) Result is a temporary combined dataset that you can then filter (WHERE), sort (ORDER BY), or aggregate.</p>
                                     </div>
                                 </div>
                             </div>
@@ -716,15 +660,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Select Extend Mode Purpose</h2>
-<p>What is the purpose of Select/Extend mode (<code>v</code>) and how does it differ from Normal mode?</p>
+                                        <h2>One-to-Many JOIN Multiplication</h2>
+<p>What happens to row counts when you JOIN a customer table (one side) with an orders table (many side)?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Select/Extend mode movements extend selections rather than replace them. It's particularly useful for iterative searching—toggle it on before pressing <code>n</code> or <code>N</code> to keep the current selection while adding more search matches.</p>
+                                        <p>Row multiplication occurs on the "one" side. Each customer row appears multiple times in the result - once for each of their orders. A customer with 5 orders appears in 5 rows. A customer with 0 orders doesn't appear at all (in INNER JOIN) or appears once with NULL order columns (in LEFT JOIN). This is normal behavior for one-to-many relationships.</p>
                                     </div>
                                 </div>
                             </div>
@@ -738,135 +682,15 @@ Both have Alt variants (<code>Alt-d</code>, <code>Alt-c</code>) that don't yank 
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Picker Navigation and Opening</h2>
-<p>What are the main commands for navigating and opening items in pickers?</p>
+                                        <h2>Why JOINs Exist</h2>
+<p>Why do relational databases use JOINs instead of storing all related data in a single table?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Navigation: <code>Tab</code>/<code>Down</code> (next), <code>Shift-Tab</code>/<code>Up</code> (previous), <code>Home</code> (first), <code>End</code> (last)
-Opening: <code>Enter</code> (open), <code>Alt-Enter</code> (open in background), <code>Ctrl-s</code> (horizontal split), <code>Ctrl-v</code> (vertical split)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Collapse and Keep Primary Selection</h2>
-<p>What do <code>;</code> and <code>,</code> do for selection manipulation?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>;</code> - Collapse selection onto a single cursor
-<code>,</code> - Keep only the primary selection (removes all other selections)
-<code>Alt-,</code> - Remove the primary selection (keeps all others)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Add Cursor Above and Below</h2>
-<p>How do you add cursors on adjacent lines in Helix?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>C</code> - Copy selection onto the next line (add cursor below)
-<code>Alt-C</code> - Copy selection onto the previous line (add cursor above)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Increment and Decrement Numbers</h2>
-<p>How do you increment or decrement a number under the cursor?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>Ctrl-a</code> - Increment number under cursor
-<code>Ctrl-x</code> - Decrement number under cursor</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Toggle Comments</h2>
-<p>What are the commands for toggling comments in Helix?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>Ctrl-c</code> - Toggle comments (in normal mode)
-<code>Space-c</code> - Toggle comments (in space mode)
-<code>Space-C</code> - Toggle block comments
-<code>Space-Alt-c</code> - Toggle line comments</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Jumplist Navigation</h2>
-<p>How do you navigate through the jumplist in Helix?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>Ctrl-i</code> - Jump forward on the jumplist
-<code>Ctrl-o</code> - Jump backward on the jumplist
-<code>Ctrl-s</code> - Save current selection to the jumplist</p>
+                                        <p>JOINs exist because of normalization. Storing data in separate tables eliminates redundancy, maintains data integrity, and makes updates easier. JOINs are the mechanism that temporarily reunites this normalized data when you need to see it together. They allow you to benefit from normalized storage (efficient, consistent) while still being able to view and query related data as if it were in one table.</p>
                                     </div>
                                 </div>
                             </div>
