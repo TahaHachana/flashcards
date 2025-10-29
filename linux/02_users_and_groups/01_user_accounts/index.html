@@ -1,0 +1,1856 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Linux - 02 Users And Groups - 01 User Accounts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Types of Linux Accounts</h2>
+<p>What are the three types of accounts in Linux, what are their UID ranges, and what is the purpose of each type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>System Accounts</strong>: UID 1-4 (UID 0 reserved for root). Represent parts of the Linux OS itself; various components have access to different resources.</p>
+</li>
+<li>
+<p><strong>Service Accounts</strong>: UID 100-999 (varies by distribution). Allow applications and services to access system resources (CPU, memory, networking). Example: Apache web server (httpd).</p>
+</li>
+<li>
+<p><strong>User Accounts</strong>: UID 1000+ (varies by distribution). Represent people authenticating to the system to access resources. Most commonly managed by administrators.</p>
+</li>
+</ol>
+<p>Note: UID ranges may vary between Linux distributions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Usernames vs UIDs</h2>
+<p>What is the difference between a username and a UID? Which does Linux actually use for access control, and why does this matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Username</strong>: Human-readable label administrators use (e.g., kgarcia, kaig, kai_garcia). Based on organizational preferences/standards.</p>
+<p><strong>UID (User ID)</strong>: Unique numeric identifier that Linux actually uses internally to manage accounts and control access.</p>
+<p><strong>Key Point</strong>: Linux compares the UID (not username) against resource permissions to grant or deny access. Usernames are for human convenience; UIDs are what the system works with.</p>
+<p><strong>Why it matters</strong>: If you delete and recreate an account with the same username, it gets a different UID and won't have access to the old user's files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>/etc/passwd and /etc/shadow Purpose</h2>
+<p>Why are user accounts stored in TWO files (/etc/passwd and /etc/shadow) instead of one? What does each file contain and what are their access permissions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Historical Reason</strong>: Passwords were originally in /etc/passwd (second field), but this file is world-readable (all users can read it), creating a security vulnerability.</p>
+<p><strong>Modern Solution</strong>:
+- <strong>/etc/passwd</strong>: Contains account information (username, UID, GID, comment, home directory, shell). World-readable. Password field shows "x" as placeholder.</p>
+<ul>
+<li><strong>/etc/shadow</strong>: Contains hashed passwords and password aging information. Only readable by root (administrator). Much more secure.</li>
+</ul>
+<p><strong>Security Benefit</strong>: Users can see account information they need, but password hashes remain protected from unauthorized access and offline attacks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Seven Fields in /etc/passwd</h2>
+<p>List and explain the seven colon-separated fields in an /etc/passwd entry.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Format: <code>username:x:UID:GID:comment:home_directory:login_shell</code></p>
+<ol>
+<li><strong>Username</strong>: Login name (e.g., kgarcia)</li>
+<li><strong>Password Placeholder</strong>: "x" indicates password is in /etc/shadow</li>
+<li><strong>UID</strong>: User ID number - unique identifier Linux uses</li>
+<li><strong>GID</strong>: Primary group ID number</li>
+<li><strong>Comment (GECOS)</strong>: Usually full name, can include contact info</li>
+<li><strong>Home Directory</strong>: Absolute path (e.g., /home/kgarcia)</li>
+<li><strong>Login Shell</strong>: Default shell path (e.g., /bin/bash)</li>
+</ol>
+<p>Example: <code>kgarcia:x:1001:1001:Kai Garcia:/home/kgarcia:/bin/ksh</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>useradd Command Options</h2>
+<p>What are the most common useradd options and what does each one do? Include the syntax format.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Syntax</strong>: <code>useradd -options username</code></p>
+<p><strong>Common Options</strong>:
+- <strong>-c</strong> "comment": Sets full name (use quotes if spaces)
+- <strong>-e</strong> YYYY-MM-DD: Sets account expiration date
+- <strong>-m</strong>: Creates home directory in /home
+- <strong>-s</strong> /path/shell: Sets default login shell
+- <strong>-u</strong> number: Sets specific UID
+- <strong>-D</strong>: Displays default settings</p>
+<p><strong>Example</strong>: <code>useradd -c "Kai Garcia" -e 2025-12-31 -s /bin/ksh -m kgarcia</code></p>
+<p><strong>Critical Note</strong>: useradd creates the account but does NOT set a password - must use passwd command separately.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>useradd vs adduser</h2>
+<p>Compare useradd and adduser commands. What are the key differences, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>useradd</strong> (All distributions):
+- Command-line driven, no prompts
+- Does NOT automatically set password
+- Requires separate passwd command
+- Better for scripts/automation
+- More control through options</p>
+<p><strong>adduser</strong> (Debian-based):
+- Interactive with prompts for details
+- Automatically prompts for password
+- More user-friendly
+- Modified interface to useradd
+- Better for manual account creation</p>
+<p><strong>Key Difference</strong>: adduser prompts for password during creation; useradd requires separate passwd command.</p>
+<p><strong>Installation</strong>: Can install adduser on Red Hat systems: <code>dnf install adduser</code> or <code>apt-get install adduser</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>usermod Command Usage</h2>
+<p>What does the usermod command do, and what are three common modifications you can make with it? Include example commands.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose</strong>: Modifies existing user accounts (cannot modify accounts with running processes)</p>
+<p><strong>Common Modifications</strong>:</p>
+<ol>
+<li>
+<p><strong>Change comment/full name</strong>:
+   <code>usermod -c "Joseph Deng" jdeng</code></p>
+</li>
+<li>
+<p><strong>Set account expiration</strong>:
+   <code>usermod -e 2027-12-31 alee</code>
+   (Account cannot authenticate after this date but is NOT deleted)</p>
+</li>
+<li>
+<p><strong>Change default shell</strong>:
+   <code>usermod -s /bin/ksh kgarcia</code></p>
+</li>
+</ol>
+<p><strong>Other Options</strong>: -d (home directory), -g (primary group), -L (lock), -U (unlock)</p>
+<p><strong>Critical Limitation</strong>: Will NOT modify accounts with running processes - user must log out first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>userdel Command and Home Directory</h2>
+<p>What does userdel do by default, and how does the -r option change its behavior? Why might you NOT want to use -r?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Default Behavior</strong>: <code>userdel username</code>
+- Removes account from /etc/passwd and /etc/shadow
+- User cannot log in
+- Home directory REMAINS on system with all files</p>
+<p><strong>With -r Option</strong>: <code>userdel -r username</code>
+- Removes account
+- Deletes home directory
+- Removes all files in home directory
+- Deletes mail spool
+- PERMANENT and IRREVERSIBLE</p>
+<p><strong>Why Preserve Home Directory</strong>:
+- User data may need to be assigned to other users
+- Files might be needed for business continuity
+- Important documents shouldn't be accidentally deleted
+- Allows data review before permanent deletion</p>
+<p><strong>Warning</strong>: Deleted accounts cannot be recovered. Recreating produces different UID, causing ownership/permission issues.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Exit Codes for User Commands</h2>
+<p>How do you check if a user management command succeeded or failed? What do exit codes 0, 9, and 6 indicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Check Exit Code</strong>: <code>echo $?</code> (displays exit code of most recent command)</p>
+<p><strong>Exit Code Meanings</strong>:
+- <strong>0</strong>: Success - command completed without errors
+- <strong>Non-zero</strong>: Error occurred</p>
+<p><strong>Common Exit Codes</strong>:</p>
+<p><strong>useradd</strong>:
+- 1: Couldn't update /etc/passwd
+- 9: Username already in use
+- 12: Couldn't create home directory</p>
+<p><strong>usermod/userdel</strong>:
+- 1: Couldn't update /etc/passwd
+- 2: Invalid command syntax
+- 6: Specified user doesn't exist
+- 8: Cannot modify/delete - user currently logged in</p>
+<p><strong>All executables have exit codes</strong> - use echo $? to check success/failure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Variables and Comments</h2>
+<p>In a bash script for user creation, what are variables and comments? How do you identify each, and why are they important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Variables</strong>:
+- Placeholders for values identified by $ prefix
+- Example: <code>$username</code>
+- Allow scripts to work with different values
+- Enable automation and reusability</p>
+<p><strong>Example Usage</strong>:</p>
+<pre><code class="language-bash">while read username; do
+    useradd -c &quot;$username&quot; $username
+done &lt; userlist.txt
+</code></pre>
+<p>The <code>$username</code> gets replaced with each line from file.</p>
+<p><strong>Comments</strong>:
+- Lines preceded by # character
+- Not executed by system - for humans only
+- Explain purpose, document settings, clarify sections
+- Essential for collaboration and future reference</p>
+<p><strong>Example</strong>: <code># This script creates developer accounts</code></p>
+<p><strong>Best Practice</strong>: Comment extensively for complex scripts, unusual settings, or scripts shared with others.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Benefits of Scripting</h2>
+<p>What are the three primary benefits of using scripts for repetitive user management tasks?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Consistent Settings</strong>: Script runs the same way every time. All accounts created with identical options. No variation between executions.</p>
+</li>
+<li>
+<p><strong>Speed</strong>: System processes script commands much faster than manual typing. Can create dozens of accounts in seconds instead of minutes/hours.</p>
+</li>
+<li>
+<p><strong>Reduced Errors</strong>: Script cannot make typographical errors (if the script itself is correct). Eliminates human mistakes like typos, forgotten options, or inconsistent settings.</p>
+</li>
+</ol>
+<p><strong>Additional Benefits</strong>: Scalability (5 users or 500 users same effort), documentation (script serves as process documentation), maintainability (change once, affects all future runs).</p>
+<p><strong>Key Principle</strong>: Automation is critical for sysadmins. Script any task performed more than a few times.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Account Information Display Commands</h2>
+<p>Compare the commands whoami, who, w, and id. What does each display and when would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>whoami</strong>:
+- Displays current user's username only
+- Use when prompt doesn't show username or after su command</p>
+<p><strong>who</strong>:
+- Shows all currently logged-in users (basic info)
+- Displays: username, terminal, login time, source IP
+- Use for simple check of who's online</p>
+<p><strong>w</strong>:
+- Shows all logged-in users (detailed info)
+- Includes: idle time, CPU usage, current process
+- Use before system restarts to warn users
+- <strong>Idle time</strong> particularly useful to identify inactive sessions</p>
+<p><strong>id [username]</strong>:
+- Shows UID, GID, and group memberships
+- For current user or specified user
+- Use for troubleshooting permissions or verifying group membership</p>
+<p><strong>Key Difference</strong>: who/w show current sessions; whoami/id show account details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>PAM and pam_faillock</h2>
+<p>What is PAM, why is it needed, and what does the pam_faillock module do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>PAM (Pluggable Authentication Modules)</strong>:
+- Supplements standard Linux authentication (/etc/passwd and /etc/shadow)
+- Provides flexible, customizable authentication
+- Different organizations need different security levels (banks vs. small businesses)
+- Allows modular approach to authentication</p>
+<p><strong>pam_faillock Module</strong> (current/recommended):
+- Tracks login attempts (successes and failures)
+- Blocks authentication after too many failed attempts
+- Example: Lock account after 3 failed login attempts
+- Prevents brute-force password attacks
+- Configurable lockout duration</p>
+<p><strong>Deprecated</strong>: pam_tally2 (older version, only use if pam_faillock unavailable)</p>
+<p><strong>faillock Command</strong>: Administrators use to display login attempt information and reset locked accounts: <code>faillock --user username --reset</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>lastlog vs last Commands</h2>
+<p>What is the difference between lastlog and last commands? What does each show and which log file does each read from?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>lastlog</strong>:
+- Shows LAST LOGIN ONLY for each account
+- One entry per user
+- Displays: username, terminal, source, timestamp
+- Shows "Never logged in" for unused accounts
+- Log file: /var/log/lastlog
+- <strong>Best for</strong>: Identifying inactive accounts for deletion</p>
+<p><strong>last</strong>:
+- Shows ALL login and logout events (complete history)
+- Multiple entries per user
+- Includes session duration and logout times
+- Can filter by user, date, terminal
+- Log file: /var/log/wtmp
+- <strong>Best for</strong>: Comprehensive audits, security investigations, compliance reports</p>
+<p><strong>Key Difference</strong>: lastlog = snapshot (most recent), last = complete history</p>
+<p><strong>Security Best Practice</strong>: "It is good security practice to delete unused user accounts, and these tools help identify such accounts."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>passwd Command Basics</h2>
+<p>How does the passwd command work differently for regular users vs. administrators? What security feature affects password entry?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Regular User</strong>: <code>passwd</code>
+- Changes own password only
+- Must provide current password first
+- Then enter new password twice</p>
+<p><strong>Administrator</strong>: <code>sudo passwd username</code>
+- Can change any user's password
+- Does NOT need current password
+- Can unlock locked accounts
+- More powerful, requires root/sudo</p>
+<p><strong>Security Feature - No Display</strong>:
+- Linux does NOT display characters when typing passwords
+- No asterisks, dots, or any visual feedback
+- Screen appears unresponsive
+- Prevents observers from counting password length
+- Long-standing Unix security tradition</p>
+<p><strong>Why No Display</strong>: Additional security layer - even shoulder surfers can't determine password length or complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>passwd -S Output Fields</h2>
+<p>What do the fields in "passwd -S username" output mean? Interpret this example: "kgarcia P 10/29/2025 7 90 14 -1"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Format</strong>: username status lastchange min max warn inactive</p>
+<p><strong>Example Interpretation</strong>: <code>kgarcia P 10/29/2025 7 90 14 -1</code></p>
+<ul>
+<li><strong>kgarcia</strong>: Username</li>
+<li><strong>P</strong>: Password status (P=set, L=locked, NP=no password)</li>
+<li><strong>10/29/2025</strong>: Last password change date</li>
+<li><strong>7</strong>: Minimum days between password changes</li>
+<li><strong>90</strong>: Maximum days before password must change</li>
+<li><strong>14</strong>: Warning period (days before expiration to warn user)</li>
+<li><strong>-1</strong>: Inactivity period (-1=disabled, or days after expiration before account disabled)</li>
+</ul>
+<p><strong>Calculation</strong>: Password must be changed by January 27, 2026 (90 days from 10/29). User warned starting January 13, 2026 (14 days before).</p>
+<p><strong>Status Codes</strong>: P (password), L (locked), PS (password expired), NP (no password)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Policy Options</h2>
+<p>What passwd command options set password expiration policies? Give example commands for: 90-day max age, 7-day min age, 14-day warning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Maximum Password Age</strong> (expiration):
+<code>sudo passwd -x 90 username</code>
+Password must be changed every 90 days</p>
+<p><strong>Minimum Password Age</strong> (prevents cycling):
+<code>sudo passwd -n 7 username</code>
+Cannot change password more than once per 7 days (prevents reverting to old password)</p>
+<p><strong>Warning Period</strong>:
+<code>sudo passwd -w 14 username</code>
+User warned 14 days before password expires</p>
+<p><strong>Force Password Change on Next Login</strong>:
+<code>sudo passwd --expire username</code>
+User must change password immediately upon next login</p>
+<p><strong>Combined Example</strong>:
+<code>sudo passwd -x 90 -n 7 -w 14 username</code></p>
+<p><strong>Verification</strong>: Use <code>sudo chage -l username</code> (detailed, readable) or <code>sudo passwd -S username</code> (summary)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>chage Command vs passwd</h2>
+<p>Compare "passwd -S" and "chage -l" for checking password information. Which is preferred for verification and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>passwd -S username</strong>:
+- Summary format: one line
+- Shows: status, dates, numeric values
+- Requires interpretation
+- Quick check
+- Example: <code>kgarcia P 10/29/2025 7 90 14 -1</code></p>
+<p><strong>chage -l username</strong> (PREFERRED):
+- Detailed format: multiple labeled lines
+- Plain English descriptions
+- Shows calculated expiration dates
+- Easier to read and understand
+- Better for documentation
+- Self-explanatory output</p>
+<p><strong>Example chage -l Output</strong>:</p>
+<pre><code>Last password change                    : Oct 29, 2025
+Password expires                        : Jan 27, 2026
+Minimum number of days between change   : 7
+Maximum number of days between change   : 90
+Number of days of warning               : 14
+</code></pre>
+<p><strong>Best Practice</strong>: Use <code>chage -l</code> for verification and documentation; use <code>passwd -S</code> for quick status checks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Six-Step Login Troubleshooting</h2>
+<p>List the six-step troubleshooting checklist for user login failures in order, with the check method and solution for each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Follow in this order</strong>:</p>
+<ol>
+<li>
+<p><strong>Account exists?</strong>
+   Check: <code>getent passwd username</code>
+   Fix: <code>sudo useradd -m username</code></p>
+</li>
+<li>
+<p><strong>Password set?</strong>
+   Check: <code>sudo getent shadow username</code> (look for hash)
+   Fix: <code>sudo passwd username</code></p>
+</li>
+<li>
+<p><strong>Forgotten password?</strong>
+   Check: User reports can't log in, review failed attempts
+   Fix: <code>sudo passwd username</code></p>
+</li>
+<li>
+<p><strong>Password expired?</strong>
+   Check: <code>sudo chage -l username</code> (check expiration date)
+   Fix: <code>sudo passwd username</code></p>
+</li>
+<li>
+<p><strong>Account locked?</strong>
+   Check: <code>sudo passwd -S username</code> (look for 'L' status)
+   Fix: <code>sudo passwd -u username</code> or <code>sudo usermod -U username</code></p>
+</li>
+<li>
+<p><strong>Account expired?</strong>
+   Check: <code>sudo chage -l username</code> (check account expires field)
+   Fix: <code>sudo chage -E -1 username</code> (never expires) or set new date</p>
+</li>
+</ol>
+<p><strong>Principle</strong>: Start with most basic checks, progress systematically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three-Stage Login Process</h2>
+<p>Describe the three stages of the Linux login process. At which stage do most authentication problems occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Stage 1: System Boot and Kernel Load</strong>
+- OS boots, kernel loads, services start
+- System displays authentication prompt (login:)
+- Issues: System won't boot, no prompt appears
+- Usually works if you see login prompt</p>
+<p><strong>Stage 2: Authentication and Validation</strong> ← <strong>MOST PROBLEMS OCCUR HERE</strong>
+- User enters username and password
+- Linux checks /etc/passwd (account exists?)
+- Linux checks /etc/shadow (password correct?)
+- Linux checks account settings (expired? locked?)
+- PAM policies evaluated
+- Decision: Success (go to Stage 3) or Failure (return to login)</p>
+<p><strong>Stage 3: Environment Setup and Shell Launch</strong>
+- System processes profile files (/etc/profile, ~/.bashrc)
+- Applies user customizations (aliases, prompt, PATH)
+- Launches user's default shell
+- Issues: Invalid shell path, profile errors, permission problems</p>
+<p><strong>Key Point</strong>: Most authentication failures occur at Stage 2 during credential and account status validation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>getent passwd vs tail /etc/passwd</h2>
+<p>Why is "getent passwd" preferred over "tail /etc/passwd" or "cat /etc/passwd" for viewing user information?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>getent passwd [username]</strong>:
+- Shows users from ALL sources (local AND network)
+- Works with LDAP (Lightweight Directory Access Protocol)
+- Works with other directory services
+- Single command regardless of authentication backend
+- Complete picture of all users on system
+- <strong>Preferred in enterprise environments</strong></p>
+<p><strong>tail /etc/passwd</strong> or <strong>cat /etc/passwd</strong>:
+- Shows ONLY local users
+- Does NOT show LDAP or network-authenticated users
+- Incomplete view in directory service environments
+- Direct file reading
+- Works on simple, local-only systems</p>
+<p><strong>Key Advantage</strong>: getent works with multiple authentication backends, making it the better choice for verification, especially in LDAP environments.</p>
+<p><strong>Usage</strong>:
+- <code>getent passwd</code> - all users
+- <code>getent passwd username</code> - specific user
+- <code>getent shadow username</code> - password info (requires root)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Account Deletion is Irreversible</h2>
+<p>Why can't deleted user accounts be truly "recovered" even if you recreate them with the same username? What's the alternative to deletion?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The UID Problem</strong>:
+- Deleted account had UID 1001
+- Recreate same username gets NEW UID 1002
+- Different UID = different identity to Linux
+- Old files still owned by UID 1001
+- New account (UID 1002) doesn't own those files
+- Permissions won't work as expected
+- NO "undo" function exists</p>
+<p><strong>Example</strong>:</p>
+<pre><code>Original: kgarcia (UID 1001)
+Delete account
+Recreate: kgarcia (UID 1002) ← Different UID!
+Files owned by 1001 ≠ Files owned by 1002
+</code></pre>
+<p><strong>Better Alternative - DISABLE Instead of Delete</strong>:</p>
+<p><strong>Disable Methods</strong>:
+- Lock account: <code>usermod -L username</code>
+- Set past expiration: <code>usermod -e 1970-01-01 username</code>
+- Change to nologin: <code>usermod -s /sbin/nologin username</code></p>
+<p><strong>Benefits</strong>: Reversible, preserves UID, files remain accessible, can re-enable if needed.</p>
+<p><strong>When to Delete vs Disable</strong>: Disable for temporary/uncertain situations; delete only for permanent departures with no data needs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unlock Account Methods</h2>
+<p>A user account shows status 'L' when you run "passwd -S username". What are the two methods to unlock it, and what if it's locked due to failed login attempts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Standard Unlock Methods</strong> (both do the same thing):</p>
+<p><strong>Method 1</strong>: <code>sudo passwd -u username</code>
+<strong>Method 2</strong>: <code>sudo usermod -U username</code></p>
+<p>Both commands:
+- Remove the lock from account
+- Allow user to authenticate with existing password
+- Do NOT change the password</p>
+<p><strong>If Locked by PAM (Failed Attempts)</strong>:</p>
+<p><strong>Check failed attempts</strong>:
+<code>sudo faillock --user username</code></p>
+<p><strong>Reset failed attempt counter</strong>:
+<code>sudo faillock --user username --reset</code></p>
+<p><strong>May need both</strong>:
+1. Reset faillock counter (PAM unlock)
+2. Then use passwd -u or usermod -U (system unlock)</p>
+<p><strong>Verification</strong>:
+- <code>sudo passwd -S username</code> should show 'P' not 'L'
+- <code>sudo getent shadow username</code> should show normal password field (no ! prefix)</p>
+<p><strong>Before Unlocking</strong>: Verify user identity and investigate why account was locked (security consideration).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Creation Three Steps</h2>
+<p>What are the three basic steps to create and run a user management script in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Step 1: Create Text Document</strong>
+- Use any text editor (vim, nano, etc.)
+- Plain text format required
+- Name it descriptively (e.g., create_users.sh)
+- No special formatting needed</p>
+<p><strong>Step 2: Enter Commands</strong>
+- Write commands as you would in terminal
+- Add comments (# lines) for clarity
+- Include shebang line (optional but recommended): <code>#!/bin/bash</code>
+- Save and close file</p>
+<p><strong>Step 3: Set Execute Permission</strong>
+- Command: <code>chmod +x scriptname.sh</code>
+- Makes file executable
+- Allows system to run the commands</p>
+<p><strong>Running the Script</strong>:
+- <code>./scriptname.sh</code> (from current directory)
+- <code>/path/to/scriptname.sh</code> (full path)
+- <code>bash scriptname.sh</code> (explicit interpreter)</p>
+<p><strong>Safety Note</strong>: Test scripts on test systems or VMs first, never on production without testing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Expiration vs Account Expiration</h2>
+<p>What's the difference between password expiration and account expiration? How does each affect login, and which commands check each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Password Expiration</strong>:
+- Password needs changing
+- Account still usable after password change
+- User can log in once, forced to change password immediately
+- Set with: <code>passwd -x days username</code>
+- Check with: <code>chage -l username</code> (look at "Password expires")</p>
+<p><strong>Account Expiration</strong>:
+- Entire account disabled
+- Cannot log in at all, even with correct password
+- Useful for temporary employees/contractors
+- Set with: <code>usermod -e YYYY-MM-DD username</code> or <code>chage -E YYYY-MM-DD username</code>
+- Check with: <code>chage -l username</code> (look at "Account expires")</p>
+<p><strong>Key Difference</strong>:
+- Password expired = Can log in to change password
+- Account expired = Cannot log in at all</p>
+<p><strong>Unlock Methods</strong>:
+- Password: <code>passwd username</code> (sets new password)
+- Account: <code>chage -E -1 username</code> (never expires) or set new date</p>
+<p><strong>User Experience</strong>: Password expiration prompts for new password; account expiration shows "account expired" error.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>w Command Idle Time Significance</h2>
+<p>What does the idle time in the 'w' command output indicate, and why is this information particularly important for system administrators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Idle Time Display</strong>: Shows time since user's last activity (e.g., "5:23" = 5 minutes, 23 seconds idle)</p>
+<p><strong>Example Output</strong>:</p>
+<pre><code>USER    TTY   FROM            LOGIN@  IDLE   WHAT
+kgarcia pts/0 192.168.1.100   08:00   4:30:00 bash
+                                      ^^^^^^^^
+                                  User idle 4.5 hours!
+</code></pre>
+<p><strong>Why This Matters</strong>:</p>
+<p><strong>Security Implications</strong>:
+- User logged in but not actively using system
+- Session may be unattended
+- Workstation might be unlocked (security risk)
+- May indicate forgotten logout</p>
+<p><strong>Resource Management</strong>:
+- Idle sessions consume system resources
+- May hold locks on files
+- Can affect system performance
+- Helps identify sessions to terminate</p>
+<p><strong>Administrative Actions</strong>:
+- Contact user to verify they're done
+- Consider terminating long-idle sessions
+- Implement automatic timeout policies
+- Use before system maintenance to identify active vs inactive users</p>
+<p><strong>Key Advantage</strong>: The <code>w</code> command shows idle time; the <code>who</code> command does not.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Minimum Password Age Purpose</h2>
+<p>Why would you set a minimum password age with "passwd -n 7 username"? What problem does this prevent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose</strong>: Prevents users from rapidly cycling back to their old password, which would defeat password expiration policies.</p>
+<p><strong>The Problem Without Minimum Age</strong>:</p>
+<pre><code>Day 1: User forced to change expired password
+       Changes from &quot;OldPassword&quot; to &quot;NewPassword1&quot;
+Day 1 (5 seconds later): User immediately changes back
+       Changes from &quot;NewPassword1&quot; to &quot;OldPassword&quot;
+Result: Password expiration defeated!
+</code></pre>
+<p><strong>With 7-Day Minimum Age</strong>:</p>
+<pre><code>Day 1: User forced to change password
+       Changes to &quot;NewPassword1&quot;
+Day 1-7: Cannot change password again
+Day 8: Can change password if desired
+Result: Must use new password for at least 7 days
+</code></pre>
+<p><strong>Command</strong>: <code>sudo passwd -n 7 username</code></p>
+<p><strong>Common Values</strong>:
+- 0 days = Can change immediately (default)
+- 1 day = Once per day maximum
+- 7 days = Weekly minimum (common)
+- 14 days = Bi-weekly minimum</p>
+<p><strong>Enforces</strong>: Password history effectiveness by preventing immediate reversion to old passwords.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Failed Login Log Files</h2>
+<p>Name the three log files used by login tracking commands and what each contains. Which command reads each file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. /var/log/lastlog</strong>:
+- Contains: Last login time for each account
+- Command: <code>lastlog</code>
+- Format: Binary (not human-readable text)
+- Shows: One entry per user, includes "Never logged in" for unused accounts</p>
+<p><strong>2. /var/log/wtmp</strong>:
+- Contains: Complete history of all successful logins and logouts
+- Command: <code>last</code>
+- Format: Binary
+- Shows: All login/logout events, session durations, remote access info</p>
+<p><strong>3. /var/log/btmp</strong>:
+- Contains: Failed login attempts
+- Command: <code>lastb</code> (requires root)
+- Format: Binary
+- Shows: Authentication failures, potential brute-force attacks</p>
+<p><strong>Current Sessions</strong> (not from file):
+- Commands: <code>w</code> and <code>who</code>
+- Source: System memory (live data)
+- Shows: Currently logged-in users</p>
+<p><strong>Note</strong>: All binary format files require specific commands to read; cannot use cat or less directly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>adduser vs useradd Key Difference</h2>
+<p>What is THE most important difference between adduser and useradd that affects account usability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>THE Critical Difference - Password Handling</strong>:</p>
+<p><strong>useradd</strong>:
+- Does NOT prompt for password during creation
+- Creates account but leaves it unusable
+- Requires separate <code>passwd username</code> command
+- Two-step process: create account, then set password</p>
+<p><strong>adduser</strong>:
+- Automatically prompts for password during creation
+- Creates fully usable account in one step
+- Interactive process includes password setting
+- One-step process: account creation includes password</p>
+<p><strong>Why This Matters</strong>:
+- Most Linux systems won't allow login with blank password
+- useradd accounts are NOT usable until passwd command run separately
+- adduser accounts are immediately usable after creation
+- Easy to forget passwd step with useradd, creating unusable accounts</p>
+<p><strong>Example Workflows</strong>:</p>
+<p><strong>useradd</strong> (two commands):</p>
+<pre><code class="language-bash">sudo useradd -m jsmith
+sudo passwd jsmith      ← Must remember this!
+</code></pre>
+<p><strong>adduser</strong> (one command):</p>
+<pre><code class="language-bash">sudo adduser jsmith     ← Prompts for password automatically
+</code></pre>
+<p><strong>Distribution</strong>: adduser primarily on Debian-based systems; useradd on all distributions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Process Limitation</h2>
+<p>What critical limitation applies to both usermod and userdel commands? How do you work around this limitation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Critical Limitation</strong>: Neither <code>usermod</code> nor <code>userdel</code> will modify/delete users if the account has running processes.</p>
+<p><strong>Why This Restriction</strong>:
+- Protects active sessions from modification
+- Prevents system instability
+- Ensures clean account changes
+- Avoids corrupting running processes</p>
+<p><strong>Symptoms</strong>: Commands fail with error message like "user is currently logged in" or "user has running processes"</p>
+<p><strong>Workaround Steps</strong>:</p>
+<p><strong>1. Check for running processes</strong>:</p>
+<pre><code class="language-bash">ps -u username
+ps aux | grep username
+</code></pre>
+<p><strong>2. Check if user is logged in</strong>:</p>
+<pre><code class="language-bash">w
+who
+</code></pre>
+<p><strong>3. Resolution Options</strong>:
+   - Ask user to log out (preferred)
+   - Wait for user to finish work
+   - Terminate user processes (if appropriate): <code>pkill -u username</code>
+   - Kill specific process: <code>kill PID</code></p>
+<p><strong>4. Then run usermod/userdel</strong>:</p>
+<pre><code class="language-bash">sudo usermod -options username
+# or
+sudo userdel username
+</code></pre>
+<p><strong>Best Practice</strong>: Coordinate with users before modifying/deleting their accounts, especially during business hours.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Effective UID (EUID)</h2>
+<p>What is an Effective UID (EUID) and when is it used in Linux?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Effective UID (EUID)</strong>: Alternative UID value used in special circumstances, different from the account's actual UID.</p>
+<p><strong>When Used</strong>:</p>
+<ol>
+<li><strong>Privilege Escalation</strong>:</li>
+<li>Temporarily elevating permissions</li>
+<li>Running with higher privileges than normal</li>
+<li>
+<p>Example: sudo command changes EUID to 0 (root) while keeping real UID as original user</p>
+</li>
+<li>
+<p><strong>Running Programs as Another User</strong>:</p>
+</li>
+<li>Execute programs with different user's permissions</li>
+<li>Needed for certain system operations</li>
+<li>
+<p>Example: su command changes EUID to target user</p>
+</li>
+<li>
+<p><strong>Executing Scripts with Different Permissions</strong>:</p>
+</li>
+<li>Run scripts as different user</li>
+<li>Access resources as another identity</li>
+<li>Temporary permission changes without modifying actual account</li>
+</ol>
+<p><strong>Key Point</strong>: Allows temporary permission changes without changing the actual account UID.</p>
+<p><strong>Difference from Regular UID</strong>:
+- Real UID: Actual account identifier
+- Effective UID: Permissions currently in effect
+- System checks EUID for access control decisions
+- Used for setuid programs and permission management</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Force Password Change on First Login</h2>
+<p>Why would you force a user to change their password on first login, and what command accomplishes this? Describe a typical use case.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Command</strong>: <code>sudo passwd --expire username</code></p>
+<p><strong>Why Force Password Change</strong>:</p>
+<p><strong>Security Reasons</strong>:
+1. Initial account setup - admin sets temporary password
+2. Password given verbally or in writing (insecure)
+3. Security incident - ensure user controls password
+4. Policy compliance - periodic forced changes
+5. Temporary password security best practice</p>
+<p><strong>What Happens</strong>:
+1. Administrator runs: <code>sudo passwd --expire username</code>
+2. Password marked as expired
+3. User can still log in once
+4. Immediately prompted: "You must change your password now"
+5. Cannot proceed until new password set
+6. User now has password only they know</p>
+<p><strong>Typical Use Case - New Employee</strong>:</p>
+<pre><code class="language-bash"># 1. Admin creates account
+sudo useradd -m jsmith
+
+# 2. Admin sets temporary password
+sudo passwd jsmith
+[enters temporary password like &quot;Welcome123&quot;]
+
+# 3. Admin expires password
+sudo passwd --expire jsmith
+
+# 4. Admin gives temporary password to user
+# 5. User logs in with temporary password
+# 6. System forces immediate password change
+# 7. User sets personal password
+</code></pre>
+<p><strong>Security Best Practice</strong>: Never let users keep passwords that were shared verbally/written or set by someone else.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>deluser Enhanced Features</h2>
+<p>What three special options does the deluser command (Debian) provide that userdel doesn't, and when would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>deluser</strong> (Debian-based systems) provides enhanced features beyond standard userdel:</p>
+<p><strong>1. --remove-all-files</strong></p>
+<pre><code class="language-bash">deluser --remove-all-files username
+</code></pre>
+<ul>
+<li>Deletes ALL files owned by user system-wide</li>
+<li>Not just home directory - searches entire filesystem</li>
+<li>More comprehensive than userdel -r</li>
+<li><strong>Use with extreme caution</strong> - can affect system files</li>
+</ul>
+<p><strong>2. --backup-to /path/for/backup</strong></p>
+<pre><code class="language-bash">deluser --backup-to /backups/users username
+</code></pre>
+<ul>
+<li>Creates backup archive before deletion</li>
+<li>Format: .tar.gz (compressed archive)</li>
+<li>Preserves data for potential future recovery</li>
+<li><strong>Best practice for important accounts</strong></li>
+</ul>
+<p><strong>3. --remove-home</strong></p>
+<pre><code class="language-bash">deluser --remove-home username
+</code></pre>
+<ul>
+<li>Deletes user's home directory</li>
+<li>Similar to userdel -r</li>
+<li>Does not affect files outside home directory</li>
+</ul>
+<p><strong>Practical Example - Safe Deletion</strong>:</p>
+<pre><code class="language-bash">sudo deluser --backup-to /backup/archived_users --remove-home contractor1
+</code></pre>
+<p>Creates backup archive, then removes account and home directory.</p>
+<p><strong>Advantage</strong>: More flexibility and safety features compared to basic userdel command.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>System Profile Processing Stage</h2>
+<p>During Stage 3 of the login process (Environment Setup), what profile files are processed and what types of customizations do they apply? What problems can occur here?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Stage 3: Environment Setup and Shell Launch</strong></p>
+<p><strong>Profile Files Processed</strong> (in order):
+1. System-wide profiles: <code>/etc/profile</code>, <code>/etc/bash.bashrc</code>
+2. User-specific profiles: <code>~/.bash_profile</code>, <code>~/.bashrc</code>, <code>~/.profile</code></p>
+<p><strong>Customizations Applied</strong>:
+- User-specific command aliases (e.g., <code>alias ll='ls -la'</code>)
+- User preferences and settings
+- Custom command prompts (PS1 variable)
+- PATH customizations (additional directories for commands)
+- Environment variables (EDITOR, LANG, etc.)
+- Shell options and functions
+- Startup programs</p>
+<p><strong>Shell Launch</strong>:
+- User's default shell from <code>/etc/passwd</code> executes
+- Presents customized command prompt
+- User ready to work</p>
+<p><strong>Potential Problems at Stage 3</strong>:</p>
+<p><strong>Issues</strong>:
+- Invalid shell path (shell doesn't exist)
+- Profile files contain syntax errors
+- Permission issues on home directory
+- Disk quota exceeded
+- Resource limits reached</p>
+<p><strong>Symptoms</strong>:
+- Authentication succeeds but user immediately logged out
+- Shell doesn't start / no prompt appears
+- Error messages about profile files
+- "No directory, logging in with home=/" messages</p>
+<p><strong>Example Problem</strong>: <code>/etc/passwd</code> shows <code>/bin/kshh</code> (typo) → shell can't launch
+<strong>Solution</strong>: <code>sudo usermod -s /bin/bash username</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Status Codes</h2>
+<p>In the output of "passwd -S username", what do the status codes L, P, PS, and NP indicate? Which ones prevent login?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Password Status Codes</strong> (second field in passwd -S output):</p>
+<p><strong>P - Password Set</strong>:
+- Valid password exists
+- Account can authenticate normally
+- User can log in
+- <strong>Login: ALLOWED</strong></p>
+<p><strong>L - Locked</strong>:
+- Account is locked (administratively disabled)
+- Valid password may exist but cannot be used
+- Account cannot authenticate
+- <strong>Login: DENIED</strong></p>
+<p><strong>PS - Password Set but Expired</strong>:
+- Password exists but has expired
+- User can log in once to change password
+- Must change password before proceeding
+- <strong>Login: ALLOWED (but forced password change)</strong></p>
+<p><strong>NP - No Password</strong>:
+- No password has been set
+- Most systems won't allow login without password
+- Account effectively unusable
+- <strong>Login: DENIED (on most systems)</strong></p>
+<p><strong>Example Outputs</strong>:</p>
+<pre><code class="language-bash">kgarcia P 10/29/2025 7 90 14 -1    ← Can login normally
+jsmith L 10/15/2025 0 99999 7 -1   ← Cannot login (locked)
+alee PS 08/01/2025 7 90 14 30      ← Can login but must change password
+newuser NP 10/29/2025 0 99999 7 -1 ← Cannot login (no password)
+</code></pre>
+<p><strong>Fix Methods</strong>:
+- L → Unlock: <code>passwd -u username</code>
+- NP → Set password: <code>passwd username</code>
+- PS → Reset password: <code>passwd username</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Quote Requirement in useradd</h2>
+<p>Why must you use double quotes when setting the comment field in useradd if it contains spaces? What happens without quotes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The Rule</strong>: Use double quotes around comment field if it contains spaces</p>
+<p><strong>Correct Usage</strong>:</p>
+<pre><code class="language-bash">useradd -c &quot;Kai Garcia&quot; kgarcia
+            ^^^^^^^^^^^
+            Quotes required!
+</code></pre>
+<p><strong>Without Quotes</strong> (WRONG):</p>
+<pre><code class="language-bash">useradd -c Kai Garcia kgarcia
+           ^^^  ^^^^^^
+           Two separate arguments!
+</code></pre>
+<p><strong>Why Quotes Matter</strong>:</p>
+<p><strong>With Quotes</strong>:
+- Bash treats "Kai Garcia" as a single object/argument
+- System understands this is one comment value
+- Command succeeds: comment set to "Kai Garcia"</p>
+<p><strong>Without Quotes</strong>:
+- Bash sees "Kai" and "Garcia" as separate arguments
+- System confused about command structure
+- Interprets "Garcia" as a separate parameter
+- Results in <strong>command error/failure</strong>
+- Account not created or created incorrectly</p>
+<p><strong>General Principle</strong>: Always use quotes for any multi-word values in Linux commands</p>
+<p><strong>Other Examples</strong>:</p>
+<pre><code class="language-bash">usermod -c &quot;John Smith Jr.&quot; jsmith     ← Correct
+chage -E &quot;2025-12-31&quot; username         ← Works but date doesn't need quotes
+useradd -c &quot;Sales Manager, Ext 5234&quot;   ← Correct for complex comments
+</code></pre>
+<p><strong>Error Without Quotes</strong>: "useradd: invalid argument" or similar error message</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>getent vs grep for User Lookup</h2>
+<p>Compare these two methods for checking if a user exists: "cat /etc/passwd | grep username" vs "getent passwd username". Which is better and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Method 1: cat /etc/passwd | grep username</strong>
+- Only searches local file
+- Doesn't check LDAP or network authentication
+- Incomplete in enterprise environments
+- Extra process (cat + grep)
+- Works only for local accounts</p>
+<p><strong>Method 2: getent passwd username</strong> (BETTER)
+- Checks ALL authentication sources (local + LDAP + others)
+- Works with directory services
+- Complete picture of all users
+- Single efficient command
+- Works in any environment</p>
+<p><strong>Key Differences</strong>:</p>
+<p>| Aspect | cat/grep | getent |
+|--------|----------|--------|
+| Local users | ✓ Shows | ✓ Shows |
+| LDAP users | ✗ Misses | ✓ Shows |
+| Network auth | ✗ Misses | ✓ Shows |
+| Efficiency | Two processes | Single command |
+| Enterprise-ready | No | Yes |</p>
+<p><strong>Examples</strong>:</p>
+<p><strong>Local-only system</strong> - both work:</p>
+<pre><code class="language-bash">cat /etc/passwd | grep kgarcia  # Shows kgarcia
+getent passwd kgarcia           # Shows kgarcia
+</code></pre>
+<p><strong>LDAP environment</strong> - getent wins:</p>
+<pre><code class="language-bash">cat /etc/passwd | grep ldapuser  # Shows nothing (user not in local file)
+getent passwd ldapuser           # Shows ldapuser (from LDAP)
+</code></pre>
+<p><strong>Best Practice</strong>: Always use <code>getent passwd</code> for user lookups, especially in production/enterprise environments.</p>
+<p><strong>Also Works For</strong>:
+- <code>getent shadow username</code> - password info (requires root)
+- <code>getent group groupname</code> - group info</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Warning Period Purpose</h2>
+<p>What is the purpose of setting a password warning period with "passwd -w 14 username", and what experience does the user have?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose</strong>: Give users advance notice before password expires, preventing surprise lockouts and reducing helpdesk calls.</p>
+<p><strong>Command</strong>: <code>sudo passwd -w 14 username</code>
+Sets warning to start 14 days before password expiration</p>
+<p><strong>How It Works</strong>:
+- Password set to expire in 90 days (example)
+- Starting at day 76 (14 days before), user sees warning
+- Warning displays at each login
+- User can plan convenient time to change password</p>
+<p><strong>User Experience</strong>:</p>
+<p><strong>Day 76 - First Warning</strong>:</p>
+<pre><code class="language-bash">login: kgarcia
+Password: ********
+
+Warning: your password will expire in 14 days
+
+[normal login proceeds]
+</code></pre>
+<p><strong>Day 85 - Closer Warning</strong>:</p>
+<pre><code class="language-bash">Warning: your password will expire in 5 days
+</code></pre>
+<p><strong>Day 90 - Last Day</strong>:</p>
+<pre><code class="language-bash">Warning: your password will expire in 0 days
+</code></pre>
+<p><strong>Day 91 - Expired</strong>:</p>
+<pre><code class="language-bash">Your password has expired. Change it now.
+</code></pre>
+<p><strong>Benefits</strong>:
+- Users aren't surprised by expiration
+- Can change password at convenient time
+- Reduces emergency helpdesk password resets
+- Improves user experience
+- Maintains security while being user-friendly</p>
+<p><strong>Common Values</strong>:
+- 7 days: One week notice
+- 14 days: Two weeks (recommended)
+- 30 days: Very generous notice</p>
+<p><strong>Set with other policies</strong>:
+<code>sudo passwd -x 90 -n 7 -w 14 username</code>
+(90 day max, 7 day min, 14 day warning)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Log File for Authentication Errors</h2>
+<p>Where can administrators find detailed logs of authentication attempts, both successful and failed, for troubleshooting login issues?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Primary Authentication Log Files</strong>:</p>
+<p><strong>1. /var/log/auth.log</strong> (Debian/Ubuntu):</p>
+<pre><code class="language-bash">sudo tail -f /var/log/auth.log
+sudo grep username /var/log/auth.log
+</code></pre>
+<ul>
+<li>Contains all authentication-related events</li>
+<li>Successful logins</li>
+<li>Failed login attempts</li>
+<li>sudo usage</li>
+<li>Account changes</li>
+</ul>
+<p><strong>2. /var/log/secure</strong> (Red Hat/CentOS/Fedora):</p>
+<pre><code class="language-bash">sudo tail -f /var/log/secure
+sudo grep username /var/log/secure
+</code></pre>
+<ul>
+<li>Similar to auth.log</li>
+<li>Red Hat family naming</li>
+<li>Same type of information</li>
+</ul>
+<p><strong>What These Logs Show</strong>:
+- Login attempts (successful and failed)
+- Source IP addresses
+- Timestamps
+- Authentication method (password, SSH key, etc.)
+- PAM messages
+- Account lockouts
+- Password changes
+- sudo commands</p>
+<p><strong>Useful Commands</strong>:</p>
+<p><strong>Watch live authentication attempts</strong>:</p>
+<pre><code class="language-bash">sudo tail -f /var/log/auth.log
+</code></pre>
+<p><strong>Search for specific user</strong>:</p>
+<pre><code class="language-bash">sudo grep kgarcia /var/log/auth.log
+</code></pre>
+<p><strong>Find recent failed attempts</strong>:</p>
+<pre><code class="language-bash">sudo grep &quot;Failed password&quot; /var/log/auth.log | tail -20
+</code></pre>
+<p><strong>Check for account lockouts</strong>:</p>
+<pre><code class="language-bash">sudo grep &quot;account locked&quot; /var/log/auth.log
+</code></pre>
+<p><strong>Troubleshooting Workflow</strong>:
+1. User reports can't log in
+2. Check: <code>sudo tail -50 /var/log/auth.log | grep username</code>
+3. Look for: "Failed password", "account locked", "expired password"
+4. Take appropriate action based on log messages</p>
+<p><strong>Note</strong>: Log file location varies by distribution - use appropriate path for your system.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Disable vs Delete Account</h2>
+<p>What are three methods to disable (not delete) a user account, and why would you choose to disable rather than delete an account?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Three Methods to Disable Accounts</strong>:</p>
+<p><strong>1. Lock the Account</strong>:</p>
+<pre><code class="language-bash">sudo usermod -L username
+# or
+sudo passwd -l username
+</code></pre>
+<p>Prevents login while keeping account intact</p>
+<p><strong>2. Set Past Expiration Date</strong>:</p>
+<pre><code class="language-bash">sudo usermod -e 1970-01-01 username
+</code></pre>
+<p>Account treated as expired (cannot login)</p>
+<p><strong>3. Change Shell to Nologin</strong>:</p>
+<pre><code class="language-bash">sudo usermod -s /sbin/nologin username
+# or
+sudo usermod -s /bin/false username
+</code></pre>
+<p>User cannot get interactive shell</p>
+<p><strong>Why Disable Instead of Delete</strong>:</p>
+<p><strong>Advantages of Disabling</strong>:
+- <strong>Reversible</strong> - Can re-enable if needed
+- <strong>Preserves UID</strong> - Files remain owned by correct user
+- <strong>Data accessible</strong> - Files still available to admins
+- <strong>Audit trail</strong> - Account history preserved
+- <strong>Safe approach</strong> - No permanent data loss</p>
+<p><strong>Consequences of Deleting</strong>:
+- <strong>Permanent</strong> - Cannot be undone
+- <strong>UID changes</strong> - Recreating gives different UID
+- <strong>File ownership issues</strong> - Old files orphaned
+- <strong>Data loss</strong> - Potential loss if not backed up
+- <strong>Irreversible</strong> - No going back</p>
+<p><strong>When to Use Each</strong>:</p>
+<p><strong>Disable</strong>: 
+- Temporary situations (sabbatical, suspension)
+- Uncertainty about future needs
+- Want to preserve data access
+- Investigation in progress</p>
+<p><strong>Delete</strong>:
+- Permanent departure confirmed
+- Security requirement (compromised account)
+- Data already archived/transferred
+- Certain no future access needed</p>
+<p><strong>Re-enabling Disabled Account</strong>:</p>
+<pre><code class="language-bash">sudo usermod -U username          # Unlock
+sudo usermod -e &quot;&quot; username       # Remove expiration
+sudo usermod -s /bin/bash username # Restore shell
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

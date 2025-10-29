@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 05 Code Organization - 01 Packages Crates And Module Tree</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Core Organizational Concepts in Rust</h2>
+<p>What are the three fundamental concepts Rust uses to organize code, listed from largest to smallest?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Package</strong> - A Cargo feature that lets you build, test, and share crates</li>
+<li><strong>Crate</strong> - A compilation unit (the smallest amount of code the compiler considers at a time)</li>
+<li><strong>Module Tree</strong> - The internal organization structure within a crate</li>
+</ol>
+<p>The hierarchy: Package → Crate(s) → Module Tree → Individual modules</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a Rust Package?</h2>
+<p>What is a Rust package, and what are its key requirements and rules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A package is a bundle of one or more crates managed by Cargo.</p>
+<p><strong>Requirements:</strong>
+- Must contain a <code>Cargo.toml</code> file (package manifest)
+- Must contain at least one crate (either library or binary)</p>
+<p><strong>Rules:</strong>
+- Can contain at most ONE library crate
+- Can contain ANY NUMBER of binary crates
+- Created with <code>cargo new package_name</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary vs Library Crates</h2>
+<p>What are the key differences between binary crates and library crates in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Binary Crate:</strong>
+- Compiles to an executable you can run
+- Must have a <code>main()</code> function as entry point
+- Default root file: <code>src/main.rs</code>
+- Purpose: Create applications</p>
+<p><strong>Library Crate:</strong>
+- Compiles to a library that others can use
+- No <code>main()</code> function
+- Default root file: <code>src/lib.rs</code>
+- Purpose: Define shareable functionality</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a Crate Root?</h2>
+<p>What is a crate root, and what are the conventional crate root files in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <strong>crate root</strong> is the source file that the Rust compiler starts from and makes up the root module of your crate.</p>
+<p><strong>Conventional roots:</strong>
+- <code>src/main.rs</code> - Root of the binary crate
+- <code>src/lib.rs</code> - Root of the library crate</p>
+<p>These files form the implicit root module of their respective crates (you don't write <code>mod crate</code>, it's implicit).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Package Structure with Multiple Crates</h2>
+<p>How do you structure a package that contains both a library crate and multiple binary crates?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>my_project/
+├── Cargo.toml
+└── src/
+    ├── lib.rs           # Library crate root
+    ├── main.rs          # Primary binary crate
+    └── bin/
+        ├── tool1.rs     # Additional binary
+        └── tool2.rs     # Additional binary
+</code></pre>
+<ul>
+<li>Library: <code>src/lib.rs</code></li>
+<li>Primary binary: <code>src/main.rs</code></li>
+<li>Additional binaries: Each file in <code>src/bin/</code> becomes a separate binary crate</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is the Module Tree?</h2>
+<p>What is the module tree in Rust, and why does it exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <strong>module tree</strong> is the hierarchical structure of modules within a crate.</p>
+<p><strong>Purpose:</strong>
+- Logical organization: Group related functionality
+- Control visibility: Decide what's public vs. private
+- Namespace management: Avoid naming conflicts
+- Code navigation: Easier to find and understand code</p>
+<p><strong>Structure:</strong>
+Every crate has an implicit root module (at <code>src/lib.rs</code> or <code>src/main.rs</code>), and you define child modules to organize code hierarchically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Crate as Compilation Unit</h2>
+<p>Why is the crate considered the "compilation unit" in Rust, and what does this mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A crate is the <strong>smallest amount of code the Rust compiler considers at a time</strong>.</p>
+<p><strong>What this means:</strong>
+- The compiler analyzes an entire crate at once, not individual files
+- All files in a crate are compiled together
+- The borrow checker operates within crate boundaries
+- Compilation happens at the crate level, not the file level</p>
+<p><strong>Implication:</strong> Even if your crate spans multiple files, they're all compiled as a single unit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Package Naming vs Import Names</h2>
+<p>If a package is named <code>my-awesome-lib</code> in <code>Cargo.toml</code>, how do you import it in Rust code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// Cargo.toml
+[package]
+name = &quot;my-awesome-lib&quot;  // Hyphens allowed
+
+// In code:
+use my_awesome_lib::something;  // Hyphens become underscores!
+</code></pre>
+<p><strong>Rule:</strong> Hyphens in package names are converted to underscores in import paths and code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cargo.toml Structure and Purpose</h2>
+<p>What information goes in a <code>Cargo.toml</code> file, and what is its purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Cargo.toml</code> is the <strong>package manifest</strong> that describes how to build the crates in a package.</p>
+<p><strong>Key sections:</strong></p>
+<pre><code class="language-toml">[package]
+name = &quot;my_project&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+rand = &quot;0.8&quot;
+serde = &quot;1.0&quot;
+</code></pre>
+<p><strong>Purpose:</strong>
+- Define package metadata (name, version, edition)
+- Manage dependencies (external crates)
+- Configure build settings
+- Specify multiple binaries (optional)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Cargo Matters</h2>
+<p>What problems does Cargo solve, and why is it central to Rust's ecosystem?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Before Cargo:</strong> Manual compilation with <code>rustc main.rs</code> was tedious and error-prone.</p>
+<p><strong>Cargo provides:</strong>
+- Dependency management (automatic download and versioning)
+- Build automation (<code>cargo build</code>, <code>cargo run</code>)
+- Testing infrastructure (<code>cargo test</code>)
+- Documentation generation (<code>cargo doc</code>)
+- Standard project structure
+- Package publishing and distribution</p>
+<p><strong>Impact:</strong> Cargo is one of the main reasons for Rust's popularity—it makes project management seamless.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Using Library from Binary in Same Package</h2>
+<p>If a package contains both <code>src/lib.rs</code> and <code>src/main.rs</code>, how does the binary crate use the library crate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The binary must explicitly import the library using the package name:</p>
+<pre><code class="language-rust">// Assuming package name is &quot;my_project&quot; in Cargo.toml
+// In src/main.rs:
+use my_project::some_function;
+
+fn main() {
+    some_function();
+}
+</code></pre>
+<p><strong>Key point:</strong> <code>main.rs</code> and <code>lib.rs</code> don't automatically share code—you must use the package name to import from the library.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Tree Basic Structure</h2>
+<p>How do you define a basic module tree structure in Rust? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// In src/lib.rs or src/main.rs (crate root)
+
+mod network {
+    mod server {
+        fn connect() {
+            // Implementation
+        }
+    }
+
+    mod client {
+        fn connect() {
+            // Implementation
+        }
+    }
+}
+
+mod authentication {
+    fn login() {
+        // Implementation
+    }
+}
+</code></pre>
+<p>This creates a tree:</p>
+<pre><code>crate (root)
+  ├── network
+  │     ├── server
+  │     └── client
+  └── authentication
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Package Pattern - Single Binary</h2>
+<p>What is the most common package structure for simple applications, and when is it used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>my_app/
+├── Cargo.toml
+└── src/
+    └── main.rs
+</code></pre>
+<p><strong>Use case:</strong> Simple applications that don't need to share code as a library.</p>
+<p><strong>Characteristics:</strong>
+- Contains only one binary crate
+- All code lives in <code>main.rs</code> (or modules within it)
+- Most straightforward structure for executables</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Package Pattern - Library with CLI</h2>
+<p>What package structure is used for libraries that also provide a CLI tool?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>my_lib/
+├── Cargo.toml
+└── src/
+    ├── lib.rs      # Core functionality
+    └── main.rs     # CLI wrapper
+</code></pre>
+<p><strong>Use case:</strong> When you want to provide both:
+- A library that others can depend on (<code>lib.rs</code>)
+- A command-line tool that uses the library (<code>main.rs</code>)</p>
+<p><strong>Example:</strong> A parsing library with a CLI for testing/demonstration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Package Must Contain at Least One Crate</h2>
+<p>What is the minimum requirement for a valid Rust package regarding crates?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A package must contain <strong>at least one crate</strong>—either a binary crate OR a library crate.</p>
+<p><strong>Valid packages:</strong>
+- ✅ Just <code>src/main.rs</code> (one binary)
+- ✅ Just <code>src/lib.rs</code> (one library)
+- ✅ Both <code>src/main.rs</code> and <code>src/lib.rs</code>
+- ✅ <code>src/lib.rs</code> + multiple files in <code>src/bin/</code></p>
+<p><strong>Invalid:</strong>
+- ❌ A package with only <code>Cargo.toml</code> and no source files</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>At Most One Library Crate Rule</h2>
+<p>How many library crates can a single package contain, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A package can contain <strong>at most ONE library crate</strong>.</p>
+<p><strong>Why:</strong> 
+- The library crate defines the package's public API
+- Having multiple libraries would create ambiguity about what the package provides
+- If you need multiple libraries, create multiple packages</p>
+<p><strong>However:</strong>
+- You CAN have unlimited binary crates in the same package
+- You CAN split the library across multiple files (but it's still one crate)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Crate vs File Confusion</h2>
+<p>Why is it wrong to think "one file = one crate"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Wrong assumption:</strong> Each <code>.rs</code> file is a separate crate.</p>
+<p><strong>Reality:</strong>
+- A crate is a tree of modules, potentially spanning many files
+- The compiler compiles entire crates, not individual files
+- All files that are part of the module tree are compiled together as one crate</p>
+<p><strong>Example:</strong> A library crate can have:
+- <code>src/lib.rs</code> (root)
+- <code>src/database.rs</code> (module)
+- <code>src/api.rs</code> (module)
+- <code>src/models.rs</code> (module)</p>
+<p>These are all part of ONE crate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implicit Root Module</h2>
+<p>What is the implicit root module in a Rust crate, and why don't you declare it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Implicit root:</strong>
+- For <code>src/lib.rs</code>: The file itself is the library crate's root module
+- For <code>src/main.rs</code>: The file itself is the binary crate's root module</p>
+<p><strong>Why it's implicit:</strong>
+- You don't write <code>mod crate</code> anywhere
+- These files automatically become the root of the module tree
+- All other modules are descendants of this root</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">// src/lib.rs - This IS the root module
+mod utils;  // Child module
+mod database;  // Child module
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Binary Crates in src/bin</h2>
+<p>Where do you place additional binary crates in a package, and how does Cargo handle them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Location:</strong> <code>src/bin/</code> directory</p>
+<p><strong>Structure:</strong></p>
+<pre><code>my_project/
+└── src/
+    ├── main.rs        # Primary binary
+    └── bin/
+        ├── tool1.rs   # Additional binary
+        └── tool2.rs   # Additional binary
+</code></pre>
+<p><strong>Cargo behavior:</strong>
+- Each file in <code>src/bin/</code> automatically becomes a separate binary crate
+- Each can be run with: <code>cargo run --bin tool1</code>
+- Each has its own <code>main()</code> function
+- All share access to the library crate (if present)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Package, Crate, Module Hierarchy</h2>
+<p>How do packages, crates, and modules relate to each other in terms of hierarchy and purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Package (Cargo concept - distribution &amp; management)
+  └── Crate(s) (Compilation unit - namespace boundary)
+        └── Module Tree (Organization - visibility control)
+              └── Modules (Logical grouping)
+</code></pre>
+<p><strong>Purpose of each level:</strong>
+- <strong>Package:</strong> Distribution, dependency management, build configuration
+- <strong>Crate:</strong> Compilation boundary, namespace, reusable unit
+- <strong>Module Tree:</strong> Code organization, visibility control, navigation</p>
+<p><strong>Mental model:</strong> Package = shipping box, Crates = products inside, Module tree = how each product is organized internally.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection Between Crates and Compilation</h2>
+<p>How do crates relate to Rust's compilation process and the borrow checker?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Compilation:</strong>
+- Crates are compiled independently (one at a time)
+- The compiler analyzes an entire crate together
+- Each crate is a separate compilation unit</p>
+<p><strong>Borrow checker:</strong>
+- Operates within crate boundaries
+- When you use external crates, their ownership rules are already validated
+- You don't re-check external crate internals</p>
+<p><strong>Implication:</strong> 
+- Crate boundaries provide compilation isolation
+- Changes in one crate don't require recompiling unaffected crates
+- The borrow checker works on a per-crate basis</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>External Dependencies as Crates</h2>
+<p>When you add a dependency in <code>Cargo.toml</code>, what exactly are you adding, and how do you access it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What you're adding:</strong> Another crate (not a package or module)</p>
+<pre><code class="language-toml">[dependencies]
+rand = &quot;0.8&quot;  # Adding the rand CRATE
+</code></pre>
+<p><strong>How to access:</strong></p>
+<pre><code class="language-rust">use rand::Rng;  // Use the crate name
+</code></pre>
+<p><strong>Key points:</strong>
+- Each dependency is its own crate with its own module tree
+- You access dependencies using their crate name
+- Cargo downloads and manages these external crates
+- Each external crate was someone else's package that you're now using</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why the Three-Tier System Exists</h2>
+<p>Why does Rust use a three-tier system (packages, crates, modules) instead of a simpler approach?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The three-tier system provides both flexibility and structure:</p>
+<p><strong>Package level:</strong>
+- Distribution and sharing
+- Dependency management
+- Build configuration</p>
+<p><strong>Crate level:</strong>
+- Compilation boundaries (efficiency)
+- Namespace isolation
+- Reusability unit</p>
+<p><strong>Module level:</strong>
+- Internal organization
+- Visibility control
+- Logical grouping</p>
+<p><strong>Benefit:</strong> Projects can scale from tiny scripts to massive codebases with clear boundaries at each level—organize freely within crates, compile at crate boundaries, distribute as packages.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cargo New Command Creates What?</h2>
+<p>When you run <code>cargo new my_project</code>, what exactly does Cargo create?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cargo creates a <strong>package</strong> that contains one <strong>binary crate</strong>.</p>
+<pre><code>my_project/           ← Package
+├── Cargo.toml        ← Package manifest
+└── src/
+    └── main.rs       ← Binary crate root
+</code></pre>
+<p><strong>What you get:</strong>
+- A package named "my_project"
+- One binary crate with root at <code>src/main.rs</code>
+- An implicit root module in <code>main.rs</code>
+- A <code>Cargo.toml</code> file for configuration</p>
+<p><strong>To create a library instead:</strong> <code>cargo new --lib my_project</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Crate Forms a Namespace Boundary</h2>
+<p>How do crates function as namespace boundaries, and what does this mean for naming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Namespace boundary:</strong>
+- Each crate has its own namespace
+- Two different crates can have items with the same name without conflict
+- You qualify items with the crate name to distinguish them</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use crate_a::Config;  // Config from crate_a
+use crate_b::Config;  // Config from crate_b
+
+// Use qualified paths to distinguish:
+let config_a = crate_a::Config::new();
+let config_b = crate_b::Config::new();
+</code></pre>
+<p><strong>Benefit:</strong> You don't have to worry about naming conflicts with external dependencies—each crate is isolated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
