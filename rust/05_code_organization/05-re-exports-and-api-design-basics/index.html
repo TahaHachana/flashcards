@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 05 Code Organization - 05-Re-Exports-And-Api-Design-Basics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Re-exports Matter</h2>
+<p>What problem do re-exports solve, and how do they improve API design?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Internal code organization often doesn't match ideal user experience.</p>
+<p><strong>Without re-exports</strong> (painful):</p>
+<pre><code class="language-rust">use my_crate::internal::database::connection::Connection;
+use my_crate::internal::models::user::types::User;
+// Users must understand internal structure
+</code></pre>
+<p><strong>With re-exports</strong> (clean):</p>
+<pre><code class="language-rust">use my_crate::{Connection, User};
+// Simple, logical API
+</code></pre>
+<p><strong>Benefits</strong>:
+- <strong>User experience</strong>: Simple, intuitive imports
+- <strong>Implementation hiding</strong>: Internal details stay private
+- <strong>Backward compatibility</strong>: Change internals without breaking users
+- <strong>Logical grouping</strong>: Present items by function, not implementation</p>
+<p><strong>Key insight</strong>: Re-exports let you optimize internal organization for maintainability and public API for usability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub Use Basic Syntax</h2>
+<p>What is the syntax for re-exporting items, and what does it do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Syntax</strong>:</p>
+<pre><code class="language-rust">pub use path::to::item;
+</code></pre>
+<p><strong>What it does</strong>: Makes an item available at a different path in your module tree, exposing it as part of your public API.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// src/internal.rs
+pub struct Helper {}
+
+// src/lib.rs
+mod internal;
+pub use internal::Helper;  // Re-export
+
+// Users can now:
+use my_crate::Helper;
+// Instead of:
+use my_crate::internal::Helper;
+</code></pre>
+<p><strong>Key difference</strong>:
+- <code>use</code> = bring into scope (private)
+- <code>pub use</code> = bring into scope AND make public</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flattening Deep Hierarchies</h2>
+<p>How do you use re-exports to flatten a deep module hierarchy?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Internal structure</strong> (complex):</p>
+<pre><code class="language-rust">mod database {
+    pub mod connection {
+        pub struct Connection {}
+    }
+    pub mod query {
+        pub struct Query {}
+    }
+}
+</code></pre>
+<p><strong>Without re-exports</strong>:</p>
+<pre><code class="language-rust">use my_crate::database::connection::Connection;
+use my_crate::database::query::Query;
+</code></pre>
+<p><strong>Flatten with re-exports</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub use database::connection::Connection;
+pub use database::query::Query;
+
+// Users write:
+use my_crate::{Connection, Query};
+</code></pre>
+<p><strong>Benefit</strong>: Users get a simple API regardless of internal complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Prelude Pattern</h2>
+<p>What is the prelude pattern, and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Prelude</strong>: A module that re-exports commonly used items for convenient import.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/prelude.rs
+pub use crate::{Error, Result, Connection, User};
+pub use crate::traits::{Parse, Validate};
+
+// src/lib.rs
+pub mod prelude;
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_crate::prelude::*;
+// Now have Error, Result, Connection, User, Parse, Validate
+</code></pre>
+<p><strong>When to use</strong>:
+- Your library has items almost always needed together
+- Want convenience without forcing it
+- Following standard pattern (like <code>std::prelude::v1::*</code>)</p>
+<p><strong>Benefits</strong>: One import gets all common items, familiar pattern for Rust users.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flat Crate Root API Pattern</h2>
+<p>What is the flat crate root API pattern, and when is it appropriate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Re-export everything at the crate root for maximum simplicity.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;
+mod models;
+mod validation;
+
+// Flatten to crate root
+pub use database::connection::Connection;
+pub use database::query::Query;
+pub use models::user::User;
+pub use models::post::Post;
+pub use validation::email::EmailValidator;
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_crate::{Connection, User, EmailValidator};
+</code></pre>
+<p><strong>When appropriate</strong>:
+- Small to medium libraries
+- Items don't conflict in naming
+- Simplicity is the priority</p>
+<p><strong>Caution</strong>: Can become cluttered if you have many items.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Categorized API Pattern</h2>
+<p>How do you organize re-exports by category, and when is this useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Group re-exports into logical modules.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod internal_db;
+mod internal_models;
+
+// Present in logical categories
+pub mod db {
+    pub use crate::internal_db::connection::Connection;
+    pub use crate::internal_db::query::Query;
+}
+
+pub mod models {
+    pub use crate::internal_models::user::User;
+    pub use crate::internal_models::post::Post;
+}
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_crate::db::{Connection, Query};
+use my_crate::models::User;
+</code></pre>
+<p><strong>When useful</strong>:
+- Larger libraries with many items
+- Clear feature boundaries
+- Want to avoid naming conflicts
+- Prefer organized namespaces</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hybrid API Approach</h2>
+<p>What is the hybrid API approach, and what are its benefits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Common items at root, detailed/advanced items in modules.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;
+mod models;
+
+// Common items at root (convenience)
+pub use database::Connection;
+pub use models::User;
+
+// Detailed items in namespaces (organization)
+pub mod db {
+    pub use crate::database::*;
+}
+
+pub mod advanced {
+    pub use crate::database::internal::*;
+}
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">// Most users write:
+use my_crate::{Connection, User};
+
+// Power users can access:
+use my_crate::db::TransactionOptions;
+use my_crate::advanced::InternalAPI;
+</code></pre>
+<p><strong>Benefits</strong>: Balance between simplicity and completeness, progressive disclosure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Backward Compatibility with Re-exports</h2>
+<p>How do you use re-exports to maintain backward compatibility when refactoring?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Scenario</strong>: You want to change internal structure but not break users.</p>
+<p><strong>Old structure</strong>:</p>
+<pre><code class="language-rust">pub mod old_location {
+    pub struct Connection {}
+}
+// Users write: use my_crate::old_location::Connection;
+</code></pre>
+<p><strong>New structure with compatibility</strong>:</p>
+<pre><code class="language-rust">// New internal structure
+mod new_internal {
+    pub struct Connection {}
+}
+
+// New, preferred API
+pub use new_internal::Connection;
+
+// Keep old path with deprecation
+#[deprecated(since = &quot;2.0.0&quot;, note = &quot;Use `Connection` at crate root&quot;)]
+pub mod old_location {
+    pub use crate::Connection;
+}
+</code></pre>
+<p><strong>Result</strong>: Both old and new code work, with warnings guiding migration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Error and Result Type Pattern</h2>
+<p>What is the standard pattern for re-exporting Error and Result types in a library?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Define custom Error and Result, re-export at crate root.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/error.rs
+pub enum Error {
+    DatabaseError(String),
+    ValidationError(String),
+    NotFound,
+}
+
+pub type Result&lt;T&gt; = std::result::Result&lt;T, Error&gt;;
+
+// src/lib.rs
+mod error;
+
+pub use error::{Error, Result};
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_crate::{Result, Error};
+
+fn do_something() -&gt; Result&lt;()&gt; {
+    // Uses library's Result type
+    Ok(())
+}
+</code></pre>
+<p><strong>Benefits</strong>: Convenient for users, less typing, clear association with your library.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Pub on Re-exports</h2>
+<p>What happens if you forget <code>pub</code> when trying to re-export an item?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Item remains private to external users.</p>
+<pre><code class="language-rust">// src/lib.rs
+mod internal;
+use internal::Helper;  // Missing `pub`!
+
+// External users:
+use my_crate::Helper;  // ERROR: Helper is private
+</code></pre>
+<p><strong>Fix</strong>: Add <code>pub</code> to the <code>use</code> statement:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod internal;
+pub use internal::Helper;  // Now public!
+
+// External users:
+use my_crate::Helper;  // Works!
+</code></pre>
+<p><strong>Key distinction</strong>:
+- <code>use internal::Helper;</code> = private import (only for current module)
+- <code>pub use internal::Helper;</code> = public re-export (available externally)</p>
+<p><strong>Remember</strong>: Re-exporting requires <code>pub use</code>, not just <code>use</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Over-Flattening the API</h2>
+<p>What are the problems with over-flattening your API by putting everything at the crate root?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Too many items at root creates namespace pollution.</p>
+<pre><code class="language-rust">// src/lib.rs - 50+ re-exports at root
+pub use database::Connection;
+pub use database::Query;
+pub use database::Transaction;
+pub use models::User;
+pub use models::Post;
+pub use models::Comment;
+pub use utils::Helper;
+pub use utils::Validator;
+// ... 40 more items
+
+// Problem: use my_crate::*; imports huge namespace!
+</code></pre>
+<p><strong>Issues</strong>:
+- Hard to find specific items
+- Naming conflicts more likely
+- Overwhelming for users
+- Not clear what's important vs advanced</p>
+<p><strong>Better approach</strong>: Use some categorization</p>
+<pre><code class="language-rust">pub use database::Connection;  // Very common at root
+pub use models::User;
+
+pub mod db {
+    pub use crate::database::*;  // Less common in modules
+}
+</code></pre>
+<p><strong>Guideline</strong>: Root for essentials, modules for everything else.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Re-exporting Private Items Error</h2>
+<p>Can you re-export an item that isn't marked <code>pub</code>? What happens?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>No</strong> - you cannot re-export private items.</p>
+<p><strong>Error</strong>:</p>
+<pre><code class="language-rust">mod internal {
+    struct Helper {}  // Not pub!
+}
+
+pub use internal::Helper;  // ERROR: Helper is private
+</code></pre>
+<p><strong>Compiler error</strong>: "struct <code>Helper</code> is private"</p>
+<p><strong>Fix</strong>: Make the original item public</p>
+<pre><code class="language-rust">mod internal {
+    pub struct Helper {}  // Now pub
+}
+
+pub use internal::Helper;  // Works!
+</code></pre>
+<p><strong>Rule</strong>: To re-export something with <code>pub use</code>, the original item must be <code>pub</code> in its declaring module.</p>
+<p><strong>Rationale</strong>: Can't make something more visible than its original visibility.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Paths to Same Item</h2>
+<p>Can the same item be accessible through multiple paths via re-exports?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Yes</strong> - re-exports create additional paths to the same item.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub mod database {
+    pub struct Connection {}
+}
+
+// Re-export at crate root
+pub use database::Connection;
+
+// Both paths work and refer to the SAME type:
+use my_crate::database::Connection;  // Original path
+use my_crate::Connection;             // Re-exported path
+</code></pre>
+<p><strong>Why this is useful</strong>:
+- Provide convenient shortcuts
+- Maintain backward compatibility (old path + new path)
+- Offer detailed and simple paths</p>
+<p><strong>Common in stdlib</strong>:</p>
+<pre><code class="language-rust">use std::io::Write;           // Typical path
+use std::prelude::v1::Write;  // Also works (via prelude)
+</code></pre>
+<p><strong>Key insight</strong>: Re-exports create aliases, not copies.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Breaking Changes from Removing Re-exports</h2>
+<p>Why is removing a re-export considered a breaking change?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Reason</strong>: Users depend on the re-exported path as part of your public API.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// Version 1.0
+pub use internal::Helper;
+
+// Users write:
+use my_crate::Helper;  // This is in their code
+
+// Version 2.0 - you remove the re-export
+// pub use internal::Helper;  // Commented out
+
+// Users' code breaks:
+use my_crate::Helper;  // ERROR: no longer exists
+</code></pre>
+<p><strong>Solution</strong>: Use deprecation for migration</p>
+<pre><code class="language-rust">// Version 1.5 - deprecate
+#[deprecated(since = &quot;1.5.0&quot;, note = &quot;Use new::path::Helper instead&quot;)]
+pub use internal::Helper;
+
+// Version 2.0 - can remove after deprecation period
+</code></pre>
+<p><strong>Rule</strong>: Re-exports are part of your API contract. Removing them requires a major version bump (semver).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Re-export with Aliases</h2>
+<p>How do you change an item's name when re-exporting it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use <code>as</code> keyword</strong>:</p>
+<pre><code class="language-rust">mod internal {
+    pub struct InternalConnectionManager {}
+}
+
+// Re-export with simpler name
+pub use internal::InternalConnectionManager as Connection;
+
+// Users see the simpler name:
+use my_crate::Connection;
+</code></pre>
+<p><strong>When to use</strong>:
+- Simplify complex internal names
+- Create more user-friendly names
+- Avoid naming conflicts
+- Match naming conventions at API level</p>
+<p><strong>Example - multiple aliases</strong>:</p>
+<pre><code class="language-rust">pub use database::PgConnection as PostgresConnection;
+pub use database::MyConnection as MySQLConnection;
+pub use database::SqConnection as SQLiteConnection;
+</code></pre>
+<p><strong>Benefit</strong>: Internal naming for clarity, external naming for usability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Two-Layer Approach</h2>
+<p>What is the two-layer approach to API design, and why is it important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two layers</strong>:</p>
+<p><strong>Internal layer</strong> (implementation):</p>
+<pre><code class="language-rust">// Organize for maintainability
+mod internal_database;
+mod internal_models;
+mod internal_validation;
+</code></pre>
+<p><strong>Public layer</strong> (API):</p>
+<pre><code class="language-rust">// Organize for usability
+pub use internal_database::Connection;
+pub use internal_models::User;
+pub use internal_validation::EmailValidator;
+</code></pre>
+<p><strong>Why important</strong>:
+- <strong>Separation of concerns</strong>: Internal structure ≠ API structure
+- <strong>Flexibility</strong>: Change internals without breaking API
+- <strong>Optimization</strong>: Each layer optimized for different goals
+- <strong>Maintainability</strong>: Clear distinction between private and public</p>
+<p><strong>Key principle</strong>: Internal organization optimizes for code maintainability. Public API optimizes for user experience. Re-exports bridge the two.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Confusing Re-export Locations</h2>
+<p>What makes a re-export location confusing, and how do you avoid it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Re-exporting items in illogical locations.</p>
+<p><strong>Confusing</strong>:</p>
+<pre><code class="language-rust">pub mod models {
+    // Why is Connection in models module?
+    pub use crate::database::Connection;  
+}
+
+// Users confused:
+use my_crate::models::Connection;  // Doesn't make sense!
+</code></pre>
+<p><strong>Better</strong>:</p>
+<pre><code class="language-rust">pub mod database {
+    pub use crate::internal_db::Connection;
+}
+
+// Or at crate root:
+pub use internal_db::Connection;
+
+// Now it makes sense:
+use my_crate::database::Connection;
+use my_crate::Connection;
+</code></pre>
+<p><strong>Guidelines</strong>:
+- Re-export in logical locations (by functionality)
+- Match user expectations
+- Group related items together
+- Use clear module names</p>
+<p><strong>Mental model</strong>: Ask "where would users naturally look for this?"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Progressive Disclosure Pattern</h2>
+<p>What is progressive disclosure in API design, and how do you implement it with re-exports?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Progressive disclosure</strong>: Make simple things easy, complex things possible.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+
+// Beginner level - at root (easy to find)
+pub use database::Connection;
+pub use models::User;
+
+// Intermediate level - organized modules
+pub mod database {
+    pub use crate::internal_db::*;
+}
+
+pub mod models {
+    pub use crate::internal_models::*;
+}
+
+// Advanced level - deeper modules
+pub mod advanced {
+    pub mod internals {
+        pub use crate::internal_db::low_level::*;
+    }
+}
+</code></pre>
+<p><strong>User experience</strong>:</p>
+<pre><code class="language-rust">// Beginners:
+use my_crate::{Connection, User};
+
+// Intermediate:
+use my_crate::database::TransactionOptions;
+
+// Advanced:
+use my_crate::advanced::internals::RawConnection;
+</code></pre>
+<p><strong>Benefit</strong>: Users discover complexity gradually as they need it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Re-exports and Documentation</h2>
+<p>How do re-exports affect <code>cargo doc</code> and documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Effect</strong>: Re-exported items appear in docs at their re-export location.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod internal {
+    /// A database connection.
+    ///
+    /// # Examples
+    /// ```
+    /// let conn = Connection::new();
+    /// ```
+    pub struct Connection {}
+}
+
+/// Re-exported for convenience.
+pub use internal::Connection;
+</code></pre>
+<p><strong>In <code>cargo doc</code></strong>:
+- <code>Connection</code> appears under crate root (where it's re-exported)
+- Original documentation is preserved
+- Users see the intended API structure</p>
+<p><strong>Best practice</strong>: Document the re-export if you want to add context:</p>
+<pre><code class="language-rust">/// The main connection type.
+///
+/// This is re-exported from the internal module for convenience.
+pub use internal::Connection;
+</code></pre>
+<p><strong>Benefit</strong>: Documentation matches the API users actually use.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Circular Re-export Dependencies</h2>
+<p>What causes circular re-export dependencies, and how do you fix them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Modules re-exporting each other's items in a cycle.</p>
+<pre><code class="language-rust">// src/lib.rs
+pub use a::ItemA;
+
+// src/a.rs
+pub use crate::b::ItemB;
+
+// src/b.rs
+pub use crate::a::ItemA;  // Circular!
+</code></pre>
+<p><strong>Fixes</strong>:</p>
+<p><strong>1. Extract common module</strong>:</p>
+<pre><code class="language-rust">// src/common.rs
+pub struct SharedItem {}
+
+// src/a.rs
+pub use crate::common::SharedItem;
+
+// src/b.rs
+pub use crate::common::SharedItem;
+</code></pre>
+<p><strong>2. Restructure dependencies</strong>: Usually indicates poor separation of concerns—redesign module boundaries.</p>
+<p><strong>Prevention</strong>: Think carefully about dependency direction when organizing modules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Re-exporting Multiple Items Syntax</h2>
+<p>What are the different ways to re-export multiple items from a module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Method 1: Individual re-exports</strong>:</p>
+<pre><code class="language-rust">pub use internal::Helper;
+pub use internal::Validator;
+pub use internal::Parser;
+</code></pre>
+<p><strong>Method 2: Group re-export</strong>:</p>
+<pre><code class="language-rust">pub use internal::{Helper, Validator, Parser};
+</code></pre>
+<p><strong>Method 3: Glob re-export</strong>:</p>
+<pre><code class="language-rust">pub use internal::*;  // Re-export all public items
+</code></pre>
+<p><strong>Method 4: Selective with glob</strong>:</p>
+<pre><code class="language-rust">pub mod utils {
+    pub use crate::internal::*;  // All internal utils
+}
+</code></pre>
+<p><strong>When to use each</strong>:
+- <strong>Individual</strong>: When re-exporting few items with clear intent
+- <strong>Group</strong>: When re-exporting several related items
+- <strong>Glob</strong>: When re-exporting entire module's contents
+- <strong>Selective with glob</strong>: When organizing into categories</p>
+<p><strong>Caution with glob</strong>: Only use when you control the source module.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>User-First API Design Principle</h2>
+<p>What does "user-first thinking" mean in API design, and how do re-exports support it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>User-first thinking</strong>: Design API for how users want to work, not how code is organized internally.</p>
+<p><strong>Anti-pattern</strong> (implementation-first):</p>
+<pre><code class="language-rust">// Organized by implementation concerns
+pub mod persistence {
+    pub mod relational {
+        pub mod postgres { /* Connection here */ }
+    }
+}
+
+// User must understand implementation:
+use my_crate::persistence::relational::postgres::Connection;
+</code></pre>
+<p><strong>User-first</strong> (via re-exports):</p>
+<pre><code class="language-rust">// Internal: organized for maintainability
+mod internal_persistence { /* complex structure */ }
+
+// Public: organized for users
+pub use internal_persistence::Connection;
+
+// User gets simple import:
+use my_crate::Connection;
+</code></pre>
+<p><strong>Principles</strong>:
+- Users shouldn't need to know implementation details
+- Imports should be intuitive and memorable
+- Common cases should be easy</p>
+<p><strong>Re-exports enable</strong>: Separate internal structure from external interface.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Flatten vs Categorize</h2>
+<p>How do you decide between a flat API (everything at root) vs a categorized API (organized in modules)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Flatten to root when</strong>:
+- Small library (&lt; 20 public items)
+- Items don't conflict in naming
+- All items are equally important/common
+- Simplicity is highest priority</p>
+<p><strong>Categorize when</strong>:
+- Large library (many items)
+- Clear feature boundaries
+- Some items are advanced/rarely used
+- Want to avoid naming conflicts
+- Organization aids understanding</p>
+<p><strong>Decision factors</strong>:</p>
+<p><strong>Library size</strong>:
+- Small → Flatten
+- Large → Categorize</p>
+<p><strong>Item relationships</strong>:
+- Unrelated → Flatten individually
+- Related groups → Categorize by group</p>
+<p><strong>User level</strong>:
+- All beginners → Flatten essentials
+- Mixed experience → Progressive disclosure (hybrid)</p>
+<p><strong>Common pattern</strong>: Start flat, add categories as library grows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Semver and Re-exports</h2>
+<p>How do re-exports relate to semantic versioning (semver)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Re-exports are part of your public API contract</strong>, so they affect semver.</p>
+<p><strong>Non-breaking changes</strong> (patch/minor):
+- ✅ Adding new re-exports
+- ✅ Adding <code>#[deprecated]</code> to existing re-exports
+- ✅ Adding new items to existing modules</p>
+<p><strong>Breaking changes</strong> (major):
+- ❌ Removing re-exports (items no longer accessible)
+- ❌ Moving items without maintaining old paths
+- ❌ Changing re-export aliases</p>
+<p><strong>Safe migration pattern</strong>:</p>
+<pre><code class="language-rust">// Version 1.5 - Add new path, deprecate old
+pub use new_location::Item;
+
+#[deprecated(since = &quot;1.5.0&quot;, note = &quot;Use crate::Item instead&quot;)]
+pub use old_location::Item as OldItem;
+
+// Version 2.0 - Remove deprecated path
+</code></pre>
+<p><strong>Key insight</strong>: Users depend on re-exported paths. Treat them as carefully as any other public API.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practices Summary</h2>
+<p>What are the key best practices for re-exports and API design in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best practices</strong>:</p>
+<p><strong>1. Two-layer approach</strong>:
+- Internal layer: optimize for maintainability
+- Public layer: optimize for usability</p>
+<p><strong>2. User-first thinking</strong>:
+- Design for how users want to work
+- Don't expose implementation details</p>
+<p><strong>3. Progressive disclosure</strong>:
+- Common items at root or in obvious places
+- Advanced items in deeper modules
+- Prelude for maximum convenience</p>
+<p><strong>4. Stability</strong>:
+- Maintain re-exports for backward compatibility
+- Use <code>#[deprecated]</code> for migrations
+- Follow semver rules</p>
+<p><strong>5. Logical organization</strong>:
+- Group by functionality, not implementation
+- Put items where users expect them
+- Use clear, consistent naming</p>
+<p><strong>6. Balance</strong>:
+- Flat for small libraries
+- Categorized for large libraries
+- Hybrid for medium libraries</p>
+<p><strong>Golden rule</strong>: Optimize your internal organization for the team maintaining it, and your public API for the developers using it. Re-exports bridge these two needs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 05 Code Organization - 02 Modules And Visibility</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Modules Exist in Rust</h2>
+<p>What are the four main reasons for using modules in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Building your code</strong>: Helps you think about structure and remember where code belongs as projects grow</li>
+<li><strong>Avoiding name conflicts</strong>: Different modules can have items with the same name without conflict</li>
+<li><strong>Reading your code</strong>: Module paths are self-documenting (e.g., <code>std::collections::HashMap</code>)</li>
+<li><strong>Privacy and encapsulation</strong>: Keep implementation details private, expose only what users need</li>
+</ol>
+<p>Modules create separate namespaces and let you control what's accessible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rust's Privacy Philosophy</h2>
+<p>What is Rust's core privacy philosophy, and why does it matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Philosophy</strong>: Rust is <strong>private by default</strong>. Everything starts as private, and you must explicitly make things public using <code>pub</code>.</p>
+<p><strong>Why it matters</strong>:
+- Encourages good API design
+- Prevents accidental exposure of internal details
+- Forces deliberate decisions about what's public
+- Makes it safe to change private implementation without breaking external code</p>
+<p><strong>Exceptions</strong>: Items in a <code>pub</code> trait and variants in a <code>pub</code> enum are automatically public.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Declaring and Using Basic Modules</h2>
+<p>How do you declare a module in Rust, and what's the key principle about module scope?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Declaration</strong>:</p>
+<pre><code class="language-rust">mod module_name {
+    // Module contents
+}
+</code></pre>
+<p><strong>Key principle</strong>: Modules are separate spaces (separate namespaces).</p>
+<p><strong>Implications</strong>:
+- Each module needs its own imports (<code>use</code> statements)
+- Items inside don't automatically see items outside
+- Items are private by default and need <code>pub</code> to be accessible from outside</p>
+<p>Example:</p>
+<pre><code class="language-rust">mod printer {
+    use std::fmt::Display;  // Import needed inside module
+
+    pub fn print&lt;T: Display&gt;(item: T) {
+        println!(&quot;{}&quot;, item);
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Making Functions Public</h2>
+<p>What happens if you forget to add <code>pub</code> to a function in a module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The function remains <strong>private</strong> and cannot be accessed from outside the module.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod utils {
+    fn helper() {}  // Private function
+}
+
+fn main() {
+    utils::helper();  // ERROR: function `helper` is private
+}
+</code></pre>
+<p><strong>Solution</strong>:</p>
+<pre><code class="language-rust">mod utils {
+    pub fn helper() {}  // Now public
+}
+
+fn main() {
+    utils::helper();  // OK!
+}
+</code></pre>
+<p>The compiler will give a clear error message showing where the private item is defined.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub on Structs - Fields Are Separate</h2>
+<p>When you make a struct <code>pub</code>, what happens to its fields, and how do you control field visibility?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: <code>pub struct</code> makes the struct name public, but fields remain private unless individually marked <code>pub</code>.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub struct Person {
+    pub name: String,    // Public field - accessible
+    age: u32,            // Private field - not accessible
+    ssn: String,         // Private field - not accessible
+}
+
+impl Person {
+    pub fn new(name: String, age: u32) -&gt; Self {
+        Self { name, age, ssn: String::new() }
+    }
+
+    pub fn get_age(&amp;self) -&gt; u32 {
+        self.age  // Controlled access via method
+    }
+}
+</code></pre>
+<p><strong>Benefit</strong>: You control how fields are accessed and can enforce invariants through methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub on Tuple Structs</h2>
+<p>How does <code>pub</code> work with tuple structs, and what's the difference between <code>pub Email(String)</code> and <code>pub Email(pub String)</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Same rules as regular structs</strong> - the type and its fields are separately controlled.</p>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-rust">pub struct Email(String);           
+// Email is public, inner String is private
+// Can create, but can't access .0
+
+pub struct UserId(pub u64);         
+// Both UserId and the u64 are public
+// Can create and access .0
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">let email = Email(&quot;user@example.com&quot;.to_string());
+// email.0;  // ERROR - field is private
+
+let id = UserId(42);
+println!(&quot;{}&quot;, id.0);  // OK - field is public
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub on Enums - All Variants Public</h2>
+<p>What happens when you mark an enum as <code>pub</code>, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: When an enum is <code>pub</code>, <strong>all its variants automatically become public</strong>.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub enum TrafficLight {
+    Red,      // Automatically public
+    Yellow,   // Automatically public
+    Green,    // Automatically public
+}
+</code></pre>
+<p><strong>Rationale</strong>: Enums are about choosing between variants. If the enum is public, users need to see all variants to make a choice. Having private variants in a public enum wouldn't make sense.</p>
+<p><strong>Same applies to data in variants</strong> - it's all accessible if the enum is public.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub on Traits - All Methods Public</h2>
+<p>What happens when you mark a trait as <code>pub</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: When a trait is <code>pub</code>, <strong>all its methods automatically become public</strong>.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub trait Drawable {
+    fn draw(&amp;self);    // Automatically public
+    fn erase(&amp;self);   // Automatically public
+}
+</code></pre>
+<p><strong>Rationale</strong>: Traits define shared behavior. If a trait is public, all its methods need to be accessible for others to:
+- Implement the trait on their types
+- Call the methods through the trait</p>
+<p><strong>You can't have private methods in a public trait</strong> - it wouldn't make sense.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Visibility Rules</h2>
+<p>What are the visibility rules for top-level vs nested modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Top-level modules</strong> (in crate root):
+- Public within their crate by default
+- Need <code>pub</code> to be accessible from other crates</p>
+<p><strong>Nested modules</strong>:
+- Private by default
+- Need <code>pub</code> to be accessible from outside their parent module</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod network {                    // Public within crate
+    pub mod server {             // Must be pub
+        pub fn start() {}
+    }
+
+    mod client {                 // Private
+        fn connect() {}
+    }
+}
+
+fn main() {
+    network::server::start();    // OK
+    // network::client::connect(); // ERROR - private
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Child Modules Can Access Parent Items</h2>
+<p>Can a child module access private items in its parent module? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Yes</strong>, child modules can always access parent items, regardless of visibility.</p>
+<p><strong>Rationale</strong>: A child module is "inside" its parent. Think of it like geography - if you're in a city, you're automatically in its province and country.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod country {
+    fn print_country(name: &amp;str) {  // Private
+        println!(&quot;Country: {}&quot;, name);
+    }
+
+    pub mod city {
+        pub fn print_city(country: &amp;str, city: &amp;str) {
+            super::print_country(country);  // Can access parent's private function
+            println!(&quot;City: {}&quot;, city);
+        }
+    }
+}
+</code></pre>
+<p><strong>Key point</strong>: Privacy only restricts access from outside, not from children within.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Using Super to Navigate Up Module Tree</h2>
+<p>What does <code>super::</code> do, and how do you use it to access items in parent modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>super::</code></strong> moves up one level in the module tree (to the parent module).</p>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">mod parent {
+    fn parent_function() {}
+
+    pub mod child {
+        fn child_function() {
+            super::parent_function();        // One level up
+        }
+
+        pub mod grandchild {
+            fn grandchild_function() {
+                super::child_function();           // One level up
+                super::super::parent_function();   // Two levels up
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Alternative</strong>: Use <code>crate::</code> to start from the root:</p>
+<pre><code class="language-rust">crate::parent::parent_function();  // Absolute path from root
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Modules Are Separate Spaces</h2>
+<p>Why does this code fail, and how do you fix it?</p>
+<pre><code class="language-rust">use std::fmt::Display;
+
+mod printer {
+    pub fn print&lt;T: Display&gt;(item: T) {
+        println!(&quot;{}&quot;, item);
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: <code>Display</code> is not in scope inside the <code>printer</code> module. Modules are separate spaces - they don't automatically inherit imports from outer scopes.</p>
+<p><strong>Fix</strong>: Import inside the module:</p>
+<pre><code class="language-rust">mod printer {
+    use std::fmt::Display;  // Import in module scope
+
+    pub fn print&lt;T: Display&gt;(item: T) {
+        println!(&quot;{}&quot;, item);
+    }
+}
+</code></pre>
+<p><strong>Key principle</strong>: Each module needs its own <code>use</code> statements - imports don't cross module boundaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Public Struct with Private Fields Pattern</h2>
+<p>Why would you make a struct public but keep its fields private? Show an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Reason</strong>: Control how fields are accessed and modified, enforcing invariants through methods.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub struct BankAccount {
+    balance: f64,  // Private - can't directly modify
+}
+
+impl BankAccount {
+    pub fn new(initial: f64) -&gt; Self {
+        Self { balance: initial }
+    }
+
+    pub fn deposit(&amp;mut self, amount: f64) {
+        if amount &gt; 0.0 {  // Enforce rule: no negative deposits
+            self.balance += amount;
+        }
+    }
+
+    pub fn withdraw(&amp;mut self, amount: f64) -&gt; Result&lt;(), String&gt; {
+        if amount &gt; self.balance {
+            Err(&quot;Insufficient funds&quot;.to_string())
+        } else {
+            self.balance -= amount;
+            Ok(())
+        }
+    }
+}
+</code></pre>
+<p><strong>Benefit</strong>: Users can't break rules (like negative balance) because they can't access <code>balance</code> directly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Glob Operator</h2>
+<p>What does the glob operator (<code>*</code>) do, and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What it does</strong>: Imports all public items from a module.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod utilities {
+    pub fn read_file() {}
+    pub fn write_file() {}
+    fn internal_helper() {}  // Private - not imported
+}
+
+use utilities::*;  // Import all public items
+
+read_file();       // OK
+write_file();      // OK
+// internal_helper();  // ERROR - private
+</code></pre>
+<p><strong>When to use</strong>:
+- ✅ In tests: <code>use super::*;</code>
+- ✅ In prelude modules
+- ⚠️ Use cautiously in regular code - can make it unclear where items come from</p>
+<p><strong>Better alternative for clarity</strong>:</p>
+<pre><code class="language-rust">use utilities::{read_file, write_file};
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Private Module Makes Public Items Inaccessible</h2>
+<p>What's wrong with this code, and how do you fix it?</p>
+<pre><code class="language-rust">mod internal {           
+    pub struct Helper {  
+        pub value: i32,
+    }
+}
+
+fn main() {
+    let h = internal::Helper { value: 42 };
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: The module <code>internal</code> itself is private, so even though <code>Helper</code> is public, you can't access it from outside.</p>
+<p><strong>Error</strong>: <code>module 'internal' is private</code></p>
+<p><strong>Fix</strong>: Make the module public:</p>
+<pre><code class="language-rust">pub mod internal {       // Module is now accessible
+    pub struct Helper {
+        pub value: i32,
+    }
+}
+
+fn main() {
+    let h = internal::Helper { value: 42 };  // Works!
+}
+</code></pre>
+<p><strong>Rule</strong>: Both the module AND the item must be public for external access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Constructing Structs with Private Fields</h2>
+<p>If a struct's fields are private, how can external code create instances of it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Can't use struct literal syntax if fields are private.</p>
+<p><strong>Solution</strong>: Provide a public constructor (typically <code>new</code>):</p>
+<pre><code class="language-rust">pub struct User {
+    name: String,      // Private
+    email: String,     // Private
+}
+
+impl User {
+    pub fn new(name: String, email: String) -&gt; Self {
+        Self { name, email }  // Constructor can access private fields
+    }
+}
+
+// Usage:
+let user = User::new(&quot;Alice&quot;.to_string(), &quot;alice@example.com&quot;.to_string());
+</code></pre>
+<p><strong>Alternative patterns</strong>:
+- Builder pattern for many fields
+- <code>Default</code> implementation
+- Factory methods with validation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Module Pattern</h2>
+<p>How do you organize tests to keep them close to the code they test, and why can they access private items?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>:</p>
+<pre><code class="language-rust">pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+fn internal_helper() -&gt; i32 {  // Private function
+    42
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;  // Import from parent module
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 2), 4);
+    }
+
+    #[test]
+    fn test_helper() {
+        assert_eq!(internal_helper(), 42);  // Can test private!
+    }
+}
+</code></pre>
+<p><strong>Why tests can access private items</strong>: The test module is a child of the module it tests, and child modules can access parent items regardless of visibility.</p>
+<p><strong><code>#[cfg(test)]</code></strong>: Only compiles this module during <code>cargo test</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rust's Privacy Rule Summary</h2>
+<p>What is Rust's official rule about default privacy and its exceptions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The rule</strong>: "By default, everything is private, with two exceptions: items in a <code>pub</code> trait are public by default; enum variants in a <code>pub</code> enum are also public by default."</p>
+<p><strong>Breaking it down</strong>:</p>
+<p><strong>Private by default</strong>:
+- Functions, structs, fields, modules, etc. all start private
+- Must explicitly use <code>pub</code> to make accessible</p>
+<p><strong>Exception 1 - Traits</strong>:</p>
+<pre><code class="language-rust">pub trait Drawable {
+    fn draw(&amp;self);  // Automatically public
+}
+</code></pre>
+<p><strong>Exception 2 - Enums</strong>:</p>
+<pre><code class="language-rust">pub enum Color {
+    Red,    // Automatically public
+    Green,  // Automatically public
+    Blue,   // Automatically public
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Public API with Private Implementation</h2>
+<p>What is the benefit of exposing a public API while keeping implementation details private?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Benefit</strong>: You can change internal implementation without breaking external code.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub mod database {
+    pub struct Database {
+        connection: Connection,  // Private implementation
+    }
+
+    impl Database {
+        pub fn new(url: &amp;str) -&gt; Result&lt;Self, Error&gt; {
+            // Public interface
+        }
+
+        pub fn query(&amp;self, sql: &amp;str) -&gt; Result&lt;Vec&lt;Row&gt;, Error&gt; {
+            // Public interface
+        }
+    }
+
+    struct Connection {  // Private helper
+        // Can change this freely
+    }
+}
+</code></pre>
+<p><strong>What users see</strong>: Only <code>Database</code>, <code>new()</code>, and <code>query()</code>
+<strong>What you can change freely</strong>: Anything about <code>Connection</code> or internal implementation</p>
+<p><strong>This is encapsulation</strong> - hide complexity, expose simplicity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Feature Module Organization</h2>
+<p>How do you organize related functionality into feature modules? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Group related constants, types, and functions into modules by feature or concern.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">pub mod parser {
+    pub fn parse(input: &amp;str) -&gt; Result&lt;Ast, Error&gt; {
+        // Parsing logic
+    }
+}
+
+pub mod validator {
+    pub fn validate(ast: &amp;Ast) -&gt; Result&lt;(), Error&gt; {
+        // Validation logic
+    }
+}
+
+pub mod compiler {
+    pub fn compile(ast: &amp;Ast) -&gt; Result&lt;Bytecode, Error&gt; {
+        // Compilation logic
+    }
+}
+</code></pre>
+<p><strong>Benefits</strong>:
+- Clear separation of concerns
+- Easy to navigate codebase
+- Can understand purpose from module name
+- Related code stays together</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Not Over-Privatize</h2>
+<p>What's the balance between privacy and accessibility in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Don't over-privatize</strong> - the goal is a clean API, not maximum restrictions.</p>
+<p><strong>Good practice</strong>:
+- Private by default is about preventing <em>accidental</em> exposure, not hiding everything
+- Make things public if they're meant to be used
+- Keep implementation details private
+- Expose a clear, useful interface</p>
+<p><strong>Example of good balance</strong>:</p>
+<pre><code class="language-rust">pub mod parser {
+    // Public API - what users need
+    pub struct Parser { /* ... */ }
+    pub fn parse(input: &amp;str) -&gt; Result&lt;Ast, Error&gt; { /* ... */ }
+
+    // Private helpers - internal details
+    fn tokenize(input: &amp;str) -&gt; Vec&lt;Token&gt; { /* ... */ }
+    fn validate_syntax(tokens: &amp;[Token]) -&gt; Result&lt;(), Error&gt; { /* ... */ }
+}
+</code></pre>
+<p><strong>Goal</strong>: Clean, useful public interface + hidden complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Crates and Public APIs</h2>
+<p>How does visibility in modules relate to a crate's public API?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Connection</strong>: Items marked <code>pub</code> in a library crate become part of its public API that other crates can use.</p>
+<p><strong>Within a crate</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub mod parser {
+    pub fn parse(input: &amp;str) -&gt; Ast { /* ... */ }
+}
+
+mod internal {  // Private - only usable within this crate
+    pub fn helper() {}
+}
+</code></pre>
+<p><strong>From another crate</strong>:</p>
+<pre><code class="language-rust">use my_crate::parser::parse;  // OK - pub mod, pub fn
+// use my_crate::internal::helper;  // ERROR - private module
+</code></pre>
+<p><strong>Key insight</strong>:
+- Private items are truly private across crate boundaries
+- Public items in a library become your API contract
+- Changing public items can break dependent code
+- Changing private items is always safe</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Visibility and Encapsulation</h2>
+<p>How does Rust's visibility system enable encapsulation? Provide a concrete example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Encapsulation</strong>: Hiding internal details and exposing only controlled interfaces.</p>
+<p><strong>Example - Enforcing Invariants</strong>:</p>
+<pre><code class="language-rust">pub struct Temperature {
+    kelvin: f64,  // Private - ensures validity
+}
+
+impl Temperature {
+    pub fn from_celsius(celsius: f64) -&gt; Result&lt;Self, String&gt; {
+        let kelvin = celsius + 273.15;
+        if kelvin &lt; 0.0 {
+            Err(&quot;Temperature below absolute zero&quot;.to_string())
+        } else {
+            Ok(Self { kelvin })
+        }
+    }
+
+    pub fn as_celsius(&amp;self) -&gt; f64 {
+        self.kelvin - 273.15
+    }
+}
+</code></pre>
+<p><strong>Benefits</strong>:
+- Can't create invalid temperatures (below absolute zero)
+- All conversions go through controlled methods
+- Internal representation (<code>kelvin</code>) can change without breaking users
+- Business rules are enforced automatically</p>
+<p><strong>This is why Rust defaults to private</strong> - encourages deliberate API design.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Module Visibility Hierarchy</h2>
+<p>How does visibility work in a hierarchy of nested modules? Can outer modules access inner module items?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: Children can always access parent items, but parents CANNOT access child items unless they're public.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod outer {
+    fn outer_fn() {}
+
+    mod inner {
+        fn inner_fn() {
+            super::outer_fn();  // OK - child accessing parent
+        }
+    }
+
+    fn another_outer_fn() {
+        // inner::inner_fn();  // ERROR - parent can't access private child
+    }
+}
+</code></pre>
+<p><strong>Mental model</strong>: Think like geography
+- A city (child) is always in its country (parent) - child sees parent
+- A country (parent) might not know about every private street in a city - parent doesn't see private children</p>
+<p><strong>To allow parent access</strong>: Make child items public:</p>
+<pre><code class="language-rust">mod inner {
+    pub fn inner_fn() {}  // Now parent can access
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Organization Best Practices</h2>
+<p>What are the key best practices for organizing code with modules and visibility?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best practices</strong>:</p>
+<ol>
+<li><strong>Start private, make public as needed</strong></li>
+<li>Don't pre-emptively make everything public</li>
+<li>
+<p>Add <code>pub</code> when you get compiler errors</p>
+</li>
+<li>
+<p><strong>Group related functionality</strong>
+   <code>rust
+   pub mod database {
+       pub mod users { /* ... */ }
+       pub mod posts { /* ... */ }
+   }</code></p>
+</li>
+<li>
+<p><strong>Keep implementation details private</strong></p>
+</li>
+<li>Only expose what users need</li>
+<li>
+<p>Hide internal helpers and state</p>
+</li>
+<li>
+<p><strong>Use constructors for validation</strong>
+   ```rust
+   pub struct Email(String);  // Private field</p>
+</li>
+</ol>
+<p>impl Email {
+       pub fn new(s: String) -&gt; Result<Self, Error> {
+           // Validate before constructing
+       }
+   }
+   ```</p>
+<ol>
+<li><strong>Use <code>#[cfg(test)]</code> for test modules</strong></li>
+<li>Keeps tests close to code</li>
+<li>
+<p>Tests can access private items</p>
+</li>
+<li>
+<p><strong>Be cautious with glob imports</strong></p>
+</li>
+<li>Use mainly in tests: <code>use super::*;</code></li>
+<li>Prefer explicit imports in production code</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

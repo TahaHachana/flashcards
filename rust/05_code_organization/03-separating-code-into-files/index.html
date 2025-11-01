@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 05 Code Organization - 03-Separating-Code-Into-Files</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Critical Rule - Files Must Be Declared</h2>
+<p>What is the most critical rule about using multiple files in Rust, and what happens if you don't follow it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: Rust won't see or compile a <code>.rs</code> file unless you explicitly declare it with <code>mod</code>.</p>
+<p><strong>What happens without declaration</strong>:
+- You can create <code>helper.rs</code>, write any code in it
+- Your IDE might notice it, but the compiler completely ignores it
+- The file doesn't exist as far as Rust is concerned
+- No compilation errors about unused files</p>
+<p><strong>To make Rust notice</strong>:</p>
+<pre><code class="language-rust">// In src/lib.rs or src/main.rs
+mod helper;  // Now Rust will look for and compile src/helper.rs
+</code></pre>
+<p><strong>Key insight</strong>: Files don't automatically become modules—you must declare them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Two Ways to Organize Module Files</h2>
+<p>What are the two conventions for organizing multi-file modules in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Method 1: Filename matches module name</strong></p>
+<pre><code>src/network.rs
+</code></pre>
+<pre><code class="language-rust">// In src/lib.rs
+mod network;  // Looks for src/network.rs
+</code></pre>
+<p><strong>Method 2: Directory with mod.rs</strong></p>
+<pre><code>src/network/mod.rs
+</code></pre>
+<pre><code class="language-rust">// In src/lib.rs
+mod network;  // Looks for src/network/mod.rs
+</code></pre>
+<p><strong>Both are valid</strong>, and for <code>mod network;</code>, Rust will check for both locations. Method 1 is simpler; Method 2 is used when a module has submodules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Modern File Organization (Rust 2018+)</h2>
+<p>What is the modern (Rust 2018+) way to organize modules with submodules, and what are its advantages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Modern structure</strong>: Use both a <code>.rs</code> file and a directory:</p>
+<pre><code>src/
+├── lib.rs
+├── network.rs          ← Module contents
+└── network/
+    ├── server.rs       ← Submodule
+    └── client.rs       ← Submodule
+</code></pre>
+<pre><code class="language-rust">// src/network.rs
+pub mod server;  // Looks in network/server.rs
+pub mod client;  // Looks in network/client.rs
+
+pub fn init() {
+    println!(&quot;Network initialized&quot;);
+}
+</code></pre>
+<p><strong>Advantages</strong>:
+- No special <code>mod.rs</code> files needed
+- More intuitive file structure
+- Parallel file and directory can coexist
+- Cleaner than old <code>network/mod.rs</code> pattern</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mod Declaration vs Use Statement</h2>
+<p>What is the difference between <code>mod module_name;</code> and <code>use module_name::item;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>mod module_name;</code></strong> - <strong>Declares</strong> a module
+- Tells Rust the module exists
+- Makes Rust look for and compile the file
+- Must come before you can use items from the module</p>
+<p><strong><code>use module_name::item;</code></strong> - <strong>Imports</strong> from an already-declared module
+- Brings items into scope
+- Only works if module was already declared</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// ❌ WRONG
+use helper::help;  // ERROR: Can't find `helper`
+
+// ✅ CORRECT
+mod helper;        // Declare first
+use helper::help;  // Then import
+</code></pre>
+<p><strong>Mental model</strong>: <code>mod</code> makes the module exist, <code>use</code> makes items convenient to access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Where Rust Looks for Module Files</h2>
+<p>When you write <code>mod network;</code> in a file, where does Rust look for the module file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: Rust looks for modules <strong>relative to the file containing the <code>mod</code> declaration</strong>.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// In src/lib.rs
+mod network;  
+// Looks in src/ for:
+// 1. src/network.rs
+// 2. src/network/mod.rs
+
+// In src/network/mod.rs
+mod server;
+// Looks in src/network/ for:
+// 1. src/network/server.rs
+// 2. src/network/server/mod.rs
+</code></pre>
+<p><strong>Common mistake</strong>: Thinking Rust looks relative to the crate root
+<strong>Reality</strong>: Looks relative to the declaring file</p>
+<p><strong>NOT</strong>: <code>src/lib/network.rs</code> (wrong!)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Submodules Need Pub to Be Accessible</h2>
+<p>Why does this code fail, and how do you fix it?</p>
+<pre><code class="language-rust">// src/network/mod.rs
+mod server;
+
+// src/main.rs
+use my_lib::network::server;
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: The submodule <code>server</code> is private (declared with <code>mod</code> not <code>pub mod</code>).</p>
+<p><strong>Error</strong>: <code>module 'server' is private</code></p>
+<p><strong>Fix</strong>: Make the submodule public:</p>
+<pre><code class="language-rust">// src/network/mod.rs
+pub mod server;  // Now publicly accessible
+</code></pre>
+<p><strong>Key insight</strong>:
+- Just because <code>network</code> is public doesn't make its submodules public
+- Each module declaration needs its own <code>pub</code> keyword
+- This is consistent with Rust's "private by default" philosophy</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Logical vs Physical Module Organization</h2>
+<p>What is the difference between the logical module tree and the physical file structure?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Logical module tree</strong>: How modules are related and nested (declared with <code>mod</code>)
+<strong>Physical file structure</strong>: Where the actual code files are stored</p>
+<p><strong>Example</strong>:</p>
+<pre><code>Logical tree:           Physical files:
+crate                   src/lib.rs
+├── network             src/network.rs
+│   └── server          src/network/server.rs
+└── database            src/database.rs
+</code></pre>
+<p><strong>Key insights</strong>:
+- They are separate concepts
+- They should align for clarity, but don't have to match exactly
+- The compiler cares about the logical tree
+- Developers benefit from parallel structures
+- Module tree is declared with <code>mod</code>, independent of files</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Multi-File Example Structure</h2>
+<p>Show a complete example of a multi-file library structure with proper declarations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Structure</strong>:</p>
+<pre><code>my_library/
+├── Cargo.toml
+└── src/
+    ├── lib.rs
+    ├── database.rs
+    ├── api.rs
+    └── models/
+        ├── user.rs
+        └── post.rs
+</code></pre>
+<p><strong>src/lib.rs</strong>:</p>
+<pre><code class="language-rust">mod database;
+mod api;
+mod models;
+
+pub use database::Database;
+pub use models::{User, Post};
+</code></pre>
+<p><strong>src/models.rs</strong> (modern style):</p>
+<pre><code class="language-rust">pub mod user;
+pub mod post;
+
+pub use user::User;
+pub use post::Post;
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_library::{Database, User, Post};
+</code></pre>
+<p><strong>Note</strong>: <code>models.rs</code> declares its submodules and re-exports them for convenience.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flat vs Hierarchical Structure</h2>
+<p>When should you use a flat file structure vs a hierarchical structure?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Flat structure</strong> (all <code>.rs</code> files in <code>src/</code>):</p>
+<pre><code>src/
+├── lib.rs
+├── parser.rs
+├── validator.rs
+└── compiler.rs
+</code></pre>
+<p><strong>Good for</strong>: Simple projects with few modules</p>
+<p><strong>Hierarchical structure</strong> (directories with submodules):</p>
+<pre><code>src/
+├── lib.rs
+├── database/
+│   ├── mod.rs
+│   ├── connection.rs
+│   └── query.rs
+└── api/
+    ├── mod.rs
+    ├── routes.rs
+    └── handlers.rs
+</code></pre>
+<p><strong>Good for</strong>: Projects with clear feature boundaries, multiple related modules</p>
+<p><strong>Guideline</strong>: Start flat, reorganize into hierarchy as project grows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tests in Separate Files</h2>
+<p>How do you organize tests in separate files, and why can they still access private items?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Organization</strong>:</p>
+<pre><code class="language-rust">// src/calculator.rs
+pub fn add(a: i32, b: i32) -&gt; i32 { a + b }
+
+#[cfg(test)]
+mod tests;
+
+// src/calculator/tests.rs
+use super::*;
+
+#[test]
+fn test_add() {
+    assert_eq!(add(2, 2), 4);
+}
+</code></pre>
+<p><strong>Why tests can access private items</strong>:
+- The test module is a <strong>child module</strong> of the code it tests
+- Child modules can access parent items regardless of visibility
+- <code>#[cfg(test)]</code> only compiles the tests during <code>cargo test</code></p>
+<p><strong>Benefits</strong>:
+- Keeps test code separate from implementation
+- Main source files stay cleaner
+- Tests still have full access to private functions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Circular Dependencies Problem</h2>
+<p>What is a circular dependency in modules, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Module A depends on Module B, which depends on Module A.</p>
+<pre><code class="language-rust">// src/a.rs
+use crate::b::B;
+pub struct A { b: B }
+
+// src/b.rs
+use crate::a::A;
+pub struct B { a: A }  // Circular!
+</code></pre>
+<p><strong>Fixes</strong>:</p>
+<ol>
+<li><strong>Extract common types to shared module</strong>:</li>
+</ol>
+<pre><code class="language-rust">// src/common.rs
+pub struct SharedData {}
+
+// Both A and B depend on common, no cycle
+</code></pre>
+<ol>
+<li>
+<p><strong>Use trait objects or enums</strong> instead of concrete types</p>
+</li>
+<li>
+<p><strong>Use <code>Rc</code>/<code>Arc</code> with interior mutability</strong> if truly needed</p>
+</li>
+<li>
+<p><strong>Redesign</strong>: Often indicates poor separation of concerns</p>
+</li>
+</ol>
+<p><strong>Best solution</strong>: Usually redesign to avoid circularity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Path Resolution Relative to Declaring File</h2>
+<p>If you have nested modules, where does Rust look for submodule files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: Submodule paths are resolved <strong>relative to the file containing the declaration</strong>.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod network;
+// Looks in: src/network.rs or src/network/mod.rs
+
+// src/network.rs (or src/network/mod.rs)
+pub mod server;
+// Looks in: src/network/server.rs (relative to network.rs location)
+
+pub mod client;
+// Looks in: src/network/client.rs
+</code></pre>
+<p><strong>Parallel structure</strong>:</p>
+<pre><code>src/
+├── lib.rs           ← declares `mod network`
+├── network.rs       ← declares `pub mod server`
+└── network/
+    └── server.rs    ← server submodule code
+</code></pre>
+<p><strong>NOT</strong> relative to crate root!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Re-exports to Flatten Deep Paths</h2>
+<p>How do you use re-exports to simplify deep module paths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Deep nesting creates long paths</p>
+<pre><code class="language-rust">use my_crate::features::authentication::users::management::CreateUser;
+</code></pre>
+<p><strong>Solution</strong>: Re-export at higher levels</p>
+<pre><code class="language-rust">// src/features/authentication/mod.rs
+pub use self::users::management::create::CreateUser;
+
+// Now users can:
+use my_crate::features::authentication::CreateUser;
+</code></pre>
+<p><strong>Common pattern in lib.rs</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;
+mod models;
+
+// Re-export commonly used items at crate root
+pub use database::Database;
+pub use models::{User, Post};
+
+// Users can now:
+use my_crate::{Database, User, Post};
+</code></pre>
+<p><strong>Benefit</strong>: Simpler, more ergonomic API for library users.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>File Structure Should Mirror Module Tree</h2>
+<p>Why should file structure mirror the module tree, and what problems arise when they don't match?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best practice</strong>: Keep file structure parallel to module tree</p>
+<p><strong>Good alignment</strong>:</p>
+<pre><code>Module tree:          File structure:
+crate                 src/lib.rs
+├── network           src/network.rs
+│   ├── server        src/network/server.rs
+│   └── client        src/network/client.rs
+└── database          src/database.rs
+</code></pre>
+<p><strong>Problems when misaligned</strong>:
+- Developers can't find code easily
+- Confusion about where to add new functionality
+- File organization doesn't match mental model
+- Harder onboarding for new team members</p>
+<p><strong>Principle</strong>: File location should match module path
+- <code>crate::network::server</code> → <code>src/network/server.rs</code>
+- Easy to navigate from path to file and vice versa</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Visibility Rules Cross File Boundaries</h2>
+<p>Do visibility rules (pub, private) work differently when code is split across files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>No</strong> - visibility rules work exactly the same across files.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// src/database.rs
+pub struct Connection {
+    url: String,  // Private field, even though in different file
+}
+
+impl Connection {
+    pub fn new(url: String) -&gt; Self {
+        Self { url }
+    }
+}
+
+// src/lib.rs
+mod database;
+
+fn test() {
+    let conn = database::Connection::new(&quot;localhost&quot;.to_string());  // OK
+    // let url = conn.url;  // ERROR - field is private
+}
+</code></pre>
+<p><strong>Key insight</strong>:
+- Files don't create visibility boundaries
+- Modules create visibility boundaries
+- Whether a module is in one file or split across many doesn't matter
+- <code>pub</code> and privacy work the same way</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Declaration Order Matters</h2>
+<p>Does the order of module declarations matter, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Yes</strong>, for <code>use</code> statements - modules must be declared before you can import from them.</p>
+<p><strong>Correct order</strong>:</p>
+<pre><code class="language-rust">mod database;           // Declare first
+use database::connect;  // Then import
+
+fn main() {
+    connect();
+}
+</code></pre>
+<p><strong>Wrong order</strong>:</p>
+<pre><code class="language-rust">use database::connect;  // ERROR - database not yet declared
+mod database;           // Too late!
+</code></pre>
+<p><strong>Among module declarations</strong>: Order generally doesn't matter</p>
+<pre><code class="language-rust">mod database;
+mod api;      // Both work fine in any order
+mod models;
+</code></pre>
+<p><strong>Best practice</strong>: Declare all modules at the top of the file, before any <code>use</code> statements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary with Library Pattern</h2>
+<p>How do you structure a project that has both a library and a binary executable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Structure</strong>:</p>
+<pre><code>src/
+├── lib.rs           ← Library code (core functionality)
+├── main.rs          ← Binary that uses the library
+├── database.rs
+├── api.rs
+└── models/
+</code></pre>
+<p><strong>src/lib.rs</strong>:</p>
+<pre><code class="language-rust">mod database;
+mod api;
+pub mod models;
+
+pub use database::Database;
+pub fn initialize() { /* ... */ }
+</code></pre>
+<p><strong>src/main.rs</strong>:</p>
+<pre><code class="language-rust">use my_app::{Database, initialize};  // Import from library
+
+fn main() {
+    initialize();
+    let db = Database::new();
+    // Application logic
+}
+</code></pre>
+<p><strong>Benefits</strong>:
+- Library can be tested independently
+- Other projects can depend on your library
+- Binary is thin, just CLI handling
+- Clear separation of concerns</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Old vs Modern Module File Organization</h2>
+<p>What's the difference between old-style <code>mod.rs</code> and modern Rust 2018+ module organization?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Old style</strong> (before Rust 2018):</p>
+<pre><code>src/
+├── lib.rs
+└── network/
+    ├── mod.rs         ← Module contents here
+    ├── server.rs
+    └── client.rs
+</code></pre>
+<p><strong>Modern style</strong> (Rust 2018+):</p>
+<pre><code>src/
+├── lib.rs
+├── network.rs         ← Module contents here
+└── network/
+    ├── server.rs
+    └── client.rs
+</code></pre>
+<p><strong>Both work</strong>, but modern style advantages:
+- No special <code>mod.rs</code> files
+- <code>network.rs</code> is at same level as <code>network/</code> directory
+- More intuitive structure
+- Less confusion (every <code>mod.rs</code> looked the same)</p>
+<p><strong>Migration</strong>: Can adopt gradually, both styles can coexist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Project Growth Stages</h2>
+<p>How does file organization typically evolve as a Rust project grows?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Stage 1 - Single file</strong>:</p>
+<pre><code>src/lib.rs  (all code here)
+</code></pre>
+<p><strong>Good for</strong>: Initial prototyping, tiny projects</p>
+<p><strong>Stage 2 - Flat split</strong>:</p>
+<pre><code>src/
+├── lib.rs
+├── parser.rs
+├── compiler.rs
+└── validator.rs
+</code></pre>
+<p><strong>Good for</strong>: Small-medium projects with clear features</p>
+<p><strong>Stage 3 - Hierarchical</strong>:</p>
+<pre><code>src/
+├── lib.rs
+├── frontend/
+│   ├── parser.rs
+│   └── lexer.rs
+└── backend/
+    ├── codegen.rs
+    └── optimizer.rs
+</code></pre>
+<p><strong>Good for</strong>: Larger projects with distinct subsystems</p>
+<p><strong>Key point</strong>: The logical module tree can remain the same—you're just organizing the physical files better as complexity grows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Tree Independence from Files</h2>
+<p>Why is it important to understand that the module tree is independent from file structure?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Key concept</strong>: The module tree is <strong>logical</strong>, file structure is <strong>physical</strong>.</p>
+<p><strong>Implications</strong>:</p>
+<ol>
+<li><strong>Same module tree, different file layouts</strong>:</li>
+</ol>
+<pre><code class="language-rust">// All in one file:
+mod network { mod server {} }
+
+// Or split across files:
+// src/network.rs contains: pub mod server;
+// src/network/server.rs contains server code
+
+// Same logical tree, different physical organization
+</code></pre>
+<ol>
+<li><strong>Module relationships don't change</strong>:</li>
+<li>Child modules still access parent items</li>
+<li>Visibility rules stay the same</li>
+<li>
+<p>Paths remain consistent</p>
+</li>
+<li>
+<p><strong>Refactoring is safe</strong>:</p>
+</li>
+<li>Can move code between files without changing behavior</li>
+<li>Only need to update <code>mod</code> declarations</li>
+<li>External APIs remain unchanged</li>
+</ol>
+<p><strong>Mental model</strong>: Module tree is the map, files are how you store the map. The map stays the same whether it's on one page or in a book.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Which File Pattern</h2>
+<p>When should you use <code>module.rs</code> vs <code>module/mod.rs</code> vs modern <code>module.rs</code> + <code>module/</code> directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Simple module</strong> (no submodules):</p>
+<pre><code>src/database.rs
+</code></pre>
+<p>Use when: Module is self-contained with no children</p>
+<p><strong>Module with submodules</strong> (old style):</p>
+<pre><code>src/database/mod.rs
+src/database/connection.rs
+src/database/query.rs
+</code></pre>
+<p>Use when: Working with older codebases, or team preference</p>
+<p><strong>Module with submodules</strong> (modern style):</p>
+<pre><code>src/database.rs          ← Main module code
+src/database/
+    connection.rs        ← Submodule
+    query.rs            ← Submodule
+</code></pre>
+<p>Use when: Rust 2018+, want cleaner structure</p>
+<p><strong>Recommendation</strong>: Use modern style for new projects (cleaner), but both are valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection Between Mod and Use</h2>
+<p>How do <code>mod</code> declarations and <code>use</code> statements work together when organizing multi-file projects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two-step process</strong>:</p>
+<p><strong>Step 1 - Declare modules</strong> (<code>mod</code>):</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;  // Makes module exist
+mod api;
+</code></pre>
+<p><strong>Step 2 - Import items</strong> (<code>use</code>):</p>
+<pre><code class="language-rust">// src/lib.rs
+use database::Connection;  // Import specific items
+use api::Router;
+</code></pre>
+<p><strong>Common pattern - Re-export</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;      // Declare (private by default)
+mod api;
+
+pub use database::Connection;  // Re-export publicly
+pub use api::Router;
+
+// Users of your crate can now:
+// use my_crate::{Connection, Router};
+</code></pre>
+<p><strong>Remember</strong>: <code>mod</code> makes it exist, <code>use</code> makes it convenient, <code>pub use</code> makes it available to others.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Debugging Missing Module Errors</h2>
+<p>What are common causes of "cannot find module" errors, and how do you debug them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Common causes</strong>:</p>
+<ol>
+<li><strong>Forgot to declare</strong>:</li>
+</ol>
+<pre><code class="language-rust">// ❌ No `mod helper;` in parent file
+use helper::function;  // ERROR: cannot find `helper`
+</code></pre>
+<p>Fix: Add <code>mod helper;</code></p>
+<ol>
+<li><strong>Wrong file location</strong>:</li>
+</ol>
+<pre><code class="language-rust">// In src/lib.rs
+mod network;
+// ERROR if file is at src/net/network.rs instead of src/network.rs
+</code></pre>
+<p>Fix: Move file to correct location</p>
+<ol>
+<li><strong>Module not public</strong>:</li>
+</ol>
+<pre><code class="language-rust">// src/network/mod.rs
+mod server;  // Private!
+
+// src/lib.rs
+use network::server;  // ERROR: `server` is private
+</code></pre>
+<p>Fix: Change to <code>pub mod server;</code></p>
+<ol>
+<li><strong>Typo in module name</strong>:</li>
+</ol>
+<pre><code class="language-rust">mod databse;  // Typo!
+// Looking for databse.rs, but file is database.rs
+</code></pre>
+<p>Fix: Correct spelling</p>
+<p><strong>Debug strategy</strong>: Check file exists, in right place, and properly declared with <code>mod</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why File Organization Matters</h2>
+<p>Why is proper file organization important in Rust projects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Reasons file organization matters</strong>:</p>
+<ol>
+<li><strong>Maintainability</strong>:</li>
+<li>Smaller files are easier to understand and edit</li>
+<li>Changes are localized to specific files</li>
+<li>
+<p>Less scrolling to find code</p>
+</li>
+<li>
+<p><strong>Collaboration</strong>:</p>
+</li>
+<li>Multiple developers can work on different files</li>
+<li>Fewer merge conflicts</li>
+<li>
+<p>Clear ownership of modules</p>
+</li>
+<li>
+<p><strong>Navigation</strong>:</p>
+</li>
+<li>Easy to find where code lives</li>
+<li>File paths mirror module paths</li>
+<li>
+<p>IDE navigation works better</p>
+</li>
+<li>
+<p><strong>Mental model</strong>:</p>
+</li>
+<li>File structure reinforces module organization</li>
+<li>Easier to understand project architecture</li>
+<li>
+<p>New team members onboard faster</p>
+</li>
+<li>
+<p><strong>Compilation</strong> (minor):</p>
+</li>
+<li>Incremental compilation works better with smaller files</li>
+<li>Only recompile changed modules</li>
+</ol>
+<p><strong>Best practice</strong>: Organize early, even if project is small—easier to maintain good structure than refactor later.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practices Summary</h2>
+<p>What are the key best practices for organizing code across multiple files in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best practices</strong>:</p>
+<ol>
+<li><strong>Always declare with <code>mod</code></strong></li>
+<li>
+<p>Files don't exist without explicit declaration</p>
+</li>
+<li>
+<p><strong>Mirror structure</strong></p>
+</li>
+<li>File organization should parallel module tree</li>
+<li>
+<p><code>crate::network::server</code> → <code>src/network/server.rs</code></p>
+</li>
+<li>
+<p><strong>Use modern conventions</strong></p>
+</li>
+<li>Prefer <code>module.rs</code> + <code>module/</code> over <code>module/mod.rs</code></li>
+<li>
+<p>Cleaner, more intuitive</p>
+</li>
+<li>
+<p><strong>Make submodules public explicitly</strong></p>
+</li>
+<li><code>pub mod</code> when needed outside parent</li>
+<li>
+<p>Don't assume privacy</p>
+</li>
+<li>
+<p><strong>Start simple, grow organically</strong></p>
+</li>
+<li>Single file → flat structure → hierarchy</li>
+<li>
+<p>Don't over-organize small projects</p>
+</li>
+<li>
+<p><strong>Use re-exports</strong></p>
+</li>
+<li>Flatten deep paths with <code>pub use</code></li>
+<li>
+<p>Make API ergonomic for users</p>
+</li>
+<li>
+<p><strong>Keep tests separate</strong></p>
+</li>
+<li><code>#[cfg(test)] mod tests;</code> pattern</li>
+<li>
+<p>Cleaner main files</p>
+</li>
+<li>
+<p><strong>Avoid circular dependencies</strong></p>
+</li>
+<li>Extract common code</li>
+<li>Redesign module boundaries</li>
+</ol>
+<p><strong>Remember</strong>: Files are for humans (organization), modules are for Rust (compilation).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

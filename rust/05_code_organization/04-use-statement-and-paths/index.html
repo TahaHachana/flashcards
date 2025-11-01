@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 05 Code Organization - 04-Use-Statement-And-Paths</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Paths in Rust?</h2>
+<p>What is a path in Rust, and why do we need paths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>A path</strong> is a way to name an item in Rust's module tree.</p>
+<p><strong>Like navigation systems</strong>:
+- File system: <code>/home/user/documents/file.txt</code>
+- Rust module: <code>std::collections::HashMap</code></p>
+<p><strong>Why we need them</strong>:
+- Navigate the module tree to reference items
+- Specify exactly which item we want
+- Avoid ambiguity when items have similar names</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">std::collections::HashMap::new();
+crate::database::Connection::connect();
+</code></pre>
+<p>Paths tell Rust exactly where to find an item in the module tree.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Absolute vs Relative Paths</h2>
+<p>What is the difference between absolute and relative paths in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Absolute paths</strong>: Start from the crate root or external crate name</p>
+<pre><code class="language-rust">crate::front_of_house::hosting::add_to_waitlist();
+std::collections::HashMap::new();
+rand::thread_rng();
+</code></pre>
+<p><strong>Relative paths</strong>: Start from current location</p>
+<pre><code class="language-rust">mod parent {
+    pub fn helper() {}
+
+    pub mod child {
+        pub fn work() {
+            super::helper();  // Relative - go up one level
+        }
+    }
+}
+</code></pre>
+<p><strong>When to use</strong>:
+- <strong>Absolute</strong>: For clarity, when referencing from crate root, external crates
+- <strong>Relative</strong>: For convenience within nested modules</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Path Keywords - Crate, Super, Self</h2>
+<p>What do the path keywords <code>crate::</code>, <code>super::</code>, and <code>self::</code> mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>crate::</code></strong> - Start from the crate root</p>
+<pre><code class="language-rust">crate::database::connect();  // Like `/` in file systems
+</code></pre>
+<p><strong><code>super::</code></strong> - Go up one module (parent)</p>
+<pre><code class="language-rust">super::parent_function();    // Like `../` in file systems
+</code></pre>
+<p><strong><code>self::</code></strong> - Current module (often implicit)</p>
+<pre><code class="language-rust">self::my_function();         // Like `./` in file systems
+use self::my_module::Item;   // Usually just: use my_module::Item;
+</code></pre>
+<p><strong>Mental model</strong>:
+- <code>crate::</code> = absolute path from root
+- <code>super::</code> = go up the tree
+- <code>self::</code> = stay at current level</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Does Use Do?</h2>
+<p>What does the <code>use</code> keyword do, and does it make items public?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What <code>use</code> does</strong>: Brings items into the current scope for convenient access (creates shortcuts).</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">use std::collections::HashMap;
+
+let map = HashMap::new();  // No std::collections:: needed!
+</code></pre>
+<p><strong>Important: <code>use</code> does NOT make items public</strong></p>
+<pre><code class="language-rust">mod my_module {
+    use std::collections::HashMap;  // Only visible in my_module
+}
+
+// HashMap not available here - it's not public
+</code></pre>
+<p><strong>To make items public</strong>: Use <code>pub use</code></p>
+<pre><code class="language-rust">pub use internal::Helper;  // Now external crates can access Helper
+</code></pre>
+<p><strong>Key point</strong>: <code>use</code> is about convenience within a scope, not visibility across scopes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Different Styles of Use Statements</h2>
+<p>What are the different ways to write <code>use</code> statements in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Import item directly</strong>:</p>
+<pre><code class="language-rust">use std::collections::HashMap;
+let map = HashMap::new();
+</code></pre>
+<p><strong>2. Import parent module</strong>:</p>
+<pre><code class="language-rust">use std::collections;
+let map = collections::HashMap::new();
+</code></pre>
+<p><strong>3. Import multiple items</strong>:</p>
+<pre><code class="language-rust">use std::collections::{HashMap, HashSet, BTreeMap};
+</code></pre>
+<p><strong>4. Import with alias</strong>:</p>
+<pre><code class="language-rust">use std::collections::HashMap as Map;
+let my_map = Map::new();
+</code></pre>
+<p><strong>5. Import everything (glob)</strong>:</p>
+<pre><code class="language-rust">use std::collections::*;
+let map = HashMap::new();
+</code></pre>
+<p><strong>Choose based on</strong>: Clarity, convention, and avoiding conflicts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Idiomatic Use Patterns</h2>
+<p>What are the idiomatic patterns for importing functions vs types in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>For functions</strong>: Import parent module</p>
+<pre><code class="language-rust">use std::fmt;
+
+fn show&lt;T: fmt::Display&gt;(item: T) {
+    // Shows it's from fmt module
+}
+</code></pre>
+<p><strong>For structs, enums, traits</strong>: Import directly</p>
+<pre><code class="language-rust">use std::collections::HashMap;
+
+let map = HashMap::new();  // Direct access is idiomatic
+</code></pre>
+<p><strong>For items with common names</strong>: Use aliases</p>
+<pre><code class="language-rust">use std::fmt::Result;
+use std::io::Result as IoResult;  // Avoid conflict
+
+fn foo() -&gt; Result { /* fmt::Result */ }
+fn bar() -&gt; IoResult&lt;()&gt; { /* io::Result */ }
+</code></pre>
+<p><strong>Rationale</strong>: Functions benefit from showing their module; types are unambiguous enough to import directly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pub Use for Re-exports</h2>
+<p>What is <code>pub use</code>, and why would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>pub use</code></strong>: Re-exports items at a different path, making them accessible to external users.</p>
+<p><strong>Problem</strong>: Deep nesting creates long paths</p>
+<pre><code class="language-rust">// Internal structure
+mod internal {
+    pub mod deeply {
+        pub mod nested {
+            pub struct Helper {}
+        }
+    }
+}
+
+// Users must write:
+use my_crate::internal::deeply::nested::Helper;  // Verbose!
+</code></pre>
+<p><strong>Solution</strong>: Re-export with <code>pub use</code></p>
+<pre><code class="language-rust">pub use internal::deeply::nested::Helper;
+
+// Users can now write:
+use my_crate::Helper;  // Clean!
+</code></pre>
+<p><strong>Benefits</strong>:
+- Simplify API for users
+- Hide internal organization
+- Create logical groupings at crate root</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Path Example with Super and Crate</h2>
+<p>Show how to use both absolute (<code>crate::</code>) and relative (<code>super::</code>) paths to access the same function.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">mod country {
+    fn print_country(name: &amp;str) {
+        println!(&quot;Country: {}&quot;, name);
+    }
+
+    pub mod province {
+        fn print_province(name: &amp;str) {
+            println!(&quot;Province: {}&quot;, name);
+        }
+
+        pub mod city {
+            pub fn print_all(country: &amp;str, province: &amp;str) {
+                // Absolute path from crate root
+                crate::country::print_country(country);
+
+                // Relative path - up two levels
+                super::super::print_country(country);
+
+                // Both call the same function!
+
+                // Up one level for province
+                super::print_province(province);
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Key insight</strong>: Child modules can access parent functions either way—choose based on clarity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Grouping Related Imports</h2>
+<p>How do you group related imports together in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use nested braces <code>{}</code></strong>:</p>
+<pre><code class="language-rust">use std::{
+    collections::{HashMap, HashSet},
+    fs::File,
+    io::{Read, Write},
+};
+</code></pre>
+<p><strong>Equivalent to</strong>:</p>
+<pre><code class="language-rust">use std::collections::HashMap;
+use std::collections::HashSet;
+use std::fs::File;
+use std::io::Read;
+use std::io::Write;
+</code></pre>
+<p><strong>Benefits</strong>:
+- More concise
+- Groups related items visually
+- Easier to see what's being imported from each module</p>
+<p><strong>Pattern for external crates</strong>:</p>
+<pre><code class="language-rust">use serde::{Serialize, Deserialize};
+use tokio::{runtime::Runtime, sync::Mutex};
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Module Import Pattern</h2>
+<p>What is the common pattern for imports in test modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern</strong>: Use <code>use super::*;</code> to import everything from the parent module.</p>
+<pre><code class="language-rust">pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+fn helper(x: i32) -&gt; i32 {  // Private function
+    x * 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;  // Import all from parent
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 2), 4);
+    }
+
+    #[test]
+    fn test_helper() {
+        assert_eq!(helper(3), 6);  // Can test private functions!
+    }
+}
+</code></pre>
+<p><strong>Why this works</strong>: Test modules are children of the code they test, so they can access private items.</p>
+<p><strong><code>use super::*</code></strong> = "import everything from parent module"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Prelude Pattern</h2>
+<p>What is the prelude pattern, and how do you implement it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Prelude</strong>: A module that re-exports commonly used items for convenient import.</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-rust">// src/prelude.rs
+pub use crate::errors::Error;
+pub use crate::results::Result;
+pub use crate::traits::{Parse, Validate};
+
+// src/lib.rs
+pub mod prelude;
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-rust">use my_crate::prelude::*;
+
+// Now have Error, Result, Parse, Validate available
+</code></pre>
+<p><strong>Benefits</strong>:
+- One import gets all commonly needed items
+- Follows standard library pattern (<code>use std::prelude::v1::*;</code>)
+- Convenient for library users</p>
+<p><strong>When to use</strong>: When your library has items that users almost always need together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mod vs Use - Critical Difference</h2>
+<p>What is the critical difference between <code>mod</code> and <code>use</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>mod</code></strong> - <strong>Declares</strong> a module (makes it exist)
+<strong><code>use</code></strong> - <strong>Imports</strong> from an already-declared module</p>
+<p><strong>Wrong order</strong>:</p>
+<pre><code class="language-rust">use helper::function;  // ERROR: Can't find module `helper`
+mod helper;            // Too late!
+</code></pre>
+<p><strong>Correct order</strong>:</p>
+<pre><code class="language-rust">mod helper;            // Declare first
+use helper::function;  // Then import
+</code></pre>
+<p><strong>Key insight</strong>:
+- <code>mod</code> tells Rust "this module exists"
+- <code>use</code> tells Rust "bring this item into scope"
+- You must declare before you can import</p>
+<p><strong>Analogy</strong>: <code>mod</code> creates the room, <code>use</code> puts furniture from that room into your current space.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Glob Imports Pitfall</h2>
+<p>What's the problem with glob imports (<code>*</code>), and when should you use them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Makes it unclear where items come from</p>
+<pre><code class="language-rust">use std::collections::*;
+use my_module::*;
+
+let map = HashMap::new();  // From std? From my_module? Unclear!
+</code></pre>
+<p><strong>When glob is acceptable</strong>:
+1. <strong>Test modules</strong>: <code>use super::*;</code>
+2. <strong>Prelude modules</strong>: <code>use std::prelude::v1::*;</code>
+3. <strong>Internal code</strong> where you control the namespace</p>
+<p><strong>When to avoid</strong>:
+- Public API or library code
+- When modules might have overlapping names
+- When clarity matters more than brevity</p>
+<p><strong>Better alternative</strong>:</p>
+<pre><code class="language-rust">use std::collections::HashMap as StdHashMap;
+use my_module::HashMap as MyHashMap;
+
+let map1 = StdHashMap::new();  // Clear!
+let map2 = MyHashMap::new();   // Clear!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Pub Use for Re-exports</h2>
+<p>What happens if you use <code>use</code> instead of <code>pub use</code> when trying to re-export items?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: Items remain private to external users</p>
+<pre><code class="language-rust">// src/lib.rs
+mod internal;
+use internal::Helper;  // Only visible inside lib.rs!
+
+// External crate:
+use my_crate::Helper;  // ERROR: Helper is private
+</code></pre>
+<p><strong>Fix</strong>: Use <code>pub use</code> to re-export</p>
+<pre><code class="language-rust">// src/lib.rs
+mod internal;
+pub use internal::Helper;  // Now external crates can use it
+
+// External crate:
+use my_crate::Helper;  // Works!
+</code></pre>
+<p><strong>Key distinction</strong>:
+- <code>use</code> = bring into current scope (private)
+- <code>pub use</code> = bring into current scope AND make it public</p>
+<p><strong>Remember</strong>: If you want external users to access something through your crate root, use <code>pub use</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Items Must Be Public to Import</h2>
+<p>Can you use <code>use</code> to import private items from another module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>No</strong> - you can only <code>use</code> items that are visible to you.</p>
+<p><strong>Example of error</strong>:</p>
+<pre><code class="language-rust">mod network {
+    struct Connection {}  // Private!
+}
+
+use network::Connection;  // ERROR: Connection is private
+</code></pre>
+<p><strong>Fix</strong>: Make the item public</p>
+<pre><code class="language-rust">mod network {
+    pub struct Connection {}  // Public!
+}
+
+use network::Connection;  // Works!
+</code></pre>
+<p><strong>Exception</strong>: Child modules can access parent's private items</p>
+<pre><code class="language-rust">mod parent {
+    struct Private {}  // Private
+
+    mod child {
+        use super::Private;  // OK - child can access parent's private items
+    }
+}
+</code></pre>
+<p><strong>Rule</strong>: Visibility restrictions apply to <code>use</code> statements, except for child modules accessing parent items.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Traits Must Be In Scope</h2>
+<p>Why must traits be imported with <code>use</code> to call their methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Rule</strong>: To use a trait's methods, the trait must be in scope.</p>
+<p><strong>Example of error</strong>:</p>
+<pre><code class="language-rust">use std::fs::File;
+// use std::io::Read;  // Forgot to import Read trait!
+
+let mut file = File::open(&quot;data.txt&quot;)?;
+let mut contents = String::new();
+file.read_to_string(&amp;mut contents)?;  // ERROR: method not found
+</code></pre>
+<p><strong>Fix</strong>: Import the trait</p>
+<pre><code class="language-rust">use std::fs::File;
+use std::io::Read;  // Import the trait
+
+let mut file = File::open(&quot;data.txt&quot;)?;
+file.read_to_string(&amp;mut contents)?;  // Works!
+</code></pre>
+<p><strong>Why this matters</strong>:
+- Traits define methods that can be called on types
+- Rust needs to know which trait provides a method
+- Without the trait in scope, Rust can't find the method</p>
+<p><strong>Common with</strong>: <code>std::io::Read</code>, <code>std::io::Write</code>, <code>std::fmt::Display</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Handling Name Conflicts with Aliases</h2>
+<p>How do you handle naming conflicts when two imported items have the same name?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use aliases</strong> with <code>as</code> keyword:</p>
+<pre><code class="language-rust">use std::fmt::Result;
+use std::io::Result as IoResult;
+
+fn format_output() -&gt; Result {
+    // Returns fmt::Result
+    Ok(())
+}
+
+fn read_file() -&gt; IoResult&lt;String&gt; {
+    // Returns io::Result
+    Ok(String::new())
+}
+</code></pre>
+<p><strong>Alternative - use parent modules</strong>:</p>
+<pre><code class="language-rust">use std::fmt;
+use std::io;
+
+fn format_output() -&gt; fmt::Result { /* ... */ }
+fn read_file() -&gt; io::Result&lt;String&gt; { /* ... */ }
+</code></pre>
+<p><strong>When to use</strong>:
+- Two items have same name
+- Want to clarify which you're using
+- Type name is too generic (like <code>Result</code> or <code>Error</code>)</p>
+<p><strong>Pattern</strong>: Keep commonly used one without alias, alias the other.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flattening API with Pub Use</h2>
+<p>How do you use <code>pub use</code> to create a clean, flat API for your library?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Internal organization</strong> (complex structure):</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database {
+    pub mod connection {
+        pub struct Connection {}
+    }
+}
+
+mod models {
+    pub mod user {
+        pub struct User {}
+    }
+}
+</code></pre>
+<p><strong>Flatten with <code>pub use</code></strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+mod database;
+mod models;
+
+// Re-export at crate root
+pub use database::connection::Connection;
+pub use models::user::User;
+</code></pre>
+<p><strong>User experience</strong>:</p>
+<pre><code class="language-rust">// Without pub use:
+use my_crate::database::connection::Connection;
+use my_crate::models::user::User;
+
+// With pub use (much cleaner!):
+use my_crate::{Connection, User};
+</code></pre>
+<p><strong>Benefit</strong>: Hide internal complexity, present simple API.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unnecessary Self Paths</h2>
+<p>When is <code>self::</code> necessary in paths, and when is it redundant?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Usually unnecessary</strong> - <code>self::</code> is implicit for relative paths:</p>
+<pre><code class="language-rust">use my_module::MyType;       // Implicit self::
+use self::my_module::MyType; // Explicit (redundant)
+</code></pre>
+<p><strong>When <code>self::</code> is needed</strong>: Disambiguating conflicts</p>
+<pre><code class="language-rust">mod internal {
+    pub struct Config {}
+}
+
+use external_crate::Config;  // From external crate
+use self::internal::Config;  // From our crate (disambiguates)
+</code></pre>
+<p><strong>Better pattern</strong>: Use aliases instead</p>
+<pre><code class="language-rust">use external_crate::Config as ExternalConfig;
+use internal::Config;
+
+let external = ExternalConfig::new();
+let internal = Config::new();
+</code></pre>
+<p><strong>Best practice</strong>: Omit <code>self::</code> unless needed for clarity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Absolute vs Relative Paths - When to Use</h2>
+<p>When should you use absolute paths vs relative paths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use absolute paths (<code>crate::</code>)</strong> when:
+- You want to be explicit about full path
+- Referencing items from different parts of module tree
+- Code might move and you want paths to stay valid</p>
+<p><strong>Use relative paths (<code>super::</code>, <code>self::</code>)</strong> when:
+- Accessing parent or sibling modules
+- Staying within a local area of the module tree
+- Shorter paths improve readability</p>
+<p><strong>Example comparison</strong>:</p>
+<pre><code class="language-rust">mod parent {
+    pub fn helper() {}
+
+    pub mod child {
+        pub fn work() {
+            // Absolute (explicit)
+            crate::parent::helper();
+
+            // Relative (concise)
+            super::helper();
+
+            // Both work - choose based on context
+        }
+    }
+}
+</code></pre>
+<p><strong>Guideline</strong>: Use relative for nearby modules, absolute when reaching across the crate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Use Statements Don't Change Visibility</h2>
+<p>If you write <code>use some_module::Item;</code> in a module, can other modules use that import?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>No</strong> - <code>use</code> only brings items into the current scope, it doesn't change visibility.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">mod my_module {
+    use std::collections::HashMap;  // Only in my_module's scope
+
+    pub fn create_map() -&gt; HashMap&lt;String, i32&gt; {
+        HashMap::new()  // HashMap available here
+    }
+}
+
+fn main() {
+    let map = HashMap::new();  // ERROR: HashMap not in scope
+}
+</code></pre>
+<p><strong>To make available to others</strong>: Use <code>pub use</code></p>
+<pre><code class="language-rust">mod my_module {
+    pub use std::collections::HashMap;  // Now external code can use it
+}
+
+use my_module::HashMap;  // Works!
+</code></pre>
+<p><strong>Key principle</strong>: <code>use</code> is about convenience within one scope, not about exposing items to other scopes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Paths to Same Item</h2>
+<p>Can the same item be accessible through multiple paths? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Yes</strong> - through re-exports, the same item can have multiple valid paths.</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub mod database {
+    pub struct Connection {}
+}
+
+// Re-export at crate root
+pub use database::Connection;
+
+// External users can access via either path:
+use my_crate::database::Connection;  // Full path
+use my_crate::Connection;             // Re-exported path
+
+// Both refer to the SAME type
+</code></pre>
+<p><strong>Why this is useful</strong>:
+- Provide convenient shortcuts
+- Maintain backward compatibility
+- Offer both detailed and simple paths</p>
+<p><strong>Common in standard library</strong>:</p>
+<pre><code class="language-rust">use std::io::Write;           // Typical path
+use std::prelude::v1::Write;  // Also works (via prelude)
+</code></pre>
+<p><strong>Key insight</strong>: Multiple paths can point to the same underlying item through re-exports.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>External Crate Paths</h2>
+<p>How do paths work for external crates, and how do you import from them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>External crate paths</strong> start with the crate name:</p>
+<p><strong>In Cargo.toml</strong>:</p>
+<pre><code class="language-toml">[dependencies]
+serde = &quot;1.0&quot;
+tokio = &quot;1.0&quot;
+</code></pre>
+<p><strong>In code</strong>:</p>
+<pre><code class="language-rust">use serde::{Serialize, Deserialize};
+use tokio::runtime::Runtime;
+//    ^^^^^  ^^^^^^^ ^^^^^^^^
+//    crate  module  item
+</code></pre>
+<p><strong>Structure</strong>:
+- First part: Crate name (from Cargo.toml)
+- Rest: Path within that crate's module tree</p>
+<p><strong>Multiple items</strong>:</p>
+<pre><code class="language-rust">use serde::{Serialize, Deserialize, Serializer};
+use tokio::{
+    runtime::Runtime,
+    sync::Mutex,
+    time::sleep,
+};
+</code></pre>
+<p><strong>Key point</strong>: External crates are accessed just like the <code>std</code> crate—by their name followed by their internal path.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Circular Use Dependencies</h2>
+<p>What causes circular use dependencies, and how do you fix them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Circular dependency</strong>: Module A uses items from Module B, which uses items from Module A.</p>
+<p><strong>Problem</strong>:</p>
+<pre><code class="language-rust">// src/a.rs
+use crate::b::B;
+pub struct A { b: B }
+
+// src/b.rs
+use crate::a::A;
+pub struct B { a: A }  // Circular!
+</code></pre>
+<p><strong>Fixes</strong>:</p>
+<p><strong>1. Extract common code</strong>:</p>
+<pre><code class="language-rust">// src/common.rs
+pub struct SharedData {}
+
+// src/a.rs
+use crate::common::SharedData;
+
+// src/b.rs
+use crate::common::SharedData;
+</code></pre>
+<p><strong>2. Use trait objects</strong> to break the cycle</p>
+<p><strong>3. Redesign structure</strong> to avoid dependency</p>
+<p><strong>Best solution</strong>: Usually indicates poor separation of concerns—redesign module boundaries.</p>
+<p><strong>Note</strong>: Circular <code>use</code> statements are different from circular module dependencies (which Rust prevents at compile time).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practices Summary</h2>
+<p>What are the key best practices for using paths and <code>use</code> statements in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Best practices</strong>:</p>
+<ol>
+<li><strong>Import style</strong>:</li>
+<li>Functions: via parent (<code>use std::fmt;</code> → <code>fmt::Display</code>)</li>
+<li>
+<p>Types: directly (<code>use std::collections::HashMap;</code>)</p>
+</li>
+<li>
+<p><strong>Avoid glob imports</strong> (<code>*</code>) except in:</p>
+</li>
+<li>Test modules (<code>use super::*;</code>)</li>
+<li>
+<p>Prelude modules</p>
+</li>
+<li>
+<p><strong>Use aliases</strong> for name conflicts:
+   <code>rust
+   use std::io::Result as IoResult;</code></p>
+</li>
+<li>
+<p><strong>Group related imports</strong>:
+   <code>rust
+   use std::{fs::File, io::Read};</code></p>
+</li>
+<li>
+<p><strong>Flatten APIs with <code>pub use</code></strong>:
+   <code>rust
+   pub use internal::deeply::nested::Item;</code></p>
+</li>
+<li>
+<p><strong>Choose paths wisely</strong>:</p>
+</li>
+<li>Absolute (<code>crate::</code>) for clarity</li>
+<li>
+<p>Relative (<code>super::</code>) for nearby modules</p>
+</li>
+<li>
+<p><strong>Remember the order</strong>: <code>mod</code> declares, then <code>use</code> imports</p>
+</li>
+<li>
+<p><strong>Keep traits in scope</strong> to use their methods</p>
+</li>
+</ol>
+<p><strong>Golden rule</strong>: Prioritize clarity and consistency over brevity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
