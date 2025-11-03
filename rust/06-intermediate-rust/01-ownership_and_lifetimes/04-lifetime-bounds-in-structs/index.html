@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 01-Ownership And Lifetimes - 04-Lifetime-Bounds-In-Structs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Lifetime Bounds in Structs?</h2>
+<p>What problem do lifetime bounds in structs solve, and how do they work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Lifetime bounds solve the problem of storing references in structs that might outlive the data they reference. A struct with lifetime parameter like <code>struct Excerpt&lt;'a&gt;</code> creates a contract: "This struct holds a reference to data, that data must live at least as long as I do, therefore I cannot outlive my referenced data." The lifetime parameter <code>'a</code> connects the struct's lifetime to its referenced data's lifetime, constraining when instances can exist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Struct with Lifetime Syntax</h2>
+<p>What does this struct definition mean?</p>
+<pre><code class="language-rust">struct Excerpt&lt;'a&gt; {
+    text: &amp;'a str,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>This means: <code>'a</code> is a generic lifetime parameter (like <code>&lt;T&gt;</code> for types), the field <code>text</code> is a reference with lifetime <code>'a</code>, and any instance of <code>Excerpt&lt;'a&gt;</code> cannot outlive <code>'a</code>. The struct can only exist while the data it references remains valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Struct Lifetime Violations Fail</h2>
+<p>Why won't this code compile?</p>
+<pre><code class="language-rust">let excerpt;
+{
+    let novel = String::from(&quot;Call me Ishmael...&quot;);
+    excerpt = Excerpt { text: &amp;novel };
+}
+println!(&quot;{}&quot;, excerpt.text);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>novel</code> dies at the inner scope's closing brace, but <code>excerpt</code> tries to live beyond that point and use the reference in the <code>println!</code>. This would create a dangling reference. The borrow checker prevents this by ensuring <code>excerpt</code> cannot outlive the data it references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Lifetime Parameters in Structs</h2>
+<p>When and why would you use multiple lifetime parameters in a struct?</p>
+<pre><code class="language-rust">struct Context&lt;'a, 'b&gt; {
+    header: &amp;'a str,
+    body: &amp;'b str,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use multiple lifetime parameters when different fields reference data with independent lifetimes. Here, <code>header</code> and <code>body</code> can have different lifetimes—the <code>Context</code> instance cannot outlive either <code>'a</code> or <code>'b</code>. This is more flexible than forcing both fields to have the same lifetime, but only use when actually needed (single lifetime is simpler).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Owned vs Borrowed Fields</h2>
+<p>Which fields in this struct require lifetime parameters, and why?</p>
+<pre><code class="language-rust">struct Document&lt;'a&gt; {
+    title: String,
+    author: &amp;'a str,
+    content: Vec&lt;String&gt;,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Only <code>author</code> requires a lifetime parameter because it's a borrowed reference. The <code>title</code> and <code>content</code> fields are owned data (String, Vec) and don't constrain the struct's lifetime. Only borrowed fields require lifetime parameters—owned data doesn't affect when the struct can exist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Impl Blocks Must Match Struct Lifetimes</h2>
+<p>What's wrong with this impl block, and how do you fix it?</p>
+<pre><code class="language-rust">struct Parser&lt;'a&gt; {
+    input: &amp;'a str,
+}
+
+impl Parser {
+    fn new(input: &amp;str) -&gt; Self {
+        Parser { input }
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The impl block is missing the lifetime parameter. It must match the struct definition:</p>
+<pre><code class="language-rust">impl&lt;'a&gt; Parser&lt;'a&gt; {
+    fn new(input: &amp;'a str) -&gt; Self {
+        Parser { input }
+    }
+}
+</code></pre>
+<p>The <code>&lt;'a&gt;</code> after <code>impl</code> declares the lifetime, and <code>Parser&lt;'a&gt;</code> specifies which struct this implements for.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 1 Parsing and Text Processing</h2>
+<p>What are the characteristics of the parsing/text processing pattern with struct lifetimes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The struct holds a reference to input data (like <code>input: &amp;'a str</code>) along with position/state. Methods return slices of that input, and all returned references have the same lifetime <code>'a</code> as the input. This enables zero-copy parsing—working with slices of the original input without allocation. Example: <code>Parser&lt;'a&gt;</code> with methods returning <code>&amp;'a str</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 2 Configuration Objects</h2>
+<p>What characterizes the configuration/context object pattern with lifetimes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple borrowed fields (references) with the same lifetime, often mixed with owned fields. The lifetime constrains when the struct can exist—it must not outlive the referenced configuration data. Example:</p>
+<pre><code class="language-rust">struct Config&lt;'a&gt; {
+    app_name: &amp;'a str,
+    version: &amp;'a str,
+    debug: bool,  // owned field
+}
+</code></pre>
+<p>All references typically share one lifetime <code>'a</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 3 Custom Iterators</h2>
+<p>How do custom iterators use struct lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Custom iterators hold a reference to data with lifetime <code>'a</code>, maintain position/state, implement the <code>Iterator</code> trait, and yield items with lifetime <code>'a</code>. Example:</p>
+<pre><code class="language-rust">struct Chunks&lt;'a&gt; {
+    data: &amp;'a [u8],
+    chunk_size: usize,
+}
+
+impl&lt;'a&gt; Iterator for Chunks&lt;'a&gt; {
+    type Item = &amp;'a [u8];
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;
+}
+</code></pre>
+<p>This enables lazy iteration over borrowed data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 4 Cache Structs</h2>
+<p>What is the cache/lookup pattern with lifetimes, and what's its key characteristic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A struct that holds a collection of references, where all references share the same lifetime tied to the source data. Example:</p>
+<pre><code class="language-rust">struct Cache&lt;'a&gt; {
+    entries: Vec&lt;&amp;'a str&gt;,
+}
+</code></pre>
+<p>The cache doesn't own the data—it holds references to data owned elsewhere. The struct's lifetime is constrained by the lifetime of that source data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 5 Nested Structs</h2>
+<p>How do lifetime parameters work with nested structs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The outer struct's lifetime parameter propagates to inner structs. Example:</p>
+<pre><code class="language-rust">struct Name&lt;'a&gt; {
+    first: &amp;'a str,
+    last: &amp;'a str,
+}
+
+struct Person&lt;'a&gt; {
+    name: Name&lt;'a&gt;,  // Same lifetime
+    age: u32,
+}
+</code></pre>
+<p>This simplifies to a single lifetime when all references share it. Multiple lifetimes can be used if fields have genuinely different lifetime requirements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern 6 Builder Pattern with Lifetimes</h2>
+<p>How does the builder pattern work with borrowed data and lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The builder holds references with lifetime <code>'a</code>, uses fluent API (consuming <code>self</code> and returning <code>Self</code>), and produces a final struct with the same lifetime. Example:</p>
+<pre><code class="language-rust">struct Builder&lt;'a&gt; {
+    url: &amp;'a str,
+}
+
+impl&lt;'a&gt; Builder&lt;'a&gt; {
+    fn method(mut self, m: &amp;'a str) -&gt; Self { ... }
+    fn build(self) -&gt; Request&lt;'a&gt; { ... }
+}
+</code></pre>
+<p>All borrowed data must outlive both builder and final struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha Cannot Return Struct Borrowing Local Data</h2>
+<p>Why won't this compile, and what are the fixes?</p>
+<pre><code class="language-rust">impl&lt;'a&gt; Container&lt;'a&gt; {
+    fn from_string(s: String) -&gt; Container&lt;'a&gt; {
+        Container { data: &amp;s }
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>s</code> is owned by the function and dropped at the end, so you can't return a struct that borrows from it. Fixes: (1) Take a reference as input: <code>fn from_ref(s: &amp;'a str) -&gt; Container&lt;'a&gt;</code>, or (2) Change struct to own data: <code>struct Container { data: String }</code>. Structs can only borrow from data that outlives them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha Over-Constraining with Single Lifetime</h2>
+<p>When might using a single lifetime parameter be too restrictive, and what's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>If fields can have independent lifetimes but you force them to share one:</p>
+<pre><code class="language-rust">struct Document&lt;'a&gt; {
+    title: &amp;'a str,
+    body: &amp;'a str,
+}
+</code></pre>
+<p>Both must live equally long. If they can have different lifetimes:</p>
+<pre><code class="language-rust">struct Document&lt;'a, 'b&gt; {
+    title: &amp;'a str,
+    body: &amp;'b str,
+}
+</code></pre>
+<p>However, only use multiple lifetimes if you actually need them—single lifetime is simpler.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha Elision in Struct Methods</h2>
+<p>What lifetime does the return value have in this method?</p>
+<pre><code class="language-rust">struct Holder&lt;'a&gt; {
+    value: &amp;'a str,
+}
+
+impl&lt;'a&gt; Holder&lt;'a&gt; {
+    fn get(&amp;self) -&gt; &amp;str {
+        self.value
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Due to elision Rule 3, <code>&amp;str</code> expands to <code>&amp;'a str</code> (the struct's lifetime parameter), not a lifetime tied to the <code>&amp;self</code> borrow. Explicit version:</p>
+<pre><code class="language-rust">fn get(&amp;self) -&gt; &amp;'a str { self.value }
+</code></pre>
+<p>This returns a reference with the struct's lifetime, which makes sense since it's returning the struct's stored data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha Function Return Type Must Specify Lifetime</h2>
+<p>Why won't this compile, and what's needed?</p>
+<pre><code class="language-rust">fn create_parser(text: &amp;str) -&gt; Parser {
+    Parser { input: text }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The function signature doesn't specify how the returned <code>Parser</code>'s lifetime relates to <code>text</code>. Fix:</p>
+<pre><code class="language-rust">fn create_parser&lt;'a&gt;(text: &amp;'a str) -&gt; Parser&lt;'a&gt; {
+    Parser { input: text }
+}
+</code></pre>
+<p>This makes explicit that the returned Parser has the same lifetime as the input text it borrows from.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha Lifetime Bounds with Generics</h2>
+<p>When do you need the lifetime bound <code>T: 'a</code> with generic types in structs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When a generic type <code>T</code> might contain references that need to live at least as long as <code>'a</code>:</p>
+<pre><code class="language-rust">// Without bound - might not be safe if T has references
+impl&lt;'a, T&gt; Container&lt;'a, T&gt; {
+    fn new(item: &amp;'a T) -&gt; Self
+}
+
+// With bound - ensures T's references live long enough
+impl&lt;'a, T: 'a&gt; Container&lt;'a, T&gt; {
+    fn new(item: &amp;'a T) -&gt; Self
+}
+</code></pre>
+<p>The bound ensures any references inside <code>T</code> remain valid.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Ownership</h2>
+<p>How do structs with lifetime parameters relate to Rust's ownership system?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They're a hybrid: they don't own the referenced data (borrowing), but they control when borrowed data must remain valid (lifetime constraint). The referenced data has a separate owner. Example:</p>
+<pre><code class="language-rust">let owner = String::from(&quot;data&quot;);      // owner owns
+let holder = Holder { ref: &amp;owner };   // holder borrows
+</code></pre>
+<p>Both must coordinate—the owner must outlive the holder.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Previous Lifetime Topics</h2>
+<p>How do the previous three lifetime topics apply to struct methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>Topic 1 (Annotations): All annotation rules apply to struct methods</li>
+<li>Topic 2 (Patterns): Struct methods follow the same patterns (especially Pattern 3 - methods returning from self)</li>
+<li>Topic 3 (Elision): Rule 3 handles most struct method elision—output defaults to <code>self</code>'s lifetime (which is the struct's <code>'a</code>)</li>
+</ul>
+<p>Everything learned applies, but in the context of structs holding references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Moving Structs with Lifetimes</h2>
+<p>What happens when you move a struct that has lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The struct can be moved normally—moving transfers ownership of the struct itself but doesn't move or copy the referenced data:</p>
+<pre><code class="language-rust">let s = String::from(&quot;data&quot;);
+let holder1 = Holder { data: &amp;s };
+let holder2 = holder1;  // Moves holder1
+</code></pre>
+<p>After the move, <code>holder1</code> is no longer accessible, but <code>s</code> is still valid and referenced by <code>holder2</code>. The borrow transfers with the struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Standard Library Structs with Lifetimes</h2>
+<p>What are some examples of standard library types that use lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li><code>std::str::Chars&lt;'a&gt;</code>: Iterator over string characters</li>
+<li><code>std::slice::Iter&lt;'a, T&gt;</code>: Iterator over slice elements</li>
+<li><code>std::collections::hash_map::Iter&lt;'a, K, V&gt;</code>: Iterator over HashMap entries</li>
+</ul>
+<p>Understanding struct lifetimes helps you use these types. They all hold references to borrowed data and yield items with those lifetimes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Zero-Copy Parsing Pattern</h2>
+<p>How do structs with lifetimes enable zero-copy parsing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>By holding references to input data and returning slices, parsers can work without allocating:</p>
+<pre><code class="language-rust">struct JsonParser&lt;'a&gt; {
+    input: &amp;'a str,
+}
+// Methods return &amp;'a str slices into input
+</code></pre>
+<p>This is more efficient than cloning:</p>
+<pre><code class="language-rust">// Less efficient - requires cloning
+struct Parser {
+    input: String,
+}
+</code></pre>
+<p>Zero-copy avoids allocation by borrowing instead of owning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Structs with Lifetimes</h2>
+<p>What are good and questionable use cases for structs with lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Good: Parsing (hold slices of input), iterators (traverse borrowed data), views (temporary windows), configuration (references to shared config), zero-copy processing.</p>
+<p>Questionable: Long-lived data structures (consider owned data), public APIs (lifetimes can be constraining), when cloning is cheap enough.</p>
+<p>The key is whether borrowing provides meaningful benefits over owning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Simplifying Lifetime Complexity</h2>
+<p>What's the guideline for choosing between single and multiple lifetime parameters in structs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Prefer single lifetime when possible:</p>
+<pre><code class="language-rust">struct Simple&lt;'a&gt; {
+    field1: &amp;'a str,
+    field2: &amp;'a str,
+}
+</code></pre>
+<p>Use multiple only when fields actually have different lifetimes:</p>
+<pre><code class="language-rust">struct Complex&lt;'a, 'b&gt; {
+    short: &amp;'a str,
+    long: &amp;'b str,
+}
+</code></pre>
+<p>Or consider owned data for simplicity (no lifetime parameters). Single lifetime is usually sufficient and much easier to work with.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Struct Lifetime Checklist</h2>
+<p>What are the key steps when creating a struct with references?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Add lifetime parameter(s): <code>struct Foo&lt;'a&gt;</code></li>
+<li>Annotate reference fields: <code>field: &amp;'a Type</code></li>
+<li>Match impl blocks: <code>impl&lt;'a&gt; Foo&lt;'a&gt;</code></li>
+<li>Constructors take references with same lifetime: <code>fn new(data: &amp;'a Type) -&gt; Self</code></li>
+<li>Methods returning references typically return <code>&amp;'a Type</code> (part of struct's data)</li>
+<li>Consider elision: Many method signatures can elide the <code>'a</code></li>
+</ol>
+<p>Following this checklist ensures correct lifetime usage in structs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self-Referential Structs Problem</h2>
+<p>Why can't you safely create a struct that holds a reference to its own data in safe Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Because moving the struct would invalidate the reference:</p>
+<pre><code class="language-rust">// ❌ Can't do this safely
+struct SelfRef {
+    data: String,
+    slice: &amp;str,  // Would reference self.data
+}
+</code></pre>
+<p>If the struct moves in memory, <code>slice</code> would point to the old location. Solutions: Use <code>Pin</code> with unsafe code (advanced), use specialized crates (<code>rental</code>, <code>ouroboros</code>), or redesign to avoid self-references (usually best).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Lifetime Subtyping Syntax</h2>
+<p>What does the lifetime bound <code>'b: 'a</code> mean in this struct?</p>
+<pre><code class="language-rust">struct Nested&lt;'a, 'b: 'a&gt; {
+    long: &amp;'a str,
+    short: &amp;'b str,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>'b: 'a</code> means "<code>'b</code> outlives <code>'a</code>" or "<code>'b</code> lives at least as long as <code>'a</code>". This expresses a precise relationship between the two lifetimes. This syntax is rarely needed in practice but can be useful for expressing complex lifetime constraints when you have multiple lifetime parameters with hierarchical relationships.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Constraint on Struct Instantiation</h2>
+<p>How do lifetime parameters constrain when struct instances can be created and exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A struct <code>Foo&lt;'a&gt;</code> can only exist during lifetime <code>'a</code>—when the referenced data is valid. You can only create instances when the data you're borrowing from is available, and instances must go out of scope before the borrowed data does. The lifetime parameter acts as a constraint that the borrow checker enforces, preventing dangling references by ensuring the struct doesn't outlive its data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
