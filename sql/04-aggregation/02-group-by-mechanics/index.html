@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 04-Aggregation - 02-Group-By-Mechanics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Bucket Metaphor</h2>
+<p>What does GROUP BY do conceptually, using the bucket metaphor?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>GROUP BY creates separate buckets where each bucket contains rows that share something in common. Without GROUP BY, all rows go into one big bucket (implicit grouping). With GROUP BY, rows are sorted into separate buckets based on column values - each unique value or combination gets its own bucket. Aggregate functions then calculate independently for each bucket, producing one result row per bucket.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mini Tables Mental Model</h2>
+<p>Describe the "mini-tables" mental model for understanding GROUP BY.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>GROUP BY temporarily splits your table into separate mini-tables, one for each group. Each mini-table contains only the rows that belong to that group. Aggregate functions then run on each mini-table separately. Finally, SQL combines the results into one result set with one row per mini-table. Example: GROUP BY customer_id creates one mini-table per customer, each containing only that customer's rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Single Column Grouping Result Count</h2>
+<p>If a column has 50 unique values, how many rows will GROUP BY that column produce?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It will produce 50 rows - one row per unique value in the grouping column. Each row represents one group and contains the group's value plus any aggregate calculations for that group. For example, if actor_id has 200 unique values, GROUP BY actor_id produces 200 rows showing statistics for each actor.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Fundamental SELECT Rule with GROUP BY</h2>
+<p>What is the fundamental rule about what you can SELECT when using GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can only SELECT: (1) columns that appear in the GROUP BY clause, OR (2) aggregate functions. You cannot SELECT columns that don't appear in GROUP BY and aren't aggregated. This is because such columns can have multiple different values within a group, and SQL doesn't know which one to display.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Non Grouped Columns Cause Errors</h2>
+<p>Why does this query fail: <code>SELECT customer_id, first_name, COUNT(*) FROM orders GROUP BY customer_id;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It fails because first_name is not in the GROUP BY clause and not aggregated. Each customer_id group might contain multiple orders, and SQL doesn't know which first_name value to display for the group. The fix is either: (1) add first_name to GROUP BY, or (2) aggregate it with something like MAX(first_name), though that's rarely what you actually want.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Single vs Multi Column Grouping</h2>
+<p>What's the difference between single-column grouping and multi-column grouping in terms of what groups are created?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Single-column grouping creates one group per unique value in that column. Multi-column grouping creates one group per unique combination of values across all grouping columns. Example: GROUP BY state creates one group per state (50 groups in the US). GROUP BY state, city creates one group per state-city combination (potentially thousands of groups).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multi Column Group Example</h2>
+<p>Given <code>GROUP BY actor_id, rating</code>, describe what groups are created and give examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Groups are created for each unique combination of actor and rating. Examples: (actor_id=1, rating='G'), (actor_id=1, rating='PG'), (actor_id=1, rating='R'), (actor_id=2, rating='G'), etc. If there are 200 actors and 5 ratings, you could have up to 1000 groups (though likely fewer since not every actor appears in every rating).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Column Order in GROUP BY</h2>
+<p>Does the order of columns in GROUP BY affect what groups are created? Does <code>GROUP BY state, city</code> produce different groups than <code>GROUP BY city, state</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, the order does not affect what groups are created. Both produce identical groups - one group per unique (state, city) combination. However, the order may affect query performance and makes queries more readable when following logical hierarchies (broader to narrower). Best practice: use hierarchical order like GROUP BY country, state, city.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Grouping by Expressions</h2>
+<p>Can you GROUP BY calculated values instead of just columns? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can group by any expression that produces a value. Example: GROUP BY YEAR(order_date) calculates the year for each row, then creates one group per year value. Other examples: GROUP BY UPPER(state) for case-insensitive grouping, GROUP BY LEFT(last_name, 1) to group by first letter, or GROUP BY complex CASE expressions to create custom categories.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Use Aliases in GROUP BY</h2>
+<p>Why can't you use column aliases in the GROUP BY clause? How do you work around this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can't use aliases because GROUP BY is processed before SELECT, so the aliases don't exist yet. Workaround: repeat the expression in GROUP BY. Example: SELECT YEAR(order_date) AS order_year, COUNT(*) FROM orders GROUP BY YEAR(order_date). You must write YEAR(order_date) twice - once in SELECT (creating the alias) and once in GROUP BY (doing the grouping).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Redundant Grouping Pattern</h2>
+<p>What is the "redundant grouping pattern" and why would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Redundant grouping means grouping by multiple versions of the same underlying data - typically one for display and another for sorting. Example: GROUP BY DAYNAME(date), DAYOFWEEK(date) groups by both the day name ('Monday') and day number (2). This is needed because you can only SELECT or ORDER BY what's in GROUP BY, so if you want to display names but sort by numbers, you must group by both.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Grouping with JOINs Process</h2>
+<p>When you GROUP BY after a JOIN, what is the process that occurs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Process: (1) JOIN creates a result set combining data from multiple tables, (2) GROUP BY separates this joined data into buckets based on grouping columns, (3) aggregate functions operate on each bucket, (4) result shows one row per group with aggregated statistics. Example: JOIN customers and orders, then GROUP BY customer_id to get order counts per customer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Which Columns After JOIN</h2>
+<p>After joining multiple tables, which columns can you use in GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can group by columns from any table in the JOIN. Example: After joining customers and orders, you can GROUP BY customer_id (from customers), order_date (from orders), or both. You're not limited to just the joined table's columns - any column in any joined table is available for grouping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Dimension and Fact Pattern</h2>
+<p>What is the common pattern when grouping with dimension and fact tables?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pattern: Group by columns from dimension tables (descriptive data like customers, products, stores) and aggregate columns from fact tables (transactional data like orders, sales). Example: GROUP BY customers.customer_id (dimension) with SUM(orders.amount) (fact aggregation). This shows statistics about the dimensions using data from the facts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>GROUP BY Does Not Guarantee Order</h2>
+<p>Does GROUP BY sort the results? What should you do to ensure proper ordering?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, GROUP BY does not guarantee any particular order. Results might appear sorted as a side effect of how the database groups data internally, but this is not guaranteed and can change. Always use ORDER BY explicitly to ensure results are sorted as needed. Never rely on implicit ordering from GROUP BY.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What You Can ORDER BY with GROUP BY</h2>
+<p>When using GROUP BY, what can you include in the ORDER BY clause?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can ORDER BY: (1) columns that appear in GROUP BY, (2) aggregate functions, or (3) expressions involving grouped columns or aggregates. Examples: ORDER BY state (grouped column), ORDER BY COUNT(*) DESC (aggregate), ORDER BY state, num_customers DESC (combination). This lets you sort by the groups themselves or by their aggregated statistics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Finding Top N Groups</h2>
+<p>How do you use GROUP BY and ORDER BY together to find the top N groups based on an aggregate value?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use GROUP BY to create groups, then ORDER BY an aggregate function with DESC and LIMIT. Example: SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id ORDER BY SUM(amount) DESC LIMIT 10. This groups by customer, calculates totals, sorts by those totals descending, and returns only the top 10 biggest spenders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>GROUP BY vs DISTINCT Overlap</h2>
+<p>How are GROUP BY and DISTINCT related, and when do they produce the same result?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When you don't use aggregate functions, GROUP BY and DISTINCT can produce identical results - both return unique combinations of the specified columns. Example: SELECT DISTINCT state, city and SELECT state, city ... GROUP BY state, city both return unique (state, city) pairs. However, GROUP BY is more powerful because it allows aggregates, while DISTINCT is simpler when you just want unique rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use DISTINCT vs GROUP BY</h2>
+<p>When should you use DISTINCT versus GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use DISTINCT when you want unique rows without any aggregates - simpler syntax for this purpose. Use GROUP BY when you need aggregate functions or statistics. Never use both together (redundant). Example: For unique states use SELECT DISTINCT state, but for counting customers per state use SELECT state, COUNT(*) ... GROUP BY state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multi Column Grouping Hierarchy</h2>
+<p>When using multi-column grouping, what is the recommended practice for column order, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Best practice: arrange columns in logical hierarchical order from broader to narrower (e.g., GROUP BY country, state, city rather than city, state, country). This makes queries more readable and matches how humans think about nested categories. While it doesn't change the groups created, it improves code clarity and may help query optimization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Including Groups in SELECT</h2>
+<p>Why should you typically include the grouped columns in your SELECT clause when using GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Including grouped columns in SELECT makes results interpretable - without them you get aggregate statistics but don't know which group they belong to. Example: SELECT COUNT(<em>) FROM customers GROUP BY state gives counts without state names - you can't tell which count belongs to which state. Better: SELECT state, COUNT(</em>) ... GROUP BY state shows the state name with each count.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aggregate Independence Across Groups</h2>
+<p>How do aggregate functions operate across different groups created by GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Aggregate functions operate independently within each group - they don't interact across groups. Each group gets its own separate calculation as if it were the only data in the table. Example: GROUP BY customer_id with SUM(amount) calculates a separate sum for each customer's rows only, not a running total or anything involving other customers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expression Grouping Example</h2>
+<p>Write a query pattern that groups sales by year and shows the total for each year.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SELECT YEAR(order_date) AS order_year, SUM(amount) AS total_sales FROM orders GROUP BY YEAR(order_date) ORDER BY order_year. This extracts the year from each order date, groups rows by that year value, sums amounts within each year, and returns one row per year showing the year and its total.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CASE Expression Grouping</h2>
+<p>Can you use a CASE expression in GROUP BY? Give an example of when this is useful.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can group by CASE expressions to create custom categories. Example: GROUP BY CASE WHEN price &lt; 10 THEN 'Budget' WHEN price &lt; 50 THEN 'Standard' ELSE 'Premium' END. This creates three groups based on price ranges. You must repeat the entire CASE expression in both SELECT and GROUP BY since you can't use the alias.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Result Row Count Formula</h2>
+<p>How do you determine how many rows a GROUP BY query will return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The number of result rows equals the number of unique combinations of values in the GROUP BY columns. For single-column grouping, it's the number of distinct values in that column. For multi-column grouping, it's the number of distinct combinations. Example: GROUP BY state, city returns one row per unique (state, city) pair that exists in the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Valid vs Invalid SELECT with GROUP BY</h2>
+<p>Given <code>GROUP BY customer_id</code>, which of these SELECT clauses are valid: (a) customer_id, COUNT(<em>), (b) customer_id, order_id, COUNT(</em>), (c) customer_id, MAX(order_id), COUNT(*)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Valid: (a) and (c). Invalid: (b). Explanation: (a) selects the grouped column and an aggregate - valid. (c) selects the grouped column and aggregated values - valid because MAX(order_id) collapses multiple order_ids to one value. (b) is invalid because order_id isn't in GROUP BY and isn't aggregated - each customer has multiple orders and SQL doesn't know which to show.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sorting by Multiple Criteria</h2>
+<p>How can you sort grouped results by multiple criteria, such as first by state alphabetically and then by customer count descending within each state?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use multiple columns in ORDER BY: SELECT state, COUNT(*) AS num_customers FROM customers GROUP BY state ORDER BY state, num_customers DESC. This first sorts by state alphabetically, and within each state value, sorts by customer count in descending order. You can mix ascending and descending as needed for different columns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Empty Groups</h2>
+<p>If a value exists in your grouping column but has no matching rows after filtering with WHERE, will GROUP BY create an empty group for it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, GROUP BY only creates groups for values that actually exist in the filtered result set. If WHERE filters out all rows with a certain value, that value won't appear in the GROUP BY results. Example: if WHERE amount &gt; 100 filters out all orders from customer 5, that customer won't appear in GROUP BY customer_id results, even though they exist in the customers table.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Grouping After Multiple JOINs</h2>
+<p>When you GROUP BY after joining three tables (customers, orders, products), what conceptually happens to the data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The three tables are first joined into one large result set containing combined data from all three. Then GROUP BY separates this joined result into buckets based on the grouping columns (which can come from any of the three tables). Aggregates then calculate within each bucket. Example: after joining all three, GROUP BY customer_id creates one bucket per customer containing all their orders and associated product information.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hierarchical Result Ordering</h2>
+<p>When grouping by multiple columns like <code>GROUP BY region, store, product</code>, what ORDER BY pattern typically makes results most readable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ORDER BY the same columns in the same hierarchical order: ORDER BY region, store, product. This creates a nested structure where results are organized by region, then within each region by store, then within each store by product. This hierarchical ordering matches the grouping structure and makes it easy to scan results by scanning down through the hierarchy levels.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

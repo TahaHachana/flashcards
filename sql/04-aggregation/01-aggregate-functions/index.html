@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 04-Aggregation - 01-Aggregate-Functions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Aggregation?</h2>
+<p>What is the fundamental difference between a query with aggregation versus a query without aggregation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Without aggregation, queries operate on a row-by-row basis - each row in the result corresponds to a row (or combination of rows) in the source tables. With aggregation, multiple rows are collapsed into a single summary value. Aggregation changes from showing individual data points to showing statistics about the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Data Grain Definition</h2>
+<p>What does "grain" mean in the context of SQL data, and how do aggregates affect it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Grain refers to the level of detail in your results. Row-level grain means each result row represents one entity (one customer, one order). Summary-level grain means each result row represents a statistical summary (total sales, average price). Aggregates change the grain from detailed to summarized.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implicit Grouping</h2>
+<p>What is implicit grouping and when does it occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implicit grouping occurs when you use aggregate functions without a GROUP BY clause. SQL treats all rows as belonging to a single, invisible group. The aggregate functions calculate across all rows, and the result is one row containing grand totals. Example: SELECT COUNT(*) FROM payment returns one row summarizing all payments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Explicit Grouping</h2>
+<p>What is explicit grouping and how does it differ from implicit grouping?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Explicit grouping occurs when you use a GROUP BY clause to create named buckets of rows. Instead of one implicit group containing all rows, you get multiple explicit groups (one per unique value or combination of values). Each group gets its own aggregate calculation, resulting in one row per group. Example: GROUP BY customer_id creates one group per customer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mixing Aggregated and Non-Aggregated Columns Error</h2>
+<p>Why does this query fail: <code>SELECT customer_id, COUNT(*) FROM payment;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>This fails because it tries to mix row-level data (customer_id) with summary-level data (COUNT) without explicit grouping. With implicit grouping, all rows form one group containing all customers mixed together. SQL doesn't know which customer_id value to display for this mixed group. The fix is to add GROUP BY customer_id to create separate groups for each customer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>COUNT Star Function</h2>
+<p>What does COUNT(*) count, and does it include rows with NULL values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(*) counts the total number of rows in the group, including rows where all columns are NULL or some columns are NULL. It counts rows, not values. This is different from COUNT(column), which only counts non-NULL values in a specific column.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>COUNT Column Function</h2>
+<p>What does COUNT(column) count, and how does it differ from COUNT(*)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(column) counts only the rows where the specified column has a non-NULL value. Unlike COUNT(<em>) which counts all rows, COUNT(column) ignores any rows where that column is NULL. Example: if a customers table has 304 rows but only 268 have phone numbers, COUNT(</em>) returns 304 while COUNT(phone) returns 268.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>COUNT DISTINCT Function</h2>
+<p>What does COUNT(DISTINCT column) do and when would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(DISTINCT column) counts only the unique non-NULL values in a column, removing duplicates before counting. Use it when you want to know how many different values exist. Example: in a payment table, COUNT(customer_id) returns 16,049 (total payments) while COUNT(DISTINCT customer_id) returns 599 (unique customers).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SUM Function Purpose</h2>
+<p>What does the SUM() aggregate function do, and what types of columns should it be used on?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SUM() adds up all numeric values in a column across the group, returning a single total. It works with numeric types (integers, decimals, floats). Only use SUM on columns where adding makes semantic sense, like amounts, quantities, or durations. Don't use it on IDs or other numbers that shouldn't be added together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>AVG Function Calculation</h2>
+<p>How does the AVG() function calculate the average, and how does it handle NULL values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>AVG() calculates the arithmetic mean using the formula: SUM(column) / COUNT(column). It ignores NULL values completely - they are excluded from both the sum and the count. So with values {10, 20, 30, NULL}, AVG returns 20 (which is 60/3), not 15 (which would be 60/4).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>MIN Function Behavior</h2>
+<p>What does MIN() return, and what data types does it work with?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>MIN() finds the minimum value in a column. It works with any comparable type: for numbers it returns the lowest value, for dates the earliest date, and for strings the alphabetically first value (based on collation). It ignores NULL values. Example: MIN(amount) might return 0.00, MIN(rental_date) might return '2005-05-24', MIN(last_name) might return 'ABNEY'.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>MAX Function Behavior</h2>
+<p>What does MAX() return, and how does it differ from MIN()?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>MAX() finds the maximum value in a column, working with any comparable type. For numbers it returns the highest value, for dates the latest date, and for strings the alphabetically last value. It ignores NULL values. It's the opposite of MIN() - where MIN finds the smallest/earliest/first, MAX finds the largest/latest/last.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Handling Rule</h2>
+<p>What is the core rule for how aggregate functions handle NULL values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>All aggregate functions except COUNT(<em>) completely ignore NULL values - they act as if the NULLs don't exist. COUNT(</em>) is the exception because it counts rows, not values. For example, with values {1, 3, 5, NULL}, COUNT(*) returns 4, but COUNT(val), SUM(val), AVG(val), MIN(val), and MAX(val) all operate only on {1, 3, 5}.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Impact on AVG</h2>
+<p>Given a table with salary values {40000, 60000, 80000, NULL}, what will AVG(salary) return and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>AVG(salary) will return 60000, which is (40000 + 60000 + 80000) / 3. The NULL is completely ignored - it's not included in the sum and not included in the count. If you wanted to treat NULL as zero, you would need to use AVG(COALESCE(salary, 0)), which would return 45000 (180000 / 4).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>COUNT Star vs COUNT Column with NULLs</h2>
+<p>Given a table with 4 rows where one row has a NULL value in the 'val' column, what will COUNT(*) and COUNT(val) each return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(<em>) will return 4 because it counts all rows regardless of NULL values. COUNT(val) will return 3 because it only counts rows where the val column has a non-NULL value. This difference is why COUNT(</em>) is the only aggregate function that "includes" NULLs - it's actually counting rows, not values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expressions in Aggregate Functions</h2>
+<p>Can aggregate functions work on expressions, or only on simple columns? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Aggregate functions can work on any expression that produces a value, not just simple columns. Example: MAX(return_date - rental_date) calculates the difference for each row, then finds the maximum of those calculated values. You can use arithmetic, functions, CASE statements, or any expression inside an aggregate function.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Using CASE with COUNT</h2>
+<p>How can you use a CASE expression with COUNT() to conditionally count rows?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can use CASE inside COUNT to count only rows meeting certain conditions. Example: COUNT(CASE WHEN amount &gt; 5 THEN 1 END) counts only payments over 5. The CASE returns 1 for matching rows and NULL otherwise, and COUNT ignores the NULLs. This allows multiple conditional counts in one query without needing multiple WHERE clauses.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aggregates Change Grain</h2>
+<p>What does it mean that "aggregates change the grain of your data"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Aggregates transform data from row-level detail (individual records) to summary-level statistics (calculated values across multiple rows). For example, a payment table with 16,049 individual payment rows (row-level grain) becomes a single row showing total revenue (summary-level grain) when you use SUM(amount). The level of detail fundamentally changes from specific to general.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aggregate Always Involves Grouping</h2>
+<p>True or False: Every aggregate query involves grouping, even if there's no GROUP BY clause. Explain.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>True. Every aggregate query involves grouping. When there's no GROUP BY clause, there's implicit grouping - all rows are treated as one single group, and aggregates calculate across all rows (grand totals). When there is a GROUP BY clause, there's explicit grouping - rows are separated into multiple groups, and aggregates calculate separately for each group (subtotals).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Appropriate Use of SUM</h2>
+<p>Why should you only use SUM() on certain types of numeric columns? Give examples of appropriate and inappropriate uses.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SUM should only be used on columns where addition makes business sense. Appropriate: SUM(amount) for total revenue, SUM(quantity) for total items. Inappropriate: SUM(customer_id) is meaningless (IDs shouldn't be added), SUM(price) is usually wrong (prices typically need to be multiplied by quantity first, not summed directly).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Aggregates in One Query</h2>
+<p>Can you use multiple different aggregate functions in the same SELECT statement? What is the result grain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can use multiple aggregate functions in one SELECT statement. Example: SELECT COUNT(*), AVG(amount), MAX(amount), MIN(amount) FROM payment. All aggregates operate on the same group(s), so with implicit grouping you get one row with all the statistics, or with explicit grouping you get one row per group containing all aggregates for that group.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Analyzing Missing Data with COUNT</h2>
+<p>How can you use COUNT to identify missing data in a table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Compare COUNT(<em>) with COUNT(column) to find missing values. Example: SELECT COUNT(</em>) AS total, COUNT(phone) AS with_phone, COUNT(<em>) - COUNT(phone) AS without_phone FROM customers. The difference between COUNT(</em>) and COUNT(column) reveals how many rows have NULL in that column, helping identify data quality issues.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Date Range with MIN and MAX</h2>
+<p>How can you use MIN() and MAX() with date columns to find the time span of your data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use MIN() to find the earliest date and MAX() to find the latest date, then subtract them for the span. Example: SELECT MIN(order_date) AS first_order, MAX(order_date) AS latest_order, MAX(order_date) - MIN(order_date) AS days_span FROM orders. This shows the date range covered by your dataset.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use COUNT DISTINCT</h2>
+<p>In a payment table with multiple payments per customer, what's the difference between COUNT(customer_id) and COUNT(DISTINCT customer_id), and when would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(customer_id) counts total payments (including multiple payments from the same customer), while COUNT(DISTINCT customer_id) counts unique customers. Use COUNT(customer_id) when you want to know "how many transactions," and COUNT(DISTINCT customer_id) when you want to know "how many different customers made purchases." The first might return 16,049, the second 599.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implicit Grouping Result</h2>
+<p>How many rows does a query with implicit grouping return, and what does that row represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A query with implicit grouping (aggregates without GROUP BY) returns exactly one row, which represents the grand total or overall summary across all rows in the table. Example: SELECT COUNT(*), SUM(amount) FROM payment returns one row showing the total number of payments and total revenue across all customers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Mix Without GROUP BY</h2>
+<p>Why can't you include a non-aggregated column in a SELECT statement that uses aggregate functions without GROUP BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Without GROUP BY, there's one implicit group containing all rows. If you try to select a non-aggregated column like customer_id, SQL doesn't know which customer_id value to show since the group contains multiple different customers. You must either aggregate every column (COUNT, SUM, etc.) or use GROUP BY to separate the data into groups where each group has one value for that column.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>AVG vs Manual Calculation</h2>
+<p>What's wrong with calculating average as SUM(column) / COUNT(*) instead of using AVG(column)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SUM(column) / COUNT(<em>) includes NULL values in the denominator (counting rows), while AVG(column) excludes NULLs from both numerator and denominator. With values {10, 20, 30, NULL}, AVG(column) correctly returns 20 (60/3), but SUM(column)/COUNT(</em>) returns 15 (60/4). Use AVG() unless you specifically want to treat missing values as zeros.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aggregate Functions Ignore NULLs Except COUNT Star</h2>
+<p>Which aggregate function is the exception to the rule that aggregates ignore NULL values, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>COUNT(<em>) is the exception because it counts rows, not values. All other aggregates (COUNT(column), SUM, AVG, MIN, MAX) ignore NULL values and operate only on non-NULL values. COUNT(</em>) counts every row regardless of whether any columns in that row contain NULL, because it's asking "how many rows exist" not "how many values exist."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complex Expression Example</h2>
+<p>Can you calculate a discount percentage and then aggregate it? Write an example query that finds the average discount percentage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can calculate expressions and then aggregate them. Example: SELECT AVG((list_price - sale_price) / list_price * 100) AS avg_discount_pct FROM products. This calculates the discount percentage for each product row, then AVG() finds the average across all those calculated percentages. The expression is evaluated first, then aggregated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Statistical Summary Pattern</h2>
+<p>What's a common pattern for getting a complete statistical summary of a numeric column in one query?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Select multiple aggregate functions together: COUNT(<em>) for row count, MIN() for minimum, MAX() for maximum, AVG() for average, and SUM() for total. Example: SELECT COUNT(</em>), MIN(amount), MAX(amount), AVG(amount), SUM(amount) FROM payment. This gives a comprehensive statistical profile in a single query with one result row.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
