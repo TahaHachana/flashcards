@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Linux - 02 Users And Groups - 02-Group-Accounts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Groups Definition and Purpose</h2>
+<p>What are groups in Linux and what is their primary purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Groups are collections of user accounts that have similar security requirements. Their primary purpose is to serve as an administrative tool for controlling access to resources. It is more efficient to grant permissions to a single group with multiple members than to grant access to each user account individually.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>/etc/group File Location and Function</h2>
+<p>Where does Linux store group information and what does this file contain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Linux stores groups in a file named <code>/etc/group</code>. This file lists existing groups and any user accounts that are members of those groups. You can view the contents using commands like <code>tail /etc/group</code> to see the last 10 entries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Group ID (GID) Purpose</h2>
+<p>What is a Group ID (GID) and why is it important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A Group ID (GID) is a computer-readable unique identifier number assigned to each group (similar to how groups have human-readable names like "Sales"). The GID helps the Linux system track group membership efficiently. Each group must have a unique GID.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>GID Numbering Conventions</h2>
+<p>What are the typical GID numbering conventions for standard groups versus system groups?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Standard user groups typically receive a GID of 1000 or higher when created. System groups usually begin their numbering with GID 101. Standard groups manage user access to resources, while system groups manage operating system functions. Note that specific GID ranges vary by distribution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Effective Group ID (EGID)</h2>
+<p>What is an Effective Group ID (EGID) and what is its purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Groups may have an Effective Group ID (EGID) tied to privilege escalation and the Set Group ID (SGID) special permission. The EGID group identity helps enable access to resources managed by another group if the administrator has configured the appropriate permissions. It facilitates dynamic group-based privilege escalation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Core Group Management Commands</h2>
+<p>What are the three main commands for managing groups and what does each do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The three main group management commands are:
+1. <code>groupadd</code> - Creates a new group
+2. <code>groupmod</code> - Modifies an existing group
+3. <code>groupdel</code> - Deletes an existing group</p>
+<p>These commands handle the complete lifecycle of groups: creation, modification, and deletion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>groupmod Change Group Name</h2>
+<p>What command and option would you use to change a group's name from "marketing" to "publicity"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>groupmod -n publicity marketing</code></p>
+<p>The <code>-n</code> option changes the group name. The syntax is: new name first, then old name.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Group Deletion and User Accounts</h2>
+<p>What happens to user accounts when you delete a group?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When you delete a group, it does NOT remove the user accounts that are part of that group. To the Linux system, a group is a completely different object from a user. Users remain intact even when their supplementary groups are deleted.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Primary Group Deletion Restriction</h2>
+<p>What restriction exists when deleting a user's primary group?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You cannot delete a user's main/primary group without deleting the user account first. You must use the <code>userdel</code> command to remove the user account before you can delete their primary group. This is exit code 8 for the <code>groupdel</code> command.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pre-Deletion Group Checklist</h2>
+<p>What should you do before deleting a group?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Before deleting a group, you should:
+1. Look for any files or resources linked to the group
+2. Set up another group to have access to those resources
+3. Only then delete the original group</p>
+<p>This prevents orphaned resources and ensures continued access to important files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>groupadd Exit Codes</h2>
+<p>What are the four main exit codes for the <code>groupadd</code> command and what do they mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The four main exit codes for <code>groupadd</code> are:
+- 0: Success
+- 2: Invalid argument syntax
+- 4: GID not unique (Group ID already exists)
+- 9: Group name not unique (name already exists)</p>
+<p>You can check the exit code using <code>echo $?</code> after running the command.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>groupmod and groupdel Exit Codes</h2>
+<p>What are the five main exit codes for <code>groupmod</code> and <code>groupdel</code> commands?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The five main exit codes for <code>groupmod</code> and <code>groupdel</code> are:
+- 0: Success
+- 2: Invalid command syntax
+- 6: Specified group doesn't exist
+- 8: Can't remove user's primary group (for <code>groupdel</code>)
+- 10: Can't update group file</p>
+<p>Use <code>echo $?</code> to display the exit code of the last command.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Adding Users to Groups Command</h2>
+<p>What command is used to add a user to a group, and does this modify the user or the group?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>usermod</code> command is used to add a user to an existing group. This operation modifies the USER object, not the group object. The syntax is: <code>usermod -options {argument}</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>usermod -a Option Critical Importance</h2>
+<p>What does the <code>-a</code> option do in <code>usermod</code> and why is it critical?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>-a</code> option appends the user to the group and maintains any existing group memberships. It is CRITICAL because if you do not use <code>-a</code>, the user is removed from all other supplementary groups and added only to the specified group. This mistake could have drastic security consequences as users can be members of multiple groups.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>usermod -G Option</h2>
+<p>What does the <code>-G</code> option do in the <code>usermod</code> command?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>-G</code> option (uppercase G) specifies a supplementary group to which the user will be added. It should always be used with the <code>-a</code> option (<code>-aG</code>) to preserve existing group memberships. Using <code>-G</code> alone will remove the user from all other supplementary groups.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Safe User Group Addition Example</h2>
+<p>What is the correct command to add user "jdeng" to the "sales" group while retaining membership in all other groups?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>usermod -aG sales jdeng</code></p>
+<p>The <code>-a</code> preserves existing group memberships, <code>-G</code> specifies the sales group, and jdeng is the username. Always use <code>-a</code> and <code>-G</code> together for safe supplementary group additions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>/etc/login.defs File Purpose</h2>
+<p>What is stored in the <code>/etc/login.defs</code> file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>/etc/login.defs</code> file stores default parameters that are automatically assigned to groups (and users) when they are created. This includes settings like the starting GID number for standard groups (typically 1000) and system groups (typically 101).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>groupadd -g Option</h2>
+<p>What does the <code>-g</code> option do in the <code>groupadd</code> command?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>-g</code> option allows you to override the default group ID number assignment and manually specify a custom GID. For example: <code>sudo groupadd -g 1500 customgroup</code>. The GID numbers must be unique.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>groupadd -r Option</h2>
+<p>What does the <code>-r</code> option do in the <code>groupadd</code> command?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>-r</code> option allows you to create a system group. System groups have GID numbering that starts at 101 (rather than 1000 for standard user groups) and are used for system-level operations. Example: <code>sudo groupadd -r sysgroup</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Group Entry Format in /etc/group</h2>
+<p>What do the fields in a <code>/etc/group</code> entry represent? For example: <code>development:x:1000:jmace</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The four fields separated by colons represent:
+1. Group name (development)
+2. Password placeholder - "x" indicates use of gshadow password file if password is assigned
+3. Group ID number (1000)
+4. Group members list (jmace) - comma-separated if multiple members, empty if no members</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Primary Group vs Supplementary Groups</h2>
+<p>What is the difference between a primary group and supplementary groups?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Every user account has exactly ONE primary group, which is their default/initial login group (modified with lowercase <code>-g</code>). Users can be members of MANY supplementary groups, which are additional group memberships beyond the primary group (modified with uppercase <code>-G</code>).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Authorization for Account Management</h2>
+<p>Who is authorized to create, modify, or remove user and group accounts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Only the root user or anyone with delegated privileges via <code>sudo</code> can create, modify, or remove user and group accounts. If you cannot perform these operations, make sure you are using an account with proper authorization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Checking for Existing Accounts</h2>
+<p>How can you check if a user account or group already exists before creating one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Check the <code>/etc/passwd</code> file for user accounts or the <code>/etc/group</code> file for groups. You can use commands like:
+- <code>grep username /etc/passwd</code> to check for a user
+- <code>grep groupname /etc/group</code> to check for a group
+- <code>grep :1000: /etc/passwd</code> to check for a specific UID
+- <code>grep :1000: /etc/group</code> to check for a specific GID</p>
+<p>Each user and group must have unique IDs and names.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>User Deletion with Active Processes</h2>
+<p>What should you do if user deletion fails, and what command kills all processes for a user?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>If user deletion fails, check for any running processes belonging to the user using the <code>ps</code> command. To kill all processes for a user before deletion, use:
+<code>sudo killall -u {username}</code></p>
+<p>Linux prevents deletion of accounts with running processes, so you must halt them first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>userdel -r Option</h2>
+<p>What does the <code>-r</code> option do with the <code>userdel</code> command and what is the default behavior without it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>-r</code> option removes the user's home directory and mail spool when deleting the account. Without <code>-r</code>, the <code>userdel</code> command does NOT remove the user's home directory by default - the directory remains on the system. Use <code>sudo userdel -r username</code> to delete both the account and home directory.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>User and Group Deletion Order</h2>
+<p>What is the correct order for deleting users and their primary groups?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The correct order is:
+1. Kill all user processes: <code>sudo killall -u username</code>
+2. Delete the user account: <code>sudo userdel username</code> (or <code>sudo userdel -r username</code>)
+3. Delete the primary group: <code>sudo groupdel groupname</code></p>
+<p>You cannot delete a user's primary group before deleting the user account.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scripting Benefits for Account Management</h2>
+<p>What are the main benefits of scripting user and group account management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Scripting benefits include:
+1. Eliminates repetitive manual tasks
+2. Ensures consistency across executions
+3. Reduces human error
+4. Saves time for administrators
+5. Ensures tasks run the same way every time
+6. Particularly useful in lab, classroom, testing, and simulation environments</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Bash Script Shebang Line</h2>
+<p>What is the shebang line in a Bash script and why is it important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The shebang line is <code>#!/bin/bash</code> and it must be the first line of the script. It specifies the script interpreter (Bash) that should be used to execute the script. Without it, the system may not know how to interpret the script.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Making Scripts Executable</h2>
+<p>How do you make a script executable and how do you run it from the current directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>To make a script executable:
+<code>chmod +x script_name.sh</code></p>
+<p>To execute it from the current directory:
+<code>./script_name.sh</code></p>
+<p>The <code>./</code> tells Bash to check the current directory for the script, because your home directory typically isn't part of the PATH variable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Testing Safety Guidelines</h2>
+<p>Where should you test account management scripts and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You should NEVER run account management scripts on production systems. Always test on:
+- Test systems
+- Virtual machines (VMs)
+- Development servers
+- Lab environments</p>
+<p>This is critical because scripts can make system-wide changes, mistakes can affect multiple accounts, and you need to ensure scripts work as intended before risking production disruptions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Comments Best Practice</h2>
+<p>Why should you use comments in account management scripts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Comments (using #) should be used to:
+1. Explain what each section of the script does
+2. Make scripts maintainable
+3. Help other administrators understand the code
+4. Document the script's purpose and functionality
+5. Facilitate troubleshooting and modifications</p>
+<p>Good documentation is essential for script maintenance and team collaboration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Verification Output</h2>
+<p>Why should account management scripts include verification output?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Scripts should include verification output to:
+1. Display results after operations
+2. Confirm successful execution
+3. Help with troubleshooting
+4. Provide immediate feedback</p>
+<p>Example: Using <code>tail -n 3 /etc/passwd</code> and <code>tail -n 3 /etc/group</code> to show newly created users and groups, along with echo statements explaining what was done.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Proper Script Operation Order</h2>
+<p>What is the proper order of operations in an account management script?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The proper order is:
+1. Create users first (using <code>useradd</code>)
+2. Create groups second (using <code>groupadd</code>)
+3. Add users to groups last (using <code>usermod -aG</code>)</p>
+<p>This sequence ensures that both users and groups exist before attempting to establish membership relationships.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Alternative Group Commands</h2>
+<p>What alternative commands do some Linux distributions use for group management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Some Linux distributions use:
+- <code>addgroup</code> instead of <code>groupadd</code>
+- <code>delgroup</code> instead of <code>groupdel</code></p>
+<p>These alternatives are considered easier to use and can be added to systems that don't have them by default. Distribution-specific variations exist, so check which commands are available on your system.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Echo Exit Code Command</h2>
+<p>How do you check if a command succeeded and what do the exit codes indicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>echo $?</code> to display the exit code of the last command. Exit codes indicate:
+- 0 = Success
+- Non-zero values = Various error conditions (specific meaning depends on the command)</p>
+<p>This is useful for verifying command success and troubleshooting issues in both interactive sessions and scripts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting Workflow Summary</h2>
+<p>What is the general troubleshooting workflow for user and group account issues?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The general troubleshooting workflow is:
+1. Verify authorization - Ensure you have root or sudo privileges
+2. Check for conflicts - Look for existing accounts/groups with same name or ID
+3. Identify dependencies - Check for running processes or primary group relationships
+4. Follow proper sequence - Kill processes, delete users, then delete groups
+5. Use appropriate options - Include <code>-r</code> if home directory removal is desired</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Group Management Error Scenarios</h2>
+<p>What are five common error scenarios in group management and their solutions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>"Permission denied" - Use <code>sudo</code> or switch to root</li>
+<li>"already exists" - Check <code>/etc/passwd</code> or <code>/etc/group</code> for conflicts</li>
+<li>User deletion fails - Use <code>killall -u username</code> to kill processes first</li>
+<li>Group deletion fails - Delete user first if it's their primary group</li>
+<li>Home directory remains - Use <code>userdel -r username</code> to remove it</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Script Practical Applications</h2>
+<p>What are four practical applications for account management scripts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Lab environments - Quick setup for training sessions and consistent student environments</li>
+<li>Classroom settings - Create accounts for entire class and assign students to project groups</li>
+<li>Simulation environments - Configure test scenarios and replicate production-like settings</li>
+<li>Development systems - Initialize developer workstations and set up team collaboration groups</li>
+</ol>
+<p>Scripts simplify repetitive tasks and ensure consistency across these environments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>usermod Lowercase -g vs Uppercase -G</h2>
+<p>What is the critical difference between lowercase <code>-g</code> and uppercase <code>-G</code> in the <code>usermod</code> command?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Lowercase <code>-g</code> modifies the user's PRIMARY group (their default/initial login group). Use with caution as it changes the default group.</p>
+<p>Uppercase <code>-G</code> adds the user to a SUPPLEMENTARY group (additional groups beyond primary). Must be used with <code>-a</code> to preserve existing supplementary memberships, otherwise all other supplementary groups are removed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tail Command for Group Verification</h2>
+<p>How do you use the <code>tail</code> command to verify recent group and user changes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use:
+- <code>tail /etc/group</code> - Displays the last 10 group entries (most recently added groups)
+- <code>tail -n 3 /etc/group</code> - Displays the last 3 group entries
+- <code>tail /etc/passwd</code> - Displays the last 10 user entries
+- <code>tail -n 3 /etc/passwd</code> - Displays the last 3 user entries</p>
+<p>This is useful for quickly verifying that new users or groups were created successfully.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
