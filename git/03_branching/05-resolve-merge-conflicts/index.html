@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 03 Branching - 05-Resolve-Merge-Conflicts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Merge Conflict</h2>
+<p>What is a merge conflict and when does it occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A merge conflict occurs when Git cannot automatically resolve differences between two branches. This happens when:
+- Both branches modify the same lines in the same file
+- One branch deletes a file while another modifies it
+- Both branches create files with the same name
+- Both branches modify binary files</p>
+<p>Git pauses the merge and asks you to manually decide which changes to keep. Conflicts are normal in collaborative development.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Detecting Merge Conflicts</h2>
+<p>How do you detect when a merge conflict has occurred?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When attempting merge:</p>
+<pre><code class="language-bash">git merge feature-branch
+# CONFLICT (content): Merge conflict in file.txt
+# Automatic merge failed; fix conflicts and then commit
+</code></pre>
+<p>Check status:</p>
+<pre><code class="language-bash">git status
+# You have unmerged paths.
+# Unmerged paths:
+#   both modified:   src/app.js
+</code></pre>
+<p>Key indicators:
+- <code>CONFLICT</code> message
+- <code>Automatic merge failed</code>
+- List of conflicting files in status</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Understanding Conflict Markers</h2>
+<p>What do the conflict markers mean in a file with merge conflicts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Git adds special markers to show conflicting sections:</p>
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+Changes from current branch (main)
+=======
+Changes from branch being merged (feature)
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-branch
+</code></pre>
+<p>Three sections:
+1. <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>: Start, shows current branch changes
+2. <code>=======</code>: Separator between versions
+3. <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-name</code>: End, shows incoming changes</p>
+<p>You must choose which to keep (or combine) and remove ALL markers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Conflict Resolution Steps</h2>
+<p>What are the 8 steps to resolve a merge conflict?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Identify conflicting files: <code>git status</code></li>
+<li>Open each conflicting file in editor</li>
+<li>Locate conflict markers (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>)</li>
+<li>Decide resolution strategy (keep ours, theirs, combine, or new)</li>
+<li>Remove ALL conflict markers completely</li>
+<li>Stage resolved file: <code>git add file.txt</code></li>
+<li>Repeat for all conflicts</li>
+<li>Complete merge: <code>git commit</code></li>
+</ol>
+<p>Critical: Must remove all <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> markers!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conflict Resolution Strategies</h2>
+<p>What are four strategies for resolving a conflict between two versions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Given conflict:</p>
+<pre><code class="language-javascript">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+console.log(&quot;Welcome to our app!&quot;);
+=======
+console.log(&quot;Welcome, user!&quot;);
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature
+</code></pre>
+<ol>
+<li>Keep current (ours): <code>"Welcome to our app!"</code></li>
+<li>Keep incoming (theirs): <code>"Welcome, user!"</code></li>
+<li>Combine both: <code>"Welcome to our app, user!"</code></li>
+<li>Write new solution: <code>console.log(\</code>Welcome ${username}!`);`</li>
+</ol>
+<p>Choose based on understanding both changes and requirements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Accepting Ours or Theirs</h2>
+<p>How do you quickly accept all changes from one side of a conflict?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Accept current branch (ours):</p>
+<pre><code class="language-bash">git checkout --ours file.txt
+git add file.txt
+</code></pre>
+<p>Accept incoming branch (theirs):</p>
+<pre><code class="language-bash">git checkout --theirs file.txt
+git add file.txt
+</code></pre>
+<p>For all files:</p>
+<pre><code class="language-bash">git checkout --ours .    # All ours
+git checkout --theirs .  # All theirs
+git add .
+</code></pre>
+<p>⚠️ Use carefully—resolves without reviewing individual changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Aborting a Merge</h2>
+<p>How do you cancel a merge with conflicts and when should you do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cancel merge:</p>
+<pre><code class="language-bash">git merge --abort
+</code></pre>
+<p>This:
+- Cancels the merge operation
+- Returns to pre-merge state
+- Discards all conflict resolutions
+- Safe to use anytime before final commit</p>
+<p>Use when:
+- Made mistakes in resolution
+- Conflicts too complex
+- Wrong branch merged
+- Need to prepare differently</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Types of Conflicts</h2>
+<p>What are the main types of merge conflicts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Content conflicts (most common):</li>
+<li>Both modified: <code>both modified: file.txt</code></li>
+<li>
+<p>Same lines changed differently</p>
+</li>
+<li>
+<p>Delete/Modify conflicts:</p>
+</li>
+<li>
+<p>One deletes, other modifies: <code>deleted by us: config.txt</code></p>
+</li>
+<li>
+<p>Add/Add conflicts:</p>
+</li>
+<li>
+<p>Both add same file: <code>both added: utils.js</code></p>
+</li>
+<li>
+<p>Rename/Modify conflicts:</p>
+</li>
+<li>One renames, other modifies</li>
+</ol>
+<p>Resolution depends on type—content conflicts require editing, delete/modify needs decision to keep or remove.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Using Git Merge Tool</h2>
+<p>How do you use Git's merge tool for resolving conflicts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Configure merge tool:</p>
+<pre><code class="language-bash"># VS Code
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+
+# Or vimdiff, meld, etc.
+git config --global merge.tool vimdiff
+</code></pre>
+<p>Launch during conflict:</p>
+<pre><code class="language-bash">git mergetool
+</code></pre>
+<p>Opens configured tool with visual interface for resolving conflicts. Modern IDEs (VS Code, IntelliJ) have built-in conflict resolution UIs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Resolution Example</h2>
+<p>Walk through a complete conflict resolution example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># Attempt merge
+git merge feature/login
+# CONFLICT in auth.js
+
+# Check status
+git status
+# both modified: auth.js
+
+# Edit file (remove markers, fix conflict)
+code auth.js
+
+# Stage resolved file
+git add auth.js
+
+# Verify all resolved
+git status
+# All conflicts fixed
+
+# Complete merge
+git commit -m &quot;Merge feature/login&quot;
+
+# Test
+npm test
+</code></pre>
+<p>Key: Edit → Remove markers → Stage → Commit → Test</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Merge Conflicts</h2>
+<p>What are five best practices to prevent merge conflicts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Pull frequently: <code>git pull origin main</code> (stay updated)</li>
+<li>Keep feature branches short-lived (create → work → merge quickly)</li>
+<li>Communicate with team (coordinate who works on what)</li>
+<li>Break features into smaller pieces (smaller changes = fewer conflicts)</li>
+<li>Merge main into feature regularly:
+   <code>bash
+   git switch feature-branch
+   git merge main</code></li>
+</ol>
+<p>Prevention is better than resolution. Communication and frequent integration reduce conflicts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing After Resolution</h2>
+<p>Why must you test after resolving conflicts and what should you test?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Conflicts might introduce logical errors even if syntactically correct. Always test:</p>
+<ol>
+<li>
+<p>Run test suite:
+   <code>bash
+   npm test
+   pytest</code></p>
+</li>
+<li>
+<p>Verify functionality:</p>
+</li>
+<li>Manual testing of affected features</li>
+<li>
+<p>Check integration points</p>
+</li>
+<li>
+<p>Build/compile:
+   <code>bash
+   npm run build</code></p>
+</li>
+</ol>
+<p>Merged code might work individually but fail together. Testing catches integration issues.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Conflict Patterns</h2>
+<p>What are three common conflict patterns and their resolutions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Formatting conflicts (one branch reformatted):</li>
+<li>
+<p>Resolution: Use consistent formatting</p>
+</li>
+<li>
+<p>Import conflicts (both add different imports):
+   <code>javascript
+   // Combine
+   import { A, B, C } from 'module';</code></p>
+</li>
+<li>
+<p>Configuration conflicts (both modify same setting):</p>
+</li>
+<li>Resolution: Decide based on requirements or make configurable</li>
+</ol>
+<p>Understanding patterns helps resolve similar conflicts faster.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conflict Resolution Best Practices</h2>
+<p>What are key best practices during and after conflict resolution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>During resolution:
+- Read both versions carefully
+- Understand intent of each change
+- Test after resolving each file if possible
+- Communicate with commit authors if unclear
+- Preserve functionality over style</p>
+<p>After resolution:
+- Run full test suite
+- Manual testing of affected features
+- Code review if working in team
+- Document resolution in merge commit message</p>
+<p>Always prioritize correctness and functionality.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Conflict Resolution Principles</h2>
+<p>What are the essential principles to remember about resolving merge conflicts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Conflicts are normal in collaborative development</li>
+<li>Conflict markers show three sections (HEAD, separator, incoming)</li>
+<li>Always remove ALL markers completely before committing</li>
+<li><code>git add</code> marks resolution for each file</li>
+<li>Test after resolving to catch logical errors</li>
+<li><code>git merge --abort</code> safely cancels problematic merges</li>
+<li>Communication prevents conflicts better than resolution skills</li>
+<li>Short-lived branches reduce conflict likelihood</li>
+<li>Use tools (IDE, mergetool) for complex conflicts</li>
+<li>Document resolutions in commit messages</li>
+</ol>
+<p>Practice makes perfect—conflict resolution is a critical Git skill!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

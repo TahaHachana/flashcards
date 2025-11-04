@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 03 Branching - 04-Fast-Forward-Vs-Three-Way</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Fast-Forward Merge</h2>
+<p>What is a fast-forward merge and when does it happen?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A fast-forward merge happens when the target branch hasn't changed since the feature branch was created—there's a direct linear path.</p>
+<p>Before:</p>
+<pre><code>main:    A --- B
+              \
+feature:       C --- D
+</code></pre>
+<p>After:</p>
+<pre><code>main:    A --- B --- C --- D
+</code></pre>
+<p>Main pointer simply moves forward to D. No merge commit created because there's nothing to merge—just a pointer update.</p>
+<p>Indicator: Git outputs "Fast-forward" message.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fast-Forward Merge Characteristics</h2>
+<p>What are the key characteristics of a fast-forward merge?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ul>
+<li>No merge commit created</li>
+<li>Linear history (clean, easy to follow)</li>
+<li>Fastest merge (just pointer movement)</li>
+<li>No conflicts possible (no divergent changes)</li>
+<li>Preserves chronological order</li>
+<li>Target branch unchanged since branching</li>
+</ul>
+<p>Git message: "Fast-forward"</p>
+<p>This is the simplest merge type, essentially just moving a branch pointer forward along the commit history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is a Three-Way Merge</h2>
+<p>What is a three-way merge and when does it occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A three-way merge happens when both branches have new commits since they diverged—no direct linear path exists.</p>
+<p>Before:</p>
+<pre><code>main:    A --- B --- C --- E
+              \
+feature:       D --- F
+</code></pre>
+<p>After:</p>
+<pre><code>main:    A --- B --- C --- E --- M
+              \                 /
+feature:       D --- F ---------
+</code></pre>
+<p>Merge commit M has two parents: E (main) and F (feature). Git must combine changes from both branches.</p>
+<p>Indicator: "Merge made by the 'recursive' strategy"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Three-Way Merge</h2>
+<p>Why is it called a "three-way" merge and what are the three reference points?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Git uses three reference points to perform the merge:</p>
+<ol>
+<li>Common ancestor (B) - Last shared commit between branches</li>
+<li>Target branch tip (E) - Current state of main</li>
+<li>Source branch tip (F) - Current state of feature</li>
+</ol>
+<pre><code>        Base (B)
+         /  \
+    Main(E)  Feature(F)
+         \  /
+       Merge(M)
+</code></pre>
+<p>Git compares all three to determine the final merged state, resolving changes from both branches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fast-Forward vs Three-Way Comparison</h2>
+<p>What are the key differences between fast-forward and three-way merges?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Fast-Forward:
+- Target unchanged since branch
+- No merge commit
+- Linear history
+- Instant (pointer move)
+- No conflicts possible</p>
+<p>Three-Way:
+- Both branches have new commits
+- Merge commit created (two parents)
+- Non-linear history (shows divergence)
+- Creates new commit
+- Conflicts possible</p>
+<p>Detection: Git messages differ—"Fast-forward" vs "Merge made by..."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Fast-Forward with --no-ff</h2>
+<p>What does <code>git merge --no-ff</code> do and why would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git merge --no-ff feature</code> forces creation of a merge commit even when fast-forward is possible.</p>
+<p>Result:</p>
+<pre><code>main:    A --- B --------- M
+              \           /
+feature:       C --- D ---
+</code></pre>
+<p>Reasons to use --no-ff:
+- Preserve feature branch history
+- Group related commits together
+- Easier rollback (revert entire feature)
+- Better visualization (branch structure visible)
+- Team policy compliance</p>
+<p>Makes it clear that work was done on a separate branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Force Fast-Forward Only</h2>
+<p>What does <code>git merge --ff-only</code> do and when is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git merge --ff-only feature</code> will:
+- Succeed only if fast-forward is possible
+- Fail if three-way merge would be required</p>
+<p>Example:</p>
+<pre><code class="language-bash">git merge --ff-only feature
+# fatal: Not possible to fast-forward, aborting.
+</code></pre>
+<p>Use cases:
+- Enforcing linear history policy
+- Ensuring target branch unchanged before merge
+- Preventing accidental merge commits</p>
+<p>Useful when you want to maintain strictly linear history and catch diverged branches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Merge Behavior Configuration</h2>
+<p>How do you configure Git's default merge behavior?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Configure globally:</p>
+<pre><code class="language-bash"># Always create merge commits (no fast-forward)
+git config --global merge.ff false
+
+# Only allow fast-forward (fail otherwise)
+git config --global merge.ff only
+
+# Default behavior (ff when possible)
+git config --global merge.ff true
+</code></pre>
+<p>Default: Git fast-forwards when possible, three-way merges when necessary.</p>
+<p>Choose based on team policy and history preferences.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Visualizing Fast-Forward History</h2>
+<p>What does history look like after a fast-forward merge?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log --oneline --graph</code></p>
+<p>Output:</p>
+<pre><code>* e4f5g6h (HEAD -&gt; main, feature) Style button
+* d3e4f5g Add button
+* a1b2c3d Initial commit
+</code></pre>
+<p>Characteristics:
+- Straight line (linear)
+- No merge commits
+- No branching visible
+- Feature branch pointer at same location as main</p>
+<p>Clean, chronological progression—looks like all work happened sequentially on one branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Visualizing Three-Way Merge History</h2>
+<p>What does history look like after a three-way merge?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git log --oneline --graph --all</code></p>
+<p>Output:</p>
+<pre><code>*   g7h8i9j (HEAD -&gt; main) Merge branch 'feature'
+|\
+| * f6g7h8i (feature) Add search
+* | e5f6g7h Update README
+|/
+* a1b2c3d Initial commit
+</code></pre>
+<p>Characteristics:
+- Branching visible (non-linear)
+- Merge commit with two parents (<code>*</code> with two lines)
+- Shows parallel development
+- Full context preserved</p>
+<p>Clearly shows work happened on separate branches simultaneously.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Fast-Forward</h2>
+<p>When should you use or allow fast-forward merges?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use fast-forward when:
+- Working solo on simple features
+- Want clean, linear history
+- Changes are sequential and independent
+- Quick bug fixes or documentation updates
+- Main branch hasn't changed since branching</p>
+<p>Example workflow:</p>
+<pre><code class="language-bash">git switch -c feature/typo-fix
+git commit -m &quot;Fix typo&quot;
+git switch main
+git merge feature/typo-fix  # Fast-forward
+</code></pre>
+<p>Result: Clean linear history without merge commit clutter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Three-Way or Force Merge Commit</h2>
+<p>When should you use three-way merges or force merge commits with --no-ff?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use three-way (or force --no-ff) when:
+- Collaborating with team (branches diverge naturally)
+- Want to preserve feature context
+- Need ability to revert entire features
+- Following team conventions
+- Complex features with multiple commits</p>
+<p>Example:</p>
+<pre><code class="language-bash">git switch main
+git merge --no-ff feature/payment  # Force merge commit
+</code></pre>
+<p>Result: Feature clearly identified in history, easy to understand grouping of related commits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fast-Forward Merge Example Scenario</h2>
+<p>Walk through a complete fast-forward merge scenario.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># On main at commit A
+git switch -c feature/button
+
+# Make commits
+git commit -m &quot;B - Add button&quot;
+git commit -m &quot;C - Style button&quot;
+
+# Main hasn't changed, switch back
+git switch main
+
+# Merge (fast-forward)
+git merge feature/button
+</code></pre>
+<p>Output: "Fast-forward"</p>
+<p>Result:</p>
+<pre><code>main: A --- B --- C
+</code></pre>
+<p>Linear history, main pointer moved from A to C, no merge commit created.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three-Way Merge Example Scenario</h2>
+<p>Walk through a complete three-way merge scenario.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># On main at commit A
+git switch -c feature/search
+git commit -m &quot;B - Add search&quot;
+
+# Meanwhile, teammate commits to main
+git switch main
+git pull  # Gets commit C
+
+# Merge feature
+git merge feature/search
+</code></pre>
+<p>Output: "Merge made by the 'recursive' strategy"</p>
+<p>Result:</p>
+<pre><code>main: A --- C --- M
+       \         /
+        B ------
+</code></pre>
+<p>Merge commit M created with parents C and B, showing parallel development.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Principles for Merge Strategies</h2>
+<p>What are the key principles to remember about fast-forward vs three-way merges?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Fast-forward: Linear history, no merge commit, target unchanged</li>
+<li>Three-way: Non-linear, merge commit created, both branches progressed</li>
+<li><code>--no-ff</code>: Forces merge commit even when fast-forward possible</li>
+<li><code>--ff-only</code>: Fails if fast-forward not possible</li>
+<li>Choice depends on team policy, feature complexity, history preferences</li>
+<li>Visualize with <code>git log --graph</code> to understand structure</li>
+<li>No "better" strategy—each has appropriate use cases</li>
+</ol>
+<p>Understanding merge types helps maintain clean, meaningful Git history!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

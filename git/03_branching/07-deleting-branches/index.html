@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 03 Branching - 07-Deleting-Branches</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Delete Branches</h2>
+<p>Why should branches be deleted after merging or abandoning work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Branches should be deleted to:
+- Keep branch list clean and manageable
+- Avoid confusion about what's active
+- Reduce repository clutter
+- Signal work is complete</p>
+<p>Key concept: Deleting a branch only removes the pointer. If commits were merged, they remain in history and are safe. Branch deletion is just housekeeping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Safe Delete vs Force Delete</h2>
+<p>What's the difference between <code>git branch -d</code> and <code>git branch -D</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git branch -d branch-name</code> (lowercase d):
+- Safe delete—only deletes if branch is fully merged
+- Prevents accidental loss of work
+- Git protects you from mistakes</p>
+<p><code>git branch -D branch-name</code> (uppercase D):
+- Force delete—deletes regardless of merge status
+- Use when abandoning unmerged work
+- ⚠️ Warning: Unmerged commits may be lost</p>
+<p>Default to <code>-d</code> for safety. Use <code>-D</code> only when certain.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deleting Current Branch Error</h2>
+<p>What happens if you try to delete the branch you're currently on?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error:</p>
+<pre><code class="language-bash">git branch -d feature/test
+# error: Cannot delete branch 'feature/test' checked out at...
+</code></pre>
+<p>Solution: Switch to different branch first</p>
+<pre><code class="language-bash">git switch main
+git branch -d feature/test
+# Deleted branch feature/test
+</code></pre>
+<p>You cannot delete the branch you're currently on. HEAD must point to a different branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deleting Remote Branches</h2>
+<p>How do you delete a branch from a remote repository?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Delete remote branch:</p>
+<pre><code class="language-bash">git push origin --delete branch-name
+</code></pre>
+<p>Alternative syntax (older):</p>
+<pre><code class="language-bash">git push origin :branch-name
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-bash">git push origin --delete feature/login
+# - [deleted]         feature/login
+</code></pre>
+<p>Important: Deleting local branch doesn't automatically delete remote branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Branch Deletion Workflow</h2>
+<p>What are the steps for complete branch cleanup after merging?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Merge feature to main:
+   <code>bash
+   git switch main
+   git merge feature/payment</code></p>
+</li>
+<li>
+<p>Delete local branch:
+   <code>bash
+   git branch -d feature/payment</code></p>
+</li>
+<li>
+<p>Delete remote branch:
+   <code>bash
+   git push origin --delete feature/payment</code></p>
+</li>
+<li>
+<p>Verify cleanup:
+   <code>bash
+   git branch -a  # Check all branches</code></p>
+</li>
+</ol>
+<p>Two separate operations needed: local and remote deletion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Listing Branches for Cleanup</h2>
+<p>How do you list merged and unmerged branches to decide what to delete?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Merged branches (safe to delete):</p>
+<pre><code class="language-bash">git branch --merged
+</code></pre>
+<p>Unmerged branches (review before deleting):</p>
+<pre><code class="language-bash">git branch --no-merged
+</code></pre>
+<p>Delete all merged branches except main:</p>
+<pre><code class="language-bash">git branch --merged | grep -v '\*\|main\|master' | xargs git branch -d
+</code></pre>
+<p>Always verify merged status before bulk deletion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pruning Remote Tracking Branches</h2>
+<p>What are remote tracking branches and how do you clean up stale references?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Remote tracking branches are local references to remote branches (e.g., <code>origin/feature/login</code>). When someone deletes a remote branch, your local tracking reference remains.</p>
+<p>Check what would be pruned:</p>
+<pre><code class="language-bash">git remote prune origin --dry-run
+</code></pre>
+<p>Remove stale references:</p>
+<pre><code class="language-bash">git remote prune origin
+# or
+git fetch --prune
+</code></pre>
+<p>Configure to always prune:</p>
+<pre><code class="language-bash">git config --global fetch.prune true
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recovering Deleted Branches</h2>
+<p>How do you recover a branch that was accidentally deleted?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>If commits were merged: Safe, they're in main branch</p>
+<p>If commits were NOT merged: Use reflog</p>
+<p>Recovery steps:
+1. Find commit hash:
+   <code>bash
+   git reflog
+   # c3d4e5f HEAD@{1}: commit: Add feature</code></p>
+<ol>
+<li>Recreate branch:
+   <code>bash
+   git branch feature/test c3d4e5f</code></li>
+</ol>
+<p>Time limit: Reflog keeps history for ~30 days. After that, commits are garbage collected. Recover quickly!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deleting Multiple Branches</h2>
+<p>How do you delete multiple branches at once?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple specific branches:</p>
+<pre><code class="language-bash">git branch -d feature/login feature/signup feature/profile
+</code></pre>
+<p>All merged branches (except main):</p>
+<pre><code class="language-bash">git branch --merged | grep -v '\*\|main\|master' | xargs git branch -d
+</code></pre>
+<p>Multiple remote branches:</p>
+<pre><code class="language-bash">git push origin --delete feature/login feature/signup
+</code></pre>
+<p>Use carefully—verify branches are truly ready for deletion before bulk operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Branch Deletion Best Practices</h2>
+<p>What are best practices for deleting branches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Before deleting:
+- Verify branch is merged: <code>git branch --merged</code>
+- Check if anyone else is using it
+- Confirm work is complete or abandoned
+- Use safe delete (-d) by default</p>
+<p>When to delete:
+- Immediately after merging (keep repo clean)
+- When abandoning work (signal it's dead)
+- During cleanup sessions (periodic maintenance)</p>
+<p>When NOT to delete:
+- Active development branches
+- Protected branches (main, develop, release)
+- Branches others depend on</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Protected Branches</h2>
+<p>Which branches should never be deleted and how are they protected?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Never delete:
+- <code>main</code> / <code>master</code> (primary branch)
+- <code>develop</code> (if using Git Flow)
+- <code>staging</code> / <code>production</code> (deployment branches)
+- Release branches (<code>release/v1.0.0</code>)</p>
+<p>Protection mechanisms:
+- GitHub: Branch protection rules
+- GitLab: Protected branches
+- Bitbucket: Branch permissions</p>
+<p>These prevent accidental deletion and require special permissions to modify.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Automatic Branch Deletion</h2>
+<p>How can you configure automatic branch deletion after merging on GitHub/GitLab?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>GitHub:
+- Settings → General → "Automatically delete head branches"
+- Deletes feature branches after PR merge</p>
+<p>GitLab:
+- Settings → Repository → "Remove source branch after merge"
+- Checkbox when creating merge request</p>
+<p>This automates remote deletion, but local branches remain. Still need to:</p>
+<pre><code class="language-bash">git switch main
+git pull
+git branch -d feature/branch  # Delete local
+git fetch --prune             # Cleanup tracking
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Deletion Errors</h2>
+<p>What are three common errors when deleting branches and their solutions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>"Branch not fully merged":</li>
+<li>Check: <code>git branch --merged</code></li>
+<li>
+<p>Force if intentional: <code>git branch -D branch</code></p>
+</li>
+<li>
+<p>"Cannot delete checked out branch":</p>
+</li>
+<li>
+<p>Solution: <code>git switch main</code> first</p>
+</li>
+<li>
+<p>"Remote ref does not exist":</p>
+</li>
+<li>Branch already deleted remotely</li>
+<li>Cleanup local tracking: <code>git fetch --prune</code></li>
+</ol>
+<p>Always read error messages—they tell you exactly what's wrong and how to fix it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Bulk Cleanup Strategy</h2>
+<p>What's a safe workflow for bulk branch cleanup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>List merged branches:
+   <code>bash
+   git branch --merged</code></p>
+</li>
+<li>
+<p>Review the list (ensure no important branches)</p>
+</li>
+<li>
+<p>Delete all merged branches except main:
+   <code>bash
+   git branch --merged | grep -v '\*\|main\|master' | xargs git branch -d</code></p>
+</li>
+<li>
+<p>Cleanup remote tracking:
+   <code>bash
+   git fetch --prune</code></p>
+</li>
+<li>
+<p>Verify:
+   <code>bash
+   git branch -a</code></p>
+</li>
+</ol>
+<p>Do this periodically (weekly/monthly) as maintenance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Branch Deletion Principles</h2>
+<p>What are the essential principles for branch deletion?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Deleting branch removes pointer, not commits (if merged)</li>
+<li><code>-d</code> is safe delete (merged only), <code>-D</code> forces deletion</li>
+<li>Cannot delete current branch (switch first)</li>
+<li>Local and remote deletion are separate operations</li>
+<li><code>git push origin --delete branch</code> removes remote branch</li>
+<li>Prune stale references with <code>git fetch --prune</code></li>
+<li>Recovery possible via reflog (within ~30 days)</li>
+<li>Delete promptly after merging for clean repo</li>
+<li>Protected branches can't be deleted</li>
+<li>Team coordination essential for shared branches</li>
+</ol>
+<p>Regular cleanup keeps repositories professional and manageable!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
