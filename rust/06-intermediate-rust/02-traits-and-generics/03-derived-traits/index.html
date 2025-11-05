@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 03-Derived-Traits</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Derived Traits?</h2>
+<p>What are derived traits and what is their purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Derived traits are trait implementations that the Rust compiler can generate automatically using the <code>#[derive()]</code> attribute. Instead of manually writing implementation code, you ask the compiler to create the implementation for you.</p>
+<p><strong>Purpose</strong>: Reduce boilerplate code for common, predictable trait implementations like <code>Debug</code>, <code>Clone</code>, <code>PartialEq</code>, etc.</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone)]
+struct Point { x: i32, y: i32 }
+// Compiler generates Debug and Clone implementations
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Derive Syntax</h2>
+<p>What is the syntax for deriving multiple traits for a struct?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>#[derive()]</code> with a comma-separated list of trait names above the type definition:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq)]
+struct Person {
+    name: String,
+    age: u32,
+}
+</code></pre>
+<p>The attribute must be placed directly above the struct/enum definition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Commonly Derivable Traits</h2>
+<p>List the nine commonly derivable standard library traits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Debug</strong> - Debug formatting with <code>{:?}</code></li>
+<li><strong>Clone</strong> - Explicit duplication</li>
+<li><strong>Copy</strong> - Implicit bitwise copying</li>
+<li><strong>PartialEq</strong> - Equality comparison (<code>==</code>, <code>!=</code>)</li>
+<li><strong>Eq</strong> - Full equality (marker trait)</li>
+<li><strong>PartialOrd</strong> - Partial ordering (<code>&lt;</code>, <code>&gt;</code>, etc.)</li>
+<li><strong>Ord</strong> - Total ordering</li>
+<li><strong>Hash</strong> - Hashing for HashMap/HashSet</li>
+<li><strong>Default</strong> - Default value construction</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Which Traits Cannot Be Derived?</h2>
+<p>Why can't <code>Display</code> be derived, and what other traits cannot be derived?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Display cannot be derived</strong> because it requires human decision on how to format output for end users. The compiler can't guess your intended formatting.</p>
+<p><strong>Other non-derivable traits</strong>:
+- <code>From</code>/<code>Into</code> - Requires custom conversion logic
+- <code>Iterator</code> - Requires custom iteration logic
+- Most custom traits - Too complex or context-dependent</p>
+<p>These must be implemented manually with <code>impl</code> blocks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Key Rule for Deriving</h2>
+<p>What is the key rule for deriving a trait on a type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>You can only derive a trait if ALL fields of your type implement that trait.</strong></p>
+<p>Example:</p>
+<pre><code class="language-rust">#[derive(Clone)]
+struct Works {
+    field1: i32,     // ✅ i32 implements Clone
+    field2: String,  // ✅ String implements Clone
+}
+
+#[derive(Copy)]
+struct Fails {
+    field: String,   // ❌ String does NOT implement Copy
+}
+// Error: cannot derive Copy
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copy Requires Clone</h2>
+<p>What is the relationship between <code>Copy</code> and <code>Clone</code> when deriving?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>Copy</code> requires <code>Clone</code></strong>. You must always derive both together.</p>
+<pre><code class="language-rust">// ❌ WRONG
+#[derive(Copy)]
+struct Point { x: i32, y: i32 }
+// Error: Copy requires Clone
+
+// ✅ CORRECT
+#[derive(Copy, Clone)]
+struct Point { x: i32, y: i32 }
+</code></pre>
+<p>This is because <code>Copy</code> types must support explicit cloning via <code>Clone</code>, even though they're copied implicitly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Most Common Derive Pattern</h2>
+<p>What is the most common derive pattern used for regular structs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">#[derive(Debug, Clone)]
+struct MyStruct {
+    // fields
+}
+</code></pre>
+<p><strong>Debug</strong> allows debugging with <code>{:?}</code>, and <strong>Clone</strong> provides explicit duplication. Almost every struct should have at least these two traits.</p>
+<p>For simple data types, you might add more:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq)]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Dependency Hierarchy</h2>
+<p>What are the dependency relationships between <code>Ord</code>, <code>PartialOrd</code>, <code>Eq</code>, and <code>PartialEq</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Ord
+ ├── PartialOrd (required)
+ └── Eq (required)
+      └── PartialEq (required)
+</code></pre>
+<p>To derive <code>Ord</code>, you must also derive <code>PartialOrd</code>, <code>Eq</code>, and <code>PartialEq</code>:</p>
+<pre><code class="language-rust">#[derive(PartialEq, Eq, PartialOrd, Ord)]
+struct Priority { value: u32 }
+</code></pre>
+<p>Order matters for readability (though compiler doesn't care).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HashMap Key Requirements</h2>
+<p>What traits must a type derive to be used as a <code>HashMap</code> key?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A type needs <strong><code>Hash</code> + <code>Eq</code></strong> (which requires <code>PartialEq</code>):</p>
+<pre><code class="language-rust">#[derive(PartialEq, Eq, Hash)]
+struct UserId(u64);
+
+fn main() {
+    use std::collections::HashMap;
+    let mut map: HashMap&lt;UserId, String&gt; = HashMap::new();
+    map.insert(UserId(1), &quot;Alice&quot;.to_string());
+}
+</code></pre>
+<p>Often you'll also add <code>Debug</code> and <code>Clone</code> for convenience:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Debug Derive Works</h2>
+<p>What does the compiler generate when you derive <code>Debug</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler generates a <code>fmt</code> method that prints the struct name and all fields:</p>
+<pre><code class="language-rust">// You write:
+#[derive(Debug)]
+struct Point { x: i32, y: i32 }
+
+// Compiler generates (conceptually):
+impl Debug for Point {
+    fn fmt(&amp;self, f: &amp;mut Formatter) -&gt; Result {
+        f.debug_struct(&quot;Point&quot;)
+            .field(&quot;x&quot;, &amp;self.x)
+            .field(&quot;y&quot;, &amp;self.y)
+            .finish()
+    }
+}
+
+// Output: Point { x: 10, y: 20 }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copy Type Derive Pattern</h2>
+<p>What is the typical derive pattern for small, Copy types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+struct Color {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+</code></pre>
+<p><strong>When to use</strong>: Small types (typically ≤16 bytes) with no heap allocations. All fields must be <code>Copy</code>.</p>
+<p>Remember: <code>Copy</code> always requires <code>Clone</code> to be derived together.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Trait Derivation</h2>
+<p>How does the <code>Default</code> trait work when derived, and what does it produce?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When derived, <code>Default</code> creates a value with default values for all fields (each field must implement <code>Default</code>):</p>
+<pre><code class="language-rust">#[derive(Debug, Default)]
+struct Config {
+    timeout: u32,    // Defaults to 0
+    retries: u32,    // Defaults to 0
+}
+
+fn main() {
+    let config = Config::default();
+    println!(&quot;{:?}&quot;, config);  
+    // Output: Config { timeout: 0, retries: 0 }
+}
+</code></pre>
+<p>Numbers default to 0, booleans to <code>false</code>, <code>String</code> to empty string, etc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>PartialEq Derive Implementation</h2>
+<p>What does the compiler generate when you derive <code>PartialEq</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler generates an <code>eq</code> method that compares all fields:</p>
+<pre><code class="language-rust">// You write:
+#[derive(PartialEq)]
+struct Point { x: i32, y: i32 }
+
+// Compiler generates:
+impl PartialEq for Point {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        self.x == other.x &amp;&amp; self.y == other.y
+    }
+}
+
+// Usage:
+let p1 = Point { x: 1, y: 2 };
+let p2 = Point { x: 1, y: 2 };
+assert!(p1 == p2);  // true
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Derive for Non-Implementing Fields</h2>
+<p>What happens if you try to derive a trait when a field doesn't implement it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You get a compiler error. The derive fails because not all fields support the trait.</p>
+<pre><code class="language-rust">struct NoClone;  // Doesn't implement Clone
+
+#[derive(Clone)]  // ❌ Error!
+struct Container {
+    field: NoClone,
+}
+// Error: the trait `Clone` is not implemented for `NoClone`
+</code></pre>
+<p><strong>Solution</strong>: Either implement the trait for the field type or don't derive it:</p>
+<pre><code class="language-rust">#[derive(Clone)]
+struct NoClone;  // Now implements Clone
+
+#[derive(Clone)]  // ✅ Works!
+struct Container {
+    field: NoClone,
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deriving vs Manual Implementation</h2>
+<p>Can you manually implement a trait that could be derived? When would you do this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Deriving is just automatic implementation. You can always implement manually for custom behavior:</p>
+<pre><code class="language-rust">#[derive(Clone)]  // Auto: clones all fields
+struct Auto { value: i32 }
+
+struct Manual { value: i32 }
+
+impl Clone for Manual {
+    fn clone(&amp;self) -&gt; Self {
+        println!(&quot;Custom cloning logic!&quot;);
+        Manual { value: self.value * 2 }  // Custom behavior
+    }
+}
+</code></pre>
+<p><strong>When to manual implement</strong>: Custom behavior, optimization, or when derive doesn't exist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Derive Pattern</h2>
+<p>What is the "complete" derive pattern for maximum functionality?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
+struct CompleteType {
+    id: u64,
+    name: String,
+}
+</code></pre>
+<p>This gives you:
+- Debug printing
+- Cloning
+- Equality comparison
+- Ordering comparison
+- Hashing (HashMap keys)
+- Default values</p>
+<p>Use for data container types that need all standard operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deriving for Enums</h2>
+<p>Can you derive traits for enums? How does it work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Enums can derive the same traits as structs. The generated code handles each variant appropriately:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq)]
+enum Status {
+    Pending,
+    Active { start_time: u64 },
+    Completed { duration: u64 },
+}
+
+fn main() {
+    let s1 = Status::Active { start_time: 100 };
+    let s2 = s1.clone();  // Works!
+    println!(&quot;{:?}&quot;, s1);  // Debug output
+    assert!(s1 == s2);     // Comparison
+}
+</code></pre>
+<p>The derived implementations work across all variants.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Copy Has Restrictions</h2>
+<p>Why can't <code>String</code> implement <code>Copy</code>, but <code>i32</code> can?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Copy</code> is only for types that can be safely duplicated by simply copying bits (stack-only data). </p>
+<p><strong><code>i32</code> can be Copy</strong>: It's just 4 bytes on the stack. Copying the bits creates a valid duplicate.</p>
+<p><strong><code>String</code> cannot be Copy</strong>: It contains a pointer to heap data. If you copied the bits, you'd have two pointers to the same heap memory, leading to double-free errors when both are dropped.</p>
+<p>Only types with no heap allocations and no resource ownership can be <code>Copy</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Derive and Generic Types</h2>
+<p>How do derived traits work with generic types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Derived traits add bounds to the generic parameters. A generic field must implement the derived trait:</p>
+<pre><code class="language-rust">#[derive(Clone)]
+struct Wrapper&lt;T&gt; {
+    value: T,
+}
+// Compiler generates:
+// impl&lt;T: Clone&gt; Clone for Wrapper&lt;T&gt;
+
+fn main() {
+    let w1 = Wrapper { value: 5 };      // ✅ i32 is Clone
+    let w2 = w1.clone();
+
+    let w3 = Wrapper { value: NoClone };
+    // let w4 = w3.clone();  // ❌ Error: NoClone doesn't impl Clone
+}
+</code></pre>
+<p>The derive automatically adds the necessary trait bounds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Minimal vs Full Derives</h2>
+<p>Compare minimal and full derive patterns. When would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Minimal</strong> (internal types, simple debugging):</p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Internal {
+    complex_field: HashMap&lt;String, Vec&lt;i32&gt;&gt;,
+}
+</code></pre>
+<p><strong>Full</strong> (public APIs, data containers):</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+struct PublicData {
+    id: u64,
+    name: String,
+}
+</code></pre>
+<p><strong>Use minimal</strong>: Private types, complex internals, or when Clone/comparison doesn't make sense</p>
+<p><strong>Use full</strong>: Public types, simple data, collections keys, when you need all operations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

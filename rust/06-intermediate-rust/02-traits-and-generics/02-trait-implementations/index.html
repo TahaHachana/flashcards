@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 02-Trait-Implementations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Trait Implementation?</h2>
+<p>What does it mean to implement a trait for a type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implementing a trait means giving a type the ability to use the trait's methods. When you write <code>impl TraitName for TypeName</code>, you're telling the compiler: "This type now has these capabilities."</p>
+<p>It's like certification - once a type implements a trait, it guarantees it can perform those behaviors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Implementation Syntax</h2>
+<p>Write the syntax to implement a trait called <code>Flyable</code> with a method <code>fly()</code> for a type called <code>Bird</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">impl Flyable for Bird {
+    fn fly(&amp;self) {
+        println!(&quot;The bird is flying!&quot;);
+    }
+}
+</code></pre>
+<p>The syntax is: <code>impl TraitName for TypeName { /* method implementations */ }</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Orphan Rule - Three Rules</h2>
+<p>What are the three implementation scenarios allowed by the orphan rule, and what is NOT allowed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Allowed</strong>:
+1. Your trait on your type ✅
+2. Your trait on external type ✅
+3. External trait on your type ✅</p>
+<p><strong>NOT allowed</strong>:
+4. External trait on external type ❌</p>
+<p>Example of violation:</p>
+<pre><code class="language-rust">impl Display for Vec&lt;i32&gt; { }  // Error!
+// Both Display and Vec are from std library
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why the Orphan Rule Exists</h2>
+<p>Why does Rust have the orphan rule? What problems does it prevent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The orphan rule prevents <strong>coherence problems</strong>:</p>
+<ol>
+<li><strong>Multiple conflicting implementations</strong> - Two crates could implement the same trait for the same type differently</li>
+<li><strong>Unpredictable behavior</strong> - Which implementation gets used would depend on import order</li>
+<li><strong>Breaking changes</strong> - Adding a trait implementation could break downstream code</li>
+</ol>
+<p>Without it, the same type could behave differently depending on which crate's implementation was imported.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Newtype Pattern</h2>
+<p>What is the newtype pattern and when do you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The newtype pattern wraps an external type in a tuple struct to create a new type, allowing you to implement external traits on it.</p>
+<p><strong>Use case</strong>: When you want to implement an external trait on an external type (which violates the orphan rule).</p>
+<pre><code class="language-rust">// Want Display for Vec&lt;i32&gt;, but can't due to orphan rule
+
+// Wrap it in your own type
+struct MyVec(Vec&lt;i32&gt;);
+
+// Now you can implement Display!
+impl Display for MyVec {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;{:?}&quot;, self.0)
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self in Trait Implementations</h2>
+<p>What does <code>Self</code> mean in a trait implementation, and how can you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>In trait implementations, <code>Self</code> refers to the type you're implementing for.</p>
+<pre><code class="language-rust">trait Factory {
+    fn create() -&gt; Self;  // Returns the implementing type
+}
+
+impl Factory for Book {
+    fn create() -&gt; Self {  // Self means Book here
+        Self {
+            title: String::from(&quot;Untitled&quot;),
+            pages: 0,
+        }
+    }
+}
+</code></pre>
+<p>You can use <code>Self</code> or write the type name explicitly - they mean the same thing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>From Trait Pattern</h2>
+<p>What does implementing the <code>From</code> trait give you, and what's the syntax?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implementing <code>From&lt;T&gt;</code> for your type allows conversion from type T to your type. You automatically get <code>Into&lt;YourType&gt;</code> for free.</p>
+<pre><code class="language-rust">struct Fahrenheit(f64);
+struct Celsius(f64);
+
+impl From&lt;Celsius&gt; for Fahrenheit {
+    fn from(c: Celsius) -&gt; Self {
+        Fahrenheit(c.0 * 9.0/5.0 + 32.0)
+    }
+}
+
+// Can now use:
+let f = Fahrenheit::from(Celsius(100.0));
+// or:
+let f: Fahrenheit = Celsius(100.0).into();
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Required vs Default Methods in Implementation</h2>
+<p>When implementing a trait, how do you handle methods with default implementations vs required methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Required methods</strong> (no body in trait): MUST implement them</p>
+<p><strong>Default methods</strong> (have body in trait): Can either:
+1. Use the default (don't write anything)
+2. Override with your own implementation</p>
+<pre><code class="language-rust">trait Logger {
+    fn log(&amp;self) { println!(&quot;Log&quot;); }  // Default
+    fn error(&amp;self);                    // Required
+}
+
+impl Logger for Simple {
+    fn error(&amp;self) { println!(&quot;Error!&quot;); }
+    // Uses default log()
+}
+
+impl Logger for Custom {
+    fn log(&amp;self) { println!(&quot;Custom log&quot;); }  // Override
+    fn error(&amp;self) { println!(&quot;Error!&quot;); }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Trait Implementations</h2>
+<p>Can a single type implement multiple traits? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! A type can implement as many traits as needed. Each implementation is separate.</p>
+<pre><code class="language-rust">struct Point { x: i32, y: i32 }
+
+impl Display for Point {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;({}, {})&quot;, self.x, self.y)
+    }
+}
+
+impl PartialEq for Point {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        self.x == other.x &amp;&amp; self.y == other.y
+    }
+}
+
+impl Clone for Point {
+    fn clone(&amp;self) -&gt; Self {
+        Point { x: self.x, y: self.y }
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Must Be in Scope</h2>
+<p>Why might you get a "method not found" error even though your type implements a trait? What's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The trait must be in scope (imported) to use its methods, even if the type implements it.</p>
+<p><strong>Problem</strong>:</p>
+<pre><code class="language-rust">fn main() {
+    let logger = MyLogger;
+    logger.log(&quot;Hi&quot;);  // Error: method not found
+}
+</code></pre>
+<p><strong>Solution</strong>: Import the trait</p>
+<pre><code class="language-rust">use my_crate::Logger;  // Bring trait into scope
+
+fn main() {
+    let logger = MyLogger;
+    logger.log(&quot;Hi&quot;);  // Now works!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementation Contract</h2>
+<p>What three promises do you make when implementing a trait?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Provide all required methods</strong> - Every method without a default implementation must be implemented</li>
+<li><strong>Match exact signatures</strong> - Parameters and return types must be identical to the trait definition</li>
+<li><strong>Enable trait behaviors</strong> - Your type now guarantees it can perform the trait's behaviors</li>
+</ol>
+<p>This is a contract between you and the compiler.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conditional Trait Implementation</h2>
+<p>How do you implement a trait conditionally based on generic type parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use trait bounds on the generic parameter in the impl block:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+// Only implement Display if T implements Display
+impl&lt;T: Display&gt; Display for Wrapper&lt;T&gt; {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;Wrapped: {}&quot;, self.value)
+    }
+}
+
+// This works:
+let w = Wrapper { value: 42 };
+println!(&quot;{}&quot;, w);  // i32 implements Display
+
+// This doesn't:
+let w = Wrapper { value: vec![1, 2] };
+// println!(&quot;{}&quot;, w);  // Vec doesn't implement Display
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Display and ToString Relationship</h2>
+<p>If you implement <code>Display</code> for your type, do you need to implement <code>ToString</code> as well?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No! You should NOT implement <code>ToString</code> manually. When you implement <code>Display</code>, you automatically get <code>ToString</code> for free through a blanket implementation in the standard library.</p>
+<pre><code class="language-rust">// ✅ CORRECT: Only implement Display
+impl Display for MyType {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;MyType&quot;)
+    }
+}
+
+fn main() {
+    let m = MyType;
+    let s = m.to_string();  // to_string() works automatically!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copy Requires Clone</h2>
+<p>What is the relationship between the <code>Copy</code> and <code>Clone</code> traits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Copy</code> requires <code>Clone</code>. You cannot implement <code>Copy</code> without also implementing <code>Clone</code>.</p>
+<pre><code class="language-rust">// ❌ WRONG
+#[derive(Copy)]
+struct Point { x: i32, y: i32 }
+// Error: Copy requires Clone
+
+// ✅ CORRECT
+#[derive(Copy, Clone)]
+struct Point { x: i32, y: i32 }
+</code></pre>
+<p>This is because <code>Copy</code> is a marker trait that indicates a type can be copied by simply copying bits, but it must also support explicit cloning via <code>Clone</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Accessing Wrapped Type in Newtype</h2>
+<p>In a newtype pattern, how do you access the wrapped value?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Access the inner value using <code>.0</code> (tuple struct field access):</p>
+<pre><code class="language-rust">struct MyVec(Vec&lt;i32&gt;);
+
+impl Display for MyVec {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;{:?}&quot;, self.0)  // Access with .0
+    }
+}
+
+impl MyVec {
+    fn push(&amp;mut self, value: i32) {
+        self.0.push(value);  // Access inner Vec with .0
+    }
+}
+</code></pre>
+<p><code>.0</code> refers to the first (and only) field in the tuple struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Implementation Steps</h2>
+<p>What are the four steps to implement a trait for your type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Identify required methods</strong> - Look at trait definition for methods without default implementations</li>
+<li><strong>Match signatures exactly</strong> - Ensure parameters and return types are identical</li>
+<li><strong>Provide logic</strong> - Write the actual implementation for each method</li>
+<li><strong>Test</strong> - Verify your implementation works as expected</li>
+</ol>
+<p>Missing any required methods or mismatching signatures will cause compiler errors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Implementation and Ownership</h2>
+<p>How do the three forms of <code>self</code> in trait methods affect ownership?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Trait implementations must respect ownership rules:</p>
+<pre><code class="language-rust">trait Processor {
+    fn process(self);        // Takes ownership (consumes)
+    fn inspect(&amp;self);       // Borrows immutably
+    fn modify(&amp;mut self);    // Borrows mutably
+}
+
+impl Processor for Data {
+    fn process(self) {
+        // self consumed, can't use after
+    }
+    fn inspect(&amp;self) {
+        // Can read, not modify
+    }
+    fn modify(&amp;mut self) {
+        // Can modify
+    }
+}
+</code></pre>
+<p>The method signature determines whether the value is borrowed or moved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Newtype Creates New Type</h2>
+<p>Why does wrapping an external type in a tuple struct allow you to bypass the orphan rule?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The tuple struct creates a <strong>new type</strong> that is local to your crate. Even though it contains an external type, the wrapper itself is yours.</p>
+<pre><code class="language-rust">struct MyVec(Vec&lt;i32&gt;);  // MyVec is YOUR type
+</code></pre>
+<p>Since <code>MyVec</code> is defined in your crate:
+- You can implement external traits (like <code>Display</code>) for it
+- The orphan rule is satisfied: either the trait OR the type is local</p>
+<p>The wrapped <code>Vec&lt;i32&gt;</code> is just data inside your type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Standard Library Trait Examples</h2>
+<p>Name three commonly implemented standard library traits and their purposes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Display</strong> (<code>std::fmt::Display</code>) - Formatting with <code>{}</code>, user-facing output</li>
+<li><strong>Debug</strong> (<code>std::fmt::Debug</code>) - Formatting with <code>{:?}</code>, programmer-facing debugging</li>
+<li><strong>From/Into</strong> - Type conversions between types</li>
+<li><strong>Clone</strong> - Explicit duplication of values</li>
+<li><strong>PartialEq/Eq</strong> - Equality comparisons with <code>==</code></li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-rust">impl Display for MyType { /* ... */ }
+impl From&lt;String&gt; for MyType { /* ... */ }
+impl Clone for MyType { /* ... */ }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Implementation Enables Polymorphism</h2>
+<p>How do trait implementations enable polymorphism in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple different types can implement the same trait, allowing them to be used interchangeably where that trait is required.</p>
+<pre><code class="language-rust">trait Shape {
+    fn area(&amp;self) -&gt; f64;
+}
+
+struct Circle { radius: f64 }
+struct Square { side: f64 }
+
+impl Shape for Circle {
+    fn area(&amp;self) -&gt; f64 {
+        3.14 * self.radius * self.radius
+    }
+}
+
+impl Shape for Square {
+    fn area(&amp;self) -&gt; f64 {
+        self.side * self.side
+    }
+}
+
+// Generic function works with ANY Shape
+fn print_area&lt;T: Shape&gt;(shape: T) {
+    println!(&quot;Area: {}&quot;, shape.area());
+}
+</code></pre>
+<p>Different types, same interface!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

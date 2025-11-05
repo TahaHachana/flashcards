@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 01-Traits</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a Trait in Rust?</h2>
+<p>What is a trait in Rust, and what is its primary purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A trait is Rust's way of defining shared behavior across different types. It's a contract that specifies what methods a type must have. Traits define what a type can <em>do</em> (behavior), not what it <em>is</em> (data structure). Any type that implements a trait is guaranteed to have the trait's methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Traits Are About Behavior</h2>
+<p>Complete the mental model: "Traits are about <strong><em>_</em>, not </strong>___."</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>"Traits are about behavior, not data structure."</p>
+<p>Traits define capabilities and actions (what types can do), not the internal structure or data fields of types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Trait Definition Syntax</h2>
+<p>Write the basic syntax for defining a trait called <code>Printable</code> with one required method <code>print</code> that takes <code>&amp;self</code> and returns nothing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">trait Printable {
+    fn print(&amp;self);
+}
+</code></pre>
+<p>The trait keyword is followed by the trait name, then method signatures in curly braces.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementing a Trait</h2>
+<p>What is the syntax for implementing a trait called <code>Animal</code> for a type called <code>Dog</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">impl Animal for Dog {
+    // Implement required methods here
+    fn make_sound(&amp;self) {
+        println!(&quot;Woof!&quot;);
+    }
+}
+</code></pre>
+<p>The syntax is: <code>impl TraitName for TypeName { /* method implementations */ }</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Trait Implementations</h2>
+<p>What is a default implementation in a trait, and how do types use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A default implementation is a method in a trait that has a body (actual code). Types that implement the trait can either:
+1. Use the default implementation (no code needed)
+2. Override it with their own implementation</p>
+<p>Example:</p>
+<pre><code class="language-rust">trait Greet {
+    fn greet(&amp;self) {
+        println!(&quot;Hello!&quot;);  // Default implementation
+    }
+}
+
+impl Greet for Person {}  // Uses default
+
+impl Greet for Robot {
+    fn greet(&amp;self) {
+        println!(&quot;BEEP BOOP&quot;);  // Overrides default
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Method Signature Matching Rule</h2>
+<p>What critical rule must you follow when implementing a trait's methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You MUST match the exact method signature from the trait definition. The parameters and return types must be identical.</p>
+<p>If the trait defines <code>fn compute(&amp;self) -&gt; i32</code>, you cannot implement it as <code>fn compute(&amp;self) -&gt; f64</code> or change the parameters. The compiler will reject signature mismatches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Forms of Self in Traits</h2>
+<p>What are the three forms of <code>self</code> in trait methods, and what does each mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>&amp;self</code> - Immutable borrow (read-only access)</li>
+<li><code>&amp;mut self</code> - Mutable borrow (can modify)</li>
+<li><code>self</code> - Takes ownership (consumes the value)</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-rust">trait Example {
+    fn read(&amp;self);           // Borrows
+    fn modify(&amp;mut self);     // Borrows mutably
+    fn consume(self);         // Takes ownership
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Associated Functions in Traits</h2>
+<p>What is an associated function in a trait, and how does it differ from a method?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>An associated function is a function defined in a trait that does NOT take any form of <code>self</code> as a parameter. It's called on the type itself, not on instances.</p>
+<p>Example:</p>
+<pre><code class="language-rust">trait Factory {
+    fn create() -&gt; Self;  // Associated function (no self)
+    fn modify(&amp;self);     // Method (has self)
+}
+
+// Called as:
+let instance = MyType::create();  // Type::function()
+instance.modify();                // instance.method()
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Scope Requirement</h2>
+<p>Why might calling a trait method fail even though a type implements that trait? What's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The trait must be in scope with a <code>use</code> statement. Even if a type implements a trait, you can't use the trait's methods unless the trait is imported.</p>
+<p>Problem:</p>
+<pre><code class="language-rust">fn main() {
+    let x = MyType;
+    x.some_method();  // Error: method not found
+}
+</code></pre>
+<p>Solution:</p>
+<pre><code class="language-rust">use my_crate::MyTrait;  // Bring trait into scope
+
+fn main() {
+    let x = MyType;
+    x.some_method();  // Now works!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Traits Exist - Four Reasons</h2>
+<p>What are four key problems that traits solve in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Polymorphism without inheritance</strong> - Different types can be used interchangeably when they share behavior</li>
+<li><strong>Compile-time guarantees</strong> - Compiler ensures types provide required methods</li>
+<li><strong>Zero-cost abstractions</strong> - Static dispatch means no runtime overhead</li>
+<li><strong>Code reuse</strong> - Write functions that work with any type implementing a trait</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Traits vs Classes</h2>
+<p>How do Rust traits differ from classes in object-oriented languages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Traits are NOT classes. Key differences:</p>
+<ol>
+<li>Traits don't store data (no fields)</li>
+<li>Traits only define behavior (methods)</li>
+<li>A type can implement multiple traits (no single inheritance limit)</li>
+<li>Traits are implemented separately from type definition</li>
+<li>Traits provide compile-time polymorphism, not runtime inheritance</li>
+</ol>
+<p>Traits define capabilities, not identity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Required vs Optional Methods</h2>
+<p>What's the difference between a required method and an optional method in a trait?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Required method</strong>: Only has a signature, no body. Implementers MUST provide the implementation.</p>
+<pre><code class="language-rust">trait MyTrait {
+    fn required(&amp;self);  // No body - must implement
+}
+</code></pre>
+<p><strong>Optional method</strong>: Has a default body. Implementers can use the default or override it.</p>
+<pre><code class="language-rust">trait MyTrait {
+    fn optional(&amp;self) {  // Has body - can override
+        println!(&quot;Default&quot;);
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Calling Trait Methods Two Ways</h2>
+<p>What are the two ways to call a trait method on a value?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Method syntax</strong> (common):</li>
+</ol>
+<pre><code class="language-rust">value.method();
+</code></pre>
+<ol>
+<li><strong>Fully qualified syntax</strong> (explicit):</li>
+</ol>
+<pre><code class="language-rust">TraitName::method(&amp;value);
+</code></pre>
+<p>Both do the same thing. Fully qualified syntax is useful when there are naming conflicts or for clarity.</p>
+<p>Example:</p>
+<pre><code class="language-rust">let dog = Dog;
+dog.make_sound();            // Method syntax
+Animal::make_sound(&amp;dog);    // Fully qualified
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Default Methods Calling Other Methods</h2>
+<p>How do you call one trait method from another trait method's default implementation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You must use <code>self</code> to call other methods. Direct function calls won't work.</p>
+<p>❌ Wrong:</p>
+<pre><code class="language-rust">trait Helper {
+    fn step_one(&amp;self);
+    fn do_both(&amp;self) {
+        step_one();  // Error: not found
+    }
+}
+</code></pre>
+<p>✅ Correct:</p>
+<pre><code class="language-rust">trait Helper {
+    fn step_one(&amp;self);
+    fn do_both(&amp;self) {
+        self.step_one();  // Correct
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait-Based Function Parameters</h2>
+<p>Show two ways to write a function that accepts any type implementing the <code>Display</code> trait.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Generic with trait bound</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn print&lt;T: Display&gt;(item: T) {
+    println!(&quot;{}&quot;, item);
+}
+</code></pre>
+<ol>
+<li><strong>impl Trait syntax</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn print(item: impl Display) {
+    println!(&quot;{}&quot;, item);
+}
+</code></pre>
+<p>Both mean the same thing: the function accepts any type <code>T</code> that implements <code>Display</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Traits on One Type</h2>
+<p>Can a single type implement multiple traits? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! A type can implement as many traits as needed.</p>
+<pre><code class="language-rust">struct Button {
+    label: String,
+}
+
+impl Drawable for Button {
+    fn draw(&amp;self) { /* ... */ }
+}
+
+impl Clickable for Button {
+    fn on_click(&amp;self) { /* ... */ }
+}
+
+impl Resizable for Button {
+    fn resize(&amp;mut self, size: u32) { /* ... */ }
+}
+</code></pre>
+<p>This is more flexible than single inheritance in other languages.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Traits and Zero-Cost Abstractions</h2>
+<p>What does "zero-cost abstraction" mean in the context of traits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Zero-cost abstraction means that using traits has no runtime performance penalty. Trait methods are statically dispatched by default, meaning:</p>
+<ol>
+<li>The compiler knows exactly which implementation to call at compile time</li>
+<li>No virtual function table lookups or indirection</li>
+<li>Can be inlined by the optimizer</li>
+<li>Same performance as calling the method directly</li>
+</ol>
+<p>You get the abstraction benefit without paying a performance cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Compiler Can't Guess Implementation</h2>
+<p>Why can't Rust automatically implement traits like <code>Add</code> for your types, requiring you to do it manually?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler can't guess your intended behavior. For a type with multiple fields, there are many ways to implement addition:</p>
+<pre><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+</code></pre>
+<p>Should <code>+</code> add x-to-x and y-to-y? Add all fields together? Concatenate them as strings? Only add x values? The compiler has no way to know your intent, so you must explicitly define the behavior.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Implementation Must Be Complete</h2>
+<p>What happens if you implement a trait but forget to provide one of its required methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The code will not compile. You will get a compiler error stating "not all trait items implemented."</p>
+<pre><code class="language-rust">trait Complete {
+    fn method_one(&amp;self);
+    fn method_two(&amp;self);
+}
+
+impl Complete for MyType {
+    fn method_one(&amp;self) { }
+    // Error: missing method_two
+}
+</code></pre>
+<p>You must implement ALL required methods (those without default implementations).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Traits Define Capabilities</h2>
+<p>How do traits represent capabilities rather than identity? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Traits express what something can DO, not what it IS. Multiple unrelated types can share the same capabilities.</p>
+<pre><code class="language-rust">trait Flyable {
+    fn fly(&amp;self);
+}
+
+struct Bird;
+struct Airplane;
+struct Superhero;
+
+// All three can fly, but they're completely different types
+impl Flyable for Bird { /* ... */ }
+impl Flyable for Airplane { /* ... */ }
+impl Flyable for Superhero { /* ... */ }
+</code></pre>
+<p>The trait <code>Flyable</code> defines a capability (flying) that these distinct types share, without creating a hierarchy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
