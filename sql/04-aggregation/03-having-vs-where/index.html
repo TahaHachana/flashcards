@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 04-Aggregation - 03-Having-Vs-Where</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>SQL Processing Order</h2>
+<p>What is the complete SQL processing order, and why does it matter for understanding WHERE vs HAVING?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The order is: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. This matters because WHERE is evaluated before grouping (filters rows), while HAVING is evaluated after grouping (filters groups). WHERE happens before aggregates are calculated, HAVING happens after. This timing determines what each clause can access and filter on.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>WHERE Clause Purpose</h2>
+<p>What does the WHERE clause do, and when in the query process does it operate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE filters individual rows before any grouping happens. It operates on raw data, deciding which rows to include in the result set or which rows to group. It's a pre-grouping filter that reduces the dataset before aggregation begins. WHERE is evaluated after FROM but before GROUP BY.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HAVING Clause Purpose</h2>
+<p>What does the HAVING clause do, and when in the query process does it operate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HAVING filters groups after they've been created and aggregate values have been calculated. It operates on summarized data, deciding which groups to include in the result set. It's a post-grouping filter that filters aggregated results. HAVING is evaluated after GROUP BY but before SELECT.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why WHERE Cannot Use Aggregates</h2>
+<p>Why does this query fail: <code>SELECT customer_id, COUNT(*) FROM orders WHERE COUNT(*) &gt; 10 GROUP BY customer_id;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It fails because WHERE is evaluated before GROUP BY, so aggregate values don't exist yet when WHERE runs. At the WHERE stage, SQL is still working with individual rows - groups haven't been created and COUNT() hasn't been calculated. You're trying to filter on information that doesn't exist yet. Use HAVING instead, which runs after aggregates are calculated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Timing Problem</h2>
+<p>Explain the "timing problem" that prevents WHERE from using aggregate functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The timing problem is that WHERE runs at Step 2 (after FROM), but aggregates are calculated at Step 4 (after GROUP BY). Timeline: FROM → WHERE (no aggregates yet) → GROUP BY → calculate aggregates → HAVING (aggregates exist) → SELECT. It's conceptually impossible to filter on something before it's calculated, like trying to grade students based on test scores before the test is given.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Data is Available at WHERE</h2>
+<p>What data is available when WHERE is evaluated, and what is NOT available?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Available: Raw row data from tables, column values from individual rows. NOT available: Groups (don't exist yet), aggregate values (haven't been calculated), column aliases from SELECT (SELECT hasn't run yet). WHERE can only work with row-level data that exists before any grouping or aggregation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Data is Available at HAVING</h2>
+<p>What data is available when HAVING is evaluated?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Available: Groups (already created), aggregate values (already calculated), raw row data for grouped columns. NOT available: Column aliases from SELECT (SELECT happens after HAVING). HAVING can filter on aggregate functions like COUNT, SUM, AVG because these have been calculated by the time HAVING runs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use WHERE</h2>
+<p>When should you use WHERE for filtering?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use WHERE when filtering based on: (1) Column values in individual rows, (2) Conditions on raw data, (3) Data that exists before any aggregation. Examples: WHERE state = 'CA', WHERE order_date &gt; '2024-01-01', WHERE status = 'active'. Use WHERE for row-level filters that should happen before grouping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use HAVING</h2>
+<p>When should you use HAVING for filtering?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use HAVING when filtering based on: (1) Aggregate function results (COUNT, SUM, AVG, etc.), (2) Conditions on grouped/summarized data, (3) Statistics about groups. Examples: HAVING COUNT(*) &gt; 10, HAVING SUM(amount) &gt; 1000, HAVING AVG(price) &lt; 50. Use HAVING for group-level filters that need aggregate values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining WHERE and HAVING</h2>
+<p>Can you use both WHERE and HAVING in the same query? What's the pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can and often should use both. Pattern: WHERE filters rows before grouping (reduces input data), then HAVING filters groups after aggregation (reduces output groups). This is like having two separate filters at different stages. Example: WHERE state = 'CA' (row filter) ... GROUP BY customer_id ... HAVING SUM(amount) &gt; 1000 (group filter).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Efficiency of WHERE vs HAVING</h2>
+<p>Why is using WHERE more efficient than HAVING for non-aggregate conditions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE filters rows before the expensive grouping operation, reducing the amount of data that needs to be grouped. Example: WHERE customer_id IN (1,2,3) filters to 3 customers first, then groups only those rows. Using HAVING customer_id IN (1,2,3) groups all customers (thousands), then filters to 3. WHERE reduces work, HAVING does unnecessary work on data that will be filtered out.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HAVING with Non Aggregates Bad Practice</h2>
+<p>Can you use HAVING with non-aggregate conditions? Should you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Technically yes, you can use HAVING with non-aggregate conditions (like HAVING state = 'CA'), but you shouldn't. Use WHERE instead because it's more efficient - WHERE filters before grouping, while HAVING filters after. Only use HAVING for conditions that genuinely need aggregate functions or must be evaluated after grouping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>WHERE with GROUP BY Process</h2>
+<p>When you use WHERE with GROUP BY, what is the process that occurs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Process: (1) FROM gets data, (2) WHERE filters rows (before grouping), (3) GROUP BY groups the filtered rows, (4) Aggregates are calculated on each group, (5) SELECT returns results. Example: WHERE state = 'CA' filters to California customers first, then GROUP BY customer_id groups only those California customers, reducing the data that needs grouping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Query with Both Clauses</h2>
+<p>Write the pattern for a query that filters rows before grouping AND filters groups after aggregation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>SELECT columns, aggregates FROM tables WHERE <row conditions> GROUP BY columns HAVING <aggregate conditions>. Example: SELECT customer_id, COUNT(<em>) FROM orders WHERE status = 'completed' GROUP BY customer_id HAVING COUNT(</em>) &gt; 10. This filters to completed orders first (row filter), then groups by customer, then shows only customers with 10+ orders (group filter).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cannot Use Aliases in HAVING</h2>
+<p>Why can't you use column aliases in the HAVING clause?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HAVING is processed before SELECT, so aliases don't exist yet. Example: SELECT customer_id, COUNT(<em>) AS num_orders ... HAVING num_orders &gt; 10 fails because num_orders isn't created until SELECT runs (which happens after HAVING). You must repeat the expression: HAVING COUNT(</em>) &gt; 10. This is the same reason you can't use aliases in GROUP BY.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Aggregate Conditions in HAVING</h2>
+<p>Can you use multiple aggregate conditions in HAVING? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can use multiple aggregate conditions with AND/OR. Example: HAVING COUNT(*) &gt; 100 AND AVG(price) &gt; 50 AND SUM(quantity) &gt; 1000. This filters groups to only those meeting all three criteria: ordered frequently, high average price, and large total quantity. Each condition is evaluated independently on the group's aggregate values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Decision Rule Aggregate Question</h2>
+<p>What is the primary decision rule for choosing between WHERE and HAVING?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ask: "Does this condition involve an aggregate function (COUNT, SUM, AVG, MIN, MAX)?" If YES → use HAVING (aggregates exist after grouping). If NO → probably use WHERE (more efficient to filter before grouping). Examples: COUNT(*) &gt; 10 requires HAVING, state = 'CA' should use WHERE.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Example with Both Clauses</h2>
+<p>Given: "Show California customers who have spent more than $1000 total." Which parts go in WHERE and which in HAVING?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE state = 'CA' (filters to California customers before grouping), GROUP BY customer_id (creates groups), HAVING SUM(amount) &gt; 1000 (filters groups to those with total spending over $1000). WHERE filters rows based on state, HAVING filters groups based on aggregate spending. Both are necessary for the correct logic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Find Top Groups Pattern</h2>
+<p>How do you find the top N groups based on an aggregate value using HAVING and ORDER BY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pattern: GROUP BY to create groups, optionally HAVING to filter, ORDER BY aggregate DESC to sort by the aggregate value, LIMIT N to get top N. Example: SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id HAVING SUM(amount) &gt; 0 ORDER BY total DESC LIMIT 10. Gets top 10 customers by spending.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Aggregate Error in WHERE</h2>
+<p>What error message appears when you try to use an aggregate function in WHERE, and what does it mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error: "Invalid use of group function" or "aggregate functions are not allowed in WHERE". Meaning: You're trying to use COUNT, SUM, AVG, etc. in the WHERE clause, but aggregates can't be calculated until after GROUP BY creates groups. WHERE runs before GROUP BY, so aggregates don't exist yet. Move the condition to HAVING instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering Before and After Grouping</h2>
+<p>Explain the concept of "filtering twice" when using both WHERE and HAVING.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE filters the input data (before grouping) and HAVING filters the output groups (after aggregation). This is two separate filtering stages. Example: WHERE filters 10,000 orders to 1,000 California orders, then GROUP BY creates 50 customer groups, then HAVING filters to 10 high-spending groups. Each filter serves a different purpose at a different stage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conceptual Impossibility Analogy</h2>
+<p>Use an analogy to explain why WHERE can't filter on aggregate values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It's like asking a teacher to "exclude students who failed the test" before the test has been graded. The information needed to make that decision (test scores) doesn't exist yet. Similarly, WHERE asks SQL to filter on aggregate values (like COUNT) before those values have been calculated. The aggregates are "graded" during GROUP BY, which happens after WHERE.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HAVING with Subquery</h2>
+<p>Can you use a subquery in HAVING? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes. Example: HAVING AVG(amount) &gt; (SELECT AVG(amount) FROM orders). This compares each group's average to the global average, filtering to groups above average. The subquery calculates the overall average, then HAVING uses it to filter groups. Useful for outlier detection or comparing groups to population statistics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Part WHERE HAVING ORDER Pattern</h2>
+<p>What's the pattern for: (1) filtering input rows, (2) grouping, (3) filtering groups, (4) sorting results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE <row conditions> GROUP BY <columns> HAVING <aggregate conditions> ORDER BY <sort criteria>. Example: WHERE status = 'active' GROUP BY customer_id HAVING COUNT(<em>) &gt; 5 ORDER BY COUNT(</em>) DESC. Filters to active rows, groups by customer, keeps groups with 5+ rows, sorts by count descending.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Mistake WHERE for Aggregate</h2>
+<p>What's wrong with this query and how do you fix it? <code>SELECT state, COUNT(*) FROM customers WHERE COUNT(*) &gt; 100 GROUP BY state;</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Wrong: WHERE COUNT(<em>) &gt; 100 tries to use an aggregate in WHERE, which causes an error. Fix: Move it to HAVING. Correct query: SELECT state, COUNT(</em>) FROM customers GROUP BY state HAVING COUNT(*) &gt; 100. This groups by state first, calculates counts, then filters to states with 100+ customers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Mistake HAVING for Row Filter</h2>
+<p>What's inefficient about this query and how do you improve it? <code>SELECT customer_id, COUNT(*) FROM orders GROUP BY customer_id HAVING customer_id IN (1,2,3);</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Inefficient: HAVING customer_id IN (1,2,3) filters after grouping all customers. Groups thousands of customers, then filters to 3. Better: WHERE customer_id IN (1,2,3) GROUP BY customer_id. This filters to 3 customers before grouping, so only 3 customer groups are created instead of thousands then discarded.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Correctness Reason for Both Clauses</h2>
+<p>Give an example where you MUST use both WHERE and HAVING for correct logic (not just efficiency).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example: "Show active customers who have placed 10+ orders." SELECT customer_id, COUNT(<em>) FROM customers JOIN orders USING (customer_id) WHERE customers.status = 'active' GROUP BY customer_id HAVING COUNT(</em>) &gt;= 10. WHERE filters to active customers (row-level attribute), HAVING filters to those with 10+ orders (aggregate). Using only HAVING would include inactive customers who have 10+ orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What HAVING Filters</h2>
+<p>What does HAVING filter - rows or groups? Explain the difference.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HAVING filters groups, not individual rows. After GROUP BY creates groups (like one per customer), HAVING decides which entire groups to keep or discard based on their aggregate values. Example: HAVING COUNT(*) &gt; 10 removes entire customer groups (all their rows) if that customer has 10 or fewer orders. WHERE filters individual rows; HAVING filters entire groups of rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Processing Without GROUP BY</h2>
+<p>If a query has WHERE and SELECT with aggregates but no GROUP BY, what happens?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>There's implicit grouping (one group containing all rows). Process: FROM gets data, WHERE filters rows, implicit GROUP BY creates one group with all filtered rows, aggregates calculate on that single group, SELECT returns one row with aggregate results. Example: SELECT COUNT(*) FROM orders WHERE status = 'completed' returns one row with the count of completed orders.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Checkpoint Answer Summary</h2>
+<p>Summarize in 2-3 sentences why you can't use WHERE to filter on COUNT().</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>WHERE is evaluated before GROUP BY and before any aggregate functions are calculated. At the point WHERE runs, groups don't exist yet and COUNT() hasn't been calculated. You're trying to filter on information that doesn't exist yet - it's conceptually impossible to filter on an aggregate value before that value has been computed. Use HAVING instead, which runs after aggregates are calculated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
