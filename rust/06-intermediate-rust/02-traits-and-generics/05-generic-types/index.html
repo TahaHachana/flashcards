@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 05-Generic-Types</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Generic Types?</h2>
+<p>What are generic types and why do they exist in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generic types allow you to write code that works with multiple types without rewriting the same logic for each type. Instead of writing separate functions for <code>i32</code>, <code>String</code>, <code>Vec</code>, etc., you write one generic function that works with any type <code>T</code>.</p>
+<pre><code class="language-rust">// Without generics - repetitive
+fn return_i32(x: i32) -&gt; i32 { x }
+fn return_str(x: &amp;str) -&gt; &amp;str { x }
+
+// With generics - works for any type
+fn return_item&lt;T&gt;(x: T) -&gt; T { x }
+</code></pre>
+<p><strong>Purpose</strong>: Code reuse, type safety, zero runtime cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Generic Function Syntax</h2>
+<p>What is the syntax for declaring a generic function?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generic parameters are declared in angle brackets <code>&lt;&gt;</code> immediately after the function name:</p>
+<pre><code class="language-rust">fn function_name&lt;T&gt;(parameter: T) -&gt; T {
+    // function body
+}
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">fn identity&lt;T&gt;(value: T) -&gt; T {
+    value
+}
+
+fn main() {
+    let num = identity(42);        // T is i32
+    let text = identity(&quot;hello&quot;);  // T is &amp;str
+}
+</code></pre>
+<p>The <code>&lt;T&gt;</code> declares a generic type parameter that can be used in parameters and return types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Naming Conventions</h2>
+<p>What are the conventional names for generic type parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Conventional single letters</strong>:
+- <code>T</code> - First generic type (Type)
+- <code>U</code> - Second generic type
+- <code>V</code> - Third generic type
+- <code>E</code> - Error type (in <code>Result&lt;T, E&gt;</code>)</p>
+<p><strong>Descriptive names</strong> for clarity:
+- <code>Key</code>, <code>Value</code> - for key-value pairs
+- <code>Item</code> - for collections
+- <code>Input</code>, <code>Output</code> - for transformations</p>
+<pre><code class="language-rust">fn process&lt;T, U&gt;(first: T, second: U) -&gt; T { first }
+// or
+fn convert&lt;Input, Output&gt;(value: Input) -&gt; Output { /* ... */ }
+</code></pre>
+<p>Single letters are more common, but use descriptive names when it aids clarity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Structs</h2>
+<p>How do you define and use a generic struct?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare generic parameters after the struct name:</p>
+<pre><code class="language-rust">struct Container&lt;T&gt; {
+    value: T,
+}
+
+fn main() {
+    let int_container = Container { value: 5 };
+    let string_container = Container { 
+        value: String::from(&quot;hello&quot;) 
+    };
+    let vec_container = Container { 
+        value: vec![1, 2, 3] 
+    };
+}
+</code></pre>
+<p>The type <code>T</code> is determined when you create an instance. Each instance can hold a different type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Generic Parameters</h2>
+<p>How do you use multiple generic type parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare multiple parameters separated by commas:</p>
+<pre><code class="language-rust">struct Pair&lt;T, U&gt; {
+    first: T,
+    second: U,
+}
+
+fn process&lt;T, U&gt;(x: T, y: U) -&gt; T {
+    println!(&quot;Processing two types&quot;);
+    x
+}
+
+fn main() {
+    let pair = Pair { first: 1, second: &quot;hello&quot; };
+    // T=i32, U=&amp;str
+
+    process(42, &quot;world&quot;);
+    // T=i32, U=&amp;str
+}
+</code></pre>
+<p>Each generic parameter can be a different type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementing Methods on Generic Structs</h2>
+<p>How do you implement methods for a generic struct?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare the generic parameter after <code>impl</code>:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+
+    fn get(&amp;self) -&gt; &amp;T {
+        &amp;self.value
+    }
+}
+
+fn main() {
+    let w = Wrapper::new(42);
+    println!(&quot;{}&quot;, w.get());
+}
+</code></pre>
+<p><strong>Critical</strong>: Must write <code>impl&lt;T&gt;</code> not just <code>impl</code>. The <code>&lt;T&gt;</code> declares the generic parameter for use in the impl block.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Type Without Declaration Error</h2>
+<p>What error do you get if you use a generic type without declaring it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler treats it as a concrete type and reports it can't be found:</p>
+<pre><code class="language-rust">// ❌ WRONG: T not declared
+fn process(value: T) -&gt; T {
+    value
+}
+// Error: cannot find type `T` in this scope
+</code></pre>
+<p><strong>Solution</strong>: Declare the generic parameter:</p>
+<pre><code class="language-rust">// ✅ CORRECT
+fn process&lt;T&gt;(value: T) -&gt; T {
+    value
+}
+</code></pre>
+<p>Generic parameters must be declared in angle brackets after the function/struct name.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Zero-Cost Abstractions</h2>
+<p>What does "zero-cost abstraction" mean for generics, and how does Rust achieve it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Zero-cost means using generics has no runtime performance penalty. Rust achieves this through <strong>monomorphization</strong>: the compiler generates specialized code for each concrete type used.</p>
+<pre><code class="language-rust">fn process&lt;T&gt;(value: T) { }
+
+fn main() {
+    process(5);        // Compiler generates process_i32
+    process(&quot;hello&quot;);  // Compiler generates process_str
+}
+</code></pre>
+<p>At compile time, generic code is expanded into multiple specialized versions. At runtime, there's no indirection or overhead - it's as if you wrote separate functions manually.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Const Generics</h2>
+<p>What are const generics and what problem do they solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Const generics allow types to be generic over constant values, primarily used for array sizes:</p>
+<pre><code class="language-rust">struct ArrayWrapper&lt;T, const N: usize&gt; {
+    array: [T; N],
+}
+
+fn main() {
+    let small = ArrayWrapper { array: [1, 2, 3] };      // N=3
+    let large = ArrayWrapper { array: [1, 2, 3, 4, 5] }; // N=5
+}
+</code></pre>
+<p><strong>Problem solved</strong>: Before const generics, you needed different structs for each array size. Now one generic struct works for any size.</p>
+<p>The syntax <code>const N: usize</code> declares a compile-time constant generic parameter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Enums</h2>
+<p>How do generic enums work? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Enums can be generic over types, with different variants holding different instances of the generic type:</p>
+<pre><code class="language-rust">enum MyResult&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+
+fn divide(a: f64, b: f64) -&gt; MyResult&lt;f64, String&gt; {
+    if b == 0.0 {
+        MyResult::Err(String::from(&quot;Division by zero&quot;))
+    } else {
+        MyResult::Ok(a / b)
+    }
+}
+</code></pre>
+<p>Standard library examples: <code>Option&lt;T&gt;</code>, <code>Result&lt;T, E&gt;</code>, <code>Vec&lt;T&gt;</code>.</p>
+<p>Each variant can contain the generic type in different ways.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conditional Implementation Pattern</h2>
+<p>How can you provide different methods based on what traits a generic type implements?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use multiple impl blocks with different trait bounds:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt;(T);
+
+// Methods for ANY T
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper(value)
+    }
+}
+
+// Methods only when T implements Display
+impl&lt;T: Display&gt; Wrapper&lt;T&gt; {
+    fn print(&amp;self) {
+        println!(&quot;{}&quot;, self.0);
+    }
+}
+
+// Methods only when T implements Clone
+impl&lt;T: Clone&gt; Wrapper&lt;T&gt; {
+    fn duplicate(&amp;self) -&gt; T {
+        self.0.clone()
+    }
+}
+</code></pre>
+<p>Types get different methods depending on their capabilities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Type Inference</h2>
+<p>When do you need to explicitly specify generic types, and how do you do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>When compiler can't infer</strong>: Functions that return generics without taking them as parameters.</p>
+<pre><code class="language-rust">fn create_default&lt;T: Default&gt;() -&gt; T {
+    T::default()
+}
+
+fn main() {
+    // ❌ Error: can't infer type
+    let value = create_default();
+
+    // ✅ Type annotation
+    let value: i32 = create_default();
+
+    // ✅ Turbofish syntax
+    let value = create_default::&lt;i32&gt;();
+}
+</code></pre>
+<p><strong>Turbofish syntax</strong>: <code>::&lt;Type&gt;</code> after function name specifies the generic type explicitly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic vs impl Trait Difference</h2>
+<p>What's the key difference between using generics and <code>impl Trait</code> for multiple parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Generic <code>&lt;T&gt;</code></strong>: All parameters must be the same type
+<strong><code>impl Trait</code></strong>: Each parameter can be a different type</p>
+<pre><code class="language-rust">// ❌ Different types with impl Trait
+fn compare(a: impl PartialOrd, b: impl PartialOrd) -&gt; bool {
+    a &gt; b  // Error: might be comparing different types!
+}
+
+// ✅ Same type with generic
+fn compare&lt;T: PartialOrd&gt;(a: T, b: T) -&gt; bool {
+    a &gt; b  // Works: both are definitely type T
+}
+</code></pre>
+<p>Use explicit generics when parameters must be the same type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generics Require Trait Bounds for Operations</h2>
+<p>Why can't you perform operations like comparison or printing on generic types without trait bounds?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler doesn't know what operations are valid for an arbitrary type <code>T</code>:</p>
+<pre><code class="language-rust">// ❌ WRONG: Can't compare without bounds
+fn compare&lt;T&gt;(a: T, b: T) -&gt; bool {
+    a &gt; b  // Error: T might not implement PartialOrd
+}
+
+// ❌ WRONG: Can't print without bounds
+fn display&lt;T&gt;(value: T) {
+    println!(&quot;{}&quot;, value);  // Error: T might not implement Display
+}
+
+// ✅ CORRECT: Add trait bounds
+fn compare&lt;T: PartialOrd&gt;(a: T, b: T) -&gt; bool {
+    a &gt; b  // Works!
+}
+</code></pre>
+<p>Trait bounds tell the compiler what operations are guaranteed to work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Struct with Methods Pattern</h2>
+<p>Show the complete pattern for defining a generic struct with methods, including associated functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">struct Container&lt;T&gt; {
+    items: Vec&lt;T&gt;,
+}
+
+impl&lt;T&gt; Container&lt;T&gt; {
+    // Associated function (constructor)
+    fn new() -&gt; Self {
+        Container { items: Vec::new() }
+    }
+
+    // Method that borrows self
+    fn len(&amp;self) -&gt; usize {
+        self.items.len()
+    }
+
+    // Method that mutably borrows self
+    fn add(&amp;mut self, item: T) {
+        self.items.push(item);
+    }
+
+    // Method that consumes self
+    fn into_vec(self) -&gt; Vec&lt;T&gt; {
+        self.items
+    }
+}
+</code></pre>
+<p>Pattern: Declare <code>&lt;T&gt;</code> after both <code>struct</code> and <code>impl</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Key Benefits of Generics</h2>
+<p>What are the three key benefits of using generic types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p><strong>Code reuse</strong>: Write once, use with many types
+   <code>rust
+   fn id&lt;T&gt;(x: T) -&gt; T { x }  // Works with any type</code></p>
+</li>
+<li>
+<p><strong>Type safety</strong>: Compiler ensures type correctness at compile time
+   <code>rust
+   let x: Vec&lt;i32&gt; = vec![1, 2, 3];
+   // Can't accidentally add a String</code></p>
+</li>
+<li>
+<p><strong>Zero runtime cost</strong>: Generic code is specialized at compile time (monomorphization)
+   <code>rust
+   // No runtime overhead compared to hand-written versions</code></p>
+</li>
+</ol>
+<p>You get flexibility without sacrificing performance or safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generic Impl Block Declaration</h2>
+<p>What's wrong with this code, and how do you fix it?</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+impl Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem</strong>: <code>T</code> is not declared in the impl block.</p>
+<p><strong>Solution</strong>: Declare <code>&lt;T&gt;</code> after <code>impl</code>:</p>
+<pre><code class="language-rust">impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+</code></pre>
+<p>The generic parameter must be declared for the impl block to use it, even though it's already declared on the struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generics and Standard Library</h2>
+<p>How does understanding generics help you use standard library types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Most standard library types are generic. Understanding generics helps you:</p>
+<pre><code class="language-rust">// Vec is generic over T
+let numbers: Vec&lt;i32&gt; = Vec::new();
+let words: Vec&lt;String&gt; = Vec::new();
+
+// HashMap is generic over K and V
+let map: HashMap&lt;String, i32&gt; = HashMap::new();
+
+// Option is generic over T
+let some_number: Option&lt;i32&gt; = Some(5);
+let some_text: Option&lt;String&gt; = Some(String::from(&quot;hi&quot;));
+
+// Result is generic over T and E
+let result: Result&lt;i32, String&gt; = Ok(42);
+</code></pre>
+<p>When you see <code>Vec&lt;T&gt;</code>, <code>Option&lt;T&gt;</code>, or <code>Result&lt;T, E&gt;</code>, you know they're generic types that work with any type you specify.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Generics with Lifetimes</h2>
+<p>How do you combine generic types with lifetime parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Lifetimes come first, then type parameters:</p>
+<pre><code class="language-rust">struct Ref&lt;'a, T&gt; {
+    value: &amp;'a T,
+}
+
+impl&lt;'a, T&gt; Ref&lt;'a, T&gt; {
+    fn new(value: &amp;'a T) -&gt; Self {
+        Ref { value }
+    }
+
+    fn get(&amp;self) -&gt; &amp;'a T {
+        self.value
+    }
+}
+
+fn main() {
+    let num = 42;
+    let r = Ref::new(&amp;num);
+}
+</code></pre>
+<p>Pattern: <code>&lt;'lifetime, TypeParam&gt;</code> - lifetime parameters before type parameters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Generics Are Zero-Cost</h2>
+<p>Explain monomorphization and why it makes generics zero-cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Monomorphization</strong>: The compiler generates specialized versions of generic code for each concrete type used.</p>
+<pre><code class="language-rust">fn process&lt;T&gt;(value: T) {
+    // generic code
+}
+
+fn main() {
+    process(5);        // i32 version generated
+    process(&quot;hello&quot;);  // &amp;str version generated
+}
+
+// Compiler effectively creates:
+// fn process_i32(value: i32) { }
+// fn process_str(value: &amp;str) { }
+</code></pre>
+<p><strong>Why zero-cost</strong>: At runtime, the code is already specialized. No lookups, no indirection, no overhead. It's as if you wrote separate functions manually.</p>
+<p>Trade-off: Larger binary size (more code generated), but no runtime cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
