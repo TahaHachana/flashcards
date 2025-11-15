@@ -1,0 +1,1734 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 05-Advanced-Selection - 01-Subquery-Concepts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is A Subquery?</h2>
+<p>What is a subquery in SQL, and what are its core characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A subquery is a query contained within another SQL statement. Core characteristics:
+- Always enclosed in parentheses ()
+- Usually executed before the containing statement
+- Returns a temporary result set with statement scope (data discarded after query completes)
+- Acts like a temporary table that exists only during query execution
+- Can return different "shapes": single value, single column with multiple rows, or multiple columns with multiple rows</p>
+<p>Mental model: A preliminary question that gets information needed to answer the main question.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scalar Subquery Definition</h2>
+<p>What is a scalar subquery, and where can it be used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A scalar subquery returns exactly one row with one column - a single value.</p>
+<p>Can be used anywhere a single value is expected:
+- Either side of comparison operators (=, &lt;&gt;, &lt;, &gt;, &lt;=, &gt;=)
+- In the SELECT clause to calculate values
+- In the ORDER BY clause for sorting
+- In the VALUES clause of INSERT statements</p>
+<p>Example: (SELECT MAX(customer_id) FROM customer) returns a single value like 599.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scalar Subquery Multiple Row Error</h2>
+<p>What happens if you use the = operator with a subquery that returns multiple rows? Why does this occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You get an error: "Subquery returns more than 1 row"</p>
+<p>Why: A single value cannot be equated to a set of values. When you write:
+WHERE country_id = (SELECT country_id FROM country WHERE country &lt;&gt; 'India')</p>
+<p>The subquery returns multiple values (1, 2, 3, ..., 109), but country_id is a single value. You cannot check if one thing equals many things.</p>
+<p>Solution: Use IN, ANY, or ALL operators instead of = for multi-row subqueries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple-Row Single-Column Subquery</h2>
+<p>What is a multiple-row, single-column subquery, and what special operators does it require?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A subquery that returns multiple values in one column (a list of values).</p>
+<p>Requires special set operators:
+- IN / NOT IN: Check if value exists in the set
+- ALL: Compare to all members (condition must be true for every member)
+- ANY: Compare to all members (condition must be true for at least one member)
+- EXISTS / NOT EXISTS: Check if subquery returns any rows</p>
+<p>Example: (SELECT country_id FROM country WHERE country &lt;&gt; 'India') returns [1, 2, 3, 4, ...]</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multicolumn Subquery Usage</h2>
+<p>How do you use a multicolumn subquery, and what must match between the left side and the subquery?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A multicolumn subquery returns multiple columns and rows (table-like structure).</p>
+<p>Usage pattern:
+WHERE (col1, col2) IN (SELECT col_a, col_b FROM table)</p>
+<p>Requirements:
+- List columns in parentheses on the left side
+- Columns must be in the same order as the subquery returns them
+- The comparison checks if the combination exists in subquery results</p>
+<p>Example: WHERE (actor_id, film_id) IN (SELECT actor_id, film_id FROM ...)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In WHERE Clause</h2>
+<p>What is the most common use of subqueries in the WHERE clause? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Most common use: Filter rows based on calculated values or values from other tables.</p>
+<p>Example - Find customers who rented exactly 20 films:
+SELECT first_name, last_name
+FROM customer c
+WHERE 20 = (SELECT COUNT(*) 
+            FROM rental r 
+            WHERE r.customer_id = c.customer_id);</p>
+<p>The subquery calculates a value (rental count) for each customer, and the WHERE clause uses that value to filter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In HAVING Clause</h2>
+<p>How are subqueries used in the HAVING clause, and how does this differ from WHERE?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>HAVING clause subqueries filter grouped/aggregated data based on comparisons to other aggregated results.</p>
+<p>Difference from WHERE:
+- WHERE filters individual rows before grouping
+- HAVING filters groups after aggregation</p>
+<p>Example - Find customers with more rentals than all North American customers:
+SELECT customer_id, COUNT(<em>)
+FROM rental
+GROUP BY customer_id
+HAVING COUNT(</em>) &gt; ALL (SELECT COUNT(*) FROM ... WHERE country IN (...) GROUP BY ...);</p>
+<p>The subquery returns aggregated values, and HAVING compares the current group's aggregate to them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In SELECT Clause</h2>
+<p>What are subqueries in the SELECT clause used for, and what is a key performance consideration?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Used to calculate values for each row in the result set.</p>
+<p>Example:
+SELECT 
+  first_name,
+  (SELECT SUM(amount) FROM payment p WHERE p.customer_id = c.customer_id) AS total
+FROM customer c;</p>
+<p>Performance consideration: If you need multiple calculated columns from the same table, you need multiple subqueries, which means accessing that table multiple times. This can be inefficient - joins or subqueries in FROM clause might be better.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In FROM Clause</h2>
+<p>What is the purpose of subqueries in the FROM clause, and what is the key requirement for these subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Purpose: Treat a subquery like a temporary table that you can join to other tables. This separates complex logic (like aggregation) from the rest of the query.</p>
+<p>Key requirement: FROM clause subqueries MUST be noncorrelated - they cannot reference columns from other tables at the same query level.</p>
+<p>Why: They're executed first and their results held in memory for the duration of the query.</p>
+<p>Example:
+SELECT c.first_name, pymnt.total
+FROM customer c
+JOIN (SELECT customer_id, SUM(amount) total FROM payment GROUP BY customer_id) pymnt
+  ON c.customer_id = pymnt.customer_id;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In ORDER BY Clause</h2>
+<p>How are subqueries used in the ORDER BY clause, and what is their key characteristic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Used to sort by calculated values without showing them in the result set.</p>
+<p>Key characteristic: The subquery value is used purely for sorting - it doesn't appear in the output columns.</p>
+<p>Example - Sort actors by film count (descending) without showing the count:
+SELECT actor_id, first_name, last_name
+FROM actor a
+ORDER BY (SELECT COUNT(*) FROM film_actor fa WHERE fa.actor_id = a.actor_id) DESC;</p>
+<p>The count is calculated for sorting but not displayed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In INSERT Statements</h2>
+<p>How can subqueries be used in INSERT statements, and what advantage does this provide?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Subqueries can look up values dynamically when inserting data.</p>
+<p>Advantage: Instead of executing separate queries to find IDs then manually inserting them, you do everything in one statement.</p>
+<p>Example - Insert film_actor relationship by looking up IDs from names:
+INSERT INTO film_actor (actor_id, film_id, last_update)
+VALUES (
+  (SELECT actor_id FROM actor WHERE first_name = 'JENNIFER' AND last_name = 'DAVIS'),
+  (SELECT film_id FROM film WHERE title = 'ACE GOLDFINGER'),
+  NOW()
+);</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In UPDATE Statements</h2>
+<p>How are subqueries used in UPDATE statements, and what common protection should you include?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Used to update columns based on calculated values from other tables.</p>
+<p>Example:
+UPDATE customer c
+SET c.last_update = (SELECT MAX(rental_date) FROM rental r WHERE r.customer_id = c.customer_id)
+WHERE EXISTS (SELECT 1 FROM rental r WHERE r.customer_id = c.customer_id);</p>
+<p>Protection: The WHERE EXISTS clause prevents setting values to NULL when the subquery returns no rows (e.g., customers with no rentals).</p>
+<p>Without WHERE EXISTS, customers with no rentals would get last_update set to NULL.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In DELETE Statements</h2>
+<p>How are subqueries used in DELETE statements, and what MySQL-specific restriction exists?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Used to delete rows based on conditions calculated from related data.</p>
+<p>Example - Delete customers who haven't rented in over a year:
+DELETE FROM customer
+WHERE 365 &lt; ALL (SELECT DATEDIFF(NOW(), rental_date) FROM rental r 
+                 WHERE r.customer_id = customer.customer_id);</p>
+<p>MySQL restriction: When using correlated subqueries with DELETE, table aliases are not allowed in the DELETE clause itself (though you can use the full table name in the subquery).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Noncorrelated Subquery Definition</h2>
+<p>What is a noncorrelated subquery, and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A noncorrelated subquery is completely self-contained - it doesn't reference anything from the containing query.</p>
+<p>Characteristics:
+- Can be executed by itself in isolation
+- Executed once, before the containing statement runs
+- Result is then used by the containing query
+- Most subqueries you'll write are noncorrelated
+- Generally efficient (execute once, results can be cached)</p>
+<p>Example:
+WHERE customer_id = (SELECT MAX(customer_id) FROM customer);</p>
+<p>The inner query doesn't reference the outer query's customer table.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Noncorrelated Subquery Execution Flow</h2>
+<p>Describe the execution flow of a noncorrelated subquery with a concrete example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example query:
+SELECT customer_id, first_name, last_name
+FROM customer
+WHERE customer_id = (SELECT MAX(customer_id) FROM customer);</p>
+<p>Execution flow:
+1. Inner query runs once: SELECT MAX(customer_id) FROM customer → returns 599
+2. Result (599) replaces the subquery in the outer query
+3. Outer query runs once: WHERE customer_id = 599
+4. Final result is retrieved</p>
+<p>Total executions: Inner query (1x) + Outer query (1x)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Noncorrelated Subqueries</h2>
+<p>How can you test and debug a noncorrelated subquery when confused about its behavior?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Run the subquery independently (without parentheses) to see what it returns.</p>
+<p>Example:
+Original query:
+WHERE customer_id = (SELECT MAX(customer_id) FROM customer);</p>
+<p>Test the subquery alone:
+SELECT MAX(customer_id) FROM customer;
+-- Returns: 599</p>
+<p>Now you understand the outer query is really:
+WHERE customer_id = 599;</p>
+<p>This technique only works with noncorrelated subqueries (correlated ones need values from the outer query).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Correlated Subquery Definition</h2>
+<p>What is a correlated subquery, and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A correlated subquery references one or more columns from the containing query - it's dependent on the outer query for context.</p>
+<p>Characteristics:
+- Cannot be executed by itself (needs values from outer query)
+- Executed once for each row being evaluated by containing query
+- Much more computationally expensive than noncorrelated subqueries
+- Common in UPDATE and DELETE statements
+- Correlation is usually in the WHERE clause of the subquery</p>
+<p>Example:
+WHERE 20 = (SELECT COUNT(*) FROM rental r WHERE r.customer_id = c.customer_id);
+                                                    -- References outer query ↑</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Correlated Subquery Execution Flow</h2>
+<p>Describe the execution flow of a correlated subquery and explain the performance implication.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example - Find customers who rented exactly 20 films:
+SELECT c.first_name, c.last_name
+FROM customer c
+WHERE 20 = (SELECT COUNT(*) FROM rental r WHERE r.customer_id = c.customer_id);</p>
+<p>Execution flow:
+1. Outer query retrieves first customer row (customer_id = 1)
+2. Inner query executes: "Count rentals for customer_id = 1"
+3. If count = 20, include this customer in results
+4. Repeat for customer_id = 2, 3, 4, ... 599</p>
+<p>Performance implication: If customer table has 599 rows, the correlated subquery executes 599 times! For large datasets, this can be very slow.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Spotting Correlated Subqueries</h2>
+<p>How can you identify whether a subquery is correlated or noncorrelated?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Look for references to tables from the outer query inside the subquery. The correlation is usually in the WHERE clause.</p>
+<p>Correlated example:
+SELECT c.first_name
+FROM customer c
+WHERE EXISTS (SELECT 1 FROM rental r WHERE r.customer_id = c.customer_id);
+                                                          -- References outer ↑</p>
+<p>Noncorrelated example:
+SELECT first_name
+FROM customer
+WHERE customer_id = (SELECT MAX(customer_id) FROM customer);
+                     -- No reference to outer query ↑</p>
+<p>If the subquery can run independently without the outer query, it's noncorrelated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>IN Operator With Subqueries</h2>
+<p>How does the IN operator work with subqueries? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>IN checks if a value exists in a set of values returned by a subquery.</p>
+<p>Example - Find films in the 'Action' category:
+SELECT title
+FROM film
+WHERE film_id IN 
+  (SELECT fc.film_id 
+   FROM film_category fc
+   JOIN category c ON fc.category_id = c.category_id
+   WHERE c.name = 'Action');</p>
+<p>How it works:
+1. Subquery returns a list of film_ids: [1, 5, 12, 23, ...]
+2. IN operator checks if each film's ID is in that list
+3. Films with matching IDs are included in results</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT IN Operator NULL Danger</h2>
+<p>What critical danger exists when using NOT IN with subqueries, and why does it occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Danger: If the subquery returns any NULL values, NOT IN may return unexpected results (empty set).</p>
+<p>Why: SQL evaluates: value &lt;&gt; val1 AND value &lt;&gt; val2 AND value &lt;&gt; NULL</p>
+<p>Since anything compared to NULL is unknown, the entire expression becomes unknown, and no rows pass the filter.</p>
+<p>Example - Returns empty set if subquery contains NULL:
+SELECT first_name
+FROM customer
+WHERE customer_id NOT IN (122, 452, NULL);
+-- Result: Empty set</p>
+<p>Solutions:
+- Use NOT EXISTS instead
+- Ensure subquery filters out NULLs: WHERE customer_id NOT IN (SELECT id FROM table WHERE id IS NOT NULL)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>ALL Operator Mechanics</h2>
+<p>How does the ALL operator work with subqueries, and what do different comparison operators mean with ALL?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ALL: Compare a value to every value in the set. Condition must be true for ALL members.</p>
+<p>Comparison operators with ALL:
+- &gt; ALL (subquery) = greater than the maximum value
+- &lt; ALL (subquery) = less than the minimum value
+- = ALL (subquery) = equal to all values (only true if one distinct value)
+- &lt;&gt; ALL (subquery) = not equal to any value (equivalent to NOT IN)</p>
+<p>Example:
+HAVING COUNT(<em>) &gt; ALL (SELECT COUNT(</em>) FROM ... GROUP BY ...)</p>
+<p>If subquery returns [25, 30, 28, 33], the condition checks:
+Is count &gt; 25 AND &gt; 30 AND &gt; 28 AND &gt; 33? (Must exceed all values)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>ANY Operator Mechanics</h2>
+<p>How does the ANY operator work with subqueries, and how does it differ from ALL?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ANY: Compare a value to the set. Condition must be true for at least one member.</p>
+<p>Comparison operators with ANY:
+- &gt; ANY (subquery) = greater than the minimum value
+- &lt; ANY (subquery) = less than the maximum value
+- = ANY (subquery) = equal to at least one value (equivalent to IN)</p>
+<p>Difference from ALL:
+- ALL: Must satisfy condition for every member
+- ANY: Must satisfy condition for at least one member</p>
+<p>Example:
+HAVING SUM(amount) &gt; ANY (SELECT SUM(amount) FROM ... GROUP BY ...)</p>
+<p>If subquery returns [150, 175, 160], checks:
+Is sum &gt; 150 OR &gt; 175 OR &gt; 160? (Must exceed at least one value)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>IN Versus = ANY</h2>
+<p>What is the relationship between the IN operator and = ANY?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They are completely equivalent - they mean exactly the same thing!</p>
+<p>These queries are identical:
+WHERE city IN ('Paris', 'London', 'Rome')
+WHERE city = ANY ('Paris', 'London', 'Rome')</p>
+<p>Both check: Is the value equal to at least one value in the set?</p>
+<p>By convention, IN is more commonly used because it's more readable and familiar to most SQL developers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>EXISTS Operator Mechanics</h2>
+<p>How does the EXISTS operator work, and what should the subquery SELECT?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>EXISTS checks whether a subquery returns any rows at all. It doesn't matter what data or how many rows - just whether at least one row exists.</p>
+<p>What should the subquery SELECT? It doesn't matter! By convention:
+- SELECT 1 (most common)
+- SELECT *
+- SELECT any_columns</p>
+<p>All produce the same result because EXISTS ignores the actual selected values.</p>
+<p>Example:
+WHERE EXISTS (SELECT 1 FROM rental r WHERE r.customer_id = c.customer_id 
+              AND DATE(rental_date) &lt; '2005-05-25');</p>
+<p>Evaluates to TRUE if subquery returns one or more rows, FALSE if zero rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>EXISTS Performance Advantage</h2>
+<p>What performance advantage does EXISTS have over other approaches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Short-circuit evaluation: EXISTS often stops searching as soon as it finds one matching row, making it faster than counting or selecting all matching rows.</p>
+<p>Comparison:
+- COUNT(*): Must scan all matching rows to get the count
+- EXISTS: Can stop after finding the first match</p>
+<p>Example - Both find customers with rentals, but EXISTS is faster:</p>
+<p>Slower (must count all):
+WHERE 0 &lt; (SELECT COUNT(*) FROM rental r WHERE r.customer_id = c.customer_id)</p>
+<p>Faster (stops at first match):
+WHERE EXISTS (SELECT 1 FROM rental r WHERE r.customer_id = c.customer_id)</p>
+<p>Best for "does this relationship exist?" questions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NOT EXISTS Use Cases</h2>
+<p>What are common use cases for the NOT EXISTS operator? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Common use cases:
+- Finding records without related records
+- Implementing "set difference" operations (find A that are not in B)
+- More reliable than NOT IN when NULLs might be present</p>
+<p>Example - Find actors who never appeared in R-rated films:
+SELECT a.first_name, a.last_name
+FROM actor a
+WHERE NOT EXISTS
+  (SELECT 1 FROM film_actor fa
+   JOIN film f ON f.film_id = fa.film_id
+   WHERE fa.actor_id = a.actor_id AND f.rating = 'R');</p>
+<p>For each actor, checks: Are there any R-rated films they appeared in?
+- Zero rows → NOT EXISTS is TRUE → include actor
+- Any rows → NOT EXISTS is FALSE → exclude actor</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Versus JOIN When To Use Subquery</h2>
+<p>When should you use a subquery instead of a JOIN?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use subqueries when:</p>
+<ol>
+<li>You need a calculated value for filtering or comparison</li>
+<li>
+<p>WHERE total &gt; (SELECT AVG(total) FROM ...)</p>
+</li>
+<li>
+<p>The relationship is complex and a subquery makes logic clearer</p>
+</li>
+<li>
+<p>Nested aggregations or multi-step calculations</p>
+</li>
+<li>
+<p>You're checking for existence/non-existence</p>
+</li>
+<li>
+<p>WHERE EXISTS / WHERE NOT EXISTS</p>
+</li>
+<li>
+<p>You need to aggregate first, then join the result</p>
+</li>
+<li>
+<p>FROM (SELECT customer_id, SUM(amount) FROM payment GROUP BY ...) totals</p>
+</li>
+<li>
+<p>The subquery result is used only for filtering, not in output</p>
+</li>
+<li>You don't need columns from both tables in results</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Versus JOIN When To Use JOIN</h2>
+<p>When should you use a JOIN instead of a subquery?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use JOINs when:</p>
+<ol>
+<li>You need columns from multiple tables in the result set</li>
+<li>
+<p>SELECT c.name, o.total FROM customers c JOIN orders o ...</p>
+</li>
+<li>
+<p>Performance is critical and the subquery would run once per row</p>
+</li>
+<li>
+<p>Correlated subqueries in SELECT clause are often inefficient</p>
+</li>
+<li>
+<p>The relationship is straightforward</p>
+</li>
+<li>
+<p>Simple foreign key relationships</p>
+</li>
+<li>
+<p>You're accessing the same table multiple times via subqueries</p>
+</li>
+<li>Better to JOIN once than subquery multiple times</li>
+</ol>
+<p>Bad (inefficient - 3 subqueries):
+SELECT (SELECT first_name FROM customer WHERE id = p.customer_id),
+       (SELECT last_name FROM customer WHERE id = p.customer_id), ...</p>
+<p>Good (efficient - 1 JOIN):
+SELECT c.first_name, c.last_name, ... FROM payment p JOIN customer c ON ...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Noncorrelated Subquery Performance</h2>
+<p>What are the performance characteristics of noncorrelated subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Performance characteristics:</p>
+<p>Advantages:
+- Generally efficient - execute only once
+- Results can be cached and reused by the containing query
+- Predictable execution time regardless of outer query size</p>
+<p>Cost:
+- One-time execution cost of the subquery itself
+- Memory to hold results during query execution</p>
+<p>Example:
+WHERE amount &gt; (SELECT AVG(amount) FROM payment);</p>
+<p>Execution: AVG calculation runs once, result cached, then used to filter all rows.</p>
+<p>Contrast with correlated: If outer query has 1000 rows and uses a correlated subquery, that subquery runs 1000 times.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Correlated Subquery Performance</h2>
+<p>What are the performance characteristics and mitigation strategies for correlated subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Performance characteristics:
+- Can be expensive: Execute once per outer row
+- 599 outer rows = 599 subquery executions
+- Execution time grows linearly with outer query size
+- Often the bottleneck in slow queries</p>
+<p>Mitigation strategies:</p>
+<ol>
+<li>Add indexes on columns used in correlation</li>
+<li>
+<p>Index columns in WHERE clause of subquery</p>
+</li>
+<li>
+<p>Use EXISTS instead of IN when checking existence</p>
+</li>
+<li>
+<p>Can short-circuit after finding first match</p>
+</li>
+<li>
+<p>Consider JOINs or window functions as alternatives</p>
+</li>
+<li>
+<p>Especially for large datasets</p>
+</li>
+<li>
+<p>Test with realistic data volumes</p>
+</li>
+<li>Performance issues may not appear with small test data</li>
+</ol>
+<p>When correlated is still best: Checking existence, complex per-row calculations where logic is clearest as correlated subquery.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>NULL Handling In Subqueries Best Practices</h2>
+<p>What are best practices for handling NULLs in subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Best practices:</p>
+<ol>
+<li>
+<p>Dangerous pattern - Avoid:
+WHERE customer_id NOT IN (SELECT customer_id FROM table);
+-- Returns nothing if subquery contains NULL</p>
+</li>
+<li>
+<p>Safer - Filter NULLs:
+WHERE customer_id NOT IN (SELECT customer_id FROM table WHERE customer_id IS NOT NULL);</p>
+</li>
+<li>
+<p>Best - Use NOT EXISTS:
+WHERE NOT EXISTS (SELECT 1 FROM table WHERE table.customer_id = customer.customer_id);
+-- Not affected by NULLs</p>
+</li>
+</ol>
+<p>Why NOT EXISTS is safer:
+- EXISTS/NOT EXISTS check for row existence, not value equality
+- NULL values don't cause the logical confusion that breaks IN/NOT IN
+- More intuitive for "does this relationship exist?" questions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scalar Subquery Multiple Row Error Prevention</h2>
+<p>How do you prevent "subquery returns more than 1 row" errors when using scalar subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Prevention strategies:</p>
+<ol>
+<li>Ensure subquery returns exactly one row:</li>
+<li>Use aggregates: MAX(), MIN(), AVG(), SUM(), COUNT(*)</li>
+<li>Add constraints: WHERE id = specific_value with unique constraint</li>
+<li>
+<p>Use LIMIT 1 (though this masks potential data issues)</p>
+</li>
+<li>
+<p>If multiple rows are valid, use appropriate operator:</p>
+</li>
+<li>Wrong: WHERE country_id = (SELECT country_id FROM ...)</li>
+<li>
+<p>Right: WHERE country_id IN (SELECT country_id FROM ...)</p>
+</li>
+<li>
+<p>Test subquery independently:
+   -- Run this alone to verify result set
+   SELECT country_id FROM country WHERE country &lt;&gt; 'India';
+   -- If returns multiple rows, you need IN not =</p>
+</li>
+</ol>
+<p>Common mistake: Using = when data can legitimately return multiple rows. Design logic to match data reality.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Correlation In UPDATE DELETE</h2>
+<p>What is a common mistake when using subqueries in UPDATE statements, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Common mistake: Forgetting to correlate the subquery, which updates all rows to the same value.</p>
+<p>Wrong - Updates ALL customers to the same date:
+UPDATE customer
+SET last_update = (SELECT MAX(rental_date) FROM rental);
+-- Every customer gets the same global maximum</p>
+<p>Correct - Correlates to update each customer individually:
+UPDATE customer c
+SET last_update = 
+  (SELECT MAX(rental_date) FROM rental r 
+   WHERE r.customer_id = c.customer_id);
+-- Each customer gets their own maximum</p>
+<p>Key difference: The WHERE clause in the subquery correlates it to the outer query, making it calculate per-row instead of globally.</p>
+<p>Always consider: Should this calculation be per-row (correlated) or global (noncorrelated)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Formatting And Readability</h2>
+<p>What are best practices for formatting subqueries to maintain readability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Best practices:</p>
+<ol>
+<li>
+<p>Use consistent indentation to show nesting:
+SELECT first_name, last_name
+FROM customer c
+WHERE EXISTS 
+  (SELECT 1 
+   FROM rental r 
+   WHERE r.customer_id = c.customer_id 
+     AND rental_date &lt; '2005-05-25');</p>
+</li>
+<li>
+<p>Name subqueries in FROM clause with meaningful aliases:
+FROM (SELECT customer_id, SUM(amount) total FROM payment GROUP BY customer_id) customer_totals
+     -- Descriptive name ↑</p>
+</li>
+<li>
+<p>Document complex subqueries with comments:
+-- Find customers who outspent at least one South American country
+HAVING SUM(amount) &gt; ANY (SELECT SUM(amount) FROM ... GROUP BY country);</p>
+</li>
+<li>
+<p>Break complex queries into CTEs when appropriate
+-- Common Table Expressions coming in section 5.2</p>
+</li>
+</ol>
+<p>Principle: Code is read more often than written. Make your intent clear.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Shapes Determine Operators</h2>
+<p>How does the "shape" of a subquery's result set determine what operators you can use with it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The shape (rows × columns) determines valid operators:</p>
+<ol>
+<li>Scalar (1 row × 1 column) - Single value:</li>
+<li>Use: =, &lt;&gt;, &lt;, &gt;, &lt;=, &gt;=</li>
+<li>
+<p>Example: WHERE customer_id = (SELECT MAX(customer_id) FROM customer)</p>
+</li>
+<li>
+<p>Multiple rows × 1 column - List of values:</p>
+</li>
+<li>Use: IN, NOT IN, ALL, ANY, EXISTS, NOT EXISTS</li>
+<li>
+<p>Example: WHERE city IN (SELECT city FROM ...)</p>
+</li>
+<li>
+<p>Multiple rows × Multiple columns - Table:</p>
+</li>
+<li>Use: IN with column list</li>
+<li>Example: WHERE (actor_id, film_id) IN (SELECT actor_id, film_id FROM ...)</li>
+</ol>
+<p>Mismatch errors:
+- Using = with multi-row subquery → Error: "Subquery returns more than 1 row"
+- Using IN without column list for multicolumn → Syntax error</p>
+<p>Mental model: Match the operator to the result shape.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Statement Scope Lifecycle</h2>
+<p>What does "statement scope" mean for subqueries, and what is their lifecycle?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Statement scope: Subquery results exist only during the execution of the containing statement, then are immediately discarded.</p>
+<p>Lifecycle:
+1. Query starts executing
+2. Subquery executes and generates temporary result set
+3. Result set held in memory
+4. Containing statement uses the results
+5. Statement completes
+6. Server frees memory allocated to subquery results
+7. Results are gone - cannot be accessed by subsequent queries</p>
+<p>Contrast with:
+- Temporary tables: Persist until session ends or explicitly dropped
+- Views: Persist in data dictionary until explicitly dropped
+- CTEs: Similar statement scope (section 5.2 will cover these)</p>
+<p>Mental model: Subqueries are ephemeral helpers that live only as long as the query that needs them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Composition Of Logic</h2>
+<p>How do subqueries enable "composition of logic" in SQL? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Subqueries let you nest operations that would otherwise require multiple separate queries, composing complex logic into a single statement.</p>
+<p>Without subqueries (2 queries):
+-- Query 1: Get the average
+SELECT AVG(amount) FROM payment; -- Returns: 4.20</p>
+<p>-- Query 2: Use that value manually
+SELECT customer_id, amount FROM payment WHERE amount &gt; 4.20;</p>
+<p>With subquery (1 query):
+SELECT customer_id, amount 
+FROM payment 
+WHERE amount &gt; (SELECT AVG(amount) FROM payment);</p>
+<p>The subquery composes the calculation into the filtering logic. You can nest these arbitrarily deep:</p>
+<p>SELECT ... WHERE x &gt; (SELECT AVG(y) FROM (SELECT ... FROM ... WHERE ...) subquery);</p>
+<p>Composition enables: Calculate → Filter → Aggregate → Filter again, all in one logical flow.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries Extend SQL Toolkit</h2>
+<p>What capabilities do subqueries add to your SQL toolkit beyond basic SELECT/FROM/WHERE?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Subqueries extend SQL to:</p>
+<ol>
+<li>Filter on calculated values (WHERE/HAVING with subqueries)</li>
+<li>
+<p>WHERE amount &gt; (SELECT AVG(amount) FROM ...)</p>
+</li>
+<li>
+<p>Generate values dynamically (SELECT clause)</p>
+</li>
+<li>
+<p>SELECT name, (SELECT COUNT(*) FROM orders WHERE ...) order_count</p>
+</li>
+<li>
+<p>Create virtual tables (FROM clause)</p>
+</li>
+<li>
+<p>FROM (SELECT customer_id, SUM(amount) FROM ...) totals</p>
+</li>
+<li>
+<p>Look up values during INSERT/UPDATE/DELETE</p>
+</li>
+<li>
+<p>INSERT INTO table VALUES ((SELECT id FROM ...), ...)</p>
+</li>
+<li>
+<p>Check existence/non-existence efficiently</p>
+</li>
+<li>
+<p>WHERE EXISTS / WHERE NOT EXISTS</p>
+</li>
+<li>
+<p>Implement complex filtering logic without procedural code</p>
+</li>
+<li>All in declarative SQL</li>
+</ol>
+<p>Core insight: Subqueries transform SQL from "query this table" to "query anything I can express as a query," enabling query-driven programming.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When EXISTS Is Better Than IN</h2>
+<p>When is EXISTS preferable to IN, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>EXISTS is often better when:</p>
+<ol>
+<li>Checking relationships with complex conditions:
+-- EXISTS: Natural and clear
+WHERE EXISTS (SELECT 1 FROM rental r WHERE r.customer_id = c.customer_id AND r.rental_date &lt; '2005-01-01')</li>
+</ol>
+<p>-- IN: Awkward and less clear
+WHERE customer_id IN (SELECT customer_id FROM rental WHERE rental_date &lt; '2005-01-01')</p>
+<ol>
+<li>
+<p>Subquery might return NULLs:
+-- NOT IN breaks with NULLs
+-- NOT EXISTS works correctly regardless</p>
+</li>
+<li>
+<p>Performance with large result sets:
+-- EXISTS can short-circuit (stop at first match)
+-- IN might need to build entire list first</p>
+</li>
+<li>
+<p>Semantic clarity:
+-- "Does this relationship exist?" → EXISTS
+-- "Is this value in this list?" → IN</p>
+</li>
+</ol>
+<p>General guideline: For existence checks, use EXISTS. For membership in a simple list, use IN.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Data Fabrication</h2>
+<p>How can subqueries be used for "data fabrication" - generating data that doesn't exist in the database?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Subqueries can generate data on-the-fly that doesn't exist in any table, useful for creating categories, ranges, or synthetic data.</p>
+<p>Example - Creating customer payment groups:
+FROM (
+  SELECT 'Small Fry' level, 0 min, 74.99 max
+  UNION ALL
+  SELECT 'Average Joes' level, 75 min, 149.99 max
+  UNION ALL
+  SELECT 'Heavy Hitters' level, 150 min, 9999999.99 max
+) groups</p>
+<p>This fabricated subquery creates three groups not stored anywhere. You can then JOIN this to actual customer data:</p>
+<p>SELECT c.first_name, g.level
+FROM customer c
+JOIN payment_totals pt ON c.customer_id = pt.customer_id
+JOIN groups g ON pt.total BETWEEN g.min AND g.max;</p>
+<p>Use cases:
+- Binning/categorizing continuous data
+- Creating lookup tables without permanent storage
+- Generating test data or ranges
+- Building reporting categories</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subqueries In SELECT Clause Inefficiency</h2>
+<p>Why can multiple subqueries in the SELECT clause be inefficient, and what's the alternative?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Each subquery in SELECT accesses its table separately, causing redundant work.</p>
+<p>Inefficient - Accesses customer table 3 times:
+SELECT 
+  (SELECT first_name FROM customer c WHERE c.customer_id = p.customer_id),
+  (SELECT last_name FROM customer c WHERE c.customer_id = p.customer_id),
+  (SELECT email FROM customer c WHERE c.customer_id = p.customer_id)
+FROM payment p;</p>
+<p>Why inefficient: 
+- Same table accessed 3 times per row
+- Same join condition evaluated 3 times per row
+- If payment has 1000 rows → 3000 subquery executions</p>
+<p>Efficient alternative - JOIN once:
+SELECT c.first_name, c.last_name, c.email
+FROM payment p
+JOIN customer c ON p.customer_id = c.customer_id;</p>
+<p>Alternative 2 - Subquery in FROM:
+FROM payment p
+JOIN (SELECT customer_id, first_name, last_name, email FROM customer) c
+  ON p.customer_id = c.customer_id;</p>
+<p>Principle: Access each table the minimum number of times necessary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Temporary Table Analogy</h2>
+<p>How is a subquery similar to and different from a temporary table?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Similarities:
+- Both create a temporary result set
+- Both can be queried/joined like regular tables
+- Both hold data in memory (typically)
+- Both can have aliases/names</p>
+<p>Differences:</p>
+<p>Subquery:
+- Statement scope: Exists only during query execution
+- Automatically created and destroyed
+- Cannot be referenced by other queries
+- No explicit CREATE/DROP syntax
+- Ideal for one-time, query-specific logic</p>
+<p>Temporary table:
+- Session scope: Exists until session ends or explicit DROP
+- Explicitly created with CREATE TEMPORARY TABLE
+- Can be referenced by multiple queries in session
+- Can be indexed for performance
+- Ideal for multi-step operations or complex workflows</p>
+<p>Use subquery when: Single-query, one-time calculation
+Use temp table when: Multi-query workflow, complex ETL, need indexes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Balance Clarity And Performance</h2>
+<p>How should you balance clarity and performance when deciding between subqueries and other approaches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Guiding principle: Clarity matters, but measure before optimizing.</p>
+<p>When clarity wins:
+- A clear subquery that's 10% slower than a complex JOIN is usually worth it
+- Readable code is maintainable code
+- Premature optimization wastes time</p>
+<p>When performance wins:
+- Critical production queries with large datasets
+- Queries running frequently (thousands of times per day)
+- Correlated subqueries on large tables causing timeouts</p>
+<p>Approach:
+1. Write it clearly first (often with subqueries)
+2. Test with realistic data volumes
+3. Only optimize if there's a proven performance problem
+4. Profile to find the actual bottleneck (might not be the subquery!)
+5. Document any performance-driven complexity</p>
+<p>Example: Correlated subquery in SELECT clause might be 5x slower than JOIN, but if query takes 50ms vs 10ms and runs once per hour, the clarity is worth it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Subquery Key Conceptual Insights</h2>
+<p>What are the three most important conceptual insights about subqueries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Subqueries are temporary and ephemeral</li>
+<li>They exist only during query execution, then disappear</li>
+<li>Think of them as ephemeral helpers that answer preliminary questions</li>
+<li>
+<p>Statement scope means: live only as long as the containing query</p>
+</li>
+<li>
+<p>Shape determines usage</p>
+</li>
+<li>Single value (scalar) → Use comparison operators (=, &lt;, &gt;)</li>
+<li>Multiple rows, one column → Use set operators (IN, ALL, ANY, EXISTS)</li>
+<li>Multiple rows and columns → Use multicolumn IN or join in FROM</li>
+<li>
+<p>Mismatch between shape and operator → Error</p>
+</li>
+<li>
+<p>Correlation changes everything</p>
+</li>
+<li>Noncorrelated: Run once, result reused (efficient)</li>
+<li>Correlated: Run once per outer row (potentially expensive)</li>
+<li>Performance delta can be 100x or more on large datasets</li>
+<li>Correlation is determined by references to outer query columns</li>
+</ol>
+<p>Master these three concepts, and everything else about subqueries follows logically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
