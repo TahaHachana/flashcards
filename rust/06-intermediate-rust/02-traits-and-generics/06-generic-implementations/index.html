@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 06-Generic-Implementations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Generic Implementations?</h2>
+<p>What are generic implementations and why do they matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generic implementations are impl blocks that provide methods for generic types. They allow you to write methods once that work for any type <code>T</code>, or only for types that meet certain requirements.</p>
+<pre><code class="language-rust">struct Container&lt;T&gt; {
+    value: T,
+}
+
+// Methods for ALL types T
+impl&lt;T&gt; Container&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Container { value }
+    }
+}
+
+// Methods only when T implements Display
+impl&lt;T: Display&gt; Container&lt;T&gt; {
+    fn print(&amp;self) {
+        println!(&quot;{}&quot;, self.value);
+    }
+}
+</code></pre>
+<p><strong>Why they matter</strong>: Write once, use everywhere; provide conditional functionality; create flexible APIs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Generic Impl Syntax</h2>
+<p>What is the correct syntax for implementing methods on a generic struct?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare the generic parameter after <code>impl</code>:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+
+    fn get(&amp;self) -&gt; &amp;T {
+        &amp;self.value
+    }
+}
+</code></pre>
+<p><strong>Critical</strong>: The <code>&lt;T&gt;</code> after <code>impl</code> is <strong>required</strong>. It declares the generic parameter for the impl block, even though <code>T</code> is already declared on the struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Generic Declaration Error</h2>
+<p>What happens if you forget to declare the generic parameter in an impl block?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler treats it as a concrete type and reports it can't be found:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+// ❌ WRONG
+impl Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+// Error: cannot find type `T` in this scope
+</code></pre>
+<p><strong>Solution</strong>: Always declare generics after <code>impl</code>:</p>
+<pre><code class="language-rust">// ✅ CORRECT
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conditional Implementation Pattern</h2>
+<p>How do you provide different methods based on what traits a generic type implements?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use multiple impl blocks with different trait bounds:</p>
+<pre><code class="language-rust">struct Container&lt;T&gt; {
+    value: T,
+}
+
+// Methods for ANY T
+impl&lt;T&gt; Container&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Container { value }
+    }
+}
+
+// Methods only when T: Display
+impl&lt;T: Display&gt; Container&lt;T&gt; {
+    fn print(&amp;self) {
+        println!(&quot;{}&quot;, self.value);
+    }
+}
+
+// Methods only when T: Clone
+impl&lt;T: Clone&gt; Container&lt;T&gt; {
+    fn duplicate(&amp;self) -&gt; T {
+        self.value.clone()
+    }
+}
+</code></pre>
+<p>Types get different methods depending on their capabilities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Layered Implementation Pattern</h2>
+<p>What is the "layered implementation" pattern and why is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Layered implementation provides progressively more functionality as types implement more traits:</p>
+<pre><code class="language-rust">struct DataStore&lt;T&gt; {
+    data: Vec&lt;T&gt;,
+}
+
+// Base layer: methods for any T
+impl&lt;T&gt; DataStore&lt;T&gt; {
+    fn new() -&gt; Self { DataStore { data: Vec::new() } }
+    fn add(&amp;mut self, item: T) { self.data.push(item); }
+}
+
+// Layer 2: when T: Clone
+impl&lt;T: Clone&gt; DataStore&lt;T&gt; {
+    fn duplicate_all(&amp;self) -&gt; Vec&lt;T&gt; {
+        self.data.clone()
+    }
+}
+
+// Layer 3: when T: Display
+impl&lt;T: Display&gt; DataStore&lt;T&gt; {
+    fn print_all(&amp;self) {
+        for item in &amp;self.data {
+            println!(&quot;{}&quot;, item);
+        }
+    }
+}
+</code></pre>
+<p><strong>Benefit</strong>: Types automatically gain capabilities as they implement more traits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Blanket Implementation</h2>
+<p>What is a blanket implementation and how does it work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A blanket implementation implements a trait for all types (or all types meeting certain criteria):</p>
+<pre><code class="language-rust">trait Printable {
+    fn print(&amp;self);
+}
+
+// Blanket impl: ALL types with Display get Printable
+impl&lt;T: Display&gt; Printable for T {
+    fn print(&amp;self) {
+        println!(&quot;{}&quot;, self);
+    }
+}
+
+fn main() {
+    42.print();           // i32 implements Display, gets Printable
+    &quot;hello&quot;.print();      // &amp;str implements Display, gets Printable
+}
+</code></pre>
+<p><strong>Use case</strong>: Automatically provide traits to many types at once. The standard library uses this extensively (e.g., <code>Display</code> → <code>ToString</code>).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Missing Trait Bounds Error</h2>
+<p>What error occurs if you use operations in a generic impl without the required trait bounds?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler reports that the operation cannot be applied to the generic type:</p>
+<pre><code class="language-rust">impl&lt;T&gt; Container&lt;T&gt; {
+    fn compare(&amp;self, other: &amp;Container&lt;T&gt;) -&gt; bool {
+        self.value == other.value
+        // ❌ Error: binary operation `==` cannot be applied to type `T`
+    }
+}
+</code></pre>
+<p><strong>Solution</strong>: Add the necessary trait bound:</p>
+<pre><code class="language-rust">impl&lt;T: PartialEq&gt; Container&lt;T&gt; {
+    fn compare(&amp;self, other: &amp;Container&lt;T&gt;) -&gt; bool {
+        self.value == other.value  // ✅ Works
+    }
+}
+</code></pre>
+<p>The bound guarantees <code>T</code> supports the operation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Where Clauses in Impl Blocks</h2>
+<p>When and how should you use where clauses in generic implementations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use where clauses for complex trait bounds to improve readability:</p>
+<pre><code class="language-rust">// Inline (harder to read)
+impl&lt;T: Display + Clone, U: Debug + PartialEq&gt; Pair&lt;T, U&gt; {
+    fn describe(&amp;self) { /* ... */ }
+}
+
+// Where clause (cleaner)
+impl&lt;T, U&gt; Pair&lt;T, U&gt;
+where
+    T: Display + Clone,
+    U: Debug + PartialEq,
+{
+    fn describe(&amp;self) {
+        println!(&quot;First: {}&quot;, self.first);
+        println!(&quot;Second: {:?}&quot;, self.second);
+    }
+}
+</code></pre>
+<p><strong>Use when</strong>: Multiple type parameters, multiple bounds per parameter, or when clarity is important.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Self Type in Generic Impls</h2>
+<p>What does <code>Self</code> refer to in a generic implementation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Self</code> refers to the complete type including all generic parameters:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn create_another(value: T) -&gt; Self {
+        // Self means Wrapper&lt;T&gt; (the full generic type)
+        Wrapper { value }
+    }
+
+    fn return_self(self) -&gt; Self {
+        self  // Returns Wrapper&lt;T&gt;
+    }
+}
+</code></pre>
+<p>Using <code>Self</code> is more concise than writing <code>Wrapper&lt;T&gt;</code> repeatedly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementing Traits for Generic Types</h2>
+<p>How do you implement a standard library trait for a generic type with conditional bounds?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use trait bounds to conditionally implement the trait:</p>
+<pre><code class="language-rust">use std::fmt;
+
+struct Wrapper&lt;T&gt; {
+    value: T,
+}
+
+// Implement Display only when T implements Display
+impl&lt;T: fmt::Display&gt; fmt::Display for Wrapper&lt;T&gt; {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;Wrapped: {}&quot;, self.value)
+    }
+}
+
+fn main() {
+    let w = Wrapper { value: 42 };
+    println!(&quot;{}&quot;, w);  // Works: i32 implements Display
+
+    // Wrapper&lt;Vec&lt;i32&gt;&gt; wouldn't implement Display
+    // because Vec doesn't implement Display
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Generic Parameters in Impl</h2>
+<p>How do you implement methods for a struct with multiple generic parameters?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Declare all generic parameters after <code>impl</code>:</p>
+<pre><code class="language-rust">struct Pair&lt;T, U&gt; {
+    first: T,
+    second: U,
+}
+
+impl&lt;T, U&gt; Pair&lt;T, U&gt; {
+    fn new(first: T, second: U) -&gt; Self {
+        Pair { first, second }
+    }
+
+    fn swap(self) -&gt; Pair&lt;U, T&gt; {
+        Pair {
+            first: self.second,
+            second: self.first,
+        }
+    }
+}
+</code></pre>
+<p>Each generic parameter can have different types and different bounds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Overly Restrictive Bounds Problem</h2>
+<p>What's the problem with adding unnecessary trait bounds to basic methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unnecessary bounds limit which types can use the method:</p>
+<pre><code class="language-rust">// ❌ BAD: new() doesn't need Debug
+impl&lt;T: Debug&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+// Now only types with Debug can create Wrapper!
+</code></pre>
+<p><strong>Solution</strong>: Only add bounds where actually needed:</p>
+<pre><code class="language-rust">// ✅ GOOD: new() works for any T
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Wrapper { value }
+    }
+}
+
+// ✅ GOOD: Debug only where needed
+impl&lt;T: Debug&gt; Wrapper&lt;T&gt; {
+    fn print_debug(&amp;self) {
+        println!(&quot;{:?}&quot;, self.value);
+    }
+}
+</code></pre>
+<p><strong>Rule</strong>: Minimize bounds to maximize usability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conflicting Implementations</h2>
+<p>What causes conflicting implementations, and how do you avoid them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Conflict occurs when multiple impl blocks could provide the same method:</p>
+<pre><code class="language-rust">impl&lt;T&gt; Container&lt;T&gt; {
+    fn process(&amp;self) {
+        println!(&quot;Generic&quot;);
+    }
+}
+
+// ❌ ERROR: Conflicting implementation
+impl&lt;T: Display&gt; Container&lt;T&gt; {
+    fn process(&amp;self) {  // Same method name!
+        println!(&quot;Display&quot;);
+    }
+}
+</code></pre>
+<p><strong>Solutions</strong>:
+1. Use different method names:</p>
+<pre><code class="language-rust">impl&lt;T: Display&gt; Container&lt;T&gt; {
+    fn process_display(&amp;self) { /* ... */ }
+}
+</code></pre>
+<ol>
+<li>Ensure bounds don't overlap (not always possible)</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type Conversion Pattern</h2>
+<p>How can you implement a method that converts a generic type to another generic type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use a method with a new generic parameter and a closure:</p>
+<pre><code class="language-rust">struct Wrapper&lt;T&gt;(T);
+
+impl&lt;T&gt; Wrapper&lt;T&gt; {
+    fn map&lt;U, F&gt;(self, f: F) -&gt; Wrapper&lt;U&gt;
+    where
+        F: FnOnce(T) -&gt; U,
+    {
+        Wrapper(f(self.0))
+    }
+}
+
+fn main() {
+    let w = Wrapper(5);
+    let w2 = w.map(|x| x.to_string());
+    // Wrapper&lt;i32&gt; → Wrapper&lt;String&gt;
+}
+</code></pre>
+<p>This pattern allows transforming the wrapped value's type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Associated Functions vs Methods</h2>
+<p>What's the difference between associated functions and methods in generic implementations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Associated functions</strong>: Don't take <code>self</code>, called on the type
+<strong>Methods</strong>: Take some form of <code>self</code>, called on instances</p>
+<pre><code class="language-rust">impl&lt;T&gt; Stack&lt;T&gt; {
+    // Associated function (constructor)
+    fn new() -&gt; Self {
+        Stack { items: Vec::new() }
+    }
+
+    // Method - borrows immutably
+    fn len(&amp;self) -&gt; usize {
+        self.items.len()
+    }
+
+    // Method - borrows mutably
+    fn push(&amp;mut self, item: T) {
+        self.items.push(item);
+    }
+
+    // Method - takes ownership
+    fn into_vec(self) -&gt; Vec&lt;T&gt; {
+        self.items
+    }
+}
+
+// Usage:
+let mut stack = Stack::new();  // Associated function
+stack.push(5);                 // Method
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Lifetime and Generic Ordering</h2>
+<p>What is the correct order for lifetimes and generic type parameters in impl blocks?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Lifetimes always come before type parameters:</p>
+<pre><code class="language-rust">struct Ref&lt;'a, T&gt; {
+    value: &amp;'a T,
+}
+
+// ✅ CORRECT: lifetimes first, then types
+impl&lt;'a, T&gt; Ref&lt;'a, T&gt; {
+    fn new(value: &amp;'a T) -&gt; Self {
+        Ref { value }
+    }
+}
+
+// ❌ WRONG: types before lifetimes
+impl&lt;T, 'a&gt; Ref&lt;'a, T&gt; {  // Error!
+    // ...
+}
+</code></pre>
+<p>Pattern: <code>impl&lt;'lifetime, TypeParam&gt;</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Monomorphization</h2>
+<p>How do generic implementations relate to monomorphization?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each concrete type gets its own specialized implementation at compile time:</p>
+<pre><code class="language-rust">impl&lt;T&gt; Container&lt;T&gt; {
+    fn process(&amp;self) {
+        // generic implementation
+    }
+}
+
+fn main() {
+    let c1 = Container { value: 5 };
+    let c2 = Container { value: &quot;hello&quot; };
+}
+
+// Compiler generates specialized versions:
+// impl Container&lt;i32&gt; { fn process(&amp;self) { } }
+// impl Container&lt;&amp;str&gt; { fn process(&amp;self) { } }
+</code></pre>
+<p>This is why generics are zero-cost: at runtime, the code is already specialized with no indirection.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Standard Library Pattern</h2>
+<p>How does understanding generic implementations help you understand the standard library?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Most standard library types use the layered implementation pattern:</p>
+<pre><code class="language-rust">// Vec&lt;T&gt; has methods for all T
+impl&lt;T&gt; Vec&lt;T&gt; {
+    fn len(&amp;self) -&gt; usize { /* ... */ }
+    fn push(&amp;mut self, value: T) { /* ... */ }
+}
+
+// Additional methods when T: Clone
+impl&lt;T: Clone&gt; Vec&lt;T&gt; {
+    fn resize(&amp;mut self, new_len: usize, value: T) { /* ... */ }
+}
+
+// Additional methods when T: PartialEq
+impl&lt;T: PartialEq&gt; Vec&lt;T&gt; {
+    fn contains(&amp;self, x: &amp;T) -&gt; bool { /* ... */ }
+}
+</code></pre>
+<p>When you see different methods available on <code>Vec&lt;i32&gt;</code> vs <code>Vec&lt;MyType&gt;</code>, it's because of conditional implementations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Blanket Implementations in Stdlib</h2>
+<p>Give an example of a blanket implementation from the standard library and explain how it works.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>ToString</code> is automatically implemented for any type with <code>Display</code>:</p>
+<pre><code class="language-rust">// From the standard library:
+impl&lt;T: Display&gt; ToString for T {
+    fn to_string(&amp;self) -&gt; String {
+        // implementation
+    }
+}
+
+// This means:
+struct MyType { value: i32 }
+
+impl Display for MyType {
+    fn fmt(&amp;self, f: &amp;mut Formatter) -&gt; Result {
+        write!(f, &quot;{}&quot;, self.value)
+    }
+}
+
+fn main() {
+    let m = MyType { value: 42 };
+    let s = m.to_string();  // Works automatically!
+}
+</code></pre>
+<p>By implementing <code>Display</code>, you automatically get <code>ToString</code> for free.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Two Fundamental Patterns</h2>
+<p>What are the two fundamental patterns for generic implementations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern 1: Unconditional</strong> - Methods for ALL types T</p>
+<pre><code class="language-rust">impl&lt;T&gt; Container&lt;T&gt; {
+    fn new(value: T) -&gt; Self {
+        Container { value }
+    }
+}
+// Available for Container&lt;i32&gt;, Container&lt;String&gt;, etc.
+</code></pre>
+<p><strong>Pattern 2: Conditional</strong> - Methods only when T meets requirements</p>
+<pre><code class="language-rust">impl&lt;T: Display&gt; Container&lt;T&gt; {
+    fn print(&amp;self) {
+        println!(&quot;{}&quot;, self.value);
+    }
+}
+// Only available when T implements Display
+</code></pre>
+<p>These patterns let you create flexible APIs that provide functionality exactly when it makes sense.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
