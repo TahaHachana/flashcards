@@ -1,0 +1,2977 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Linux - 02 Users And Groups - 03-User-Configurations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Linux Account Types</h2>
+<p>What are the three types of user accounts in Linux, and what are the key characteristics of each type including UID ranges, login capability, and primary purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Root User Account (Superuser):</strong>
+- UID: 0 (this specific UID grants root privileges)
+- Login: Yes, can be used for interactive login
+- Purpose: Complete system control and administration
+- Created automatically during installation
+- Used for system configuration, updates, service management, and user/group administration</p>
+<p><strong>2. Service Accounts (System Accounts):</strong>
+- UID: ≤500 or ≤1000 (varies by distribution)
+- Login: No, cannot be used for interactive login
+- Purpose: Run background services and system processes
+- Created automatically during installation or service installation
+- Names reflect their function (e.g., ftp, mail, apache, mysql)
+- Enable resource management and security isolation</p>
+<p><strong>3. Standard User Accounts:</strong>
+- UID: ≥501 or ≥1000 (varies by distribution)
+- Login: Yes, can log in to the system
+- Purpose: Interactive use by human users
+- Created manually by administrators
+- Human-readable usernames (e.g., maria, bjackson)
+- Limited privileges - can manage own data and basic settings
+- Cannot perform administrative tasks without privilege escalation</p>
+<p>All account information is stored in <code>/etc/passwd</code> with password data in <code>/etc/shadow</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>PS1 Variable and Command Prompt Customization</h2>
+<p>What is the PS1 variable and what are the most common escape sequences used to customize the Bash command prompt? Provide examples of their usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>PS1 (Prompt String 1)</strong> is a shell variable that defines the appearance of the primary command prompt in Bash. It's customized in the <code>~/.bashrc</code> file.</p>
+<p><strong>Common PS1 Escape Sequences:</strong>
+- <code>\u</code> - Current username
+- <code>\h</code> - System hostname (short)
+- <code>\w</code> - Current working directory (full path)
+- <code>\W</code> - Current directory (basename only)
+- <code>\$</code> - <code>$</code> for standard users, <code>#</code> for root
+- <code>\t</code> - Current time (24-hour HH:MM:SS)
+- <code>\d</code> - Current date
+- <code>\n</code> - Newline character</p>
+<p><strong>Example Configurations:</strong></p>
+<p>Standard prompt:</p>
+<pre><code class="language-bash">PS1=&quot;\u@\h:\w\$ &quot;
+# Result: maria@server01:/home/maria/documents$
+</code></pre>
+<p>With timestamp:</p>
+<pre><code class="language-bash">PS1=&quot;[\t] \u@\h:\w\$ &quot;
+# Result: [14:23:45] maria@server01:/home/maria/documents$
+</code></pre>
+<p><strong>Critical Rules:</strong>
+1. Always use double quotes (not single quotes) to allow escape sequence interpretation
+2. Include a trailing space for readability
+3. The <code>\$</code> automatically shows <code>#</code> for root and <code>$</code> for regular users, providing visual distinction</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Changing Default Shell with chsh</h2>
+<p>How does the <code>chsh</code> command work, what are its requirements and restrictions, and when do changes take effect?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> The <code>chsh</code> (change shell) command allows users to change their default login shell without directly editing <code>/etc/passwd</code>.</p>
+<p><strong>Common Options:</strong>
+- <code>-l</code> or <code>--list-shells</code> - Display available shells
+- <code>-s SHELL</code> or <code>--shell SHELL</code> - Specify new shell</p>
+<p><strong>Syntax Examples:</strong></p>
+<pre><code class="language-bash">chsh -l                    # List available shells
+chsh -s /bin/zsh          # Change to Zsh
+chsh -s /bin/ksh          # Change to Korn shell
+</code></pre>
+<p><strong>Requirements and Restrictions:</strong></p>
+<ol>
+<li>
+<p><strong>Shell Must Be in /etc/shells:</strong> The requested shell must appear in the <code>/etc/shells</code> whitelist (prevents security vulnerabilities)</p>
+</li>
+<li>
+<p><strong>Full Path Required:</strong> Must provide complete path (e.g., <code>/bin/zsh</code>, not just <code>zsh</code>)</p>
+</li>
+<li>
+<p><strong>Authentication Required:</strong> User must provide their password</p>
+</li>
+<li>
+<p><strong>Takes Effect on Next Login:</strong> Changes don't apply immediately - user must log out completely and log back in</p>
+</li>
+<li>
+<p><strong>Root Can Change Any User's Shell:</strong></p>
+</li>
+</ol>
+<pre><code class="language-bash">sudo chsh -s /bin/zsh username
+</code></pre>
+<p><strong>Where It's Stored:</strong>
+The shell is stored in the seventh field of <code>/etc/passwd</code>:</p>
+<pre><code>maria:x:1001:1001:Maria Garcia:/home/maria:/bin/bash
+</code></pre>
+<p>Users cannot edit <code>/etc/passwd</code> directly, which is why <code>chsh</code> is necessary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Profile Configuration Hierarchy</h2>
+<p>Explain the difference between system-wide and user-specific configuration files in Linux, their processing order, and which files are used for different purposes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Processing Order and Precedence:</strong>
+1. System-wide files are processed FIRST
+2. User-specific files are processed SECOND
+3. User settings OVERRIDE system settings when conflicts exist</p>
+<p><strong>System-Wide Configuration Files (Root-Only Editing):</strong></p>
+<p><code>/etc/profile</code>
+- Purpose: System-wide environment variables and startup programs
+- When: Login shells only
+- Applies to: All users</p>
+<p><code>/etc/bashrc</code> (or <code>/etc/bash.bashrc</code>)
+- Purpose: System-wide functions, aliases, shell options
+- When: All interactive Bash shells
+- Applies to: All users</p>
+<p><strong>User-Specific Configuration Files:</strong></p>
+<p><code>~/.bash_profile</code>
+- Purpose: User environment variables for login shells
+- When: Interactive login shells only
+- Overrides: <code>/etc/profile</code></p>
+<p><code>~/.bashrc</code>
+- Purpose: User shell preferences for interactive shells
+- When: Interactive non-login shells
+- Overrides: <code>/etc/bashrc</code></p>
+<p><code>~/.profile</code>
+- Purpose: Generic user environment (if <code>~/.bash_profile</code> doesn't exist)
+- When: Login shells
+- More portable across different shells</p>
+<p><strong>Best Practice:</strong>
+Configure <code>~/.bash_profile</code> to source <code>~/.bashrc</code>:</p>
+<pre><code class="language-bash">if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+</code></pre>
+<p>This ensures consistent settings across both login and non-login shells.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /etc/skel Directory</h2>
+<p>What is the <code>/etc/skel</code> directory, how does it work, and what are practical use cases for system administrators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> <code>/etc/skel</code> (skeleton directory) serves as a template repository for new user accounts. Files placed here are automatically copied to each new user's home directory during account creation.</p>
+<p><strong>How It Works:</strong>
+1. Administrator places template files in <code>/etc/skel</code>
+2. When <code>useradd -m username</code> is executed, the system copies all files from <code>/etc/skel</code> to the new user's home directory
+3. Files are assigned ownership to the new user
+4. Permissions are preserved from <code>/etc/skel</code></p>
+<p><strong>Default Contents (typical):</strong></p>
+<pre><code>/etc/skel/.bash_logout
+/etc/skel/.bashrc
+/etc/skel/.profile
+</code></pre>
+<p><strong>Practical Use Cases:</strong></p>
+<ol>
+<li><strong>Pre-configured Shell Settings:</strong></li>
+</ol>
+<pre><code class="language-bash">sudo vim /etc/skel/.bashrc
+# Add company-standard aliases, prompts, history settings
+</code></pre>
+<ol>
+<li><strong>Policy Distribution:</strong></li>
+</ol>
+<pre><code class="language-bash">sudo cp acceptable_use_policy.txt /etc/skel/
+</code></pre>
+<ol>
+<li><strong>Standard Directory Structure:</strong></li>
+</ol>
+<pre><code class="language-bash">sudo mkdir -p /etc/skel/{Documents,Projects,Downloads}
+</code></pre>
+<ol>
+<li><strong>Development Environment Templates:</strong></li>
+</ol>
+<pre><code class="language-bash">sudo cp .vimrc .gitconfig .tmux.conf /etc/skel/
+</code></pre>
+<p><strong>Critical Limitations:</strong>
+- Only affects NEW users created AFTER files are added to <code>/etc/skel</code>
+- Does NOT affect existing users
+- To update existing users, must copy files manually</p>
+<p><strong>Verification:</strong></p>
+<pre><code class="language-bash">sudo useradd -m testuser
+sudo ls -la /home/testuser
+# Should show all files from /etc/skel
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Login vs Non-Login Shells</h2>
+<p>What is the difference between login shells and non-login shells, which configuration files does each execute, and why does this distinction matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Login Shells:</strong></p>
+<p><strong>When They Occur:</strong>
+- Logging in via console (text mode)
+- SSH into a remote system
+- Using <code>su -</code> or <code>su -l</code> to switch users
+- Explicit login shell: <code>bash -l</code> or <code>bash --login</code></p>
+<p><strong>Which Files Execute (in order):</strong>
+1. <code>/etc/profile</code> (system-wide)
+2. First found of:
+   - <code>~/.bash_profile</code>
+   - <code>~/.bash_login</code>
+   - <code>~/.profile</code></p>
+<p><strong>Purpose:</strong>
+- Set up the user environment
+- Define environment variables (PATH, EDITOR, etc.)
+- Run startup programs
+- Load system-wide configurations</p>
+<p><strong>Non-Login Shells:</strong></p>
+<p><strong>When They Occur:</strong>
+- Opening a new terminal window in GUI
+- Running <code>bash</code> command (without -l)
+- Starting a subshell
+- Most terminal emulators in graphical environments</p>
+<p><strong>Which Files Execute:</strong>
+1. <code>/etc/bashrc</code> or <code>/etc/bash.bashrc</code> (system-wide)
+2. <code>~/.bashrc</code> (user-specific)</p>
+<p><strong>Purpose:</strong>
+- Apply interactive shell settings
+- Load aliases and functions
+- Set command prompt
+- Configure history settings</p>
+<p><strong>The Standard Solution:</strong></p>
+<p>Most users configure <code>~/.bash_profile</code> to source <code>~/.bashrc</code>:</p>
+<pre><code class="language-bash"># In ~/.bash_profile:
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+</code></pre>
+<p><strong>Why:</strong> This ensures interactive settings (aliases, prompt, etc.) apply to BOTH login and non-login shells.</p>
+<p><strong>Best Practice File Organization:</strong></p>
+<p><strong>~/.bash_profile (Login shells):</strong></p>
+<pre><code class="language-bash"># Environment variables
+export PATH=$PATH:/home/user/bin
+export EDITOR=vim
+export JAVA_HOME=/usr/lib/jvm/java-11
+
+# Source .bashrc for interactive settings
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+</code></pre>
+<p><strong>~/.bashrc (Interactive shells):</strong></p>
+<pre><code class="language-bash"># Aliases
+alias ll='ls -alh'
+alias gs='git status'
+
+# Prompt
+PS1=&quot;\u@\h:\w\$ &quot;
+
+# History
+HISTSIZE=5000
+export HISTCONTROL=ignoreboth
+
+# Functions
+mkcd() { mkdir -p &quot;$1&quot; &amp;&amp; cd &quot;$1&quot;; }
+</code></pre>
+<p><strong>Check Shell Type:</strong></p>
+<pre><code class="language-bash"># Check if login shell
+shopt -q login_shell &amp;&amp; echo &quot;Login shell&quot; || echo &quot;Not login shell&quot;
+
+# Or:
+echo $0
+# Output: -bash (login shell - note the dash)
+# Output: bash (non-login shell)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Tilde Character</h2>
+<p>What is the tilde (~) character in Linux, how does it work, and what are practical examples of its usage?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What Is the Tilde (~)?</strong>
+The tilde (<code>~</code>) is a shell shortcut character that represents a user's home directory. The shell automatically expands it to the full path.</p>
+<p><strong>How It Works:</strong></p>
+<p><strong>For the Logged-In User:</strong></p>
+<pre><code class="language-bash"># If user 'kgarcia' is logged in:
+~               # Expands to: /home/kgarcia
+~/Documents     # Expands to: /home/kgarcia/Documents
+~/.bashrc       # Expands to: /home/kgarcia/.bashrc
+</code></pre>
+<p><strong>For Other Users (with username):</strong></p>
+<pre><code class="language-bash">~kgarcia        # Expands to: /home/kgarcia
+~maria          # Expands to: /home/maria
+~root           # Expands to: /root
+</code></pre>
+<p><strong>Relationship to $HOME Variable:</strong></p>
+<pre><code class="language-bash">~               # Equivalent to $HOME
+cd ~            # Same as cd $HOME
+echo ~          # Same as echo $HOME
+</code></pre>
+<p><strong>Practical Examples:</strong></p>
+<p><strong>Navigation:</strong></p>
+<pre><code class="language-bash">cd ~                    # Go to home directory
+cd ~/Documents          # Go to Documents in home
+cd ~/Projects/app       # Go to nested directory
+</code></pre>
+<p><strong>File Operations:</strong></p>
+<pre><code class="language-bash">cp file.txt ~                   # Copy to home directory
+mv ~/Downloads/file.txt .       # Move from Downloads to current dir
+ls -la ~                        # List home directory contents
+</code></pre>
+<p><strong>Configuration Files:</strong></p>
+<pre><code class="language-bash">vim ~/.bashrc                   # Edit Bash configuration
+cat ~/.ssh/config               # View SSH config
+source ~/.bash_profile          # Source profile
+</code></pre>
+<p><strong>Why Use Tilde?</strong></p>
+<p><strong>1. Portability:</strong>
+Works regardless of username:</p>
+<pre><code class="language-bash"># Instead of hardcoding:
+cd /home/kgarcia/Documents
+
+# Use:
+cd ~/Documents
+# Works for any user running the script
+</code></pre>
+<p><strong>2. Convenience:</strong>
+Shorter to type:</p>
+<pre><code class="language-bash"># Long:
+cd /home/kgarcia/projects/website/frontend
+
+# Short:
+cd ~/projects/website/frontend
+</code></pre>
+<p><strong>3. Script Flexibility:</strong></p>
+<pre><code class="language-bash">#!/bin/bash
+# Works for whoever runs the script
+CONFIG_FILE=~/.myapp/config.ini
+LOG_FILE=~/logs/app.log
+</code></pre>
+<p><strong>Special Cases:</strong></p>
+<p><strong>Root User:</strong></p>
+<pre><code class="language-bash"># Regular user: ~ expands to /home/username
+# Root user: ~ expands to /root
+</code></pre>
+<p><strong>In Quotes:</strong></p>
+<pre><code class="language-bash"># Double quotes: expansion happens
+echo &quot;My home is ~&quot;          # Output: My home is /home/kgarcia
+
+# Single quotes: no expansion
+echo 'My home is ~'          # Output: My home is ~
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>UID Ranges and Distribution Differences</h2>
+<p>Explain the significance of UID ranges in Linux, how they differ between distributions, and why administrators need to understand these differences.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose of UID Ranges:</strong>
+UIDs (User IDentifiers) distinguish between system accounts and user accounts. Different UID ranges indicate different account types.</p>
+<p><strong>Two Common UID Allocation Schemes:</strong></p>
+<p><strong>500-Based Systems (Older Standard):</strong>
+- System/service accounts: UID 0-500
+- Standard user accounts: UID 501+
+- Root account: UID 0
+- Examples: Older RHEL, CentOS versions</p>
+<p><strong>1000-Based Systems (Modern Standard):</strong>
+- System/service accounts: UID 0-999
+- Standard user accounts: UID 1000+
+- Root account: UID 0
+- Examples: Modern Ubuntu, Debian, Fedora, RHEL 7+</p>
+<p><strong>The Root Account (Always UID 0):</strong>
+- UID 0 is what grants root privileges
+- Regardless of distribution, root is always UID 0
+- This is the special UID that gives complete system control</p>
+<p><strong>Why This Matters:</strong></p>
+<p><strong>1. Scripts and Automation:</strong>
+Scripts that reference UID ranges may need adjustment when moving between distributions:</p>
+<pre><code class="language-bash"># 500-based system
+if [ $UID -ge 501 ]; then
+    echo &quot;Regular user&quot;
+fi
+
+# 1000-based system
+if [ $UID -ge 1000 ]; then
+    echo &quot;Regular user&quot;
+fi
+</code></pre>
+<p><strong>2. Security Policies:</strong>
+Access control rules might reference these ranges:</p>
+<pre><code class="language-bash"># Allow only user accounts (UID &gt;= 1000)
+# Block system accounts (UID &lt; 1000)
+</code></pre>
+<p><strong>3. User Creation:</strong>
+The system automatically assigns UIDs based on distribution standards:</p>
+<pre><code class="language-bash"># On 1000-based system:
+sudo useradd alice
+# Alice gets UID 1000 (or next available &gt;= 1000)
+
+# System account creation:
+sudo useradd -r service_account
+# Gets UID &lt; 1000 (system account range)
+</code></pre>
+<p><strong>Checking Your Distribution's Scheme:</strong></p>
+<pre><code class="language-bash"># Method 1: Check /etc/login.defs
+grep UID_MIN /etc/login.defs
+
+# Output examples:
+UID_MIN    1000    # 1000-based system
+UID_MIN    500     # 500-based system
+
+# Method 2: Examine existing accounts
+grep &quot;^[^:]*:[^:]*:[0-9]&quot; /etc/passwd | head
+</code></pre>
+<p><strong>Best Practice:</strong>
+- Always verify your distribution's UID allocation scheme
+- Check <code>/etc/login.defs</code> when working on new systems
+- Don't hardcode UID values in scripts
+- Use configuration variables for portability</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Account Storage Files</h2>
+<p>What are the critical differences between /etc/passwd and /etc/shadow files, and why are they separated?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two Files for Account Information:</strong></p>
+<p><strong>1. /etc/passwd - Basic Account Information</strong></p>
+<p><strong>Contents:</strong>
+- Username
+- User ID (UID)
+- Primary Group ID (GID)
+- User information (GECOS field)
+- Home directory path
+- Default shell</p>
+<p><strong>Example Entry:</strong></p>
+<pre><code>kgarcia:x:1001:1001:Kai Garcia:/home/kgarcia:/bin/bash
+</code></pre>
+<p><strong>Field Breakdown:</strong>
+1. kgarcia - Username
+2. x - Password placeholder (actual password in /etc/shadow)
+3. 1001 - UID
+4. 1001 - Primary GID
+5. Kai Garcia - Full name/comment (GECOS)
+6. /home/kgarcia - Home directory
+7. /bin/bash - Default shell</p>
+<p><strong>Permissions:</strong>
+- World-readable (644)
+- Any user can view this file
+- Contains no sensitive information</p>
+<p><strong>2. /etc/shadow - Password and Aging Information</strong></p>
+<p><strong>Contents:</strong>
+- Encrypted passwords
+- Password last change date
+- Password aging policies
+- Account expiration information</p>
+<p><strong>Example Entry:</strong></p>
+<pre><code>kgarcia:$6$random$hash...:18900:1:90:7:::
+</code></pre>
+<p><strong>Field Breakdown:</strong>
+1. kgarcia - Username
+2. $6$random$hash - Encrypted password
+3. 18900 - Days since epoch of last password change
+4. 1 - Minimum days between password changes
+5. 90 - Maximum days before password expires
+6. 7 - Warning days before expiration
+7. (empty) - Inactivity period
+8. (empty) - Account expiration date
+9. (empty) - Reserved field</p>
+<p><strong>Permissions:</strong>
+- Readable only by root (000 or 400)
+- Contains sensitive password hashes
+- Protected from unauthorized access</p>
+<p><strong>Why the Separation?</strong></p>
+<p><strong>Historical Context:</strong>
+Originally, everything was in /etc/passwd. This was a security problem because:
+- Everyone could read encrypted passwords
+- Attackers could perform offline password cracking
+- Password hashes were publicly accessible</p>
+<p><strong>Modern Security (Shadow Passwords):</strong>
+Separating into two files provides:</p>
+<p><strong>1. Enhanced Security:</strong>
+- Sensitive password data protected (root-only access)
+- Basic account info remains accessible (needed for system operations)
+- Reduced attack surface</p>
+<p><strong>2. Operational Necessity:</strong>
+- Many system operations need username/UID/GID information
+- <code>/etc/passwd</code> provides this without exposing passwords
+- Programs can look up user information without security risks</p>
+<p><strong>3. Principle of Least Privilege:</strong>
+- Users can see basic account information (needed for system use)
+- Only root can access password hashes (security-critical data)</p>
+<p><strong>Viewing These Files:</strong></p>
+<p><strong>Anyone Can View /etc/passwd:</strong></p>
+<pre><code class="language-bash">cat /etc/passwd
+grep kgarcia /etc/passwd
+</code></pre>
+<p><strong>Only Root Can View /etc/shadow:</strong></p>
+<pre><code class="language-bash">sudo cat /etc/shadow
+sudo grep kgarcia /etc/shadow
+</code></pre>
+<p><strong>Using getent (Preferred Method):</strong></p>
+<pre><code class="language-bash"># Query account databases (uses NSS)
+getent passwd kgarcia
+getent shadow kgarcia        # Requires root
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Executing Programs Not in PATH</h2>
+<p>How do you execute programs or scripts that are not in the PATH variable, and why doesn't the shell search the current directory by default?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The Problem:</strong>
+If a script or program is in your current directory but that directory isn't in PATH, the shell won't find it:</p>
+<pre><code class="language-bash">ls
+# Shows: myscript.sh
+
+myscript.sh
+# Output: bash: myscript.sh: command not found
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<p><strong>1. Use ./ Prefix (Most Common)</strong></p>
+<pre><code class="language-bash">./myscript.sh
+</code></pre>
+<p><strong>What ./ Means:</strong>
+- <code>.</code> = current directory
+- <code>/</code> = path separator
+- <code>./myscript.sh</code> = "the file myscript.sh in the current directory"</p>
+<p><strong>2. Use Absolute Path</strong></p>
+<pre><code class="language-bash">/home/kgarcia/scripts/myscript.sh
+</code></pre>
+<p><strong>3. Use Relative Path</strong></p>
+<pre><code class="language-bash"># If script is in subdirectory:
+subdirectory/myscript.sh
+
+# If script is in parent directory:
+../myscript.sh
+</code></pre>
+<p><strong>4. Add to PATH (Permanent Solution)</strong></p>
+<pre><code class="language-bash"># Add directory to PATH
+export PATH=$PATH:/home/kgarcia/scripts
+
+# Now can run directly:
+myscript.sh
+</code></pre>
+<p><strong>Execution Permission Required:</strong></p>
+<p>Before ANY method works, the file needs execute permission:</p>
+<pre><code class="language-bash"># Check permissions
+ls -l myscript.sh
+# Output: -rw-r--r-- (not executable)
+
+# Add execute permission
+chmod +x myscript.sh
+# Now: -rwxr-xr-x (executable)
+
+# Then run
+./myscript.sh
+</code></pre>
+<p><strong>Why Doesn't Shell Search Current Directory?</strong></p>
+<p><strong>Security Reasons:</strong></p>
+<p><strong>The Attack Scenario:</strong></p>
+<pre><code class="language-bash"># Attacker creates malicious script in shared directory
+$ cd /tmp
+$ cat &gt; ls
+#!/bin/bash
+echo &quot;Stealing your data...&quot;
+rm -rf /important/files
+^D
+
+$ chmod +x ls
+
+# Victim comes along
+$ cd /tmp
+$ ls          # If current dir was in PATH, runs malicious 'ls'
+</code></pre>
+<p><strong>Security Best Practice:</strong>
+The current directory (<code>.</code>) should NEVER be in PATH because:
+- Prevents Trojan horse attacks
+- Avoids accidental execution of malicious files
+- Forces explicit intent (using <code>./</code>)
+- Protects against social engineering</p>
+<p><strong>NEVER Do This:</strong></p>
+<pre><code class="language-bash"># DANGEROUS - DO NOT USE:
+export PATH=$PATH:.
+export PATH=.:$PATH
+</code></pre>
+<p><strong>The ./ Requirement is a Feature:</strong>
+Requiring <code>./</code> forces you to explicitly state "I want to run THIS specific file in THIS directory" rather than accidentally running a different file with the same name.</p>
+<p><strong>Practical Examples:</strong></p>
+<p><strong>Running a Python script:</strong></p>
+<pre><code class="language-bash">python script.py           # Works (python is in PATH)
+./script.py               # Works (explicit current directory)
+script.py                 # Fails (script.py not in PATH)
+</code></pre>
+<p><strong>Running a compiled program:</strong></p>
+<pre><code class="language-bash">./myprogram              # Correct
+myprogram                # Fails unless in PATH directory
+</code></pre>
+<p><strong>Best Practice:</strong>
+- Keep your own scripts in a dedicated directory (e.g., <code>~/bin</code>)
+- Add that directory to PATH in <code>~/.bash_profile</code>
+- For one-off or test scripts, use <code>./</code>
+- Never add current directory (<code>.</code>) to PATH</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shell Variables vs Environment Variables</h2>
+<p>What is the critical difference between shell variables and environment variables, and how are they created and used differently?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Shell Variables (Local Variables):</strong>
+- <strong>Scope:</strong> Current shell only
+- <strong>Inheritance:</strong> NOT passed to child processes
+- <strong>Creation:</strong> Simple assignment without <code>export</code>
+- <strong>Convention:</strong> Usually lowercase
+- <strong>Persistence:</strong> Lost when shell exits</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">my_variable=&quot;hello&quot;
+echo $my_variable        # Works in current shell
+
+bash                      # Start subshell
+echo $my_variable        # Empty - not inherited
+exit
+</code></pre>
+<p><strong>Environment Variables:</strong>
+- <strong>Scope:</strong> Current shell AND all child processes
+- <strong>Inheritance:</strong> Passed to child processes automatically
+- <strong>Creation:</strong> Use <code>export</code> command
+- <strong>Convention:</strong> Usually UPPERCASE
+- <strong>Persistence:</strong> Inherited by spawned programs</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">export MY_VAR=&quot;shared value&quot;
+echo $MY_VAR             # Works in current shell
+
+bash                      # Start subshell
+echo $MY_VAR             # Works - inherited!
+exit
+</code></pre>
+<p><strong>Key Distinction:</strong>
+Child processes receive a COPY of environment variables. Changes in the child don't affect the parent.</p>
+<p><strong>Creation Methods:</strong></p>
+<pre><code class="language-bash"># Shell variable
+VAR=&quot;value&quot;
+
+# Environment variable - Method 1
+export VAR=&quot;value&quot;
+
+# Environment variable - Method 2
+VAR=&quot;value&quot;
+export VAR
+</code></pre>
+<p><strong>Comparison Table:</strong></p>
+<p>| Feature | Shell Variable | Environment Variable |
+|---------|---------------|---------------------|
+| <strong>Scope</strong> | Current shell only | Current shell + children |
+| <strong>Inheritance</strong> | Not inherited | Inherited by child processes |
+| <strong>Creation</strong> | <code>VAR=value</code> | <code>export VAR=value</code> |
+| <strong>Naming Convention</strong> | Usually lowercase | Usually UPPERCASE |
+| <strong>Visibility</strong> | Single shell session | Available to spawned programs |</p>
+<p><strong>When to Use Each:</strong>
+- Shell variables: Temporary storage within single script/session
+- Environment variables: Settings needed by child processes and programs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Environment Variables</h2>
+<p>Describe the purpose and usage of the seven most important default environment variables in Linux.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. HOME</strong>
+- Purpose: User's home directory path
+- Example: <code>/home/maria</code>
+- Usage: <code>cd $HOME</code> or <code>cd ~</code> (tilde is shorthand for $HOME)</p>
+<p><strong>2. USER</strong>
+- Purpose: Current username
+- Example: <code>maria</code>
+- Usage: <code>echo "Hello, $USER"</code> or conditional logic based on username</p>
+<p><strong>3. PATH</strong>
+- Purpose: Colon-separated list of directories searched for executables
+- Example: <code>/usr/local/bin:/usr/bin:/bin</code>
+- How it works: Shell searches directories left to right when you type a command
+- Modification: <code>export PATH=$PATH:/new/directory</code></p>
+<p><strong>4. SHELL</strong>
+- Purpose: Path to user's default login shell
+- Example: <code>/bin/bash</code>
+- Usage: Determine which shell is in use, shell-specific logic</p>
+<p><strong>5. HOSTNAME</strong>
+- Purpose: System's network name
+- Example: <code>server01.example.com</code>
+- Usage: Identify which system you're on, conditional logic by server</p>
+<p><strong>6. MAIL</strong>
+- Purpose: Location of user's mail file
+- Example: <code>/var/mail/maria</code>
+- Usage: Mail client configuration, checking for new mail</p>
+<p><strong>7. HISTSIZE</strong>
+- Purpose: Number of commands stored in memory (current session)
+- Example: <code>1000</code>
+- Related: <code>HISTFILESIZE</code> - number of commands in <code>~/.bash_history</code> file
+- Usage: <code>export HISTSIZE=5000</code> to increase command history buffer</p>
+<p><strong>Viewing Variables:</strong></p>
+<pre><code class="language-bash">echo $HOME              # View specific variable
+printenv                # View all environment variables
+env                     # Alternative to view all variables
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Variable Declaration Syntax Rules</h2>
+<p>What are the critical syntax rules for declaring and referencing variables in Bash? What happens if these rules are violated?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Declaration Syntax Rules:</strong></p>
+<p><strong>Rule 1: NO Spaces Around Equals Sign</strong></p>
+<pre><code class="language-bash"># CORRECT:
+my_name=kgarcia
+PATH=/usr/bin:/bin
+
+# INCORRECT (causes errors):
+my_name = kgarcia        # Error: my_name: command not found
+my_name= kgarcia         # Error
+my_name =kgarcia         # Error
+</code></pre>
+<p><strong>Why:</strong> Shell interprets spaces as command separators. With spaces, Bash tries to execute the variable name as a command.</p>
+<p><strong>Rule 2: Quote Values with Spaces</strong></p>
+<pre><code class="language-bash"># CORRECT:
+MESSAGE=&quot;Welcome to the system&quot;
+
+# INCORRECT:
+MESSAGE=Welcome to the system    # Interpreted as multiple commands
+</code></pre>
+<p><strong>Rule 3: Variables Are Case-Sensitive</strong></p>
+<pre><code class="language-bash">name=maria          # Different variable
+NAME=maria          # Different variable
+Name=maria          # Different variable
+</code></pre>
+<p><strong>Referencing Variables:</strong></p>
+<p><strong>Use Dollar Sign ($) to Access Values:</strong></p>
+<pre><code class="language-bash"># Declaration (no $)
+username=kgarcia
+
+# Reference (with $)
+echo $username              # Output: kgarcia
+echo username               # Output: username (literal text)
+</code></pre>
+<p><strong>Optional Curly Braces for Clarity:</strong></p>
+<pre><code class="language-bash">echo ${username}            # Same as $username
+echo ${username}_backup     # Avoids ambiguity
+</code></pre>
+<p><strong>Making Environment Variables:</strong></p>
+<pre><code class="language-bash"># Local variable (current shell only)
+MY_VAR=&quot;value&quot;
+
+# Environment variable (inherited by children)
+export MY_VAR=&quot;value&quot;
+</code></pre>
+<p><strong>The Rule:</strong>
+- <strong>Setting:</strong> NO dollar sign
+- <strong>Getting:</strong> YES dollar sign</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>PATH Variable Management</h2>
+<p>How does the PATH variable work, how do you modify it safely, and what is the critical security warning regarding PATH configuration?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>How PATH Works:</strong>
+PATH is a colon-separated list of directories that the shell searches (left to right) when you type a command.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">echo $PATH
+# Output: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+# When you type 'ls':
+# 1. Search /usr/local/bin (not found)
+# 2. Search /usr/bin (not found)
+# 3. Search /bin (FOUND - execute /bin/ls)
+</code></pre>
+<p><strong>Adding Directories to PATH:</strong></p>
+<p><strong>Append (lower priority):</strong></p>
+<pre><code class="language-bash">export PATH=$PATH:/home/user/scripts
+# New directory searched LAST
+</code></pre>
+<p><strong>Prepend (higher priority):</strong></p>
+<pre><code class="language-bash">export PATH=/home/user/bin:$PATH
+# New directory searched FIRST
+</code></pre>
+<p><strong>Make Permanent:</strong></p>
+<pre><code class="language-bash">echo 'export PATH=$PATH:/home/user/scripts' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<p><strong>CRITICAL SECURITY WARNING:</strong></p>
+<p><strong>NEVER ADD THESE TO PATH:</strong></p>
+<pre><code class="language-bash"># DANGEROUS - DO NOT USE:
+export PATH=$PATH:~              # Home directory
+export PATH=$PATH:/home/user     # User's home
+export PATH=$PATH:.              # Current directory
+</code></pre>
+<p><strong>Why This Is Dangerous:</strong>
+If an attacker places a malicious executable with a common name (like <code>ls</code>, <code>cd</code>, <code>cat</code>) in your home directory, the system might execute it automatically when you type that command, leading to malware auto-execution.</p>
+<p><strong>Example Attack Scenario:</strong></p>
+<pre><code class="language-bash"># Attacker creates malicious 'ls' in your home directory
+# You have home directory in PATH
+# You type: ls
+# System executes the malicious version instead of /bin/ls
+</code></pre>
+<p><strong>Safe Alternative for Local Scripts:</strong>
+Use <code>./</code> prefix to execute from current directory:</p>
+<pre><code class="language-bash">./myscript.sh        # Explicitly run from current directory
+</code></pre>
+<p><strong>Best Practice:</strong>
+- Keep PATH clean with only trusted system directories
+- Never include user-writable directories
+- Use explicit paths or <code>./</code> for local executables</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Localization Variables</h2>
+<p>What are the key localization variables in Linux, their purposes, and how does the localization hierarchy work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Primary Localization Variables:</strong></p>
+<p><strong>LC_ADDRESS</strong> - Postal address format</p>
+<p><strong>LC_MONETARY</strong> - Currency and monetary value format</p>
+<pre><code class="language-bash">LC_MONETARY=en_US.UTF-8    # $1,234.56
+LC_MONETARY=de_DE.UTF-8    # 1.234,56 €
+</code></pre>
+<p><strong>LC_MEASUREMENT</strong> - Measurement system</p>
+<pre><code class="language-bash">LC_MEASUREMENT=en_US.UTF-8    # Imperial (feet, miles)
+LC_MEASUREMENT=en_GB.UTF-8    # Metric (meters, kilometers)
+</code></pre>
+<p><strong>TZ</strong> - Time zone</p>
+<pre><code class="language-bash">export TZ=America/New_York
+export TZ=Europe/Berlin
+export TZ=UTC
+</code></pre>
+<p><strong>LANG</strong> - Default locale for all LC_* variables</p>
+<pre><code class="language-bash">export LANG=en_US.UTF-8    # US English
+export LANG=fr_FR.UTF-8    # French
+</code></pre>
+<p><strong>LC_ALL</strong> - Override ALL locale settings (highest priority)</p>
+<pre><code class="language-bash">export LC_ALL=en_US.UTF-8
+</code></pre>
+<p><strong>Localization Hierarchy (priority order):</strong></p>
+<pre><code>LC_ALL (highest - overrides everything)
+    ↓
+Specific LC_* variables (LC_MONETARY, LC_TIME, etc.)
+    ↓
+LANG (default fallback)
+</code></pre>
+<p><strong>Configuration Location:</strong>
+- System-wide: <code>/etc/locale.conf</code>
+- User-specific: <code>~/.bashrc</code> or <code>~/.bash_profile</code></p>
+<p><strong>Viewing Current Locale:</strong></p>
+<pre><code class="language-bash">locale                    # Show all locale settings
+echo $LANG               # Show default locale
+</code></pre>
+<p><strong>Use Cases:</strong>
+- <strong>LC_ALL:</strong> Troubleshooting locale issues, forcing consistent locale
+- <strong>LANG:</strong> Setting overall system language
+- <strong>Specific LC_*:</strong> Fine-tuning individual categories
+- <strong>TZ:</strong> Alternative to <code>timedatectl</code> for time zone management</p>
+<p><strong>Best Practice:</strong> Use LANG for general settings; use LC_ALL only for troubleshooting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting Variable Issues</h2>
+<p>What are common problems when working with shell and environment variables, and how do you troubleshoot them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Common Variable Problems and Solutions:</strong></p>
+<p><strong>Problem 1: Variable Not Available in Scripts or Child Processes</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">MY_VAR=&quot;hello&quot;
+echo $MY_VAR        # Output: hello
+
+bash                # Start subshell
+echo $MY_VAR        # Output: (empty)
+</code></pre>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Use export to make it an environment variable
+export MY_VAR=&quot;hello&quot;
+</code></pre>
+<p><strong>Problem 2: Variable Changes Don't Persist After Logout</strong></p>
+<p><strong>Symptom:</strong> Variable works during session but disappears after logout/reboot.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc or ~/.bash_profile
+echo 'export MY_VAR=&quot;permanent value&quot;' &gt;&gt; ~/.bash_profile
+source ~/.bash_profile
+</code></pre>
+<p><strong>Problem 3: PATH Changes Duplicated</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">echo $PATH
+# Shows: /usr/bin:/usr/bin:/usr/bin:/new/dir:/new/dir
+</code></pre>
+<p><strong>Cause:</strong> PATH modified in wrong file or multiple times.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Remove duplicates, set PATH ONCE in ~/.bash_profile:
+export PATH=&quot;/usr/local/bin:/usr/bin:/bin:$HOME/bin&quot;
+
+# Don't put PATH modifications in ~/.bashrc
+</code></pre>
+<p><strong>Problem 4: Variable Expansion Not Working</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">DIR=/home/user
+echo $DIRbackup        # Output: (empty)
+</code></pre>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Use curly braces to separate variable name
+echo ${DIR}backup      # Output: /home/userbackup
+</code></pre>
+<p><strong>Problem 5: Spaces in Variable Assignment Causing Errors</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">MY_VAR = &quot;hello&quot;
+# Error: MY_VAR: command not found
+</code></pre>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># NO spaces around = sign
+MY_VAR=&quot;hello&quot;        # Correct
+</code></pre>
+<p><strong>Problem 6: Variable Not Expanding in Single Quotes</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">NAME=&quot;Maria&quot;
+echo 'Hello, $NAME'
+# Output: Hello, $NAME (literal)
+</code></pre>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># Use double quotes for variable expansion
+echo &quot;Hello, $NAME&quot;
+# Output: Hello, Maria
+</code></pre>
+<p><strong>Problem 7: Empty PATH After Modification</strong></p>
+<p><strong>Symptom:</strong></p>
+<pre><code class="language-bash">export PATH=/new/dir
+ls
+# Error: ls: command not found
+</code></pre>
+<p><strong>Cause:</strong> Overwrote PATH instead of appending to it.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-bash"># ALWAYS append or prepend, never overwrite
+export PATH=$PATH:/new/dir        # Append
+export PATH=/new/dir:$PATH        # Prepend
+
+# If PATH is broken, restore it:
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+</code></pre>
+<p><strong>Troubleshooting Checklist:</strong></p>
+<p><strong>For Variable Issues:</strong></p>
+<pre><code class="language-bash"># 1. Check if variable exists
+echo $VARIABLE_NAME
+
+# 2. Check if it's exported (environment variable)
+export | grep VARIABLE_NAME
+printenv VARIABLE_NAME
+
+# 3. Check configuration files
+grep -r &quot;VARIABLE_NAME&quot; ~/.bashrc ~/.bash_profile /etc/profile
+
+# 4. Verify syntax (no spaces around =)
+# 5. Use double quotes if variable contains spaces
+# 6. Use curly braces for clarity: ${VARIABLE}
+</code></pre>
+<p><strong>For PATH Issues:</strong></p>
+<pre><code class="language-bash"># 1. View current PATH
+echo $PATH
+
+# 2. Check for duplicates
+echo $PATH | tr ':' '\n' | sort | uniq -d
+
+# 3. Find where PATH is being set
+grep -rn &quot;PATH=&quot; ~/.bashrc ~/.bash_profile /etc/profile
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Command Aliases Fundamentals</h2>
+<p>What are command aliases, how do they differ from variables, and what is the correct syntax for creating them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What Are Aliases:</strong>
+Command aliases are user-defined shortcuts that represent longer, more complex commands with their options and arguments.</p>
+<p><strong>Purpose:</strong>
+- Reduce typing for frequently-used commands
+- Create memorable shortcuts for complex command sequences
+- Customize command-line environment
+- Prevent errors by standardizing command options</p>
+<p><strong>Aliases vs. Variables:</strong></p>
+<p>| Feature | Aliases | Variables |
+|---------|---------|-----------|
+| Purpose | Shortcut for commands | Store information |
+| Function | Execute as commands | Hold values |
+| Example | <code>alias ll='ls -la'</code> | <code>USER=kgarcia</code> |
+| Usage | Command substitution | Value retrieval |</p>
+<p><strong>Correct Syntax:</strong></p>
+<pre><code class="language-bash">alias name='command with options'
+</code></pre>
+<p><strong>Critical Syntax Rules:</strong></p>
+<p><strong>1. No Spaces Around Equals Sign</strong></p>
+<pre><code class="language-bash"># CORRECT:
+alias ll='ls -la'
+
+# INCORRECT:
+alias ll = 'ls -la'
+</code></pre>
+<p><strong>2. Quote the Command</strong></p>
+<pre><code class="language-bash">alias myls='ls -al'
+</code></pre>
+<p><strong>3. Use Meaningful Names</strong></p>
+<pre><code class="language-bash"># Good:
+alias ll='ls -la'
+alias cls='clear'
+
+# Poor:
+alias x='ls -la'
+</code></pre>
+<p><strong>Creating and Using Aliases:</strong></p>
+<pre><code class="language-bash"># Create
+alias myls='ls -al'
+
+# Use (shell expands to 'ls -al')
+myls
+
+# View all aliases
+alias
+
+# View specific alias
+alias myls
+</code></pre>
+<p><strong>Key Distinction from Variables:</strong>
+- <strong>Variables</strong> store values: <code>BACKUP_DIR=/backup</code> then <code>cp file $BACKUP_DIR</code>
+- <strong>Aliases</strong> substitute commands: <code>alias backup='cp file /backup'</code> then <code>backup</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Practical Command Aliases</h2>
+<p>Provide examples of practical, commonly-used command aliases and explain their benefits in real-world usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Enhanced Directory Listings:</strong></p>
+<pre><code class="language-bash">alias ll='ls -alh'              # All files, long format, human-readable
+alias la='ls -A'                 # All except . and ..
+alias lr='ls -ltrh'              # Sort by time, newest last
+alias lsize='ls -lSrh'           # Sort by size
+</code></pre>
+<p><strong>Quick Navigation:</strong></p>
+<pre><code class="language-bash">alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias home='cd ~'
+alias docs='cd ~/Documents'
+</code></pre>
+<p><strong>Human-Readable Disk Usage:</strong></p>
+<pre><code class="language-bash">alias du='du -h'                 # Disk usage in GB/MB
+alias df='df -h'                 # Disk free in GB/MB
+alias dus='du -sh'               # Summary only
+</code></pre>
+<p><strong>Limited Ping (Non-Continuous):</strong></p>
+<pre><code class="language-bash">alias ping='ping -c 5'
+# By default, Linux ping runs continuously
+# This alias stops after 5 packets automatically
+</code></pre>
+<p><strong>Safety Aliases (Prevent Accidents):</strong></p>
+<pre><code class="language-bash">alias rm='rm -i'                 # Confirm before delete
+alias cp='cp -i'                 # Confirm before overwrite
+alias mv='mv -i'                 # Confirm before overwrite
+</code></pre>
+<p><strong>Quick Screen Clear:</strong></p>
+<pre><code class="language-bash">alias c='clear'
+alias cls='clear'
+</code></pre>
+<p><strong>Git Workflow:</strong></p>
+<pre><code class="language-bash">alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+</code></pre>
+<p><strong>System Information:</strong></p>
+<pre><code class="language-bash">alias meminfo='free -h'
+alias ports='netstat -tulanp'
+alias topcpu='ps aux | sort -nrk 3 | head'
+</code></pre>
+<p><strong>Project Management:</strong></p>
+<pre><code class="language-bash">alias mk-proj='mkdir ~/projects'
+alias goto-proj='cd ~/projects'
+</code></pre>
+<p><strong>Benefits:</strong>
+- Reduces repetitive typing
+- Standardizes command options
+- Prevents common mistakes
+- Speeds up workflow
+- Makes commands more user-friendly</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Alias Persistence and Management</h2>
+<p>How do you make aliases persistent across sessions, remove them, and what are the scope limitations of aliases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Default Alias Behavior:</strong>
+- Exist only in current shell session
+- Lost when you log out
+- User-specific (not shared with other users)
+- Not inherited by subshells</p>
+<p><strong>Making Aliases Persistent:</strong></p>
+<p><strong>Method 1: Add to ~/.bashrc (Recommended)</strong></p>
+<pre><code class="language-bash"># Edit .bashrc
+vim ~/.bashrc
+
+# Add aliases:
+alias ll='ls -alh'
+alias c='clear'
+alias ..='cd ..'
+
+# Save and apply
+source ~/.bashrc
+</code></pre>
+<p><strong>Method 2: Create ~/.bash_aliases (Cleaner)</strong></p>
+<pre><code class="language-bash"># Create dedicated alias file
+vim ~/.bash_aliases
+
+# Add all your aliases here
+alias ll='ls -alh'
+alias du='du -h'
+alias df='df -h'
+
+# Ensure .bashrc sources this file:
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# Apply
+source ~/.bashrc
+</code></pre>
+<p><strong>Removing Aliases:</strong></p>
+<p><strong>Remove Single Alias:</strong></p>
+<pre><code class="language-bash">unalias myalias
+</code></pre>
+<p><strong>Remove Multiple Aliases:</strong></p>
+<pre><code class="language-bash">unalias ll la l
+</code></pre>
+<p><strong>Remove All Aliases:</strong></p>
+<pre><code class="language-bash">unalias -a
+</code></pre>
+<p><strong>Bypass Alias Temporarily (Without Removing):</strong></p>
+<pre><code class="language-bash"># Three methods:
+\ls                      # Backslash prefix
+/bin/ls                  # Full path
+command ls               # Command builtin
+</code></pre>
+<p><strong>Viewing Aliases:</strong></p>
+<pre><code class="language-bash">alias                    # View all aliases
+alias ll                 # View specific alias
+type ll                  # Check if command is aliased
+</code></pre>
+<p><strong>System-Wide Aliases (All Users):</strong></p>
+<pre><code class="language-bash"># Requires root - affects everyone
+sudo vim /etc/bashrc
+# Or: /etc/bash.bashrc (distribution-dependent)
+
+# Add aliases
+alias ll='ls -alh'
+</code></pre>
+<p><strong>Scope Limitations:</strong>
+- Aliases don't work in non-interactive shells by default
+- Not expanded in scripts unless <code>shopt -s expand_aliases</code> is used
+- Better to use functions instead of aliases in scripts</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Command History Variables</h2>
+<p>Explain the difference between HISTSIZE and HISTFILESIZE, and how command history storage works in Bash.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two Separate History Storage Locations:</strong></p>
+<p><strong>1. In-Memory History (HISTSIZE)</strong>
+- Storage: RAM during current session
+- Variable: <code>HISTSIZE</code>
+- Access: Arrow keys, Ctrl+R
+- Persistence: Lost when shell exits (unless saved)
+- Purpose: Quick command recall during session</p>
+<p><strong>2. Persistent History File (HISTFILESIZE)</strong>
+- Storage: <code>~/.bash_history</code> file on disk
+- Variable: <code>HISTFILESIZE</code>
+- Access: <code>history</code> command, file viewing
+- Persistence: Survives reboots and logouts
+- Purpose: Long-term command tracking</p>
+<p><strong>Key Differences:</strong></p>
+<p>| Aspect | HISTSIZE | HISTFILESIZE |
+|--------|----------|--------------|
+| Location | Memory (RAM) | Disk (~/.bash_history) |
+| Survives | Session only | Reboots |
+| Controls | In-memory buffer | Persistent file |
+| Default | 500-1000 | 1000-2000 |</p>
+<p><strong>How They Work Together:</strong></p>
+<p><strong>Session Start:</strong> Load history from <code>~/.bash_history</code> → Memory
+<strong>During Session:</strong> Commands stored in memory (HISTSIZE limit)
+<strong>Session End:</strong> Write memory to <code>~/.bash_history</code> (HISTFILESIZE limit)</p>
+<p><strong>Configuration Examples:</strong></p>
+<p><strong>View Current Settings:</strong></p>
+<pre><code class="language-bash">echo $HISTSIZE           # In-memory
+echo $HISTFILESIZE       # File
+</code></pre>
+<p><strong>Standard Configuration:</strong></p>
+<pre><code class="language-bash">HISTSIZE=1000
+export HISTFILESIZE=2000
+</code></pre>
+<p><strong>Power User Configuration:</strong></p>
+<pre><code class="language-bash">HISTSIZE=5000
+export HISTFILESIZE=10000
+</code></pre>
+<p><strong>Security Configuration (Minimal History):</strong></p>
+<pre><code class="language-bash">HISTSIZE=0
+export HISTFILESIZE=0
+</code></pre>
+<p><strong>Best Practice:</strong>
+Set <code>HISTFILESIZE ≥ HISTSIZE</code> to ensure all session commands are saved.</p>
+<p><strong>Making Permanent:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+echo 'HISTSIZE=5000' &gt;&gt; ~/.bashrc
+echo 'export HISTFILESIZE=10000' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>HISTCONTROL Variable</h2>
+<p>What is the HISTCONTROL variable, what are its different options, and how do they affect command history management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> HISTCONTROL controls how duplicate commands and space-prefixed commands are handled in history.</p>
+<p><strong>HISTCONTROL Options:</strong></p>
+<p><strong>1. ignoredups - Ignore Consecutive Duplicates</strong></p>
+<pre><code class="language-bash">export HISTCONTROL=ignoredups
+</code></pre>
+<ul>
+<li>Removes consecutive duplicate commands</li>
+<li>Does NOT remove non-consecutive duplicates</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"># Commands: whoami, whoami, ls, whoami
+# History shows: whoami, ls, whoami
+</code></pre>
+<p><strong>2. ignorespace - Ignore Space-Prefixed Commands</strong></p>
+<pre><code class="language-bash">export HISTCONTROL=ignorespace
+</code></pre>
+<ul>
+<li>Commands starting with space are NOT saved</li>
+<li>Useful for sensitive commands (passwords, API keys)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"> mysql -u admin -p SecretPassword
+# This command won't appear in history (note leading space)
+</code></pre>
+<p><strong>3. ignoreboth - Combine Both</strong></p>
+<pre><code class="language-bash">export HISTCONTROL=ignoreboth
+</code></pre>
+<ul>
+<li>Ignores consecutive duplicates</li>
+<li>Ignores space-prefixed commands</li>
+<li><strong>Most commonly recommended setting</strong></li>
+</ul>
+<p><strong>4. erasedups - Remove ALL Duplicates</strong></p>
+<pre><code class="language-bash">export HISTCONTROL=erasedups
+</code></pre>
+<ul>
+<li>When command is entered, removes ALL previous instances</li>
+<li>Only most recent instance remains</li>
+<li>Keeps history completely duplicate-free</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"># Commands: ls, cd /tmp, whoami, ls, cat file, ls
+# History shows: cd /tmp, whoami, cat file, ls (only last 'ls')
+</code></pre>
+<p><strong>Combining Options:</strong></p>
+<pre><code class="language-bash">export HISTCONTROL=ignoreboth:erasedups
+# Combines multiple features
+</code></pre>
+<p><strong>Default Behavior (Without HISTCONTROL):</strong>
+Every command is saved, including all duplicates:</p>
+<pre><code class="language-bash"># History shows:
+715  whoami
+716  whoami
+717  whoami  # All three saved
+</code></pre>
+<p><strong>Recommended Configuration:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+export HISTCONTROL=ignoreboth
+</code></pre>
+<p><strong>Benefits:</strong>
+- Cleaner history (no consecutive duplicates)
+- Privacy for sensitive commands (space prefix)
+- More useful command history overall</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Additional History Configuration</h2>
+<p>What are HISTTIMEFORMAT, HISTIGNORE, and the histappend option, and how do they enhance command history management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>HISTTIMEFORMAT - Add Timestamps to History</strong></p>
+<p><strong>Purpose:</strong> Records the date and time each command was executed.</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-bash">export HISTTIMEFORMAT=&quot;%F %T &quot;
+# %F = Date (YYYY-MM-DD)
+# %T = Time (HH:MM:SS)
+# Trailing space for formatting
+</code></pre>
+<p><strong>Output Example:</strong></p>
+<pre><code class="language-bash">history
+# Shows:
+1  2025-11-16 10:30:25  ls -la
+2  2025-11-16 10:31:10  cd /var/log
+3  2025-11-16 10:32:45  tail -f syslog
+</code></pre>
+<p><strong>Benefits:</strong>
+- Track when commands were run
+- Useful for troubleshooting
+- Audit trail for security/compliance
+- Reconstruct sequences of events</p>
+<p><strong>HISTIGNORE - Exclude Specific Commands</strong></p>
+<p><strong>Purpose:</strong> Prevents specified commands from being saved to history.</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-bash">export HISTIGNORE=&quot;ls:ll:cd:pwd:clear:history:exit&quot;
+# Colon-separated list
+</code></pre>
+<p><strong>Effect:</strong>
+Commands listed in HISTIGNORE won't appear in history at all.</p>
+<p><strong>Use Cases:</strong>
+- Exclude common, low-value commands
+- Keep history focused on important commands
+- Reduce history clutter</p>
+<p><strong>histappend - Preserve Multi-Terminal History</strong></p>
+<p><strong>Purpose:</strong> Append to history file instead of overwriting it.</p>
+<p><strong>Enable:</strong></p>
+<pre><code class="language-bash">shopt -s histappend
+</code></pre>
+<p><strong>Problem Without histappend:</strong>
+- Multiple terminal sessions overwrite each other's history
+- Last terminal to close overwrites file
+- Lose history from other terminals</p>
+<p><strong>Solution With histappend:</strong>
+- Each terminal appends its history to file
+- Preserves commands from all sessions
+- No lost history</p>
+<p><strong>Comprehensive History Configuration:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+
+# Command count settings
+HISTSIZE=5000
+export HISTFILESIZE=10000
+
+# Duplicate and space handling
+export HISTCONTROL=ignoreboth
+
+# Add timestamps
+export HISTTIMEFORMAT=&quot;%F %T &quot;
+
+# Exclude common commands
+export HISTIGNORE=&quot;ls:ll:cd:pwd:clear:history&quot;
+
+# Append instead of overwrite
+shopt -s histappend
+</code></pre>
+<p><strong>Benefits:</strong>
+- Extended history (HISTSIZE/HISTFILESIZE)
+- Clean history (HISTCONTROL)
+- Timestamped entries (HISTTIMEFORMAT)
+- Focused history (HISTIGNORE)
+- Multi-terminal safety (histappend)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>History Command Usage</h2>
+<p>How do you use the <code>history</code> command to view, search, and re-execute commands, and what are the various methods for command recall?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Viewing Command History:</strong></p>
+<p><strong>Basic History Display:</strong></p>
+<pre><code class="language-bash">history
+# Shows all commands with numbers
+
+# Output example:
+715  cd /var/log
+716  tail -f syslog
+717  grep &quot;error&quot; syslog
+</code></pre>
+<p><strong>View Last N Commands:</strong></p>
+<pre><code class="language-bash">history 20         # Show last 20 commands
+history 5          # Show last 5 commands
+</code></pre>
+<p><strong>Search History:</strong></p>
+<pre><code class="language-bash"># Search for specific command
+history | grep &quot;docker&quot;
+history | grep &quot;nginx&quot;
+</code></pre>
+<p><strong>Re-Executing Commands:</strong></p>
+<p><strong>Method 1: By Number</strong></p>
+<pre><code class="language-bash"># Execute command number 715
+!715
+
+# Example workflow:
+history | grep &quot;docker&quot;
+# Find: 832  docker ps -a
+!832
+# Re-executes: docker ps -a
+</code></pre>
+<p><strong>Method 2: Last Command</strong></p>
+<pre><code class="language-bash">!!                 # Execute last command
+
+# Example:
+sudo !!            # Run last command with sudo
+</code></pre>
+<p><strong>Method 3: By Pattern (Beginning)</strong></p>
+<pre><code class="language-bash">!grep             # Execute most recent command starting with &quot;grep&quot;
+!cd               # Execute most recent &quot;cd&quot; command
+!docker           # Execute most recent &quot;docker&quot; command
+</code></pre>
+<p><strong>Method 4: By Pattern (Containing)</strong></p>
+<pre><code class="language-bash">!?error           # Execute most recent command containing &quot;error&quot;
+!?nginx           # Execute most recent command containing &quot;nginx&quot;
+</code></pre>
+<p><strong>Arrow Key Navigation:</strong></p>
+<p><strong>Up Arrow:</strong>
+- Press once: Show previous command
+- Press repeatedly: Scroll backward through history</p>
+<p><strong>Down Arrow:</strong>
+- Scroll forward through history</p>
+<p><strong>Ctrl+R (Reverse Search) - Most Powerful:</strong></p>
+<pre><code class="language-bash"># Press Ctrl+R
+(reverse-i-search)`': 
+
+# Type search term
+(reverse-i-search)`dock': docker ps -a
+
+# Press Ctrl+R again to find next match
+# Press Enter to execute
+# Press Esc to cancel and edit
+</code></pre>
+<p><strong>Advanced History Manipulation:</strong></p>
+<p><strong>Access Previous Command Arguments:</strong></p>
+<pre><code class="language-bash">!$                # Last argument of previous command
+!*                # All arguments of previous command
+!^                # First argument of previous command
+
+# Example:
+cat /var/log/syslog
+vim !$            # Opens: vim /var/log/syslog
+</code></pre>
+<p><strong>Substitute in Previous Command:</strong></p>
+<pre><code class="language-bash">^old^new          # Replace 'old' with 'new' in last command
+
+# Example:
+cat /var/log/messages
+^messages^syslog  # Executes: cat /var/log/syslog
+</code></pre>
+<p><strong>Managing History:</strong></p>
+<p><strong>Clear History:</strong></p>
+<pre><code class="language-bash"># Clear in-memory history (current session)
+history -c
+
+# Clear history file
+cat /dev/null &gt; ~/.bash_history
+
+# Clear both
+history -c &amp;&amp; &gt; ~/.bash_history
+</code></pre>
+<p><strong>Delete Specific Entry:</strong></p>
+<pre><code class="language-bash"># Delete command 715
+history -d 715
+</code></pre>
+<p><strong>History Navigation Shortcuts:</strong></p>
+<p>| Shortcut | Function |
+|----------|----------|
+| Up Arrow | Previous command |
+| Down Arrow | Next command |
+| Ctrl+R | Reverse search |
+| Ctrl+P | Previous command (same as Up) |
+| Ctrl+N | Next command (same as Down) |
+| !! | Last command |
+| !n | Command number n |
+| !string | Last command starting with string |
+| !?string | Last command containing string |</p>
+<p><strong>Best Practices:</strong>
+1. Use Ctrl+R for quick search (most efficient)
+2. Use arrow keys for recent commands
+3. Use history numbers for specific commands
+4. Configure HISTTIMEFORMAT for timestamps
+5. Set adequate HISTSIZE and HISTFILESIZE</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multi-Terminal History Management</h2>
+<p>Explain the problem of history conflicts when using multiple terminal windows simultaneously, and how the <code>histappend</code> option solves this issue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The Problem: History Overwriting</strong></p>
+<p><strong>Default Bash Behavior (Without histappend):</strong>
+When you close a terminal, Bash <strong>overwrites</strong> <code>~/.bash_history</code> with the current session's history.</p>
+<p><strong>Scenario Without histappend:</strong></p>
+<p><strong>Terminal 1:</strong></p>
+<pre><code class="language-bash">ls /var/log
+cd /etc
+vim hosts
+</code></pre>
+<p><strong>Terminal 2:</strong></p>
+<pre><code class="language-bash">docker ps
+git status
+systemctl status nginx
+</code></pre>
+<p><strong>What Happens:</strong></p>
+<p><strong>If you close Terminal 1 first:</strong>
+- Terminal 1 history written to <code>~/.bash_history</code></p>
+<p><strong>Then close Terminal 2:</strong>
+- Terminal 2 <strong>OVERWRITES</strong> <code>~/.bash_history</code>
+- <strong>Terminal 1's history is LOST</strong></p>
+<p><strong>The Solution: histappend</strong></p>
+<p><strong>Enable History Appending:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+shopt -s histappend
+</code></pre>
+<p><strong>What histappend Does:</strong>
+Instead of overwriting <code>~/.bash_history</code>, each terminal <strong>appends</strong> its history to the file when closing.</p>
+<p><strong>With histappend:</strong></p>
+<p><strong>Terminal 1 closes:</strong>
+- Appends to <code>~/.bash_history</code></p>
+<p><strong>Terminal 2 closes:</strong>
+- <strong>APPENDS</strong> to <code>~/.bash_history</code> (doesn't overwrite)</p>
+<p><strong>Result:</strong> All history preserved from all terminals.</p>
+<p><strong>Visualization:</strong></p>
+<p><strong>Without histappend (Overwrite Mode):</strong></p>
+<pre><code>~/.bash_history:
+[Initial: commands 1-100]
+
+Terminal A closes:
+[Overwritten: only Terminal A's commands]
+
+Terminal B closes:
+[Overwritten: only Terminal B's commands]
+Result: Lost Terminal A's history!
+</code></pre>
+<p><strong>With histappend (Append Mode):</strong></p>
+<pre><code>~/.bash_history:
+[Initial: commands 1-100]
+
+Terminal A closes:
+[Appended: commands 1-100 + Terminal A commands]
+
+Terminal B closes:
+[Appended: commands 1-100 + Terminal A + Terminal B commands]
+Result: All history preserved!
+</code></pre>
+<p><strong>Configuration:</strong></p>
+<p><strong>Enable in ~/.bashrc:</strong></p>
+<pre><code class="language-bash"># Append to history file, don't overwrite
+shopt -s histappend
+</code></pre>
+<p><strong>Verify It's Enabled:</strong></p>
+<pre><code class="language-bash">shopt | grep histappend
+# Output: histappend      on
+</code></pre>
+<p><strong>Complete Recommended History Configuration:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+
+# Append instead of overwrite
+shopt -s histappend
+
+# History sizes
+HISTSIZE=5000
+export HISTFILESIZE=10000
+
+# Clean history
+export HISTCONTROL=ignoreboth
+
+# Add timestamps
+export HISTTIMEFORMAT=&quot;%F %T &quot;
+</code></pre>
+<p><strong>Advanced: Real-Time History Sharing</strong></p>
+<p><strong>For immediate history syncing across terminals:</strong></p>
+<pre><code class="language-bash"># Add to ~/.bashrc
+PROMPT_COMMAND=&quot;history -a; history -n; $PROMPT_COMMAND&quot;
+</code></pre>
+<p><strong>What This Does:</strong>
+- <code>history -a</code> - Append current session's new commands to file
+- <code>history -n</code> - Read new commands from file into current session
+- Commands from Terminal 1 become immediately available in Terminal 2</p>
+<p><strong>Why histappend Should Always Be Enabled:</strong>
+1. Prevents data loss from multiple terminals
+2. No downside - only appends
+3. Standard practice for all users
+4. Disaster recovery - terminal crashes don't lose all history
+5. Productivity - access commands from all work sessions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The /etc/login.defs File</h2>
+<p>What is the /etc/login.defs file, what are the four core password configuration settings it contains, and what is a critical limitation when modifying this file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> <code>/etc/login.defs</code> is the system-wide configuration file that defines default account creation settings and password policies.</p>
+<p><strong>Four Core Password Configuration Settings:</strong></p>
+<p><strong>1. PASS_MAX_DAYS</strong>
+- Maximum days before password change required
+- Example: <code>PASS_MAX_DAYS 90</code> (quarterly password changes)
+- Forces regular password rotation</p>
+<p><strong>2. PASS_MIN_DAYS</strong>
+- Minimum days before password can be changed again
+- Example: <code>PASS_MIN_DAYS 1</code> (must wait 1 day)
+- Prevents immediate password cycling back to old password</p>
+<p><strong>3. PASS_WARN_AGE</strong>
+- Days before expiration to display warning
+- Example: <code>PASS_WARN_AGE 7</code> (one week warning)
+- Gives users advance notice to change password</p>
+<p><strong>4. PASS_MIN_LEN</strong>
+- Minimum characters required for password
+- Example: <code>PASS_MIN_LEN 12</code> (12-character minimum)
+- Basic password length requirement
+- <strong>Note:</strong> Often superseded by PAM configuration on modern systems</p>
+<p><strong>Example Configuration:</strong></p>
+<pre><code class="language-bash"># View password settings
+grep &quot;^PASS&quot; /etc/login.defs
+
+# Typical output:
+PASS_MAX_DAYS   90
+PASS_MIN_DAYS   1
+PASS_WARN_AGE   7
+PASS_MIN_LEN    8
+</code></pre>
+<p><strong>Modifying the File:</strong></p>
+<pre><code class="language-bash"># Backup first
+sudo cp /etc/login.defs /etc/login.defs.backup
+
+# Edit with root privileges
+sudo vim /etc/login.defs
+
+# Modify settings
+PASS_MAX_DAYS   120
+PASS_MIN_DAYS   1
+PASS_WARN_AGE   5
+PASS_MIN_LEN    12
+</code></pre>
+<p><strong>CRITICAL LIMITATION:</strong></p>
+<p>Changes to <code>/etc/login.defs</code> apply ONLY to:
+- New user accounts created AFTER the change
+- New passwords set AFTER the change</p>
+<p>Changes DO NOT automatically affect:
+- Existing user accounts
+- Current passwords already in use</p>
+<p><strong>Solution:</strong> Use <code>chage</code> command to update existing users:</p>
+<pre><code class="language-bash"># Apply new policy to existing user
+sudo chage -m 1 -M 120 -W 5 username
+</code></pre>
+<p><strong>Additional Settings in /etc/login.defs:</strong>
+- UID/GID ranges
+- Home directory defaults
+- Default shell
+- Password encryption method
+- Default umask</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The chage Command</h2>
+<p>What is the <code>chage</code> command, what are its primary options, and provide examples of practical use cases for password management.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> The <code>chage</code> (change age) command manages password aging information for individual user accounts.</p>
+<p><strong>Why It's Essential:</strong> Required to update password policies for existing users (since <code>/etc/login.defs</code> only affects new accounts).</p>
+<p><strong>Primary Options:</strong></p>
+<p><strong>-l (list)</strong> - Display current password aging information</p>
+<pre><code class="language-bash">chage -l kgarcia
+</code></pre>
+<p>Shows: last change date, expiration date, minimum/maximum days, warning period</p>
+<p><strong>-M (uppercase M)</strong> - Set maximum days between password changes</p>
+<pre><code class="language-bash">sudo chage -M 120 kgarcia
+# Password must be changed every 120 days
+</code></pre>
+<p><strong>-m (lowercase m)</strong> - Set minimum days between password changes</p>
+<pre><code class="language-bash">sudo chage -m 1 kgarcia
+# Must wait 1 day before changing password again
+</code></pre>
+<p><strong>-W (uppercase W)</strong> - Set warning days before expiration</p>
+<pre><code class="language-bash">sudo chage -W 5 kgarcia
+# User warned 5 days before password expires
+</code></pre>
+<p><strong>-E (uppercase E)</strong> - Set account expiration date</p>
+<pre><code class="language-bash">sudo chage -E 2025-12-31 kgarcia
+# Account locks on December 31, 2025
+</code></pre>
+<p>Use <code>-E -1</code> to remove expiration date.</p>
+<p><strong>-d</strong> - Set last password change date (force immediate change with 0)</p>
+<pre><code class="language-bash">sudo chage -d 0 kgarcia
+# Force password change at next login
+</code></pre>
+<p><strong>Practical Examples:</strong></p>
+<p><strong>Example 1: View User's Password Settings</strong></p>
+<pre><code class="language-bash">sudo chage -l kgarcia
+</code></pre>
+<p><strong>Example 2: Implement Company Password Policy</strong>
+Company requires: 120 days max, 1 day min, 5 days warning</p>
+<pre><code class="language-bash">sudo chage -m 1 -M 120 -W 5 kgarcia
+</code></pre>
+<p><strong>Example 3: Force Immediate Password Change</strong></p>
+<pre><code class="language-bash">sudo chage -d 0 kgarcia
+# User must change password at next login
+</code></pre>
+<p><strong>Example 4: Set Temporary Account (Contractor)</strong>
+Contractor's 6-month contract ends June 30, 2026</p>
+<pre><code class="language-bash">sudo chage -E 2026-06-30 contractor_user
+sudo chage -M 60 contractor_user
+</code></pre>
+<p><strong>Example 5: Configure Multiple Settings at Once</strong></p>
+<pre><code class="language-bash">sudo chage -m 2 -M 90 -W 7 -E 2026-12-31 newuser
+</code></pre>
+<p><strong>Breakdown:</strong>
+- <code>-m 2</code>: Must wait 2 days between changes
+- <code>-M 90</code>: Password expires every 90 days
+- <code>-W 7</code>: 7-day warning before expiration
+- <code>-E 2026-12-31</code>: Account expires on Dec 31, 2026</p>
+<p><strong>Requires:</strong> Root privileges (sudo) to modify other users.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The passwd Command</h2>
+<p>What is the <code>passwd</code> command, what are its primary options, and how is it used for password and account management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Purpose:</strong> The <code>passwd</code> command manages user account passwords, including setting, locking, unlocking, and expiring passwords.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre><code class="language-bash">passwd                    # Change your own password
+sudo passwd username      # Change another user's password (requires root)
+</code></pre>
+<p><strong>Primary Options:</strong></p>
+<p><strong>-d</strong> - Delete password and disable account</p>
+<pre><code class="language-bash">sudo passwd -d username
+</code></pre>
+<ul>
+<li>Removes password completely</li>
+<li>Account becomes disabled</li>
+<li><strong>Destructive operation</strong> - password cannot be recovered</li>
+</ul>
+<p><strong>-e</strong> - Expire password immediately</p>
+<pre><code class="language-bash">sudo passwd -e username
+</code></pre>
+<ul>
+<li>Password expires right away</li>
+<li>User MUST change password at next login</li>
+<li>Cannot log in without changing password</li>
+<li>Used for: new accounts, security incidents, forced resets</li>
+</ul>
+<p><strong>-l (lowercase L)</strong> - Lock account</p>
+<pre><code class="language-bash">sudo passwd -l username
+</code></pre>
+<ul>
+<li>Account temporarily disabled</li>
+<li>Adds <code>!</code> prefix to password hash in <code>/etc/shadow</code></li>
+<li>Password remains intact but unusable</li>
+<li>Can be unlocked later with <code>-u</code></li>
+</ul>
+<p><strong>How locking works:</strong></p>
+<pre><code class="language-bash"># Before: kgarcia:$6$hash...:18900:0:99999:7:::
+# After:  kgarcia:!$6$hash...:18900:0:99999:7:::
+</code></pre>
+<p><strong>-u</strong> - Unlock account</p>
+<pre><code class="language-bash">sudo passwd -u username
+</code></pre>
+<ul>
+<li>Removes <code>!</code> prefix from password hash</li>
+<li>Restores access with original password</li>
+<li>Reverses <code>-l</code> lock operation</li>
+</ul>
+<p><strong>Practical Examples:</strong></p>
+<p><strong>Example 1: Change Own Password</strong></p>
+<pre><code class="language-bash">passwd
+# Prompts for current password, then new password twice
+</code></pre>
+<p><strong>Example 2: Admin Sets User Password</strong></p>
+<pre><code class="language-bash">sudo passwd newuser
+# Sets password without knowing current password
+</code></pre>
+<p><strong>Example 3: Force New User to Change Password</strong></p>
+<pre><code class="language-bash">sudo useradd -m newuser
+sudo passwd newuser
+sudo passwd -e newuser
+# User must change password at first login
+</code></pre>
+<p><strong>Example 4: Temporary Account Lock (Employee Leave)</strong></p>
+<pre><code class="language-bash"># Lock account
+sudo passwd -l employee
+
+# Later, unlock when they return
+sudo passwd -u employee
+</code></pre>
+<p><strong>Example 5: Security Incident Response</strong></p>
+<pre><code class="language-bash"># Immediately expire compromised password
+sudo passwd -e compromised_user
+
+# Or lock account during investigation
+sudo passwd -l compromised_user
+</code></pre>
+<p><strong>Example 6: Disable Old Account</strong></p>
+<pre><code class="language-bash">sudo passwd -d olduser
+sudo chage -E 0 olduser
+</code></pre>
+<p><strong>Root Capabilities:</strong>
+- Root can change any user's password
+- Root doesn't need to know current password
+- Root can lock/unlock any account</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Account Locking vs Password Deletion</h2>
+<p>What is the difference between locking an account with <code>passwd -l</code> and deleting a password with <code>passwd -d</code>, and when should each be used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two Different Operations:</strong></p>
+<p><strong>1. Locking an Account: <code>passwd -l</code></strong></p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">sudo passwd -l username
+</code></pre>
+<p><strong>What It Does:</strong>
+- Temporarily disables the account
+- Adds <code>!</code> or <code>!!</code> prefix to password hash in <code>/etc/shadow</code>
+- Password remains intact but is unusable
+- <strong>Can be reversed</strong> with <code>passwd -u</code></p>
+<p><strong>How It Works:</strong></p>
+<pre><code class="language-bash"># Before locking:
+username:$6$randomhash...:18900:0:99999:7:::
+
+# After locking:
+username:!$6$randomhash...:18900:0:99999:7:::
+</code></pre>
+<p><strong>Effect:</strong>
+- User cannot log in with password
+- Password authentication disabled
+- Account is suspended
+- Original password preserved underneath</p>
+<p><strong>Use Cases:</strong>
+- Temporary account suspension (employee on leave)
+- Investigation of security issues
+- Preventing access during maintenance
+- Reversible account restrictions</p>
+<p><strong>Unlocking:</strong></p>
+<pre><code class="language-bash">sudo passwd -u username
+# Removes the ! prefix
+# User can log in with original password
+</code></pre>
+<p><strong>2. Deleting a Password: <code>passwd -d</code></strong></p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">sudo passwd -d username
+</code></pre>
+<p><strong>What It Does:</strong>
+- <strong>Permanently removes</strong> the password from <code>/etc/shadow</code>
+- Account becomes disabled
+- Password cannot be recovered
+- <strong>Destructive operation</strong> - cannot be reversed</p>
+<p><strong>How It Works:</strong></p>
+<pre><code class="language-bash"># Before deleting:
+username:$6$randomhash...:18900:0:99999:7:::
+
+# After deleting:
+username::18900:0:99999:7:::
+# (password field is empty)
+</code></pre>
+<p><strong>Effect:</strong>
+- User cannot log in (no password exists)
+- Account effectively disabled
+- More severe than locking
+- Original password is gone forever</p>
+<p><strong>Use Cases:</strong>
+- Permanently disabling accounts
+- Security incidents requiring complete access removal
+- Accounts being decommissioned
+- Before account deletion</p>
+<p><strong>Comparison Table:</strong></p>
+<p>| Aspect | passwd -l (Lock) | passwd -d (Delete) |
+|--------|------------------|---------------------|
+| <strong>Reversible</strong> | Yes (passwd -u) | No |
+| <strong>Password Preserved</strong> | Yes (with ! prefix) | No (destroyed) |
+| <strong>Severity</strong> | Temporary suspension | Permanent removal |
+| <strong>Recovery</strong> | Simple unlock | Must set new password |
+| <strong>Use Case</strong> | Temporary suspension | Permanent deactivation |</p>
+<p><strong>Practical Scenarios:</strong></p>
+<p><strong>Scenario 1: Employee Leave of Absence</strong></p>
+<pre><code class="language-bash"># Lock account (reversible)
+sudo passwd -l employee
+
+# Employee returns - unlock
+sudo passwd -u employee
+# Employee uses same password as before
+</code></pre>
+<p><strong>Scenario 2: Employee Terminated</strong></p>
+<pre><code class="language-bash"># Delete password (permanent)
+sudo passwd -d former_employee
+
+# Also expire account
+sudo chage -E 0 former_employee
+
+# Later, if account needed again:
+sudo passwd former_employee
+# Must set entirely new password
+</code></pre>
+<p><strong>Scenario 3: Security Incident</strong></p>
+<pre><code class="language-bash"># Quick response - lock immediately
+sudo passwd -l compromised_user
+
+# After investigation, if account is clean:
+sudo passwd -u compromised_user
+
+# If compromised, force new password:
+sudo passwd -d compromised_user
+sudo passwd compromised_user
+</code></pre>
+<p><strong>Important Notes:</strong></p>
+<p><strong>Unlocking After Deletion Fails:</strong></p>
+<pre><code class="language-bash">sudo passwd -d username
+sudo passwd -u username
+# Error: unlocking the password would result in a passwordless account
+</code></pre>
+<p>Must set a new password:</p>
+<pre><code class="language-bash">sudo passwd username
+</code></pre>
+<p><strong>Best Practice:</strong>
+- Use <code>-l</code> for temporary situations (reversible)
+- Use <code>-d</code> for permanent situations (destructive)
+- Always consider whether you need to preserve the password
+- Document which method you use and why</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Aging Security Concepts</h2>
+<p>Explain the security rationale behind PASS_MIN_DAYS and how it prevents users from circumventing password policies.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>PASS_MIN_DAYS Purpose:</strong>
+Defines the minimum number of days that must pass before a user can change their password again.</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-bash">PASS_MIN_DAYS   1       # Must wait 1 day
+</code></pre>
+<p><strong>The Security Problem It Solves:</strong></p>
+<p><strong>Without PASS_MIN_DAYS (set to 0):</strong></p>
+<p>Many organizations maintain password history (remember last 5-10 passwords) to prevent password reuse. However, without PASS_MIN_DAYS, users can defeat this:</p>
+<pre><code>Day 1, 9:00 AM: Forced to change password from &quot;Winter2024!&quot;
+Day 1, 9:01 AM: Change to &quot;Temp1234&quot;
+Day 1, 9:02 AM: Change to &quot;Temp2345&quot;
+Day 1, 9:03 AM: Change to &quot;Temp3456&quot;
+Day 1, 9:04 AM: Change to &quot;Temp4567&quot;
+Day 1, 9:05 AM: Change to &quot;Temp5678&quot;
+Day 1, 9:06 AM: Change back to &quot;Winter2024!&quot;
+</code></pre>
+<p><strong>Result:</strong> User defeats password history policy by rapidly cycling through passwords in minutes.</p>
+<p><strong>With PASS_MIN_DAYS (set to 1):</strong></p>
+<pre><code>Day 1, 9:00 AM: Change password from &quot;Winter2024!&quot; to &quot;Spring2025!&quot;
+Day 1, 9:01 AM: Try to change password again
+System: &quot;You must wait longer to change your password&quot;
+Result: User must use &quot;Spring2025!&quot; for at least 1 day
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<p><strong>1. Enforces Password History:</strong>
+User can't quickly cycle through required number of unique passwords to return to old password.</p>
+<p><strong>2. Prevents Rapid Password Changes:</strong>
+Forces users to actually USE new passwords for a minimum period.</p>
+<p><strong>3. Supports Security Policies:</strong>
+Works with password history mechanisms to ensure password diversity over time.</p>
+<p><strong>Common Values:</strong></p>
+<p>| Value | Effect | Use Case |
+|-------|--------|----------|
+| 0 | Can change immediately | Not recommended (defeats password history) |
+| 1 | Wait 1 day | Standard security (most common) |
+| 7 | Wait 1 week | Stricter control |</p>
+<p><strong>Implementation:</strong></p>
+<p><strong>System-wide default:</strong></p>
+<pre><code class="language-bash"># In /etc/login.defs
+PASS_MIN_DAYS   1
+</code></pre>
+<p><strong>Per-user setting:</strong></p>
+<pre><code class="language-bash">sudo chage -m 1 username
+</code></pre>
+<p><strong>Verification:</strong></p>
+<pre><code class="language-bash">sudo chage -l username
+# Shows: Minimum number of days between password change: 1
+</code></pre>
+<p><strong>Real-World Scenario:</strong></p>
+<p><strong>Company Policy:</strong>
+- Remember last 5 passwords
+- PASS_MIN_DAYS = 1</p>
+<p><strong>What Happens:</strong>
+1. User must change password every 90 days
+2. Cannot reuse any of last 5 passwords
+3. Cannot change password more than once per day
+4. Takes 5 days minimum to cycle back to old password
+5. By day 5, the old password is likely forgotten or less relevant</p>
+<p><strong>Best Practice:</strong>
+Set PASS_MIN_DAYS to at least 1 day to prevent password policy circumvention through rapid password cycling.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forcing Immediate Password Changes</h2>
+<p>How do you force a user to change their password at next login, and what are common scenarios where this is necessary?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two Methods to Force Password Change:</strong></p>
+<p><strong>Method 1: Using <code>passwd -e</code></strong></p>
+<pre><code class="language-bash">sudo passwd -e username
+</code></pre>
+<ul>
+<li>Expires the password immediately</li>
+<li>User MUST change password at next login</li>
+<li>Cannot log in without changing password</li>
+</ul>
+<p><strong>Method 2: Using <code>chage -d 0</code></strong></p>
+<pre><code class="language-bash">sudo chage -d 0 username
+</code></pre>
+<ul>
+<li>Sets "last password change date" to epoch (day 0)</li>
+<li>System treats password as expired</li>
+<li>Same effect as <code>passwd -e</code></li>
+</ul>
+<p><strong>What the User Experiences:</strong></p>
+<p><strong>Login Attempt:</strong></p>
+<pre><code>login: username
+Password: [enters current password]
+
+You are required to change your password immediately (administrator enforced)
+Current password: [enters current password]
+New password: [enters new password]
+Retype new password: [confirms new password]
+
+Password changed successfully.
+[normal login proceeds]
+</code></pre>
+<p><strong>User Cannot:</strong>
+- Log in without changing password
+- Skip the password change
+- Use the system until new password is set</p>
+<p><strong>Common Scenarios:</strong></p>
+<p><strong>1. New User Account Setup</strong></p>
+<pre><code class="language-bash"># Create user
+sudo useradd -m newuser
+sudo passwd newuser
+# Force change at first login
+sudo passwd -e newuser
+</code></pre>
+<p><strong>Use Case:</strong> Administrator sets initial password, but user must choose their own.</p>
+<p><strong>2. Security Incident (Compromised Password)</strong></p>
+<pre><code class="language-bash">sudo passwd -e affected_user
+</code></pre>
+<p><strong>Use Case:</strong> Suspected password exposure, force immediate reset.</p>
+<p><strong>3. Password Reset by Administrator</strong></p>
+<pre><code class="language-bash"># Admin resets forgotten password
+sudo passwd username
+# Force user to set their own password
+sudo passwd -e username
+</code></pre>
+<p><strong>Use Case:</strong> Help desk resets password, user must personalize it.</p>
+<p><strong>4. Policy Compliance (Expired Passwords)</strong></p>
+<pre><code class="language-bash"># Force all users to comply with new password policy
+for user in alice bob carol david; do
+    sudo passwd -e $user
+done
+</code></pre>
+<p><strong>Use Case:</strong> Implementing new password requirements system-wide.</p>
+<p><strong>5. Bulk Account Setup</strong></p>
+<pre><code class="language-bash"># Script to create multiple accounts
+for user in user1 user2 user3; do
+    sudo useradd -m $user
+    echo &quot;$user:Temp1234&quot; | sudo chpasswd
+    sudo passwd -e $user
+done
+</code></pre>
+<p><strong>Use Case:</strong> Create many accounts with temporary passwords.</p>
+<p><strong>6. After System Compromise</strong></p>
+<pre><code class="language-bash"># Force all users to change passwords after breach
+sudo passwd -e --all
+</code></pre>
+<p><strong>Use Case:</strong> System-wide security incident response.</p>
+<p><strong>Verification:</strong></p>
+<pre><code class="language-bash"># Check if password is expired
+sudo chage -l username
+# Output shows:
+# Password expires: password must be changed
+</code></pre>
+<p><strong>Difference from Account Locking:</strong></p>
+<p><strong>Expired Password (passwd -e):</strong>
+- User can log in
+- Must change password during login
+- Not locked out completely
+- Can set new password themselves</p>
+<p><strong>Locked Account (passwd -l):</strong>
+- User cannot log in at all
+- Administrator must unlock
+- User cannot fix it themselves
+- Complete access denial</p>
+<p><strong>Best Practice Workflow:</strong></p>
+<p><strong>For New Users:</strong></p>
+<pre><code class="language-bash">sudo useradd -m newuser
+sudo passwd newuser          # Set initial password
+sudo passwd -e newuser       # Force change
+</code></pre>
+<p><strong>For Password Resets:</strong></p>
+<pre><code class="language-bash">sudo passwd username         # Reset to temporary password
+sudo passwd -e username      # Force change at next login
+# Communicate temporary password securely
+</code></pre>
+<p><strong>For Security Incidents:</strong></p>
+<pre><code class="language-bash">sudo passwd -e username      # Immediate expiration
+# User forced to change at next login
+</code></pre>
+<p><strong>Key Point:</strong> <code>passwd -e</code> is the standard, quickest way to force an immediate password change without locking the user out completely.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Temporary Account Expiration</h2>
+<p>How do you set an account to automatically expire on a specific date, and what are practical use cases for this feature?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Setting Account Expiration:</strong></p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">sudo chage -E YYYY-MM-DD username
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash"># Expire on December 31, 2025
+sudo chage -E 2025-12-31 contractor
+
+# Expire on June 30, 2026
+sudo chage -E 2026-06-30 intern
+
+# Expire immediately (today)
+sudo chage -E 0 username
+
+# Remove expiration (never expire)
+sudo chage -E -1 username
+</code></pre>
+<p><strong>What Happens When Account Expires:</strong></p>
+<p><strong>On Expiration Date:</strong>
+- User cannot log in
+- Authentication completely denied
+- Account is locked
+- No grace period</p>
+<p><strong>Login Attempt After Expiration:</strong></p>
+<pre><code>login: contractor
+Password: [enters password]
+Your account has expired; please contact your system administrator
+</code></pre>
+<p><strong>Practical Use Cases:</strong></p>
+<p><strong>1. Temporary Contractors</strong>
+Contractor hired for 6-month project ending June 30, 2026</p>
+<pre><code class="language-bash">sudo useradd -m contractor_smith
+sudo passwd contractor_smith
+sudo chage -E 2026-06-30 contractor_smith
+sudo chage -M 60 contractor_smith
+</code></pre>
+<p><strong>Result:</strong> Account automatically locks on June 30, no manual intervention needed.</p>
+<p><strong>2. Intern Programs</strong>
+Summer intern program runs June 1 - August 31</p>
+<pre><code class="language-bash">sudo useradd -m intern_maria
+sudo chage -E 2025-08-31 intern_maria
+</code></pre>
+<p><strong>3. Time-Limited Access (Vendors)</strong>
+External vendor needs 30-day access for project</p>
+<pre><code class="language-bash"># Calculate expiration date (30 days from now)
+EXPIRY=$(date -d &quot;+30 days&quot; +%Y-%m-%d)
+sudo chage -E $EXPIRY vendor_account
+</code></pre>
+<p><strong>4. Compliance Requirements</strong>
+Regulatory policy requires accounts to expire after 1 year of inactivity</p>
+<pre><code class="language-bash">sudo chage -E 2026-11-16 dormant_user
+</code></pre>
+<p><strong>5. Project-Based Access</strong>
+User needs access only for duration of specific project</p>
+<pre><code class="language-bash"># Project ends March 15, 2026
+sudo chage -E 2026-03-15 project_user
+</code></pre>
+<p><strong>Verification and Management:</strong></p>
+<p><strong>Check Expiration Status:</strong></p>
+<pre><code class="language-bash">sudo chage -l username
+# Output shows:
+# Account expires: Jun 30, 2026
+</code></pre>
+<p><strong>Extend Expiration:</strong></p>
+<pre><code class="language-bash"># Project extended by 3 months
+sudo chage -E 2026-09-30 contractor
+</code></pre>
+<p><strong>Remove Expiration:</strong></p>
+<pre><code class="language-bash"># Convert to permanent employee
+sudo chage -E -1 former_contractor
+</code></pre>
+<p><strong>Combining with Password Expiration:</strong></p>
+<p><strong>Complete Temporary Account Setup:</strong></p>
+<pre><code class="language-bash"># Create contractor account
+sudo useradd -m contractor_jones
+sudo passwd contractor_jones
+
+# Password policy: 60 days max, 1 day min, 7 day warning
+sudo chage -m 1 -M 60 -W 7 contractor_jones
+
+# Account expires when contract ends (Dec 31, 2025)
+sudo chage -E 2025-12-31 contractor_jones
+
+# Force initial password change
+sudo passwd -e contractor_jones
+</code></pre>
+<p><strong>Difference Between Account and Password Expiration:</strong></p>
+<p><strong>Password Expiration (PASS_MAX_DAYS or -M):</strong>
+- Password expires
+- User can log in but must change password
+- User can set new password themselves
+- Recoverable by user</p>
+<p><strong>Account Expiration (-E):</strong>
+- Entire account becomes inactive
+- User cannot log in at all
+- Administrator must intervene
+- Not recoverable by user</p>
+<p><strong>Reactivating Expired Accounts:</strong></p>
+<pre><code class="language-bash"># Remove expiration
+sudo chage -E -1 username
+
+# Or set new expiration date
+sudo chage -E 2026-12-31 username
+</code></pre>
+<p><strong>Best Practices:</strong>
+1. Set expiration during account creation
+2. Document expiration dates
+3. Set up reminders to check expiring accounts
+4. Notify users before expiration
+5. Regular review process for accounts nearing expiration</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Password Policy Best Practices</h2>
+<p>What are the best practices for implementing balanced and effective password policies in Linux environments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Balancing Security and Usability:</strong></p>
+<p><strong>Key Principle:</strong> Overly restrictive policies lead to workarounds (written passwords, password patterns, user frustration).</p>
+<p><strong>Recommended Password Aging Settings:</strong></p>
+<p><strong>Standard Corporate Environment:</strong></p>
+<pre><code class="language-bash">PASS_MAX_DAYS   90        # Quarterly changes
+PASS_MIN_DAYS   1         # Prevent immediate cycling
+PASS_WARN_AGE   7         # One week notice
+PASS_MIN_LEN    12        # Modern standard
+</code></pre>
+<p><strong>High Security Environment:</strong></p>
+<pre><code class="language-bash">PASS_MAX_DAYS   60        # Bi-monthly changes
+PASS_MIN_DAYS   7         # Longer wait between changes
+PASS_WARN_AGE   14        # Two week notice
+PASS_MIN_LEN    16        # Strong passwords
+</code></pre>
+<p><strong>Development/Testing:</strong></p>
+<pre><code class="language-bash">PASS_MAX_DAYS   365       # Annual changes
+PASS_MIN_DAYS   0         # Can change anytime
+PASS_WARN_AGE   7         # Standard warning
+PASS_MIN_LEN    8         # Basic requirement
+</code></pre>
+<p><strong>Best Practice Guidelines:</strong></p>
+<p><strong>1. Adequate Warning Period</strong></p>
+<pre><code class="language-bash">PASS_WARN_AGE   7
+</code></pre>
+<ul>
+<li>Give users enough time to prepare</li>
+<li>Reduces expired password lockouts</li>
+<li>Better user experience</li>
+</ul>
+<p><strong>2. Prevent Password Cycling</strong></p>
+<pre><code class="language-bash">PASS_MIN_DAYS   1
+</code></pre>
+<ul>
+<li>At least 1 day between changes</li>
+<li>Defeats rapid password rotation</li>
+<li>Works with password history</li>
+</ul>
+<p><strong>3. Regular but Not Excessive Rotation</strong></p>
+<pre><code class="language-bash">PASS_MAX_DAYS   90
+</code></pre>
+<ul>
+<li>Balance security vs. usability</li>
+<li>Too frequent (30 days) → users write them down</li>
+<li>Too rare (365 days) → compromises go undetected</li>
+</ul>
+<p><strong>4. Appropriate Minimum Length</strong></p>
+<pre><code class="language-bash">PASS_MIN_LEN    12
+</code></pre>
+<ul>
+<li>12+ characters recommended</li>
+<li>8 characters is outdated</li>
+<li>Length more important than complexity</li>
+</ul>
+<p><strong>Implementation Strategy:</strong></p>
+<p><strong>Step 1: Document Policy</strong></p>
+<pre><code>Company Password Policy:
+- Passwords expire every 90 days
+- Minimum 12 characters
+- Cannot change password more than once per day
+- 7-day warning before expiration
+- Cannot reuse last 5 passwords
+</code></pre>
+<p><strong>Step 2: Configure System Defaults</strong></p>
+<pre><code class="language-bash"># Edit /etc/login.defs
+sudo vim /etc/login.defs
+
+PASS_MAX_DAYS   90
+PASS_MIN_DAYS   1
+PASS_WARN_AGE   7
+PASS_MIN_LEN    12
+</code></pre>
+<p><strong>Step 3: Apply to Existing Users</strong></p>
+<pre><code class="language-bash"># Script to update all users
+for user in $(awk -F: '$3 &gt;= 1000 {print $1}' /etc/passwd); do
+    sudo chage -m 1 -M 90 -W 7 $user
+done
+</code></pre>
+<p><strong>Step 4: Enforce Password Complexity (PAM)</strong></p>
+<pre><code class="language-bash"># /etc/security/pwquality.conf
+minlen = 12
+dcredit = -1    # At least 1 digit
+ucredit = -1    # At least 1 uppercase
+lcredit = -1    # At least 1 lowercase
+ocredit = -1    # At least 1 special character
+</code></pre>
+<p><strong>Step 5: Enable Password History</strong></p>
+<pre><code class="language-bash"># /etc/pam.d/common-password (Debian/Ubuntu)
+password required pam_pwhistory.so remember=5
+
+# Prevents reusing last 5 passwords
+</code></pre>
+<p><strong>Special Cases and Exceptions:</strong></p>
+<p><strong>1. Service Accounts</strong></p>
+<pre><code class="language-bash"># No expiration for service accounts
+sudo chage -M 99999 service_account
+sudo chage -E -1 service_account
+</code></pre>
+<p><strong>2. Temporary Accounts</strong></p>
+<pre><code class="language-bash"># Set expiration date
+sudo chage -E 2025-12-31 contractor
+sudo chage -M 60 contractor
+</code></pre>
+<p><strong>3. Executive Exceptions</strong></p>
+<pre><code class="language-bash"># Different policy for executives (if justified)
+sudo chage -M 180 executive_user
+# Document the exception!
+</code></pre>
+<p><strong>Regular Maintenance Tasks:</strong></p>
+<p><strong>Weekly: Expiration Audit</strong></p>
+<pre><code class="language-bash"># Find accounts expiring in next 30 days
+for user in $(cut -d: -f1 /etc/passwd); do
+    expiry=$(sudo chage -l $user 2&gt;/dev/null | grep &quot;Password expires&quot;)
+    # Check and report
+done
+</code></pre>
+<p><strong>Monthly: Policy Compliance Check</strong></p>
+<pre><code class="language-bash"># Verify all users meet policy
+for user in $(awk -F: '$3 &gt;= 1000 {print $1}' /etc/passwd); do
+    max_days=$(sudo chage -l $user | grep &quot;Maximum&quot; | awk '{print $NF}')
+    if [[ $max_days -gt 90 ]]; then
+        echo &quot;$user exceeds max password age&quot;
+    fi
+done
+</code></pre>
+<p><strong>User Education:</strong></p>
+<p><strong>Password Best Practices:</strong></p>
+<pre><code>Good Passwords:
+✓ Passphrase: &quot;Coffee-Morning-2025-Sunrise&quot;
+✓ Random: &quot;xK9$mP2#vL4@&quot;
+✓ Long: &quot;ILoveMyCat2025AndCodingToo!&quot;
+
+Bad Passwords:
+✗ Dictionary words: &quot;password&quot;
+✗ Personal info: &quot;maria1990&quot;
+✗ Patterns: &quot;Password1&quot;, &quot;Password2&quot;
+✗ Short: &quot;Pass123&quot;
+</code></pre>
+<p><strong>Common Pitfalls to Avoid:</strong></p>
+<p><strong>Too Restrictive:</strong>
+- 30-day expiration → users write passwords down
+- Excessive complexity → predictable patterns</p>
+<p><strong>Inconsistent Enforcement:</strong>
+- Some users exempt → others feel unfair
+- No monitoring → policies ignored</p>
+<p><strong>Modern Recommendations (NIST):</strong>
+- Length &gt; Complexity
+- No forced periodic changes (unless compromise suspected)
+- Screen against breach databases
+- Allow long passphrases
+- MFA on all accounts</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
