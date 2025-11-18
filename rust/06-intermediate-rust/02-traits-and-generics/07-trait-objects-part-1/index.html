@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 07-Trait-Objects-Part-1</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Trait Objects?</h2>
+<p>What is a trait object and what does it represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A trait object is a pointer to a value that implements a specific trait, but the exact concrete type is hidden (erased). Instead of knowing "this is a String", you know "this is <em>something</em> that implements Display."</p>
+<pre><code class="language-rust">let animal: Box&lt;dyn Animal&gt; = Box::new(Dog);
+// We know it implements Animal
+// We don't know it's a Dog (type is erased)
+</code></pre>
+<p><strong>Key</strong>: You know what it can do (trait methods), but not what it is (concrete type).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The dyn Keyword</h2>
+<p>What does the <code>dyn</code> keyword mean and why is it used with trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>dyn</code> stands for "dynamic dispatch" and explicitly marks trait objects:</p>
+<pre><code class="language-rust">Box&lt;dyn Display&gt;  // ✅ Correct (Rust 2018+)
+Box&lt;Display&gt;      // ❌ Old syntax (no longer valid)
+</code></pre>
+<p><strong>Dynamic dispatch</strong> means the method to call is determined at <strong>runtime</strong>, not compile time. The <code>dyn</code> keyword makes this explicit and distinguishes trait objects from other uses of traits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Trait Objects Exist</h2>
+<p>What problem do trait objects solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Trait objects solve the <strong>heterogeneous collections</strong> problem - storing values of different types together when they share common behavior.</p>
+<pre><code class="language-rust">// ❌ Without trait objects - can't mix types
+let items = vec![String::from(&quot;hello&quot;), 42];  // Error!
+
+// ✅ With trait objects - can mix types
+let items: Vec&lt;Box&lt;dyn Display&gt;&gt; = vec![
+    Box::new(String::from(&quot;hello&quot;)),
+    Box::new(42),
+    Box::new(&quot;world&quot;),
+];
+</code></pre>
+<p>Different types, same interface.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type Erasure</h2>
+<p>What is type erasure in the context of trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Type erasure means losing knowledge of the concrete type, retaining only the trait interface:</p>
+<pre><code class="language-rust">struct Dog;
+impl Animal for Dog { /* ... */ }
+
+let animal: Box&lt;dyn Animal&gt; = Box::new(Dog);
+// The concrete type (Dog) is erased
+// We only know it implements Animal
+// Can only call Animal trait methods
+</code></pre>
+<p>The concrete type still exists at runtime, but the compiler no longer tracks it. You cannot call Dog-specific methods, only Animal methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Trait Object Syntax</h2>
+<p>What are the three main ways to create trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// 1. Boxed (owned, heap-allocated)
+let obj: Box&lt;dyn Trait&gt; = Box::new(value);
+
+// 2. Reference (borrowed)
+let obj: &amp;dyn Trait = &amp;value;
+
+// 3. Mutable reference
+let obj: &amp;mut dyn Trait = &amp;mut value;
+</code></pre>
+<p><strong>Most common</strong>: <code>Box&lt;dyn Trait&gt;</code> for owned trait objects that can be stored in collections or returned from functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Box Is Required</h2>
+<p>Why can't you return <code>dyn Trait</code> directly? Why is <code>Box&lt;dyn Trait&gt;</code> needed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Traits don't have a known size at compile time because different types implementing the trait can have different sizes:</p>
+<pre><code class="language-rust">struct Small { x: u8 }        // 1 byte
+struct Large { data: [u8; 1000] }  // 1000 bytes
+
+impl MyTrait for Small { }
+impl MyTrait for Large { }
+
+// ❌ Size unknown - doesn't compile
+fn returns_trait() -&gt; dyn MyTrait { /* ... */ }
+
+// ✅ Box has known size (8 bytes on 64-bit)
+fn returns_trait() -&gt; Box&lt;dyn MyTrait&gt; {
+    Box::new(Small { x: 5 })
+}
+</code></pre>
+<p><code>Box</code> provides a fixed-size pointer while the actual data lives on the heap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Polymorphic Collections Pattern</h2>
+<p>How do you create a collection that holds multiple different types implementing the same trait?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>Vec&lt;Box&lt;dyn Trait&gt;&gt;</code>:</p>
+<pre><code class="language-rust">trait Animal {
+    fn make_sound(&amp;self);
+}
+
+struct Dog;
+struct Cat;
+impl Animal for Dog {
+    fn make_sound(&amp;self) { println!(&quot;Woof!&quot;); }
+}
+impl Animal for Cat {
+    fn make_sound(&amp;self) { println!(&quot;Meow!&quot;); }
+}
+
+fn main() {
+    let animals: Vec&lt;Box&lt;dyn Animal&gt;&gt; = vec![
+        Box::new(Dog),
+        Box::new(Cat),
+    ];
+
+    for animal in animals {
+        animal.make_sound();
+    }
+}
+</code></pre>
+<p>This enables runtime polymorphism.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box<dyn Error> Pattern</h2>
+<p>Why is <code>Box&lt;dyn Error&gt;</code> commonly used in error handling?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;dyn Error&gt;</code> allows returning different error types from the same function:</p>
+<pre><code class="language-rust">use std::error::Error;
+
+#[derive(Debug)]
+struct ErrorOne;
+impl Error for ErrorOne { }
+impl Display for ErrorOne { /* ... */ }
+
+#[derive(Debug)]
+struct ErrorTwo;
+impl Error for ErrorTwo { }
+impl Display for ErrorTwo { /* ... */ }
+
+fn do_something(flag: bool) -&gt; Result&lt;String, Box&lt;dyn Error&gt;&gt; {
+    if flag {
+        Err(Box::new(ErrorOne))  // Different type
+    } else {
+        Err(Box::new(ErrorTwo))  // Different type
+    }
+}
+</code></pre>
+<p>All errors implement <code>Error</code>, so they can all fit in <code>Box&lt;dyn Error&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Object Method Access</h2>
+<p>What methods can you call on a trait object?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can <strong>only</strong> call methods defined in the trait, not type-specific methods:</p>
+<pre><code class="language-rust">struct Dog {
+    name: String,
+}
+
+impl Animal for Dog {
+    fn make_sound(&amp;self) { println!(&quot;Woof!&quot;); }
+}
+
+impl Dog {
+    fn get_name(&amp;self) -&gt; &amp;str { &amp;self.name }
+}
+
+let animal: Box&lt;dyn Animal&gt; = Box::new(Dog {
+    name: String::from(&quot;Rover&quot;),
+});
+
+animal.make_sound();  // ✅ Works: in Animal trait
+// animal.get_name();  // ❌ Error: not in Animal trait
+</code></pre>
+<p>Type-specific methods are inaccessible after type erasure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Object Safety?</h2>
+<p>What does it mean for a trait to be "object-safe"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A trait is <strong>object-safe</strong> if it can be used as a trait object. Not all traits can be trait objects - they must follow certain rules that allow dynamic dispatch.</p>
+<p><strong>Object-safe traits</strong> can be used as:</p>
+<pre><code class="language-rust">Box&lt;dyn Trait&gt;
+&amp;dyn Trait
+&amp;mut dyn Trait
+</code></pre>
+<p><strong>Not object-safe traits</strong> cannot be used this way and will cause a compiler error.</p>
+<p>The compiler enforces these rules because dynamic dispatch requires certain guarantees about how methods are called.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Object Safety Rule 1 - No Self Returns</h2>
+<p>Why can't object-safe trait methods return <code>Self</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Returning <code>Self</code> is not object-safe because the compiler doesn't know the size of <code>Self</code> with trait objects:</p>
+<pre><code class="language-rust">// ❌ NOT object-safe
+trait Cloneable {
+    fn clone_self(&amp;self) -&gt; Self;
+}
+
+// Error: cannot be made into an object
+let obj: Box&lt;dyn Cloneable&gt; = /* ... */;
+</code></pre>
+<p><strong>Solution</strong>: Return <code>Box&lt;dyn Trait&gt;</code> instead:</p>
+<pre><code class="language-rust">// ✅ Object-safe
+trait Cloneable {
+    fn clone_box(&amp;self) -&gt; Box&lt;dyn Cloneable&gt;;
+}
+</code></pre>
+<p>With trait objects, <code>Self</code> could be any size, but the return type must have a known size.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Object Safety Rule 2 - No Generic Methods</h2>
+<p>Why can't object-safe traits have generic methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generic methods are not object-safe because they need compile-time type information, but trait objects work at runtime:</p>
+<pre><code class="language-rust">// ❌ NOT object-safe
+trait Processor {
+    fn process&lt;T&gt;(&amp;self, value: T);
+}
+
+// Error: cannot be made into an object
+let obj: Box&lt;dyn Processor&gt; = /* ... */;
+</code></pre>
+<p><strong>Why</strong>: With generics, the compiler generates specialized code for each type. With trait objects, the concrete type isn't known until runtime, so generic methods can't be specialized.</p>
+<p>Object-safe traits can only have monomorphic methods (no type parameters).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Object Safety Rule 3 - Associated Functions</h2>
+<p>Why can't object-safe traits have associated functions (functions without <code>self</code>)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Associated functions without <code>self</code> are typically not object-safe because there's no instance to call them on:</p>
+<pre><code class="language-rust">// ❌ NOT object-safe
+trait Factory {
+    fn create() -&gt; Self;
+}
+
+// Error: cannot be made into an object
+let obj: Box&lt;dyn Factory&gt; = /* ... */;
+</code></pre>
+<p><strong>Why</strong>: You'd call it as <code>Factory::create()</code>, but with a trait object, which concrete type should be created? The trait object doesn't know.</p>
+<p><strong>Exception</strong>: Associated functions that don't involve <code>Self</code> can be object-safe if they have a <code>where Self: Sized</code> bound.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Checking Object Safety</h2>
+<p>How do you know if a trait is object-safe?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler will tell you when you try to use a non-object-safe trait as a trait object:</p>
+<pre><code class="language-rust">trait NotObjectSafe {
+    fn method&lt;T&gt;(&amp;self);  // Generic method
+}
+
+let x: &amp;dyn NotObjectSafe = &amp;value;
+// Error: the trait `NotObjectSafe` cannot be made into an object
+</code></pre>
+<p><strong>Object-safe traits</strong>:
+- All methods take <code>&amp;self</code>, <code>&amp;mut self</code>, or <code>self</code>
+- No generic methods
+- No methods returning <code>Self</code> (except special cases)
+- No associated functions without <code>self</code></p>
+<p>If unsure, try creating a trait object - the compiler will guide you.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Box Error</h2>
+<p>What error do you get if you forget to use <code>Box</code> with a trait object?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// ❌ WRONG
+fn returns_trait() -&gt; dyn Display {
+    42
+}
+// Error: doesn't have a size known at compile-time
+</code></pre>
+<p><strong>Solution</strong>: Use a pointer type:</p>
+<pre><code class="language-rust">// ✅ Boxed (owned)
+fn returns_trait() -&gt; Box&lt;dyn Display&gt; {
+    Box::new(42)
+}
+
+// ✅ Reference (borrowed)
+fn returns_trait_ref() -&gt; &amp;'static dyn Display {
+    &amp;42
+}
+</code></pre>
+<p>Trait objects must be behind a pointer because their size is unknown at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Objects vs Generics</h2>
+<p>What's the fundamental difference between using trait objects and generics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Generics (static dispatch)</strong>:</p>
+<pre><code class="language-rust">fn process&lt;T: Display&gt;(value: T) {
+    println!(&quot;{}&quot;, value);
+}
+// Compiler generates specialized code for each type
+// Type known at compile time
+</code></pre>
+<p><strong>Trait objects (dynamic dispatch)</strong>:</p>
+<pre><code class="language-rust">fn process(value: &amp;dyn Display) {
+    println!(&quot;{}&quot;, value);
+}
+// One function handles all types
+// Type determined at runtime
+</code></pre>
+<p><strong>Generics</strong>: Faster (no indirection), larger code size (monomorphization)
+<strong>Trait objects</strong>: Small runtime cost (virtual call), smaller code size, enables heterogeneous collections</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Trait Objects</h2>
+<p>When should you use <code>&amp;dyn Trait</code> instead of <code>Box&lt;dyn Trait&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>&amp;dyn Trait</code> when you don't need ownership:</p>
+<pre><code class="language-rust">// Function parameter - just borrowing
+fn draw_shape(shape: &amp;dyn Drawable) {
+    shape.draw();
+}
+
+fn main() {
+    let circle = Circle;
+    let square = Square;
+
+    draw_shape(&amp;circle);  // Temporary trait object
+    draw_shape(&amp;square);
+    // circle and square still owned by main
+}
+</code></pre>
+<p>Use <code>Box&lt;dyn Trait&gt;</code> when you need:
+- Ownership
+- To store in collections
+- To return from functions
+- Data to outlive the current scope</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Object-Safe Examples</h2>
+<p>Identify which traits are object-safe and which are not:</p>
+<pre><code class="language-rust">trait A {
+    fn method(&amp;self);
+}
+
+trait B {
+    fn method&lt;T&gt;(&amp;self);
+}
+
+trait C {
+    fn method(&amp;self) -&gt; Self;
+}
+
+trait D {
+    fn create() -&gt; Self;
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Object-safe</strong>:
+- <code>A</code> ✅ - Method with <code>&amp;self</code>, no problems</p>
+<p><strong>NOT object-safe</strong>:
+- <code>B</code> ❌ - Generic method
+- <code>C</code> ❌ - Returns <code>Self</code>
+- <code>D</code> ❌ - Associated function without <code>self</code> that returns <code>Self</code></p>
+<p>Only trait <code>A</code> can be used as <code>Box&lt;dyn A&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Plugin System Pattern</h2>
+<p>How do trait objects enable plugin systems?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Trait objects allow loading and running plugins of different types at runtime:</p>
+<pre><code class="language-rust">trait Plugin {
+    fn name(&amp;self) -&gt; &amp;str;
+    fn execute(&amp;self);
+}
+
+struct PluginManager {
+    plugins: Vec&lt;Box&lt;dyn Plugin&gt;&gt;,
+}
+
+impl PluginManager {
+    fn register(&amp;mut self, plugin: Box&lt;dyn Plugin&gt;) {
+        self.plugins.push(plugin);
+    }
+
+    fn run_all(&amp;self) {
+        for plugin in &amp;self.plugins {
+            println!(&quot;Running: {}&quot;, plugin.name());
+            plugin.execute();
+        }
+    }
+}
+</code></pre>
+<p>Different plugin types can be registered and run through the same interface.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Object Size</h2>
+<p>What is the size of a trait object pointer, and what information does it contain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A trait object pointer (like <code>Box&lt;dyn Trait&gt;</code> or <code>&amp;dyn Trait</code>) is a <strong>fat pointer</strong> containing two pointers (16 bytes on 64-bit systems):</p>
+<ol>
+<li><strong>Data pointer</strong>: Points to the actual value</li>
+<li><strong>Vtable pointer</strong>: Points to a table of function pointers for the trait methods</li>
+</ol>
+<pre><code class="language-rust">// Box&lt;dyn Trait&gt;: 16 bytes (2 pointers)
+// - Pointer to heap data
+// - Pointer to vtable
+
+// &amp;dyn Trait: 16 bytes (2 pointers)
+// - Pointer to data
+// - Pointer to vtable
+</code></pre>
+<p>The vtable enables dynamic dispatch - it tells the program which concrete method to call at runtime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Strategy Pattern with Trait Objects</h2>
+<p>Show how trait objects enable the Strategy pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Trait objects allow swapping algorithms at runtime:</p>
+<pre><code class="language-rust">trait CompressionStrategy {
+    fn compress(&amp;self, data: &amp;[u8]) -&gt; Vec&lt;u8&gt;;
+}
+
+struct ZipCompression;
+impl CompressionStrategy for ZipCompression {
+    fn compress(&amp;self, data: &amp;[u8]) -&gt; Vec&lt;u8&gt; {
+        // Zip logic
+        data.to_vec()
+    }
+}
+
+struct GzipCompression;
+impl CompressionStrategy for GzipCompression {
+    fn compress(&amp;self, data: &amp;[u8]) -&gt; Vec&lt;u8&gt; {
+        // Gzip logic
+        data.to_vec()
+    }
+}
+
+struct Compressor {
+    strategy: Box&lt;dyn CompressionStrategy&gt;,
+}
+
+impl Compressor {
+    fn set_strategy(&amp;mut self, strategy: Box&lt;dyn CompressionStrategy&gt;) {
+        self.strategy = strategy;
+    }
+}
+</code></pre>
+<p>The algorithm can be changed at runtime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutable Trait Objects</h2>
+<p>How do you use mutable trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>&amp;mut dyn Trait</code> or <code>Box&lt;dyn Trait&gt;</code> (Box owns, so can mutate):</p>
+<pre><code class="language-rust">trait Modifiable {
+    fn modify(&amp;mut self);
+}
+
+struct Counter {
+    count: u32,
+}
+
+impl Modifiable for Counter {
+    fn modify(&amp;mut self) {
+        self.count += 1;
+    }
+}
+
+fn modify_it(obj: &amp;mut dyn Modifiable) {
+    obj.modify();
+}
+
+fn main() {
+    let mut counter = Counter { count: 0 };
+    modify_it(&amp;mut counter);
+
+    // Or with Box
+    let mut boxed: Box&lt;dyn Modifiable&gt; = Box::new(Counter { count: 0 });
+    boxed.modify();  // Can call &amp;mut self methods
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Trait Objects</h2>
+<p>When should you use trait objects instead of generics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use trait objects when you need:</p>
+<ol>
+<li>
+<p><strong>Heterogeneous collections</strong> - storing different types together
+   <code>rust
+   let shapes: Vec&lt;Box&lt;dyn Shape&gt;&gt; = vec![Box::new(Circle), Box::new(Square)];</code></p>
+</li>
+<li>
+<p><strong>Runtime polymorphism</strong> - type determined at runtime
+   <code>rust
+   let shape = if user_choice { Box::new(Circle) } else { Box::new(Square) };</code></p>
+</li>
+<li>
+<p><strong>Smaller binary size</strong> - one function instead of monomorphized versions</p>
+</li>
+<li>
+<p><strong>Dynamic plugin systems</strong> - loading types at runtime</p>
+</li>
+</ol>
+<p>Use generics when:
+- Performance is critical (no virtual call overhead)
+- Types known at compile time
+- Need to use generic methods or return <code>Self</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Associated Types and Object Safety</h2>
+<p>Are traits with associated types object-safe?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, traits with associated types CAN be object-safe:</p>
+<pre><code class="language-rust">trait Iterator {
+    type Item;  // Associated type
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}
+
+// This is object-safe! Iterator can be used as:
+let iter: Box&lt;dyn Iterator&lt;Item = i32&gt;&gt; = Box::new(some_iterator);
+</code></pre>
+<p><strong>Key</strong>: When using as a trait object, you must specify the associated type:</p>
+<pre><code class="language-rust">Box&lt;dyn Iterator&lt;Item = i32&gt;&gt;  // ✅ Specifies Item
+Box&lt;dyn Iterator&gt;               // ❌ Item type unknown
+</code></pre>
+<p>Associated types are fine as long as they're specified when creating the trait object.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type Erasure Trade-off</h2>
+<p>What are the trade-offs of type erasure with trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Benefits</strong>:
+- Store different types in same collection
+- Smaller binary (no monomorphization)
+- Runtime flexibility</p>
+<p><strong>Costs</strong>:
+- Can't access type-specific methods
+- Can't downcast without extra work
+- Small runtime overhead (virtual function call)
+- Cannot call generic methods on the trait object
+- Cannot return or use <code>Self</code> in methods</p>
+<pre><code class="language-rust">let animal: Box&lt;dyn Animal&gt; = Box::new(Dog { name: &quot;Rover&quot; });
+
+animal.make_sound();  // ✅ Trait method works
+// animal.name;       // ❌ Type-specific field inaccessible
+// let dog: Dog = *animal;  // ❌ Can't get Dog back easily
+</code></pre>
+<p>You gain flexibility but lose type information.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
