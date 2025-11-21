@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 02-Traits-And-Generics - 08-Trait-Objects-Part-2</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Dispatch?</h2>
+<p>What is dispatch in the context of method calls, and what are the two types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Dispatch</strong> is the process of determining which method implementation to call.</p>
+<p><strong>Two types</strong>:
+1. <strong>Static dispatch</strong> - Decision made at compile time
+2. <strong>Dynamic dispatch</strong> - Decision made at runtime</p>
+<pre><code class="language-rust">// Static dispatch (generics)
+fn process&lt;T: Display&gt;(value: T) {
+    println!(&quot;{}&quot;, value);  // Decision at compile time
+}
+
+// Dynamic dispatch (trait objects)
+fn process(value: &amp;dyn Display) {
+    println!(&quot;{}&quot;, value);  // Decision at runtime
+}
+</code></pre>
+<p>The choice between them involves trade-offs between performance, binary size, and flexibility.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Static vs Dynamic Dispatch</h2>
+<p>What is the fundamental difference between static and dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Static dispatch (generics)</strong>:
+- Compiler generates specialized code for each type
+- Direct function calls, can be inlined
+- Zero runtime overhead
+- Larger binary size</p>
+<p><strong>Dynamic dispatch (trait objects)</strong>:
+- One function handles all types
+- Indirect calls through vtable
+- Small runtime overhead (~2-5 nanoseconds)
+- Smaller binary size</p>
+<pre><code class="language-rust">// Static: Compiler generates separate code for each type
+fn process&lt;T: Display&gt;(value: T) { }
+
+// Dynamic: One function, type determined at runtime
+fn process(value: &amp;dyn Display) { }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is Monomorphization?</h2>
+<p>What is monomorphization and how does it work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Monomorphization</strong> is the process where the compiler generates specialized versions of generic functions for each concrete type used.</p>
+<pre><code class="language-rust">fn print&lt;T: Display&gt;(value: T) {
+    println!(&quot;{}&quot;, value);
+}
+
+fn main() {
+    print(42);        // T = i32
+    print(&quot;hello&quot;);   // T = &amp;str
+}
+
+// Compiler generates (conceptually):
+// fn print_i32(value: i32) { println!(&quot;{}&quot;, value); }
+// fn print_str(value: &amp;str) { println!(&quot;{}&quot;, value); }
+</code></pre>
+<p><strong>Result</strong>: Each type gets its own optimized, direct-call version. This is why generics have zero runtime cost but increase binary size.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is a Vtable?</h2>
+<p>What is a vtable (virtual function table) and how does it enable dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <strong>vtable</strong> is a table of function pointers used for dynamic dispatch. It contains pointers to the concrete implementations of trait methods.</p>
+<p><strong>Structure</strong> (conceptual):</p>
+<pre><code class="language-rust">struct Vtable {
+    destructor: fn(*const ()),
+    size: usize,
+    align: usize,
+    method1: fn(*const ()),  // Pointer to actual implementation
+    method2: fn(*const ()),
+    // ... one entry per trait method
+}
+</code></pre>
+<p><strong>How it works</strong>:
+1. Trait object stores pointer to data + pointer to vtable
+2. When method called: follow vtable pointer
+3. Find method's function pointer in vtable
+4. Call that function with data pointer</p>
+<p>This extra indirection is the source of dynamic dispatch overhead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fat Pointer Structure</h2>
+<p>What is a fat pointer and what does a trait object pointer contain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A trait object pointer is a <strong>fat pointer</strong> containing two pointers (16 bytes on 64-bit):</p>
+<ol>
+<li><strong>Data pointer</strong> - Points to the actual value</li>
+<li><strong>Vtable pointer</strong> - Points to the table of function pointers</li>
+</ol>
+<pre><code class="language-rust">// Conceptual representation
+struct TraitObject {
+    data: *const (),      // Where the actual data is
+    vtable: *const Vtable, // How to call methods on it
+}
+
+// Examples:
+Box&lt;dyn Trait&gt;  // 16 bytes: data ptr + vtable ptr
+&amp;dyn Trait      // 16 bytes: data ptr + vtable ptr
+</code></pre>
+<p>This is why trait objects are "fat" - they're twice the size of a regular pointer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Code Bloat Problem</h2>
+<p>What is code bloat with generics, and when does it become a problem?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Code bloat</strong> occurs when monomorphization generates many copies of the same function for different types, increasing binary size.</p>
+<pre><code class="language-rust">fn process&lt;T: Display&gt;(value: T) {
+    println!(&quot;Processing: {}&quot;, value);
+    // ... 100 more lines of code ...
+}
+
+fn main() {
+    process(1);           // +100 lines for i32
+    process(2.5);         // +100 lines for f64
+    process(&quot;text&quot;);      // +100 lines for &amp;str
+    process(String::new()); // +100 lines for String
+    // Binary contains 400+ lines of nearly identical code
+}
+</code></pre>
+<p><strong>When it matters</strong>: Large generic functions used with many types, embedded systems, or WASM where size is critical.</p>
+<p><strong>Solution</strong>: Use trait objects for size-critical code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Runtime Overhead of Dynamic Dispatch</h2>
+<p>What is the actual runtime cost of dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Dynamic dispatch typically adds:
+- <strong>One pointer dereference</strong> to access vtable (~1-2 nanoseconds)
+- <strong>One indirect function call</strong> through function pointer (~1-5 nanoseconds)
+- <strong>Potential cache miss</strong> if vtable isn't cached</p>
+<p><strong>Total overhead</strong>: ~2-5 nanoseconds per call</p>
+<p><strong>Perspective</strong>:
+- For 1 million calls: 2-5 milliseconds total
+- For most applications: completely negligible
+- Matters only in: tight loops called millions of times, extremely small methods, hard real-time systems</p>
+<p><strong>Key point</strong>: Don't optimize prematurely! Profile first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Static Dispatch</h2>
+<p>When should you use static dispatch (generics) instead of dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <strong>static dispatch (generics)</strong> when:</p>
+<ol>
+<li>
+<p><strong>Performance is critical</strong>
+   <code>rust
+   fn hot_path&lt;T: Compute&gt;(data: T) {
+       // Called millions of times per second
+   }</code></p>
+</li>
+<li>
+<p><strong>Types known at compile time</strong>
+   <code>rust
+   fn process_config(config: Config) { }</code></p>
+</li>
+<li>
+<p><strong>Need generic methods or return Self</strong>
+   <code>rust
+   trait Cloneable {
+       fn clone_self(&amp;self) -&gt; Self;  // Not object-safe
+   }</code></p>
+</li>
+<li>
+<p><strong>Working with iterators</strong> (they use static dispatch for performance)</p>
+</li>
+</ol>
+<p><strong>Bottom line</strong>: Use when you need maximum performance and types are known.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Dynamic Dispatch</h2>
+<p>When should you use dynamic dispatch (trait objects) instead of static dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <strong>dynamic dispatch (trait objects)</strong> when:</p>
+<ol>
+<li>
+<p><strong>Need heterogeneous collections</strong>
+   <code>rust
+   let shapes: Vec&lt;Box&lt;dyn Shape&gt;&gt; = vec![
+       Box::new(Circle),
+       Box::new(Square),
+   ];</code></p>
+</li>
+<li>
+<p><strong>Type determined at runtime</strong>
+   <code>rust
+   fn create_shape(shape_type: &amp;str) -&gt; Box&lt;dyn Shape&gt; {
+       match shape_type {
+           "circle" =&gt; Box::new(Circle),
+           "square" =&gt; Box::new(Square),
+           _ =&gt; panic!(),
+       }
+   }</code></p>
+</li>
+<li>
+<p><strong>Binary size matters</strong> (embedded systems, WASM)</p>
+</li>
+<li>
+<p><strong>Plugin/extensibility systems</strong></p>
+</li>
+<li>
+<p><strong>Performance difference is negligible</strong> (most code)</p>
+</li>
+</ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Zero-Cost Abstractions</h2>
+<p>How do generics exemplify Rust's "zero-cost abstraction" principle?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Static dispatch through generics has <strong>literally zero runtime cost</strong> compared to hand-written specialized code:</p>
+<pre><code class="language-rust">fn print&lt;T: Display&gt;(value: T) {
+    println!(&quot;{}&quot;, value);
+}
+
+// After monomorphization, this is as fast as:
+fn print_i32(value: i32) {
+    println!(&quot;{}&quot;, value);
+}
+</code></pre>
+<p><strong>Why zero-cost</strong>:
+- Abstraction (generics) compiles away completely
+- Direct function calls (can be inlined)
+- Full compiler optimizations apply
+- No runtime penalty for using abstraction</p>
+<p><strong>Principle</strong>: You don't pay for abstractions you don't use, and abstractions are as efficient as hand-written code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Optimization Differences</h2>
+<p>What optimization opportunities exist with static dispatch that don't exist with dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Static dispatch enables</strong>:
+- <strong>Inlining</strong>: Compiler can inline small functions into caller
+- <strong>Specialization</strong>: Optimize for specific type's characteristics
+- <strong>Dead code elimination</strong>: Remove branches that never execute for a type
+- <strong>Constant folding</strong>: Evaluate at compile time</p>
+<p><strong>Dynamic dispatch limitations</strong>:
+- <strong>No inlining</strong>: Function call always indirect through vtable
+- <strong>Conservative optimization</strong>: Must work for any implementation
+- <strong>Runtime indirection</strong>: Always requires vtable lookup</p>
+<pre><code class="language-rust">// Static: Can be fully inlined and optimized
+fn process&lt;T: Compute&gt;(value: T) -&gt; i32 {
+    value.compute() + 1
+}
+
+// Dynamic: Requires vtable lookup, cannot inline
+fn process(value: &amp;dyn Compute) -&gt; i32 {
+    value.compute() + 1
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Enum Dispatch Alternative</h2>
+<p>How can enums provide an alternative to trait objects, and when is this better?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Enums can achieve polymorphism without vtables:</p>
+<pre><code class="language-rust">enum Shape {
+    Circle(Circle),
+    Square(Square),
+    Triangle(Triangle),
+}
+
+impl Shape {
+    fn area(&amp;self) -&gt; f64 {
+        match self {
+            Shape::Circle(c) =&gt; c.area(),
+            Shape::Square(s) =&gt; s.area(),
+            Shape::Triangle(t) =&gt; t.area(),
+        }
+    }
+}
+</code></pre>
+<p><strong>Advantages over trait objects</strong>:
+- No heap allocation needed
+- No vtable lookup overhead
+- Can exhaustively match on variants
+- Better for small, closed sets of types
+- Slightly faster (direct call, not indirect)</p>
+<p><strong>Use when</strong>: You have a fixed, known set of types and want maximum performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Premature Optimization Mistake</h2>
+<p>What is the most common mistake developers make when choosing between static and dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Premature optimization</strong> - assuming dynamic dispatch is "too slow" without measuring:</p>
+<pre><code class="language-rust">// ❌ Bad: Over-optimizing rarely-called code
+fn log_event&lt;T: Display&gt;(event: T) {
+    // Called once per minute, but using generics &quot;for performance&quot;
+    println!(&quot;{}&quot;, event);
+}
+
+// ✅ Better: Use trait object for simplicity
+fn log_event(event: &amp;dyn Display) {
+    // Simpler API, smaller binary
+    // 2ns overhead per minute = completely negligible
+    println!(&quot;{}&quot;, event);
+}
+</code></pre>
+<p><strong>Rule</strong>: Start with trait objects for simplicity. Only switch to generics if profiling shows a bottleneck.</p>
+<p>Dynamic dispatch overhead (~2-5ns) only matters in hot paths called millions of times.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary Size Trade-off</h2>
+<p>How do static and dynamic dispatch differ in their impact on binary size?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Static dispatch (monomorphization)</strong>:
+- Generates specialized code for each type
+- Larger binary size
+- Can significantly increase with many types</p>
+<p><strong>Dynamic dispatch (trait objects)</strong>:
+- One function handles all types
+- Smaller binary size
+- No duplication of code</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-rust">// Large generic function
+fn complex_process&lt;T: Trait&gt;(value: T) {
+    // 500 lines of code
+}
+
+// Used with 10 types = 5000 lines in binary
+// Used with 100 types = 50,000 lines in binary
+
+// Trait object version = 500 lines regardless of types
+fn complex_process(value: &amp;dyn Trait) {
+    // 500 lines of code
+}
+</code></pre>
+<p><strong>Matters for</strong>: Embedded systems, WASM, download size optimization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hot vs Cold Paths</h2>
+<p>How should you approach dispatch choice differently for hot paths vs cold paths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Hot paths</strong> (performance-critical, called frequently):</p>
+<pre><code class="language-rust">// Use static dispatch
+fn render_pixel&lt;R: Renderer&gt;(renderer: &amp;mut R, x: u32, y: u32) {
+    renderer.draw_pixel(x, y);  // Called millions of times
+}
+</code></pre>
+<p><strong>Cold paths</strong> (called infrequently):</p>
+<pre><code class="language-rust">// Use dynamic dispatch
+fn handle_ui_event(event: &amp;dyn Event) {
+    event.process();  // Called maybe 60 times per second
+}
+</code></pre>
+<p><strong>Guidelines</strong>:
+- Hot path: Inside loops, graphics rendering, data processing
+- Cold path: UI events, error handling, initialization
+- When unsure: It's probably a cold path!</p>
+<p>Most code is cold paths where dynamic dispatch is fine.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Static and Dynamic Dispatch</h2>
+<p>How can you effectively combine static and dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use both approaches where each makes sense:</p>
+<pre><code class="language-rust">// Generic function for type-safe API (static dispatch)
+fn process_shape&lt;T: Shape&gt;(shape: &amp;T) {
+    println!(&quot;Area: {}&quot;, shape.area());
+    println!(&quot;Perimeter: {}&quot;, shape.perimeter());
+}
+
+// Trait object for heterogeneous storage (dynamic dispatch)
+fn process_all(shapes: &amp;[Box&lt;dyn Shape&gt;]) {
+    for shape in shapes {
+        println!(&quot;Area: {}&quot;, shape.area());
+    }
+}
+
+// Use type parameter for flexibility, trait object for storage
+fn register_and_process&lt;T: Plugin + 'static&gt;(
+    registry: &amp;mut PluginRegistry,
+    plugin: T
+) {
+    registry.add(Box::new(plugin));  // Store as trait object
+}
+</code></pre>
+<p>This gets benefits of both: type safety + heterogeneous collections.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Library vs Application Code</h2>
+<p>Should you use different dispatch strategies for library code vs application code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Library code</strong> - Prefer static dispatch (generics):</p>
+<pre><code class="language-rust">// Library API - users get zero-cost abstraction
+pub fn map&lt;T, U, F&gt;(iter: T, f: F) -&gt; Map&lt;T, F&gt;
+where
+    T: Iterator,
+    F: FnMut(T::Item) -&gt; U,
+{
+    // Maximum flexibility and performance for users
+}
+</code></pre>
+<p><strong>Application code</strong> - Prefer dynamic dispatch initially:</p>
+<pre><code class="language-rust">// Application - use trait objects for simplicity
+fn handle_requests(handlers: Vec&lt;Box&lt;dyn RequestHandler&gt;&gt;) {
+    for handler in handlers {
+        handler.handle();
+    }
+}
+</code></pre>
+<p><strong>Rationale</strong>:
+- Libraries: Users can't change internals, need maximum performance
+- Applications: You can profile and optimize specific bottlenecks
+- Start simple, optimize when needed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Vtable Lookup Process</h2>
+<p>Describe the step-by-step process of a method call through a trait object.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">let animal: &amp;dyn Animal = &amp;dog;
+animal.make_sound();
+</code></pre>
+<p><strong>Step-by-step</strong>:
+1. <strong>Read trait object fat pointer</strong> (2 pointers: data + vtable)
+2. <strong>Follow vtable pointer</strong> to vtable in memory
+3. <strong>Index into vtable</strong> to find <code>make_sound</code> function pointer
+4. <strong>Read function pointer</strong> from vtable
+5. <strong>Call function</strong> with data pointer as argument
+6. <strong>Function executes</strong> Dog's implementation</p>
+<p><strong>Cost</strong>: Steps 2-4 add ~2-5 nanoseconds
+<strong>Compare to static dispatch</strong>: Direct call to known function (can be inlined)</p>
+<p>The extra memory accesses (vtable lookup) are why dynamic dispatch is slightly slower.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Performance Actually Matters</h2>
+<p>Under what specific conditions does the performance difference between static and dynamic dispatch actually matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Dynamic dispatch overhead matters when <strong>ALL</strong> of these are true:</p>
+<ol>
+<li><strong>Called extremely frequently</strong> (millions of times in tight loop)</li>
+<li><strong>Method is tiny</strong> (&lt; 10 instructions, would normally be inlined)</li>
+<li><strong>Profiler shows it's a bottleneck</strong> (not just assumed)</li>
+</ol>
+<p><strong>Example where it matters</strong>:</p>
+<pre><code class="language-rust">// Inner loop in game engine, called 60M times/second
+fn render_frame&lt;R: Renderer&gt;(renderer: &amp;mut R) {
+    for pixel in pixels {
+        renderer.draw(pixel);  // Tiny method, called millions of times
+    }
+}
+</code></pre>
+<p><strong>Example where it doesn't matter</strong>:</p>
+<pre><code class="language-rust">// UI event handler, called ~60 times/second
+fn handle_click(handler: &amp;dyn ClickHandler) {
+    handler.on_click();  // 2ns overhead × 60/sec = irrelevant
+}
+</code></pre>
+<p><strong>Rule</strong>: If you haven't profiled it, it probably doesn't matter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practice Summary</h2>
+<p>What are the three key best practices for choosing between static and dynamic dispatch?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Start with trait objects (dynamic dispatch)</strong></li>
+<li>Simpler code</li>
+<li>Smaller binaries</li>
+<li>Easier to understand</li>
+<li>
+<p>Optimize only if profiling shows bottleneck</p>
+</li>
+<li>
+<p><strong>Use generics for library APIs</strong></p>
+</li>
+<li>Give users maximum performance</li>
+<li>Let them choose their own trade-offs</li>
+<li>
+<p>Zero-cost abstraction</p>
+</li>
+<li>
+<p><strong>Profile before optimizing</strong></p>
+</li>
+<li>Measure actual performance</li>
+<li>Don't assume dynamic dispatch is "too slow"</li>
+<li>Optimize hot paths only</li>
+</ol>
+<pre><code class="language-rust">// ✅ Start here (simple)
+fn process(item: &amp;dyn Handler) { }
+
+// ✅ Switch if profiling shows bottleneck
+fn process&lt;T: Handler&gt;(item: &amp;T) { }
+</code></pre>
+<p><strong>Remember</strong>: Premature optimization is the root of all evil. The 2-5ns overhead rarely matters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Inlining and Dynamic Dispatch</h2>
+<p>Why can't the compiler inline methods called through trait objects?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler <strong>doesn't know which concrete function will be called</strong> until runtime:</p>
+<pre><code class="language-rust">fn process(shape: &amp;dyn Shape) {
+    shape.area();  // Which area()? Circle's? Square's?
+}
+</code></pre>
+<p><strong>Static dispatch</strong> (can inline):</p>
+<pre><code class="language-rust">fn process&lt;T: Shape&gt;(shape: &amp;T) {
+    shape.area();  // Compiler knows exact type T
+    // Can inline Circle::area() or Square::area()
+}
+</code></pre>
+<p><strong>Why inlining matters</strong>:
+- Eliminates function call overhead
+- Enables further optimizations (constant folding, dead code elimination)
+- Can turn small functions into just a few instructions</p>
+<p><strong>Impact</strong>: For tiny methods called frequently, inlining makes a big difference. For larger methods, less important.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Trade-off Summary</h2>
+<p>Summarize all the trade-offs between static and dynamic dispatch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Static Dispatch (Generics: <code>&lt;T: Trait&gt;</code>)</strong>:
+- ✅ Zero runtime overhead
+- ✅ Can inline methods
+- ✅ Full compiler optimizations
+- ❌ Larger binary (code bloat)
+- ❌ Longer compile times
+- ❌ Cannot store different types together
+- ❌ Types must be known at compile time</p>
+<p><strong>Dynamic Dispatch (Trait Objects: <code>&amp;dyn Trait</code>)</strong>:
+- ✅ Smaller binary size
+- ✅ Heterogeneous collections
+- ✅ Runtime type selection
+- ✅ Faster compilation
+- ❌ Small runtime cost (~2-5ns per call)
+- ❌ Cannot inline
+- ❌ Object safety restrictions</p>
+<p><strong>Choose based on</strong>: Performance requirements, binary size constraints, need for heterogeneous collections, and whether types are known at compile time.</p>
+<p><strong>Default</strong>: Start with trait objects, optimize with generics if profiling shows need.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

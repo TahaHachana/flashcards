@@ -1,0 +1,1628 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 03-Iterators-And-Closures - 01-Closures</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Definition and Purpose</h2>
+<p>What is a closure in Rust and what are its three main purposes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A closure is an anonymous function that can capture variables from its surrounding environment.</p>
+<p>Three main purposes:
+1. <strong>Inline behavior</strong> - Define functions directly where needed without naming them
+2. <strong>Environment capture</strong> - Access variables from surrounding scope without passing as parameters
+3. <strong>Functional programming</strong> - Enable operations like map, filter, fold</p>
+<p>Closures bridge the gap between functions (stateless) and data by allowing functions to "remember" their context.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Closure Syntax</h2>
+<p>What is the basic syntax for defining a closure in Rust? Show both expression and block forms.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Expression form:</p>
+<pre><code class="language-rust">|parameters| expression
+</code></pre>
+<p>Block form:</p>
+<pre><code class="language-rust">|parameters| {
+    // statements
+    expression
+}
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-rust">let add_five = |x| x + 5;
+let add = |x, y| x + y;
+let complex = |x| {
+    let doubled = x * 2;
+    doubled + 1
+};
+</code></pre>
+<p>Closures use vertical pipes <code>||</code> for parameters, unlike functions which use parentheses <code>()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Type Inference</h2>
+<p>How does type inference work for closures, and what happens after the first use?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures infer parameter and return types from usage, unlike functions which require explicit types.</p>
+<pre><code class="language-rust">let multiply = |x, y| x * y;
+let result = multiply(5, 6); // Infers i32
+</code></pre>
+<p><strong>Important</strong>: Once types are inferred from first use, they're locked in permanently:</p>
+<pre><code class="language-rust">let identity = |x| x;
+let s = identity(String::from(&quot;hi&quot;)); // Locks to String -&gt; String
+// let n = identity(5); // ERROR: expects String, not i32
+</code></pre>
+<p>You can provide explicit types if needed:</p>
+<pre><code class="language-rust">let divide = |x: f64, y: f64| -&gt; f64 { x / y };
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Capture Modes</h2>
+<p>What are the three ways closures can capture variables from their environment? List them from least to most restrictive.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures automatically choose the most restrictive mode that allows them to work:</p>
+<ol>
+<li>
+<p><strong>By immutable reference (<code>&amp;T</code>)</strong> - Read-only access
+   <code>rust
+   let x = String::from("hello");
+   let read = || println!("{}", x); // Borrows &amp;x</code></p>
+</li>
+<li>
+<p><strong>By mutable reference (<code>&amp;mut T</code>)</strong> - Read-write access
+   <code>rust
+   let mut count = 0;
+   let mut inc = || count += 1; // Borrows &amp;mut count</code></p>
+</li>
+<li>
+<p><strong>By value (<code>T</code>)</strong> - Takes ownership
+   <code>rust
+   let data = vec![1, 2, 3];
+   let consume = || drop(data); // Moves data</code></p>
+</li>
+</ol>
+<p>The compiler selects the least restrictive mode that satisfies the closure's needs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Move Keyword</h2>
+<p>What does the <code>move</code> keyword do in closures, and when is it required?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>move</code> keyword forces a closure to take ownership of all captured variables, even if the closure only needs to borrow them.</p>
+<pre><code class="language-rust">let x = String::from(&quot;hello&quot;);
+let closure = move || println!(&quot;{}&quot;, x);
+// x is now moved, can't use it here
+</code></pre>
+<p><strong>Required in two main scenarios:</strong></p>
+<ol>
+<li><strong>Threads</strong> - Spawned threads require owned data:</li>
+</ol>
+<pre><code class="language-rust">thread::spawn(move || {
+    println!(&quot;{}&quot;, data); // Must own data
+})
+</code></pre>
+<ol>
+<li><strong>Returning closures</strong> - When closure outlives its environment:</li>
+</ol>
+<pre><code class="language-rust">fn make_adder(n: i32) -&gt; impl Fn(i32) -&gt; i32 {
+    move |x| x + n // n must be moved
+}
+</code></pre>
+<p>Without <code>move</code>, closures try to borrow by default.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FnOnce Trait</h2>
+<p>What is the <code>FnOnce</code> trait, what does it mean for a closure, and when is it used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>FnOnce</code> is the trait for closures that consume captured variables and can only be called once.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">pub trait FnOnce {
+    fn call_once(self, args: Args) -&gt; Self::Output;
+}
+</code></pre>
+<p><strong>Key characteristics:</strong>
+- Takes <code>self</code> by value (consumes the closure)
+- Can only be called once
+- All closures implement this trait
+- Used when closure moves/consumes captured values</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">fn takes_fnonce&lt;F: FnOnce()&gt;(f: F) {
+    f(); // Can only call once
+}
+
+let s = String::from(&quot;hello&quot;);
+takes_fnonce(|| drop(s)); // Consumes s
+</code></pre>
+<p>The name "once" indicates it takes ownership and can only execute once.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FnMut Trait</h2>
+<p>What is the <code>FnMut</code> trait, what does it mean for a closure, and when is it used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>FnMut</code> is the trait for closures that mutate captured variables and can be called multiple times.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">pub trait FnMut: FnOnce {
+    fn call_mut(&amp;mut self, args: Args) -&gt; Self::Output;
+}
+</code></pre>
+<p><strong>Key characteristics:</strong>
+- Takes <code>&amp;mut self</code> (mutable borrow)
+- Can be called multiple times
+- Implements both <code>FnMut</code> and <code>FnOnce</code>
+- Used when closure needs to modify environment</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">fn takes_fnmut&lt;F: FnMut()&gt;(mut f: F) {
+    f(); // Can call multiple times
+    f();
+}
+
+let mut count = 0;
+takes_fnmut(|| count += 1); // Mutates count
+</code></pre>
+<p>The closure binding must also be <code>mut</code>: <code>let mut closure = || ...</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fn Trait</h2>
+<p>What is the <code>Fn</code> trait, what does it mean for a closure, and when is it used?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Fn</code> is the trait for closures that only read captured variables and can be called multiple times.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">pub trait Fn: FnMut {
+    fn call(&amp;self, args: Args) -&gt; Self::Output;
+}
+</code></pre>
+<p><strong>Key characteristics:</strong>
+- Takes <code>&amp;self</code> (immutable borrow)
+- Can be called unlimited times
+- Implements all three traits: <code>Fn</code>, <code>FnMut</code>, and <code>FnOnce</code>
+- Used for pure, non-mutating closures</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">fn takes_fn&lt;F: Fn()&gt;(f: F) {
+    f(); // Can call as many times as needed
+    f();
+    f();
+}
+
+let message = String::from(&quot;Hello&quot;);
+takes_fn(|| println!(&quot;{}&quot;, message)); // Only reads
+</code></pre>
+<p>Most restrictive capture, most flexible usage - can pass <code>Fn</code> closures anywhere.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fn Trait Hierarchy</h2>
+<p>Explain the hierarchy relationship between <code>FnOnce</code>, <code>FnMut</code>, and <code>Fn</code> traits. Which traits does each implement?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The three traits form a hierarchy through supertraits:</p>
+<pre><code>FnOnce (base - all closures implement this)
+   ↑
+FnMut (also implements FnOnce)
+   ↑
+Fn (implements FnMut and FnOnce)
+</code></pre>
+<p><strong>What each trait implements:</strong>
+- <code>FnOnce</code>: Only itself (base trait)
+- <code>FnMut</code>: Both <code>FnMut</code> and <code>FnOnce</code>
+- <code>Fn</code>: All three: <code>Fn</code>, <code>FnMut</code>, and <code>FnOnce</code></p>
+<p><strong>Practical implication:</strong>
+- A function requiring <code>FnOnce</code> accepts ANY closure
+- A function requiring <code>FnMut</code> accepts <code>FnMut</code> or <code>Fn</code> closures
+- A function requiring <code>Fn</code> only accepts <code>Fn</code> closures (most restrictive)</p>
+<p>This means <code>Fn</code> closures are the most flexible - they can be used anywhere.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Trait Selection</h2>
+<p>How does the Rust compiler decide which Fn trait to implement for a closure?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler automatically selects based on what the closure does with captured variables:</p>
+<p><strong>Decision flow (tries most flexible first):</strong></p>
+<ol>
+<li>
+<p><strong>Fn</strong> - If closure only reads captured variables
+   <code>rust
+   let x = 5;
+   let read = || println!("{}", x); // Implements Fn</code></p>
+</li>
+<li>
+<p><strong>FnMut</strong> - If closure mutates captured variables
+   <code>rust
+   let mut x = 5;
+   let mutate = || x += 1; // Implements FnMut (not Fn)</code></p>
+</li>
+<li>
+<p><strong>FnOnce</strong> - If closure moves/consumes captured variables
+   <code>rust
+   let x = String::from("hi");
+   let consume = || drop(x); // Implements FnOnce only</code></p>
+</li>
+</ol>
+<p>You cannot manually choose - it's determined by the closure's behavior. The compiler picks the most permissive trait that's safe.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closures as Function Parameters</h2>
+<p>How do you write a function that accepts a closure as a parameter? Show the syntax with generic bounds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use generic type parameters with Fn trait bounds:</p>
+<pre><code class="language-rust">fn apply_operation&lt;F&gt;(value: i32, operation: F) -&gt; i32
+where
+    F: Fn(i32) -&gt; i32,
+{
+    operation(value)
+}
+
+fn main() {
+    let result = apply_operation(5, |x| x * 2);
+    println!(&quot;{}&quot;, result); // 10
+}
+</code></pre>
+<p><strong>Syntax breakdown:</strong>
+- <code>&lt;F&gt;</code> - Generic type parameter for the closure
+- <code>F: Fn(i32) -&gt; i32</code> - Trait bound specifying:
+  - Closure takes an <code>i32</code> parameter
+  - Returns an <code>i32</code>
+  - Implements <code>Fn</code> (can be called multiple times)</p>
+<p>Can use <code>FnOnce</code>, <code>FnMut</code>, or <code>Fn</code> depending on how many times you need to call the closure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Returning Closures</h2>
+<p>Why do you need <code>Box</code> or <code>impl Trait</code> to return closures from functions? Show both approaches.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures have unknown size at compile time because each closure is a unique type. Functions must know return type sizes, so you need indirection or <code>impl Trait</code>.</p>
+<p><strong>Approach 1: Using <code>impl Trait</code></strong> (preferred, modern):</p>
+<pre><code class="language-rust">fn make_adder(n: i32) -&gt; impl Fn(i32) -&gt; i32 {
+    move |x| x + n
+}
+</code></pre>
+<p><strong>Approach 2: Using <code>Box&lt;dyn Trait&gt;</code></strong> (heap allocation):</p>
+<pre><code class="language-rust">fn make_adder(n: i32) -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(move |x| x + n)
+}
+</code></pre>
+<p><strong>Why this is needed:</strong>
+- Each closure has a unique, anonymous type
+- The compiler needs to know the size of return types
+- <code>impl Trait</code> or <code>Box</code> provides a fixed-size representation</p>
+<p>The <code>move</code> keyword is typically required to ensure captured values are owned by the closure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Type Uniqueness Gotcha</h2>
+<p>Why does this code fail to compile, and how do you fix it?</p>
+<pre><code class="language-rust">fn takes_two&lt;F&gt;(first: F, second: F)
+where F: Fn() -&gt; i32
+{
+    println!(&quot;{} {}&quot;, first(), second());
+}
+
+let a = || 5;
+let b = || 5;
+takes_two(a, b); // ERROR!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem:</strong> Every closure has a unique type, even if they look identical. The function expects both parameters to have the same type <code>F</code>, but <code>a</code> and <code>b</code> are different types.</p>
+<p><strong>Solution 1: Separate type parameters</strong> (most common):</p>
+<pre><code class="language-rust">fn takes_two&lt;F, G&gt;(first: F, second: G)
+where
+    F: Fn() -&gt; i32,
+    G: Fn() -&gt; i32,
+{
+    println!(&quot;{} {}&quot;, first(), second());
+}
+</code></pre>
+<p><strong>Solution 2: Trait objects</strong>:</p>
+<pre><code class="language-rust">fn takes_two(
+    first: Box&lt;dyn Fn() -&gt; i32&gt;,
+    second: Box&lt;dyn Fn() -&gt; i32&gt;
+) {
+    println!(&quot;{} {}&quot;, first(), second());
+}
+</code></pre>
+<p>Closures are like anonymous struct types - each definition creates a new type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutable Closure Binding</h2>
+<p>What's wrong with this code and how do you fix it?</p>
+<pre><code class="language-rust">let mut count = 0;
+let increment = || count += 1;
+increment();
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Problem:</strong> Closures that mutate captured variables must themselves be bound as mutable. The closure implements <code>FnMut</code>, which requires <code>&amp;mut self</code> to call.</p>
+<p><strong>Fixed code:</strong></p>
+<pre><code class="language-rust">let mut count = 0;
+let mut increment = || count += 1; // Added mut binding
+increment();
+increment();
+println!(&quot;{}&quot;, count); // 2
+</code></pre>
+<p><strong>Why this is required:</strong>
+- Calling an <code>FnMut</code> closure requires a mutable reference to the closure itself
+- The <code>mut</code> binding allows the compiler to obtain <code>&amp;mut increment</code>
+- This ensures exclusive access during execution</p>
+<p><strong>Rule:</strong> If your closure mutates anything, bind it with <code>mut</code>:</p>
+<pre><code class="language-rust">let mut closure = || { /* mutation code */ };
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Move and Thread Safety</h2>
+<p>Why is the <code>move</code> keyword required for closures in threads? What would happen without it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Threads require closures to own their data because the spawned thread may outlive the scope where data was created.</p>
+<p><strong>Without <code>move</code> (won't compile):</strong></p>
+<pre><code class="language-rust">let data = String::from(&quot;hello&quot;);
+thread::spawn(|| println!(&quot;{}&quot;, data)); // ERROR
+</code></pre>
+<p><strong>Error:</strong> The closure might outlive <code>data</code>, creating a dangling reference.</p>
+<p><strong>With <code>move</code> (correct):</strong></p>
+<pre><code class="language-rust">let data = String::from(&quot;hello&quot;);
+thread::spawn(move || println!(&quot;{}&quot;, data))
+    .join()
+    .unwrap();
+</code></pre>
+<p><strong>Why it's required:</strong>
+- Threads have independent lifetimes
+- The spawning thread might end before the spawned thread
+- <code>move</code> transfers ownership, ensuring data lives long enough
+- This gives the closure <code>'static</code> lifetime</p>
+<p>Thread spawn requires <code>FnOnce + Send + 'static</code>, and <code>move</code> helps satisfy the <code>'static</code> requirement.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Named vs Anonymous Closures</h2>
+<p>What's the difference between named and anonymous closures? When would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Named closures</strong> are assigned to variables:</p>
+<pre><code class="language-rust">let double = |x| x * 2;
+let result = double(5);
+</code></pre>
+<p><strong>Anonymous closures</strong> are used directly as arguments:</p>
+<pre><code class="language-rust">vec![1, 2, 3].iter().map(|x| x * 2).collect()
+</code></pre>
+<p><strong>When to use named:</strong>
+- Need to call the closure multiple times
+- Closure is complex and deserves a descriptive name
+- Want to reuse the same logic
+- Debugging is easier with a name</p>
+<p><strong>When to use anonymous:</strong>
+- One-time use (most common in iterator chains)
+- Simple, self-explanatory operation
+- Keeping code concise and readable
+- Common with <code>map</code>, <code>filter</code>, <code>for_each</code></p>
+<p>Most Rust code uses anonymous closures for simple transformations and named closures for reused or complex logic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closures in Iterator Chains</h2>
+<p>Show how closures are used in iterator chains. What makes them ideal for this use case?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures are the primary tool for iterator operations:</p>
+<pre><code class="language-rust">let numbers = vec![1, 2, 3, 4, 5];
+
+let result: Vec&lt;i32&gt; = numbers
+    .iter()
+    .filter(|&amp;&amp;x| x % 2 == 0)    // Keep evens
+    .map(|&amp;x| x * x)              // Square them
+    .collect();
+
+println!(&quot;{:?}&quot;, result); // [4, 16]
+</code></pre>
+<p><strong>Why closures are ideal here:</strong></p>
+<ol>
+<li><strong>Inline definition</strong> - Logic written where it's used</li>
+<li><strong>Capture context</strong> - Can reference outer variables if needed</li>
+<li><strong>Type inference</strong> - Compiler figures out parameter types</li>
+<li><strong>Zero overhead</strong> - Closures inline at compile time</li>
+<li><strong>Composable</strong> - Chain multiple operations naturally</li>
+</ol>
+<p><strong>Common patterns:</strong></p>
+<pre><code class="language-rust">.map(|x| x * 2)           // Transform each item
+.filter(|x| x &gt; 10)       // Keep items matching condition
+.for_each(|x| println!(&quot;{}&quot;, x))  // Side effect on each
+.fold(0, |acc, x| acc + x)        // Reduce to single value
+</code></pre>
+<p>Closures make iterator chains concise and expressive.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Environment Capture Example</h2>
+<p>Explain what's happening with capture in this example:</p>
+<pre><code class="language-rust">let multiplier = 3;
+let mut numbers = vec![1, 2, 3];
+
+let transform = |x| x * multiplier;
+let add_to_vec = || numbers.push(4);
+</code></pre>
+<p>What does each closure capture and how?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>First closure - <code>transform</code>:</strong></p>
+<pre><code class="language-rust">let transform = |x| x * multiplier;
+</code></pre>
+<ul>
+<li>Captures <code>multiplier</code> by <strong>immutable reference</strong> (<code>&amp;i32</code>)</li>
+<li>Only reads <code>multiplier</code>, doesn't modify it</li>
+<li>Implements <code>Fn</code> trait</li>
+<li>Can be called multiple times</li>
+</ul>
+<p><strong>Second closure - <code>add_to_vec</code>:</strong></p>
+<pre><code class="language-rust">let add_to_vec = || numbers.push(4);
+</code></pre>
+<ul>
+<li>Captures <code>numbers</code> by <strong>mutable reference</strong> (<code>&amp;mut Vec&lt;i32&gt;</code>)</li>
+<li>Modifies <code>numbers</code> by pushing to it</li>
+<li>Implements <code>FnMut</code> trait (not <code>Fn</code>)</li>
+<li>Needs <code>mut</code> binding: <code>let mut add_to_vec = ...</code></li>
+<li>Can be called multiple times</li>
+</ul>
+<p>The compiler automatically determines the minimum necessary capture mode for each closure based on usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Capture and Ownership Rules</h2>
+<p>What ownership rules apply to captured variables? Can you use a moved value after a closure captures it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures must follow Rust's ownership rules:</p>
+<p><strong>With borrowing (default):</strong></p>
+<pre><code class="language-rust">let x = String::from(&quot;hello&quot;);
+let print = || println!(&quot;{}&quot;, x);
+print();
+println!(&quot;{}&quot;, x); // OK - x was borrowed
+</code></pre>
+<p><strong>With move:</strong></p>
+<pre><code class="language-rust">let x = String::from(&quot;hello&quot;);
+let consume = move || println!(&quot;{}&quot;, x);
+consume();
+// println!(&quot;{}&quot;, x); // ERROR - x was moved
+</code></pre>
+<p><strong>Key rules:</strong></p>
+<ol>
+<li><strong>Immutable borrows</strong> - Multiple closures can borrow immutably</li>
+<li><strong>Mutable borrows</strong> - Only one closure can borrow mutably</li>
+<li><strong>Move captures</strong> - Variable can't be used after being moved</li>
+<li><strong>Copy types</strong> - Can use after <code>move</code> (copied, not moved)</li>
+</ol>
+<pre><code class="language-rust">let n = 5; // i32 is Copy
+let closure = move || println!(&quot;{}&quot;, n);
+closure();
+println!(&quot;{}&quot;, n); // OK - n was copied
+</code></pre>
+<p>The closure inherits the captured variable's ownership semantics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Lifetime Requirements</h2>
+<p>What lifetime requirements do closures have for captured references? When does a closure need <code>'static</code> lifetime?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures that capture references must ensure those references live long enough.</p>
+<p><strong>Normal usage (limited lifetime):</strong></p>
+<pre><code class="language-rust">fn process&lt;F: Fn()&gt;(f: F) {
+    f();
+} // Closure dropped here
+
+let data = String::from(&quot;hello&quot;);
+process(|| println!(&quot;{}&quot;, data)); // Borrows data
+</code></pre>
+<p><strong>Requires <code>'static</code> lifetime when:</strong></p>
+<ol>
+<li><strong>Stored in structs or collections:</strong></li>
+</ol>
+<pre><code class="language-rust">struct Handler {
+    callback: Box&lt;dyn Fn() + 'static&gt;,
+}
+</code></pre>
+<ol>
+<li><strong>Passed to threads:</strong></li>
+</ol>
+<pre><code class="language-rust">thread::spawn(move || {
+    // Must be 'static
+})
+</code></pre>
+<ol>
+<li><strong>Returned from functions:</strong></li>
+</ol>
+<pre><code class="language-rust">fn make_closure() -&gt; impl Fn() + 'static {
+    // Must own all captured data
+}
+</code></pre>
+<p><strong>Solution for <code>'static</code>:</strong> Use <code>move</code> to give ownership:</p>
+<pre><code class="language-rust">let data = String::from(&quot;hello&quot;);
+let closure = move || println!(&quot;{}&quot;, data);
+// closure now has 'static lifetime
+</code></pre>
+<p>Without owned data, closures can't outlive their captured references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure vs Function Distinction</h2>
+<p>What are the key differences between closures and regular functions in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Closures:</strong>
+- Can capture environment variables
+- Have anonymous, unique types
+- Type inference for parameters and return values
+- Each closure has its own distinct type
+- Implement <code>Fn</code>, <code>FnMut</code>, or <code>FnOnce</code> traits
+- Syntax: <code>|params| expression</code></p>
+<p><strong>Functions:</strong>
+- Cannot capture environment
+- Have explicit, named types
+- Require explicit type annotations
+- Same signature = same type
+- Function pointers (<code>fn</code> type)
+- Syntax: <code>fn name(params) -&gt; Type { }</code></p>
+<p><strong>Example showing difference:</strong></p>
+<pre><code class="language-rust">fn add_function(x: i32, y: i32) -&gt; i32 { x + y }
+
+let z = 10;
+let add_closure = |x, y| x + y + z; // Can capture z
+
+// add_function cannot access z
+// add_closure has different type than add_function
+</code></pre>
+<p>Closures sacrifice type clarity for flexibility and convenience.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Each Fn Trait</h2>
+<p>When should a function parameter require <code>Fn</code>, <code>FnMut</code>, or <code>FnOnce</code>? Provide decision criteria.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Choose based on how many times you call the closure and what it needs to do:</p>
+<p><strong>Use <code>FnOnce</code> when:</strong>
+- Calling the closure only once
+- Maximum flexibility (accepts any closure)
+- Closure might consume captured values</p>
+<pre><code class="language-rust">fn call_once&lt;F: FnOnce()&gt;(f: F) {
+    f(); // Called exactly once
+}
+</code></pre>
+<p><strong>Use <code>FnMut</code> when:</strong>
+- Calling the closure multiple times
+- Closure needs to mutate captured variables
+- Iterator methods like <code>map</code>, <code>filter</code></p>
+<pre><code class="language-rust">fn call_multiple&lt;F: FnMut(i32)&gt;(mut f: F, data: &amp;[i32]) {
+    for &amp;x in data {
+        f(x); // Called multiple times, may mutate
+    }
+}
+</code></pre>
+<p><strong>Use <code>Fn</code> when:</strong>
+- Calling the closure multiple times
+- Closure is pure (no mutation)
+- Need to call from multiple threads
+- Most restrictive, but most flexible usage</p>
+<pre><code class="language-rust">fn call_many_times&lt;F: Fn()&gt;(f: F) {
+    f(); f(); f(); // Pure closure, no mutation
+}
+</code></pre>
+<p><strong>Rule of thumb:</strong> Start with <code>FnOnce</code>, restrict to <code>FnMut</code> or <code>Fn</code> only if needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Size and Performance</h2>
+<p>What determines the size of a closure? How do closures perform compared to regular functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Closure size is determined by captured variables:</strong></p>
+<pre><code class="language-rust">let x = 5;              // 4 bytes
+let y = String::new();  // 24 bytes (on 64-bit)
+
+let small = |z| z + x;  // Size ≈ size of i32 (4 bytes)
+let large = |z| y.len() + z; // Size ≈ size of String (24 bytes)
+</code></pre>
+<p>A closure's size equals the sum of all captured variables it stores.</p>
+<p><strong>Performance characteristics:</strong></p>
+<ol>
+<li><strong>Zero-cost abstraction</strong> - Non-capturing closures compile to regular functions</li>
+<li><strong>Inlining</strong> - Compiler typically inlines closures</li>
+<li><strong>No heap allocation</strong> - Unless using <code>Box&lt;dyn Fn&gt;</code></li>
+<li><strong>Static dispatch</strong> - When using generic <code>F: Fn</code>, no runtime cost</li>
+</ol>
+<p><strong>Cost comparison:</strong></p>
+<pre><code class="language-rust">// Zero runtime cost (inlined)
+numbers.iter().map(|x| x * 2).sum()
+
+// Same as manually written loop
+let mut sum = 0;
+for x in numbers.iter() {
+    sum += x * 2;
+}
+</code></pre>
+<p>Closures with captured variables have no runtime overhead beyond storing those values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Dynamic Dispatch with Closures</h2>
+<p>What is the difference between <code>Box&lt;dyn Fn()&gt;</code> and <code>impl Fn()</code> for closures? When would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong><code>impl Fn()</code> (static dispatch):</strong></p>
+<pre><code class="language-rust">fn take_closure(f: impl Fn()) {
+    f();
+}
+</code></pre>
+<ul>
+<li>Compile-time type resolution</li>
+<li>Monomorphization (separate code per closure type)</li>
+<li>Zero runtime overhead</li>
+<li>Cannot store in collections or structs easily</li>
+<li>Most common and preferred</li>
+</ul>
+<p><strong><code>Box&lt;dyn Fn()&gt;</code> (dynamic dispatch):</strong></p>
+<pre><code class="language-rust">fn take_closure(f: Box&lt;dyn Fn()&gt;) {
+    f();
+}
+</code></pre>
+<ul>
+<li>Runtime type resolution (vtable lookup)</li>
+<li>Single compiled version of function</li>
+<li>Small runtime cost (pointer indirection)</li>
+<li>Can store different closure types together</li>
+<li>Heap allocation</li>
+</ul>
+<p><strong>Use <code>impl Fn()</code> when:</strong>
+- Performance matters
+- Don't need to store closures
+- Known at compile time</p>
+<p><strong>Use <code>Box&lt;dyn Fn()&gt;</code> when:</strong>
+- Storing different closures in a collection
+- Need to return closures with different types
+- Building callback systems</p>
+<pre><code class="language-rust">let callbacks: Vec&lt;Box&lt;dyn Fn()&gt;&gt; = vec![
+    Box::new(|| println!(&quot;A&quot;)),
+    Box::new(|| println!(&quot;B&quot;)),
+];
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Capture Optimization</h2>
+<p>How does the compiler optimize what a closure captures? Does it capture entire variables or just what's needed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler is smart about closure captures - it only captures what the closure actually uses.</p>
+<p><strong>Captures only used fields:</strong></p>
+<pre><code class="language-rust">struct Data {
+    x: i32,
+    y: String,
+    z: Vec&lt;i32&gt;,
+}
+
+let data = Data {
+    x: 5,
+    y: String::from(&quot;hello&quot;),
+    z: vec![1, 2, 3],
+};
+
+// Only captures data.x, not the entire struct
+let closure = || println!(&quot;{}&quot;, data.x);
+</code></pre>
+<p><strong>Captures by smallest necessary scope:</strong></p>
+<pre><code class="language-rust">let tuple = (1, String::from(&quot;hello&quot;), vec![1, 2]);
+
+// Only captures tuple.0, not entire tuple
+let get_first = || tuple.0;
+</code></pre>
+<p><strong>However, with <code>move</code>:</strong></p>
+<pre><code class="language-rust">// Moves entire struct, even if only using one field
+let closure = move || println!(&quot;{}&quot;, data.x);
+// All of data is moved into closure
+</code></pre>
+<p><strong>Key insight:</strong> Without <code>move</code>, compiler does "precision capturing" by automatically borrowing only what's needed. With <code>move</code>, entire variables are moved even if partially used.</p>
+<p>This optimization reduces closure size and minimizes borrow checker conflicts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Capture and Partial Moves</h2>
+<p>Can a closure capture some fields of a struct by move and others by reference? What happens with partial moves?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, closures cannot do partial moves - they capture entire variables, not individual fields.</p>
+<p><strong>This doesn't work:</strong></p>
+<pre><code class="language-rust">struct Data {
+    x: String,
+    y: i32,
+}
+
+let data = Data {
+    x: String::from(&quot;hello&quot;),
+    y: 42,
+};
+
+// Want to move x, borrow y? Can't do directly:
+// let closure = move || {
+//     println!(&quot;{}&quot;, data.x); // moves x
+//     println!(&quot;{}&quot;, data.y); // wants to move y too
+// };
+</code></pre>
+<p><strong>Workaround - destructure first:</strong></p>
+<pre><code class="language-rust">let Data { x, y } = data;
+
+let closure = move || {
+    println!(&quot;{}&quot;, x); // moves x
+    // y is separate, can still use it
+};
+
+println!(&quot;{}&quot;, y); // OK
+</code></pre>
+<p><strong>Or shadow with references:</strong></p>
+<pre><code class="language-rust">let x_ref = &amp;data.x;
+let closure = move || println!(&quot;{}&quot;, x_ref); // moves reference
+// data.y still accessible
+</code></pre>
+<p>The <code>move</code> keyword applies to all captured variables atomically. For fine-grained control, destructure or create separate bindings before the closure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure and Copy Types</h2>
+<p>How do <code>Copy</code> types behave differently in closures compared to non-<code>Copy</code> types? Show the difference with <code>move</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Copy</code> types are implicitly copied when captured, even with <code>move</code>, while non-<code>Copy</code> types are moved.</p>
+<p><strong>Copy types (primitives, etc.):</strong></p>
+<pre><code class="language-rust">let x = 5; // i32 is Copy
+let closure = move || println!(&quot;{}&quot;, x);
+closure();
+println!(&quot;{}&quot;, x); // OK - x was copied, not moved
+</code></pre>
+<p><strong>Non-Copy types:</strong></p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;); // String not Copy
+let closure = move || println!(&quot;{}&quot;, s);
+closure();
+// println!(&quot;{}&quot;, s); // ERROR - s was moved
+</code></pre>
+<p><strong>Mixed scenario:</strong></p>
+<pre><code class="language-rust">let num = 42;        // Copy
+let text = String::from(&quot;hi&quot;); // Not Copy
+
+let closure = move || {
+    println!(&quot;{} {}&quot;, num, text);
+};
+
+closure();
+println!(&quot;{}&quot;, num);   // OK - num was copied
+// println!(&quot;{}&quot;, text); // ERROR - text was moved
+</code></pre>
+<p><strong>Key insight:</strong> The <code>move</code> keyword doesn't change semantics for <code>Copy</code> types. They're still copied, just into the closure's storage. For non-<code>Copy</code> types, <code>move</code> transfers ownership.</p>
+<p>This is why you can use integers after <code>move</code> but not <code>String</code> or <code>Vec</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Closures</h2>
+<p>Can you have closures inside closures? How does variable capturing work with nested closures?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can nest closures. Inner closures can capture variables from outer closures and the surrounding scope.</p>
+<p><strong>Basic nesting:</strong></p>
+<pre><code class="language-rust">let x = 10;
+
+let outer = || {
+    let y = 20;
+
+    let inner = || {
+        println!(&quot;{} {}&quot;, x, y); // Captures both x and y
+    };
+
+    inner();
+};
+
+outer();
+</code></pre>
+<p><strong>Each closure captures independently:</strong></p>
+<pre><code class="language-rust">let x = 10;
+
+let outer = move || {
+    let y = 20;
+
+    // Inner must also use move to capture y
+    let inner = move || {
+        println!(&quot;{} {}&quot;, x, y);
+    };
+
+    inner();
+};
+</code></pre>
+<p><strong>Capture chain:</strong></p>
+<pre><code class="language-rust">let a = 1;
+
+let first = || {
+    let b = 2;
+
+    let second = || {
+        let c = 3;
+
+        let third = || {
+            println!(&quot;{} {} {}&quot;, a, b, c); // All visible
+        };
+
+        third();
+    };
+
+    second();
+};
+</code></pre>
+<p>Each nested closure can access variables from all enclosing scopes. The same capture rules apply at each level.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Equivalence and Comparison</h2>
+<p>Can you compare or check equality between closures? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, you cannot compare closures for equality in Rust. Closures don't implement <code>PartialEq</code> or <code>Eq</code>.</p>
+<p><strong>This doesn't work:</strong></p>
+<pre><code class="language-rust">let a = |x| x + 1;
+let b = |x| x + 1;
+
+// ERROR: binary operation `==` cannot be applied
+// if a == b { }
+</code></pre>
+<p><strong>Why closures can't be compared:</strong></p>
+<ol>
+<li><strong>Each closure is a unique type</strong> - Even identical-looking closures are different types</li>
+<li><strong>Captured state is opaque</strong> - No standard way to compare captured variables</li>
+<li><strong>Semantic equality is ambiguous</strong> - Should <code>|x| x + 1</code> equal <code>|y| y + 1</code>?</li>
+</ol>
+<p><strong>Workaround - compare results:</strong></p>
+<pre><code class="language-rust">let a = |x| x + 1;
+let b = |x| x + 1;
+
+// Compare what they produce
+if a(5) == b(5) {
+    println!(&quot;Same result for this input&quot;);
+}
+</code></pre>
+<p><strong>Or use function pointers for comparability:</strong></p>
+<pre><code class="language-rust">fn add_one(x: i32) -&gt; i32 { x + 1 }
+fn add_two(x: i32) -&gt; i32 { x + 2 }
+
+let f: fn(i32) -&gt; i32 = add_one;
+let g: fn(i32) -&gt; i32 = add_one;
+
+if f == g { // OK - function pointers are comparable
+    println!(&quot;Same function&quot;);
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Parameter Patterns</h2>
+<p>Can closures use pattern matching in their parameters? Show examples of destructuring in closure parameters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, closure parameters support full pattern matching, just like function parameters.</p>
+<p><strong>Tuple destructuring:</strong></p>
+<pre><code class="language-rust">let pairs = vec![(1, 2), (3, 4), (5, 6)];
+pairs.iter().for_each(|(a, b)| {
+    println!(&quot;{} + {} = {}&quot;, a, b, a + b);
+});
+</code></pre>
+<p><strong>Struct destructuring:</strong></p>
+<pre><code class="language-rust">struct Point { x: i32, y: i32 }
+
+let points = vec![Point { x: 1, y: 2 }, Point { x: 3, y: 4 }];
+points.iter().for_each(|Point { x, y }| {
+    println!(&quot;({}, {})&quot;, x, y);
+});
+</code></pre>
+<p><strong>Reference patterns:</strong></p>
+<pre><code class="language-rust">let numbers = vec![1, 2, 3];
+
+// Dereference in parameter
+numbers.iter().for_each(|&amp;n| {
+    println!(&quot;{}&quot;, n); // n is i32, not &amp;i32
+});
+
+// Compared to:
+numbers.iter().for_each(|n| {
+    println!(&quot;{}&quot;, n); // n is &amp;i32
+});
+</code></pre>
+<p><strong>Nested patterns:</strong></p>
+<pre><code class="language-rust">let data = vec![(1, (2, 3)), (4, (5, 6))];
+data.iter().for_each(|(a, (b, c))| {
+    println!(&quot;{} {} {}&quot;, a, b, c);
+});
+</code></pre>
+<p>Pattern matching in closures makes iterator operations more expressive and concise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Recursion Challenge</h2>
+<p>Can closures be recursive (call themselves)? What makes this difficult?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures calling themselves is extremely difficult and generally not supported directly.</p>
+<p><strong>Why it's hard:</strong></p>
+<pre><code class="language-rust">// Doesn't work - closure type not yet known
+let factorial = |n| {
+    if n == 0 { 1 }
+    else { n * factorial(n - 1) } // Can't reference itself
+};
+</code></pre>
+<p><strong>Problem:</strong>
+- Closure's type is determined by what it captures
+- To capture itself, it needs to know its own type
+- This creates a circular dependency</p>
+<p><strong>Workaround 1: Use a regular function:</strong></p>
+<pre><code class="language-rust">fn factorial(n: u32) -&gt; u32 {
+    if n == 0 { 1 }
+    else { n * factorial(n - 1) }
+}
+</code></pre>
+<p><strong>Workaround 2: Use explicit recursion with <code>Rc</code> and <code>RefCell</code>:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+let factorial = Rc::new(RefCell::new(None));
+let f = factorial.clone();
+
+*factorial.borrow_mut() = Some(move |n: u32| -&gt; u32 {
+    if n == 0 { 1 }
+    else { n * f.borrow().as_ref().unwrap()(n - 1) }
+});
+</code></pre>
+<p><strong>Best practice:</strong> For recursion, use regular functions, not closures. Closures are for capturing environment, not complex control flow.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Best Practices Summary</h2>
+<p>What are the key best practices when working with closures in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Prefer borrowing over moving:</strong>
+- Let compiler choose capture mode
+- Only use <code>move</code> when necessary (threads, returning closures)</p>
+<p><strong>2. Use anonymous closures for simple, one-time operations:</strong></p>
+<pre><code class="language-rust">numbers.iter().filter(|&amp;x| x &gt; 0).collect()
+</code></pre>
+<p><strong>3. Name complex closures:</strong></p>
+<pre><code class="language-rust">let is_valid_user = |user: &amp;User| {
+    user.age &gt;= 18 &amp;&amp; user.verified
+};
+</code></pre>
+<p><strong>4. Choose the right Fn trait:</strong>
+- Default to <code>FnOnce</code> for maximum flexibility
+- Use <code>FnMut</code> when mutation needed
+- Use <code>Fn</code> for pure operations</p>
+<p><strong>5. Avoid returning closures when possible:</strong>
+- Prefer functions or impl Trait
+- Use closures for local, inline logic</p>
+<p><strong>6. Pattern match in parameters:</strong></p>
+<pre><code class="language-rust">points.iter().for_each(|&amp;Point { x, y }| /* ... */)
+</code></pre>
+<p><strong>7. Keep closures small and focused:</strong>
+- Extract complex logic to functions
+- Closures shine with 1-3 line operations</p>
+<p><strong>8. Remember closure type uniqueness:</strong>
+- Each closure is a distinct type
+- Can't compare closures directly</p>
+<p><strong>9. Use type annotations sparingly:</strong>
+- Let type inference work
+- Add types only when compiler can't figure it out</p>
+<p><strong>10. Don't fight the borrow checker:</strong>
+- If captures are complex, consider refactoring
+- Sometimes a regular function is clearer</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
