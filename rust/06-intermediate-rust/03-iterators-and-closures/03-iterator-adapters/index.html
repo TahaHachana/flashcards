@@ -1,0 +1,2269 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 03-Iterators-And-Closures - 03-Iterator-Adapters</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Adaptors Definition</h2>
+<p>What are iterator adaptors? What are their three defining characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Iterator adaptors are methods that transform iterators into new iterators. They are the building blocks of functional-style data processing in Rust.</p>
+<p><strong>Three defining characteristics:</strong></p>
+<ol>
+<li><strong>Lazy evaluation</strong> - Don't execute until consumed</li>
+<li><strong>Composable</strong> - Can chain multiple adaptors together</li>
+<li><strong>Zero-cost</strong> - Compile down to efficient loops with no overhead</li>
+</ol>
+<p><strong>Key insight:</strong></p>
+<pre><code class="language-rust">let pipeline = data.iter()
+    .map(|x| x * 2)      // Creates structure
+    .filter(|x| x &gt; 10); // Creates structure
+// Nothing executes yet!
+
+let result: Vec&lt;_&gt; = pipeline.collect(); // NOW it executes
+</code></pre>
+<p>Adaptors create nested iterator types that themselves implement Iterator. Each adaptor wraps the previous iterator, building a pipeline factory that only runs when consumed.</p>
+<p>The mental model: Think of adaptors as building a pipeline specification, not executing operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Adaptor Pattern Internal Structure</h2>
+<p>How do iterator adaptors work internally? Show the pattern with a Map adaptor example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Every adaptor follows the decorator pattern - wrapping an iterator in a struct that implements Iterator:</p>
+<pre><code class="language-rust">struct Map&lt;I, F&gt; {
+    iter: I,     // Wrapped iterator
+    func: F,     // Transformation function
+}
+
+impl&lt;I, F, B&gt; Iterator for Map&lt;I, F&gt;
+where
+    I: Iterator,
+    F: FnMut(I::Item) -&gt; B,
+{
+    type Item = B;
+
+    fn next(&amp;mut self) -&gt; Option&lt;B&gt; {
+        self.iter.next().map(|x| (self.func)(x))
+    }
+}
+</code></pre>
+<p><strong>Key mechanisms:</strong></p>
+<ol>
+<li><strong>Wrapping</strong>: Each adaptor contains the previous iterator</li>
+<li><strong>Delegation</strong>: <code>next()</code> calls <code>next()</code> on wrapped iterator</li>
+<li><strong>Transformation</strong>: Applies its operation to each element</li>
+<li><strong>Nested types</strong>: Creates type like <code>Filter&lt;Map&lt;Iter&lt;i32&gt;&gt;&gt;</code></li>
+</ol>
+<p>When you call <code>.next()</code> on the outermost adaptor, it cascades through all wrapped iterators, applying each transformation in sequence.</p>
+<p>This is why multiple operations fuse into a single pass through the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Lazy Evaluation Demonstration</h2>
+<p>Demonstrate lazy evaluation with an example showing when operations actually execute.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Iterator adaptors build structures without executing:</p>
+<pre><code class="language-rust">let nums = vec![1, 2, 3, 4, 5];
+
+// This creates types but executes NOTHING
+let pipeline = nums.iter()
+    .map(|x| {
+        println!(&quot;Mapping {}&quot;, x);  // Won't print!
+        x * 2
+    })
+    .filter(|x| {
+        println!(&quot;Filtering {}&quot;, x); // Won't print!
+        x &gt; &amp;4
+    });
+
+println!(&quot;Pipeline created&quot;); // Prints first
+
+// NOW execution happens, element by element
+let result: Vec&lt;_&gt; = pipeline.collect();
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Pipeline created
+Mapping 1
+Filtering 2
+Mapping 2
+Filtering 4
+Mapping 3
+Filtering 6
+...
+</code></pre>
+<p><strong>What's created:</strong></p>
+<pre><code class="language-rust">Filter&lt;Map&lt;std::slice::Iter&lt;i32&gt;&gt;&gt;
+</code></pre>
+<p><strong>Why it matters:</strong>
+- Can work with infinite sequences
+- Operations only on items actually consumed
+- No intermediate allocations
+- Can short-circuit early
+- Perfect for large or expensive data</p>
+<p>Laziness enables efficiency - only compute what you need.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Zero Cost Abstraction Mechanism</h2>
+<p>How do iterator adaptors achieve zero-cost abstraction? What optimizations does the compiler perform?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Iterator chains compile to the same efficient code as hand-written loops through several optimizations:</p>
+<p><strong>Compiler optimizations:</strong></p>
+<ol>
+<li><strong>Inlining</strong> - All closures and adaptor methods inline completely</li>
+<li><strong>Monomorphization</strong> - Generic code specialized for concrete types</li>
+<li><strong>Loop fusion</strong> - Multiple operations merge into single loop</li>
+<li><strong>Dead code elimination</strong> - Unused code paths removed</li>
+</ol>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">// High-level code
+let sum: i32 = data.iter()
+    .filter(|&amp;&amp;x| x % 2 == 0)
+    .map(|&amp;x| x * x)
+    .sum();
+
+// Compiles to equivalent of:
+let mut sum = 0;
+for &amp;x in data.iter() {
+    if x % 2 == 0 {
+        sum += x * x;
+    }
+}
+</code></pre>
+<p><strong>Result:</strong> Same assembly code, same performance!</p>
+<p><strong>Why it works:</strong>
+- No virtual dispatch (generics, not trait objects)
+- No heap allocations for the chain itself
+- No function call overhead
+- LLVM can optimize the fused loop further</p>
+<p>Iterator chains give you functional style with imperative performance. The abstraction truly costs nothing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Map Adaptor Deep Dive</h2>
+<p>What does <code>.map()</code> do? Show examples of type transformation and explain why multiple maps fuse efficiently.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.map()</code> transforms each element through a closure, creating one-to-one correspondence.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn map&lt;B, F&gt;(self, f: F) -&gt; Map&lt;Self, F&gt;
+where
+    F: FnMut(Self::Item) -&gt; B
+</code></pre>
+<p><strong>Basic transformation:</strong></p>
+<pre><code class="language-rust">let doubled = vec![1, 2, 3].iter()
+    .map(|&amp;x| x * 2)
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+// [2, 4, 6]
+</code></pre>
+<p><strong>Type transformation:</strong></p>
+<pre><code class="language-rust">let strings = vec![1, 2, 3].iter()
+    .map(|&amp;n| format!(&quot;Number {}&quot;, n))
+    .collect::&lt;Vec&lt;String&gt;&gt;();
+// [&quot;Number 1&quot;, &quot;Number 2&quot;, &quot;Number 3&quot;]
+</code></pre>
+<p><strong>Multiple maps fuse:</strong></p>
+<pre><code class="language-rust">// This:
+iter.map(|x| x * 2).map(|x| x + 1).map(|x| x.to_string())
+
+// Compiles to same code as:
+iter.map(|x| ((x * 2) + 1).to_string())
+</code></pre>
+<p><strong>Why fusion works:</strong>
+Each element flows through entire chain before next element starts. The compiler inlines all closures into a single operation per element.</p>
+<p><strong>Common pattern - struct field extraction:</strong></p>
+<pre><code class="language-rust">let names: Vec&lt;String&gt; = people.iter()
+    .map(|p| p.name.clone())
+    .collect();
+</code></pre>
+<p>Map is the most fundamental transformation adaptor.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filter Adaptor Characteristics</h2>
+<p>How does <code>.filter()</code> work? How does chaining multiple filters compare to a single complex predicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.filter()</code> keeps only elements matching a predicate, discarding the rest.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn filter&lt;P&gt;(self, predicate: P) -&gt; Filter&lt;Self, P&gt;
+where
+    P: FnMut(&amp;Self::Item) -&gt; bool
+</code></pre>
+<p><strong>Basic usage:</strong></p>
+<pre><code class="language-rust">let evens = (0..10)
+    .filter(|&amp;x| x % 2 == 0)
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+// [0, 2, 4, 6, 8]
+</code></pre>
+<p><strong>Multiple filters:</strong></p>
+<pre><code class="language-rust">let result = data.iter()
+    .filter(|&amp;&amp;x| x &gt; 0)      // Keep positive
+    .filter(|&amp;&amp;x| x &lt; 100)    // Keep under 100
+    .filter(|&amp;&amp;x| x % 2 == 0) // Keep even
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p><strong>Performance: Single pass regardless!</strong></p>
+<pre><code class="language-rust">// Multiple filters - SAME performance
+.filter(|&amp;x| x &gt; 0)
+.filter(|&amp;x| x &lt; 100)
+.filter(|&amp;x| x % 2 == 0)
+
+// Single complex predicate - SAME performance
+.filter(|&amp;x| x &gt; 0 &amp;&amp; x &lt; 100 &amp;&amp; x % 2 == 0)
+</code></pre>
+<p>Both compile to checking all conditions per element in one pass.</p>
+<p><strong>When to use multiple filters:</strong>
+- Readability (separate concerns)
+- When conditions come from different sources
+- When some filters are conditional</p>
+<p><strong>Important:</strong> Predicate receives <code>&amp;Self::Item</code>, hence <code>|&amp;&amp;x|</code> with <code>.iter()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filter Map Combination</h2>
+<p>What does <code>.filter_map()</code> do? When is it more efficient than separate <code>.filter()</code> and <code>.map()</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.filter_map()</code> combines filtering and transformation in one operation, returning <code>Option&lt;T&gt;</code>.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn filter_map&lt;B, F&gt;(self, f: F) -&gt; FilterMap&lt;Self, F&gt;
+where
+    F: FnMut(Self::Item) -&gt; Option&lt;B&gt;
+</code></pre>
+<p><strong>How it works:</strong>
+- Closure returns <code>Some(value)</code> → value kept and extracted
+- Closure returns <code>None</code> → element discarded</p>
+<p><strong>Parsing with error handling:</strong></p>
+<pre><code class="language-rust">let numbers: Vec&lt;i32&gt; = vec![&quot;1&quot;, &quot;two&quot;, &quot;3&quot;, &quot;four&quot;, &quot;5&quot;]
+    .iter()
+    .filter_map(|s| s.parse().ok())
+    .collect();
+// [1, 3, 5] - unparseable strings filtered out
+</code></pre>
+<p><strong>Efficiency comparison:</strong></p>
+<pre><code class="language-rust">// Less efficient - evaluates twice
+data.iter()
+    .filter(|s| s.parse::&lt;i32&gt;().is_ok())
+    .map(|s| s.parse::&lt;i32&gt;().unwrap())
+    .collect()
+
+// More efficient - evaluates once
+data.iter()
+    .filter_map(|s| s.parse::&lt;i32&gt;().ok())
+    .collect()
+</code></pre>
+<p><strong>Pattern matching:</strong></p>
+<pre><code class="language-rust">enum Status { Active(u32), Inactive }
+
+let active_ids: Vec&lt;u32&gt; = statuses.into_iter()
+    .filter_map(|status| match status {
+        Status::Active(id) =&gt; Some(id),
+        Status::Inactive =&gt; None,
+    })
+    .collect();
+</code></pre>
+<p><strong>Use when:</strong>
+1. Processing Option/Result sequences
+2. Filtering requires computation
+3. Pattern matching with extraction</p>
+<p>More efficient than separate operations because it evaluates each element only once.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Take and Skip Positioning</h2>
+<p>How do <code>.take()</code> and <code>.skip()</code> work? Show a pagination pattern and explain their complexity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.take(n)</code> takes first n elements; <code>.skip(n)</code> skips first n elements.</p>
+<p><strong>Basic usage:</strong></p>
+<pre><code class="language-rust">let first_five = (0..100).take(5).collect::&lt;Vec&lt;_&gt;&gt;();
+// [0, 1, 2, 3, 4]
+
+let after_ten = (0..100).skip(10).take(5).collect::&lt;Vec&lt;_&gt;&gt;();
+// [10, 11, 12, 13, 14]
+</code></pre>
+<p><strong>Pagination pattern:</strong></p>
+<pre><code class="language-rust">fn get_page&lt;T&gt;(data: &amp;[T], page: usize, size: usize) -&gt; Vec&lt;&amp;T&gt; {
+    data.iter()
+        .skip(page * size)
+        .take(size)
+        .collect()
+}
+
+// Page 0: skip 0, take 10 → [0..10)
+// Page 1: skip 10, take 10 → [10..20)
+// Page 2: skip 20, take 10 → [20..30)
+</code></pre>
+<p><strong>Essential with infinite iterators:</strong></p>
+<pre><code class="language-rust">let first_ten: Vec&lt;i32&gt; = (0..)  // Infinite!
+    .take(10)  // MUST limit
+    .collect();
+</code></pre>
+<p><strong>Complexity:</strong>
+- <code>.take(n)</code>: O(min(n, length)) - stops when limit reached
+- <code>.skip(n)</code>: O(n) to skip + O(m) to consume rest
+- Combined: Both operations fuse efficiently</p>
+<p><strong>Slicing with both:</strong></p>
+<pre><code class="language-rust">let middle = data.iter()
+    .skip(10)   // Skip first 10
+    .take(20)   // Take next 20
+    .collect(); // Elements [10..30)
+</code></pre>
+<p>Used for windowing, sampling, and subsequence extraction.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Take While vs Filter Difference</h2>
+<p>What's the critical difference between <code>.take_while()</code> and <code>.filter()</code>? Show an example demonstrating this.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Key difference:</strong> <code>.take_while()</code> <strong>stops</strong> at first failure; <code>.filter()</code> <strong>checks every</strong> element.</p>
+<p><strong>take_while - Stops early:</strong></p>
+<pre><code class="language-rust">let result = (1..10)
+    .take_while(|&amp;x| x != 5)
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+// [1, 2, 3, 4] - STOPS at 5, doesn't check 6-9
+</code></pre>
+<p><strong>filter - Checks all:</strong></p>
+<pre><code class="language-rust">let result = (1..10)
+    .filter(|&amp;x| x != 5)
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+// [1, 2, 3, 4, 6, 7, 8, 9] - Skips 5 but CONTINUES
+</code></pre>
+<p><strong>Practical example:</strong></p>
+<pre><code class="language-rust">let lines = vec![&quot;header&quot;, &quot;data1&quot;, &quot;data2&quot;, &quot;&quot;, &quot;data3&quot;, &quot;data4&quot;];
+
+// take_while - stops at first empty line
+let before_empty: Vec&lt;_&gt; = lines.iter()
+    .take_while(|line| !line.is_empty())
+    .collect();
+// [&quot;header&quot;, &quot;data1&quot;, &quot;data2&quot;]
+
+// filter - removes all empty lines
+let without_empty: Vec&lt;_&gt; = lines.iter()
+    .filter(|line| !line.is_empty())
+    .collect();
+// [&quot;header&quot;, &quot;data1&quot;, &quot;data2&quot;, &quot;data3&quot;, &quot;data4&quot;]
+</code></pre>
+<p><strong>Use take_while when:</strong>
+- Processing until sentinel value
+- Reading header sections
+- Collecting until condition fails
+- Working with sorted/ordered data</p>
+<p><strong>Use filter when:</strong>
+- Removing all unwanted elements
+- Elements can appear anywhere
+- Need to check entire sequence</p>
+<p><code>.take_while()</code> is more efficient when you know elements of interest are contiguous at the start.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Enumerate Index Addition</h2>
+<p>What does <code>.enumerate()</code> do? Show three practical use cases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.enumerate()</code> adds zero-based indices, transforming <code>Item</code> into <code>(usize, Item)</code> tuples.</p>
+<p><strong>Basic usage:</strong></p>
+<pre><code class="language-rust">for (i, value) in vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;].iter().enumerate() {
+    println!(&quot;{}: {}&quot;, i, value);
+}
+// 0: a
+// 1: b
+// 2: c
+</code></pre>
+<p><strong>Use case 1: Finding index of element</strong></p>
+<pre><code class="language-rust">let position = data.iter()
+    .enumerate()
+    .find(|(_, &amp;val)| val == target)
+    .map(|(idx, _)| idx);
+// Returns Option&lt;usize&gt; with index
+</code></pre>
+<p><strong>Use case 2: Filtering by index</strong></p>
+<pre><code class="language-rust">// Every third element
+let every_third: Vec&lt;i32&gt; = numbers.iter()
+    .enumerate()
+    .filter(|(i, _)| i % 3 == 0)
+    .map(|(_, &amp;val)| val)
+    .collect();
+</code></pre>
+<p><strong>Use case 3: Line numbering</strong></p>
+<pre><code class="language-rust">let numbered: Vec&lt;String&gt; = lines.iter()
+    .enumerate()
+    .map(|(i, line)| format!(&quot;{:3}: {}&quot;, i + 1, line))
+    .collect();
+// &quot;  1: first line&quot;
+// &quot;  2: second line&quot;
+</code></pre>
+<p><strong>Pattern - processing with previous element:</strong></p>
+<pre><code class="language-rust">let diffs: Vec&lt;i32&gt; = numbers.iter()
+    .enumerate()
+    .map(|(i, &amp;val)| {
+        if i == 0 { 0 }
+        else { val - numbers[i - 1] }
+    })
+    .collect();
+</code></pre>
+<p>Indices are <code>usize</code> and zero-based. Can offset by mapping: <code>(i + 1, item)</code> for 1-based.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Zip Pairing Mechanics</h2>
+<p>How does <code>.zip()</code> work? What happens when iterators have different lengths?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.zip()</code> combines two iterators element-wise into pairs (tuples).</p>
+<p><strong>Basic usage:</strong></p>
+<pre><code class="language-rust">let names = vec![&quot;Alice&quot;, &quot;Bob&quot;, &quot;Carol&quot;];
+let ages = vec![30, 25, 35];
+
+let pairs: Vec&lt;_&gt; = names.iter()
+    .zip(ages.iter())
+    .collect();
+// [(&quot;Alice&quot;, 30), (&quot;Bob&quot;, 25), (&quot;Carol&quot;, 35)]
+</code></pre>
+<p><strong>Creating HashMap:</strong></p>
+<pre><code class="language-rust">let map: HashMap&lt;_, _&gt; = keys.into_iter()
+    .zip(values.into_iter())
+    .collect();
+</code></pre>
+<p><strong>Length handling - stops at shortest:</strong></p>
+<pre><code class="language-rust">let short = vec![1, 2, 3];
+let long = vec![10, 20, 30, 40, 50];
+
+let zipped: Vec&lt;_&gt; = short.iter()
+    .zip(long.iter())
+    .collect();
+// [(1, 10), (2, 20), (3, 30)]
+// Stops when short is exhausted
+</code></pre>
+<p><strong>Zipping three iterators:</strong></p>
+<pre><code class="language-rust">let triples = names.iter()
+    .zip(ages.iter())
+    .zip(cities.iter())
+    .map(|((name, age), city)| (name, age, city))
+    .collect();
+</code></pre>
+<p><strong>With infinite iterator:</strong></p>
+<pre><code class="language-rust">let labeled: Vec&lt;_&gt; = (1..)  // Infinite numbers
+    .zip(items.iter())  // Finite items
+    .map(|(num, item)| format!(&quot;{}. {}&quot;, num, item))
+    .collect();
+// Stops when items exhausted
+</code></pre>
+<p><strong>Computing differences:</strong></p>
+<pre><code class="language-rust">let diffs: Vec&lt;i32&gt; = numbers[1..].iter()
+    .zip(numbers[..numbers.len()-1].iter())
+    .map(|(next, prev)| next - prev)
+    .collect();
+</code></pre>
+<p>Always stops at the shorter iterator - no panic, no padding.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chain Concatenation</h2>
+<p>What does <code>.chain()</code> do? Show how to add header/footer to a sequence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.chain()</code> sequentially concatenates iterators - first iterator's elements, then second's.</p>
+<p><strong>Basic concatenation:</strong></p>
+<pre><code class="language-rust">let combined: Vec&lt;i32&gt; = vec![1, 2, 3].iter()
+    .chain(vec![4, 5, 6].iter())
+    .copied()
+    .collect();
+// [1, 2, 3, 4, 5, 6]
+</code></pre>
+<p><strong>Adding header and footer:</strong></p>
+<pre><code class="language-rust">let with_header_footer: Vec&lt;String&gt; = 
+    std::iter::once(&quot;# Header&quot;.to_string())
+        .chain(body_lines.into_iter())
+        .chain(std::iter::once(&quot;# Footer&quot;.to_string()))
+        .collect();
+</code></pre>
+<p><strong>Multiple chains:</strong></p>
+<pre><code class="language-rust">let all: Vec&lt;i32&gt; = first.iter()
+    .chain(second.iter())
+    .chain(third.iter())
+    .chain(fourth.iter())
+    .copied()
+    .collect();
+</code></pre>
+<p><strong>Conditional chaining:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;i32&gt; = base.iter().copied()
+    .chain(
+        if include_extras {
+            extras.iter().copied()
+        } else {
+            vec![].into_iter()
+        }
+    )
+    .collect();
+</code></pre>
+<p><strong>Mixing with ranges:</strong></p>
+<pre><code class="language-rust">let extended: Vec&lt;i32&gt; = vec![1, 2, 3].iter()
+    .copied()
+    .chain(4..7)  // Range iterator
+    .collect();
+// [1, 2, 3, 4, 5, 6]
+</code></pre>
+<p><strong>Zero-cost:</strong> Compiler eliminates chaining overhead completely.</p>
+<p><strong>Order matters:</strong> First iterator's elements come first, then second, etc. Unlike operations that can reorder, <code>.chain()</code> preserves sequence order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flatten Nested Unwrapping</h2>
+<p>What does <code>.flatten()</code> do with different types? Show examples with nested vectors, Options, and Results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.flatten()</code> removes one level of nesting from nested iterators or Option/Result values.</p>
+<p><strong>Flattening nested vectors:</strong></p>
+<pre><code class="language-rust">let nested = vec![vec![1, 2], vec![3, 4, 5], vec![6]];
+
+let flat: Vec&lt;i32&gt; = nested.into_iter()
+    .flatten()
+    .collect();
+// [1, 2, 3, 4, 5, 6]
+</code></pre>
+<p><strong>Flattening Options (removes None):</strong></p>
+<pre><code class="language-rust">let options = vec![Some(1), None, Some(2), None, Some(3)];
+
+let values: Vec&lt;i32&gt; = options.into_iter()
+    .flatten()
+    .collect();
+// [1, 2, 3] - None values disappear
+</code></pre>
+<p><strong>Flattening Results (keeps Ok, discards Err):</strong></p>
+<pre><code class="language-rust">let results = vec![Ok(1), Err(&quot;error&quot;), Ok(2), Ok(3)];
+
+let successes: Vec&lt;i32&gt; = results.into_iter()
+    .flatten()
+    .collect();
+// [1, 2, 3] - Err values filtered out
+</code></pre>
+<p><strong>With map (common pattern):</strong></p>
+<pre><code class="language-rust">let parsed: Vec&lt;i32&gt; = vec![&quot;1&quot;, &quot;not a number&quot;, &quot;2&quot;, &quot;3&quot;]
+    .iter()
+    .map(|s| s.parse::&lt;i32&gt;())  // Returns Result
+    .flatten()  // Keeps Ok, discards Err
+    .collect();
+// [1, 2, 3]
+</code></pre>
+<p><strong>Splitting strings:</strong></p>
+<pre><code class="language-rust">let words: Vec&lt;&amp;str&gt; = sentences.iter()
+    .map(|s| s.split_whitespace())  // Returns iterator
+    .flatten()
+    .collect();
+</code></pre>
+<p><strong>Equivalent to flat_map:</strong></p>
+<pre><code class="language-rust">iter.map(f).flatten()
+// Same as:
+iter.flat_map(f)
+</code></pre>
+<p>Only removes ONE level of nesting. For deeply nested structures, need multiple <code>.flatten()</code> calls or recursive approach.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Flat Map Combined Operation</h2>
+<p>What does <code>.flat_map()</code> do? Show an example where each element expands into multiple elements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.flat_map()</code> maps each element to an iterator, then flattens - combining <code>.map()</code> and <code>.flatten()</code>.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn flat_map&lt;U, F&gt;(self, f: F) -&gt; FlatMap&lt;Self, U, F&gt;
+where
+    F: FnMut(Self::Item) -&gt; U,
+    U: IntoIterator
+</code></pre>
+<p><strong>Expanding elements:</strong></p>
+<pre><code class="language-rust">let expanded: Vec&lt;i32&gt; = vec![1, 2, 3]
+    .into_iter()
+    .flat_map(|x| vec![x, x * 10])
+    .collect();
+// [1, 10, 2, 20, 3, 30]
+// Each element becomes two elements
+</code></pre>
+<p><strong>Splitting text:</strong></p>
+<pre><code class="language-rust">let words: Vec&lt;&amp;str&gt; = vec![&quot;hello world&quot;, &quot;rust programming&quot;]
+    .iter()
+    .flat_map(|sentence| sentence.split_whitespace())
+    .collect();
+// [&quot;hello&quot;, &quot;world&quot;, &quot;rust&quot;, &quot;programming&quot;]
+</code></pre>
+<p><strong>Cartesian product-like operation:</strong></p>
+<pre><code class="language-rust">let pairs: Vec&lt;(i32, char)&gt; = vec![1, 2, 3]
+    .into_iter()
+    .flat_map(|num| {
+        vec!['a', 'b'].into_iter()
+            .map(move |ch| (num, ch))
+    })
+    .collect();
+// [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b'), (3, 'a'), (3, 'b')]
+</code></pre>
+<p><strong>Conditional expansion:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;Item&gt; = items.iter()
+    .flat_map(|item| {
+        if item.is_valid() {
+            item.get_all_versions()  // Returns Vec
+        } else {
+            vec![]  // Returns empty Vec
+        }
+    })
+    .collect();
+</code></pre>
+<p><strong>Equivalence:</strong></p>
+<pre><code class="language-rust">// These are identical:
+data.iter().map(f).flatten()
+data.iter().flat_map(f)
+
+// flat_map is just syntactic sugar
+</code></pre>
+<p>Use when each input element produces zero or more output elements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fold Universal Reducer</h2>
+<p>What does <code>.fold()</code> do? Show examples beyond simple summation, including building complex structures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.fold()</code> reduces an iterator to a single value using an accumulator pattern.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn fold&lt;B, F&gt;(self, init: B, f: F) -&gt; B
+where
+    F: FnMut(B, Self::Item) -&gt; B
+</code></pre>
+<p><strong>Parameters:</strong>
+- <code>init</code> - Initial accumulator value
+- <code>f</code> - Closure: (accumulator, next_item) → new_accumulator</p>
+<p><strong>Simple sum:</strong></p>
+<pre><code class="language-rust">let sum = vec![1, 2, 3, 4, 5].iter()
+    .fold(0, |acc, &amp;x| acc + x);
+// 15
+</code></pre>
+<p><strong>Building strings:</strong></p>
+<pre><code class="language-rust">let sentence = vec![&quot;Hello&quot;, &quot;world&quot;, &quot;from&quot;, &quot;Rust&quot;].iter()
+    .fold(String::new(), |mut acc, &amp;word| {
+        if !acc.is_empty() {
+            acc.push(' ');
+        }
+        acc.push_str(word);
+        acc
+    });
+// &quot;Hello world from Rust&quot;
+</code></pre>
+<p><strong>Building complex structure:</strong></p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Stats {
+    count: usize,
+    sum: i32,
+    min: i32,
+    max: i32,
+}
+
+let stats = numbers.iter().fold(
+    Stats {
+        count: 0,
+        sum: 0,
+        min: i32::MAX,
+        max: i32::MIN,
+    },
+    |mut acc, &amp;x| {
+        acc.count += 1;
+        acc.sum += x;
+        acc.min = acc.min.min(x);
+        acc.max = acc.max.max(x);
+        acc
+    }
+);
+</code></pre>
+<p><strong>Grouping elements:</strong></p>
+<pre><code class="language-rust">let groups: HashMap&lt;char, Vec&lt;String&gt;&gt; = words.into_iter()
+    .fold(HashMap::new(), |mut map, word| {
+        let first = word.chars().next().unwrap();
+        map.entry(first)
+            .or_insert_with(Vec::new)
+            .push(word);
+        map
+    });
+</code></pre>
+<p><strong>Reversing:</strong></p>
+<pre><code class="language-rust">let reversed: Vec&lt;i32&gt; = vec![1, 2, 3, 4, 5]
+    .into_iter()
+    .fold(Vec::new(), |mut acc, x| {
+        acc.insert(0, x);  // Insert at front
+        acc
+    });
+// [5, 4, 3, 2, 1]
+</code></pre>
+<p>Fold is the most general reduction - any consuming operation can be expressed as fold.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scan Stateful Transformation</h2>
+<p>How does <code>.scan()</code> differ from <code>.fold()</code>? Show a running sum example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.scan()</code> is like <code>.fold()</code> but emits intermediate values instead of just the final result.</p>
+<p><strong>Key difference:</strong>
+- <code>.fold()</code> - Returns single final value
+- <code>.scan()</code> - Returns iterator of intermediate values</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn scan&lt;St, B, F&gt;(self, initial_state: St, f: F) -&gt; Scan&lt;Self, St, F&gt;
+where
+    F: FnMut(&amp;mut St, Self::Item) -&gt; Option&lt;B&gt;
+</code></pre>
+<p><strong>Running sum:</strong></p>
+<pre><code class="language-rust">let running_sums: Vec&lt;i32&gt; = vec![1, 2, 3, 4, 5]
+    .into_iter()
+    .scan(0, |acc, x| {
+        *acc += x;
+        Some(*acc)  // Emit current accumulator
+    })
+    .collect();
+// [1, 3, 6, 10, 15]
+
+// Compare with fold:
+let final_sum = vec![1, 2, 3, 4, 5].iter().fold(0, |acc, &amp;x| acc + x);
+// 15 (just final value)
+</code></pre>
+<p><strong>Running average:</strong></p>
+<pre><code class="language-rust">let running_avgs: Vec&lt;f64&gt; = numbers.iter()
+    .scan((0.0, 0), |(sum, count), &amp;x| {
+        *sum += x as f64;
+        *count += 1;
+        Some(*sum / *count as f64)
+    })
+    .collect();
+</code></pre>
+<p><strong>Computing differences (with previous element):</strong></p>
+<pre><code class="language-rust">let differences: Vec&lt;i32&gt; = numbers.iter()
+    .scan(None, |prev, &amp;x| {
+        let result = prev.map(|p| x - p);
+        *prev = Some(x);
+        Some(result)
+    })
+    .filter_map(|x| x)  // Remove first None
+    .collect();
+</code></pre>
+<p><strong>Early termination:</strong></p>
+<pre><code class="language-rust">// Stop when budget exceeded
+let within_budget: Vec&lt;Item&gt; = items.iter()
+    .scan(0, |budget, item| {
+        if *budget + item.cost &lt;= MAX_BUDGET {
+            *budget += item.cost;
+            Some(item.clone())
+        } else {
+            None  // Returning None stops iteration
+        }
+    })
+    .collect();
+</code></pre>
+<p>Use <code>.scan()</code> when you need intermediate accumulator values, not just the final result.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Inspect Debugging Aid</h2>
+<p>What is <code>.inspect()</code> used for? Show how to debug a multi-stage pipeline.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.inspect()</code> allows peeking at values flowing through a pipeline without affecting them - primarily for debugging.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn inspect&lt;F&gt;(self, f: F) -&gt; Inspect&lt;Self, F&gt;
+where
+    F: FnMut(&amp;Self::Item)
+</code></pre>
+<p><strong>Debugging pipeline stages:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;i32&gt; = numbers.iter()
+    .inspect(|x| println!(&quot;Before filter: {}&quot;, x))
+    .filter(|&amp;&amp;x| x % 2 == 0)
+    .inspect(|x| println!(&quot;After filter: {}&quot;, x))
+    .map(|&amp;x| x * x)
+    .inspect(|x| println!(&quot;After map: {}&quot;, x))
+    .collect();
+</code></pre>
+<p><strong>Output shows execution flow:</strong></p>
+<pre><code>Before filter: 1
+Before filter: 2
+After filter: 2
+After map: 4
+Before filter: 3
+Before filter: 4
+After filter: 4
+After map: 16
+...
+</code></pre>
+<p><strong>Logging with context:</strong></p>
+<pre><code class="language-rust">let processed = data.iter()
+    .inspect(|x| debug!(&quot;Processing: {:?}&quot;, x))
+    .map(expensive_operation)
+    .inspect(|x| debug!(&quot;Completed: {:?}&quot;, x))
+    .collect();
+</code></pre>
+<p><strong>Counting processed elements:</strong></p>
+<pre><code class="language-rust">let mut count = 0;
+let result: Vec&lt;_&gt; = iter
+    .inspect(|_| count += 1)
+    .filter(predicate)
+    .collect();
+println!(&quot;Processed {} elements&quot;, count);
+</code></pre>
+<p><strong>Validation during iteration:</strong></p>
+<pre><code class="language-rust">let validated: Vec&lt;_&gt; = items.iter()
+    .inspect(|item| assert!(item.is_valid()))
+    .map(|item| item.process())
+    .collect();
+</code></pre>
+<p><strong>Key characteristics:</strong>
+- Takes <code>&amp;Item</code> (reference, not ownership)
+- Returns same iterator type
+- No transformation of values
+- Used for side effects
+- Removed in release builds with optimization</p>
+<p>Perfect for understanding lazy evaluation and debugging complex chains.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cycle Infinite Repetition</h2>
+<p>What does <code>.cycle()</code> do? Show a practical example and explain why <code>.take()</code> is essential.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.cycle()</code> repeats an iterator infinitely by cloning and restarting when it reaches the end.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn cycle(self) -&gt; Cycle&lt;Self&gt;
+where
+    Self: Clone
+</code></pre>
+<p><strong>Basic usage:</strong></p>
+<pre><code class="language-rust">let pattern: Vec&lt;i32&gt; = vec![1, 2, 3]
+    .iter()
+    .cycle()
+    .take(10)  // MUST limit!
+    .copied()
+    .collect();
+// [1, 2, 3, 1, 2, 3, 1, 2, 3, 1]
+</code></pre>
+<p><strong>Alternating labels:</strong></p>
+<pre><code class="language-rust">let labels = [&quot;even&quot;, &quot;odd&quot;].iter().cycle();
+let labeled: Vec&lt;_&gt; = (0..6)
+    .zip(labels)
+    .map(|(num, label)| format!(&quot;{}: {}&quot;, num, label))
+    .collect();
+// [&quot;0: even&quot;, &quot;1: odd&quot;, &quot;2: even&quot;, &quot;3: odd&quot;, &quot;4: even&quot;, &quot;5: odd&quot;]
+</code></pre>
+<p><strong>Round-robin distribution:</strong></p>
+<pre><code class="language-rust">let servers = vec![&quot;server1&quot;, &quot;server2&quot;, &quot;server3&quot;];
+let assignments: Vec&lt;_&gt; = tasks.iter()
+    .zip(servers.iter().cycle())
+    .map(|(task, server)| (task.clone(), *server))
+    .collect();
+// Distributes tasks evenly across servers
+</code></pre>
+<p><strong>Animation frames:</strong></p>
+<pre><code class="language-rust">let frames = [Frame1, Frame2, Frame3, Frame4];
+let animation = frames.iter()
+    .cycle()
+    .take(total_frame_count)
+    .cloned();
+</code></pre>
+<p><strong>⚠️ CRITICAL WARNING:</strong></p>
+<pre><code class="language-rust">// INFINITE LOOP - program hangs forever!
+// vec![1, 2, 3].iter().cycle().for_each(|x| println!(&quot;{}&quot;, x));
+
+// CORRECT - must limit
+vec![1, 2, 3].iter().cycle().take(10).for_each(|x| println!(&quot;{}&quot;, x));
+</code></pre>
+<p><strong>Requirement:</strong> Inner iterator must be <code>Clone</code> so it can restart.</p>
+<p>Always use with <code>.take()</code>, <code>.take_while()</code>, or <code>.zip()</code> with finite iterator to prevent infinite loops!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Step By Sampling</h2>
+<p>What does <code>.step_by()</code> do? Show use cases for sampling data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.step_by(n)</code> creates an iterator that yields every nth element, skipping n-1 in between.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn step_by(self, step: usize) -&gt; StepBy&lt;Self&gt;
+</code></pre>
+<p><strong>Every other element:</strong></p>
+<pre><code class="language-rust">let every_other: Vec&lt;i32&gt; = (0..10)
+    .step_by(2)
+    .collect();
+// [0, 2, 4, 6, 8]
+</code></pre>
+<p><strong>Every third element:</strong></p>
+<pre><code class="language-rust">let every_third: Vec&lt;i32&gt; = data.iter()
+    .step_by(3)
+    .copied()
+    .collect();
+// Takes elements at indices 0, 3, 6, 9, ...
+</code></pre>
+<p><strong>Data sampling:</strong></p>
+<pre><code class="language-rust">// Sample every 100th measurement for overview
+let samples: Vec&lt;Measurement&gt; = all_measurements.iter()
+    .step_by(100)
+    .cloned()
+    .collect();
+</code></pre>
+<p><strong>Processing every Nth row:</strong></p>
+<pre><code class="language-rust">// Process every 5th row (e.g., for performance)
+let selected: Vec&lt;_&gt; = rows.iter()
+    .step_by(5)
+    .map(|row| row.process())
+    .collect();
+</code></pre>
+<p><strong>Downsampling video frames:</strong></p>
+<pre><code class="language-rust">// Keep every 3rd frame (reduce from 60fps to 20fps)
+let downsampled: Vec&lt;Frame&gt; = frames.iter()
+    .step_by(3)
+    .cloned()
+    .collect();
+</code></pre>
+<p><strong>Important notes:</strong>
+- Zero-indexed: first element (index 0) is always included
+- <code>step_by(1)</code> means every element (no skipping)
+- <code>step_by(2)</code> means every other element (skip 1)
+- Panics if step is 0</p>
+<p><strong>Pattern - odds vs evens:</strong></p>
+<pre><code class="language-rust">let evens = (0..10).step_by(2).collect::&lt;Vec&lt;_&gt;&gt;();
+// [0, 2, 4, 6, 8]
+
+let odds = (1..10).step_by(2).collect::&lt;Vec&lt;_&gt;&gt;();
+// [1, 3, 5, 7, 9]
+</code></pre>
+<p>Useful for downsampling, performance optimization, and periodic processing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complex Chaining Pattern</h2>
+<p>Show a complex multi-stage transformation pattern that demonstrates proper iterator chaining with multiple adaptors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Complex transformation combining multiple stages:</p>
+<pre><code class="language-rust">let report: HashMap&lt;String, Summary&gt; = raw_data
+    .iter()
+    // Stage 1: Clean and validate
+    .filter(|item| item.is_valid())
+    .map(|item| item.normalize())
+
+    // Stage 2: Group by category
+    .fold(HashMap::new(), |mut groups, item| {
+        groups.entry(item.category().to_string())
+            .or_insert_with(Vec::new)
+            .push(item);
+        groups
+    })
+
+    // Stage 3: Convert to iterator of groups
+    .into_iter()
+
+    // Stage 4: Aggregate each group
+    .map(|(category, items)| {
+        let summary = items.iter()
+            .fold(Summary::default(), |acc, item| {
+                acc.update(item)
+            });
+        (category, summary)
+    })
+
+    // Stage 5: Filter and collect
+    .filter(|(_, summary)| summary.count &gt; MIN_THRESHOLD)
+    .collect();
+</code></pre>
+<p><strong>Breakdown:</strong></p>
+<ol>
+<li><strong>Filter invalid</strong> - Remove bad data early</li>
+<li><strong>Normalize</strong> - Consistent format</li>
+<li><strong>Group</strong> - Fold into HashMap by category</li>
+<li><strong>Convert</strong> - Back to iterator for processing</li>
+<li><strong>Aggregate</strong> - Compute summaries per group</li>
+<li><strong>Filter</strong> - Remove insignificant groups</li>
+<li><strong>Collect</strong> - Final result</li>
+</ol>
+<p><strong>Why this pattern works:</strong></p>
+<ul>
+<li>Each stage independent and testable</li>
+<li>Lazy evaluation until final collect</li>
+<li>Type transformations clear</li>
+<li>Can add <code>.inspect()</code> between stages for debugging</li>
+<li>Single pass through data where possible</li>
+</ul>
+<p><strong>Alternative with intermediate collection:</strong></p>
+<pre><code class="language-rust">// When you need to reuse intermediate results
+let normalized: Vec&lt;_&gt; = raw_data.iter()
+    .filter(|item| item.is_valid())
+    .map(|item| item.normalize())
+    .collect();
+
+// Now can use normalized multiple times
+let summary1 = normalized.iter().map(...).collect();
+let summary2 = normalized.iter().filter(...).collect();
+</code></pre>
+<p>Real-world pattern for data processing pipelines.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Adaptor Fusion Optimization</h2>
+<p>Explain how multiple iterator adaptors fuse into a single pass. Why doesn't chaining create multiple loops?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Multiple adaptors fuse through compiler optimizations, creating a single loop that checks all conditions per element.</p>
+<p><strong>Example chain:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;i32&gt; = data.iter()
+    .filter(|&amp;&amp;x| x &gt; 0)
+    .map(|&amp;x| x * 2)
+    .filter(|&amp;x| x &lt; 100)
+    .map(|x| x + 1)
+    .collect();
+</code></pre>
+<p><strong>What beginners might expect (wrong):</strong></p>
+<pre><code class="language-rust">// Intermediate collections (NOT what happens)
+let temp1 = data.iter().filter(...).collect::&lt;Vec&lt;_&gt;&gt;();
+let temp2 = temp1.iter().map(...).collect::&lt;Vec&lt;_&gt;&gt;();
+let temp3 = temp2.iter().filter(...).collect::&lt;Vec&lt;_&gt;&gt;();
+let result = temp3.iter().map(...).collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p><strong>What actually compiles to (right):</strong></p>
+<pre><code class="language-rust">let mut result = Vec::new();
+for &amp;x in data.iter() {
+    if x &gt; 0 {                    // First filter
+        let x = x * 2;            // First map
+        if x &lt; 100 {              // Second filter
+            let x = x + 1;        // Second map
+            result.push(x);
+        }
+    }
+}
+</code></pre>
+<p><strong>How fusion works:</strong></p>
+<ol>
+<li>
+<p><strong>Type nesting:</strong> Each adaptor wraps previous:
+   <code>rust
+   Map&lt;Filter&lt;Map&lt;Filter&lt;Iter&lt;i32&gt;&gt;&gt;&gt;&gt;</code></p>
+</li>
+<li>
+<p><strong>Inlining:</strong> All closures inline completely</p>
+</li>
+<li>
+<p><strong>Single .next() chain:</strong> Each <code>.next()</code> calls next on inner:
+   <code>rust
+   Map::next() 
+     → calls Filter::next()
+       → calls Map::next()
+         → calls Filter::next()
+           → calls Iter::next()</code></p>
+</li>
+<li>
+<p><strong>LLVM optimization:</strong> Flattens nested calls into single loop</p>
+</li>
+</ol>
+<p><strong>Performance result:</strong>
+- Zero intermediate allocations
+- Single pass through data
+- Same assembly as hand-written loop
+- No function call overhead</p>
+<p><strong>This is why "zero-cost abstraction" is real</strong> - the high-level functional code costs nothing at runtime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Collect Intermediate</h2>
+<p>When should you collect intermediate results in an iterator chain? Give examples of when it helps and when it hurts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generally avoid intermediate collections, but they're beneficial in specific scenarios.</p>
+<p><strong>When to AVOID intermediate collection (most cases):</strong></p>
+<pre><code class="language-rust">// BAD - unnecessary intermediate allocation
+let intermediate: Vec&lt;_&gt; = data.iter()
+    .map(expensive_op)
+    .collect();  // ❌ Materializes here
+
+let result: Vec&lt;_&gt; = intermediate.iter()
+    .map(another_op)
+    .collect();
+
+// GOOD - single pass, no allocation
+let result: Vec&lt;_&gt; = data.iter()
+    .map(|x| another_op(expensive_op(x)))
+    .collect();
+</code></pre>
+<p><strong>When intermediate collection HELPS:</strong></p>
+<p><strong>1. Multiple iterations needed:</strong></p>
+<pre><code class="language-rust">// GOOD - collect once, iterate multiple times
+let intermediate: Vec&lt;_&gt; = data.iter()
+    .map(expensive_op)
+    .collect();
+
+let sum1: i32 = intermediate.iter().sum();
+let sum2: i32 = intermediate.iter().map(|x| x * 2).sum();
+let max = intermediate.iter().max();
+</code></pre>
+<p><strong>2. Short-circuiting prevents recomputation:</strong></p>
+<pre><code class="language-rust">// GOOD - find() stops early, no recomputation
+let processed: Vec&lt;_&gt; = data.iter()
+    .map(expensive_op)
+    .collect();
+
+if let Some(first) = processed.iter().find(|x| x.is_valid()) {
+    // Use first, might iterate again
+    let others = processed.iter().filter(|x| x != first);
+}
+</code></pre>
+<p><strong>3. Debugging complex chains:</strong></p>
+<pre><code class="language-rust">// GOOD for debugging - inspect intermediate state
+let stage1: Vec&lt;_&gt; = data.iter().map(op1).collect();
+println!(&quot;After stage 1: {:?}&quot;, stage1);
+
+let stage2: Vec&lt;_&gt; = stage1.iter().map(op2).collect();
+println!(&quot;After stage 2: {:?}&quot;, stage2);
+</code></pre>
+<p><strong>4. Working with non-Clone expensive types:</strong></p>
+<pre><code class="language-rust">// If expensive_op returns non-Clone type you need multiple times
+let computed: Vec&lt;_&gt; = data.iter()
+    .map(expensive_op)
+    .collect();
+
+process_a(&amp;computed);
+process_b(&amp;computed);  // Can reuse
+</code></pre>
+<p><strong>Trade-off analysis:</strong>
+- <strong>Cost</strong>: Allocation + data copy
+- <strong>Benefit</strong>: Reusability or simplified logic</p>
+<p><strong>Rule of thumb:</strong> Only collect intermediate when you need to iterate multiple times or genuinely need the materialized data. Otherwise, let adaptor fusion work its magic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Confusion in Adaptors</h2>
+<p>Explain the reference confusion issue with <code>.iter()</code> and adaptors. Why do you sometimes need <code>|&amp;&amp;x|</code> in closures?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Reference levels stack when using <code>.iter()</code> with adaptors, requiring careful dereferencing.</p>
+<p><strong>The confusion:</strong></p>
+<pre><code class="language-rust">let numbers = vec![1, 2, 3];
+
+// This fails
+numbers.iter().map(|x| x * 2)  // ❌ Can't multiply &amp;i32
+</code></pre>
+<p><strong>Why it happens:</strong></p>
+<p><code>.iter()</code> produces <code>&amp;T</code>:</p>
+<pre><code class="language-rust">vec![1, 2, 3].iter()  // Iterator&lt;Item = &amp;i32&gt;
+</code></pre>
+<p><code>.map()</code> closure receives <code>&amp;Item</code>:</p>
+<pre><code class="language-rust">.map(|x| ...)  // x is &amp;&amp;i32
+</code></pre>
+<p><code>.filter()</code> closure receives <code>&amp;&amp;Item</code>:</p>
+<pre><code class="language-rust">.filter(|x| ...)  // x is &amp;&amp;&amp;i32 if used after .iter()
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<p><strong>1. Dereference in parameter:</strong></p>
+<pre><code class="language-rust">numbers.iter().map(|&amp;x| x * 2)  // x is i32
+numbers.iter().filter(|&amp;&amp;x| x &gt; 5)  // Need two &amp;
+</code></pre>
+<p><strong>2. Use <code>.copied()</code> or <code>.cloned()</code>:</strong></p>
+<pre><code class="language-rust">numbers.iter()
+    .copied()        // Converts &amp;i32 to i32
+    .map(|x| x * 2)  // x is i32
+    .filter(|x| x &gt; 5)
+</code></pre>
+<p><strong>3. Dereference in body:</strong></p>
+<pre><code class="language-rust">numbers.iter().map(|x| *x * 2)
+numbers.iter().filter(|x| **x &gt; 5)
+</code></pre>
+<p><strong>Pattern explanation:</strong></p>
+<pre><code class="language-rust">// .iter() on Vec&lt;i32&gt;
+for x in vec.iter() {
+    // x is &amp;i32
+}
+
+// .filter() with .iter()
+vec.iter().filter(|x| ...)
+    // x is &amp;&amp;i32 (reference to &amp;i32)
+    // Need **x to get i32
+
+// .map() with .iter()
+vec.iter().map(|x| ...)
+    // x is &amp;&amp;i32
+    // But often pattern match: |&amp;x| → x is &amp;i32
+</code></pre>
+<p><strong>General rule:</strong>
+- Each adaptor adds one reference level to what it receives
+- <code>.iter()</code> starts with references
+- Pattern matching with <code>&amp;</code> removes one level
+- <code>*</code> dereference operator removes one level</p>
+<p><strong>Pro tip:</strong> Use <code>.copied()</code> early in chain to avoid this entirely.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Collect Type Ambiguity Resolution</h2>
+<p>Why does <code>.collect()</code> often need type annotations? Show all three ways to provide them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>.collect()</code> is generic over the collection type, requiring hints about what to build.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">let result = vec![1, 2, 3].iter()
+    .map(|&amp;x| x * 2)
+    .collect();  // ❌ ERROR: type annotations needed
+</code></pre>
+<p><strong>Why:</strong> <code>.collect()</code> can build many types:</p>
+<pre><code class="language-rust">fn collect&lt;B: FromIterator&lt;Self::Item&gt;&gt;(self) -&gt; B
+// B could be Vec, HashSet, HashMap, String, etc.
+</code></pre>
+<p><strong>Solution 1: Variable type annotation</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;i32&gt; = vec![1, 2, 3].iter()
+    .map(|&amp;x| x * 2)
+    .collect();
+</code></pre>
+<p><strong>Solution 2: Turbofish syntax <code>::&lt;Type&gt;</code></strong></p>
+<pre><code class="language-rust">let result = vec![1, 2, 3].iter()
+    .map(|&amp;x| x * 2)
+    .collect::&lt;Vec&lt;i32&gt;&gt;();
+</code></pre>
+<p><strong>Solution 3: Context from usage</strong></p>
+<pre><code class="language-rust">fn process_vec(v: Vec&lt;i32&gt;) { }
+
+process_vec(
+    vec![1, 2, 3].iter()
+        .map(|&amp;x| x * 2)
+        .collect()  // ✓ Type inferred from function parameter
+);
+</code></pre>
+<p><strong>Can collect into many types:</strong></p>
+<pre><code class="language-rust">// Vector
+let vec: Vec&lt;i32&gt; = iter.collect();
+
+// HashSet
+let set: HashSet&lt;i32&gt; = iter.collect();
+
+// HashMap (from iterator of pairs)
+let map: HashMap&lt;String, i32&gt; = pairs_iter.collect();
+
+// String (from chars)
+let string: String = chars_iter.collect();
+
+// Result&lt;Vec&lt;T&gt;, E&gt; (from iterator of Results)
+let result: Result&lt;Vec&lt;_&gt;, _&gt; = result_iter.collect();
+</code></pre>
+<p><strong>Partial inference with <code>_</code>:</strong></p>
+<pre><code class="language-rust">// Specify outer type, infer inner
+let result = iter.collect::&lt;Vec&lt;_&gt;&gt;();
+
+// Specify collection but not error type
+let result: Result&lt;Vec&lt;_&gt;, _&gt; = iter.collect();
+</code></pre>
+<p><strong>Pro tip:</strong> Turbofish often reads better mid-chain:</p>
+<pre><code class="language-rust">data.iter()
+    .filter(|x| x.is_valid())
+    .map(|x| x.process())
+    .collect::&lt;Vec&lt;_&gt;&gt;()  // Clear what type is being built
+</code></pre>
+<p>The compiler needs help because <code>collect()</code> is extremely flexible - it's a feature, not a bug!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgotten Consumption Pitfall</h2>
+<p>What happens when you forget to consume an iterator chain? Why doesn't the code execute?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Iterator adaptors are lazy - without a consumer, they build structures but execute nothing.</p>
+<p><strong>The bug:</strong></p>
+<pre><code class="language-rust">vec![1, 2, 3].iter().map(|x| {
+    println!(&quot;Processing {}&quot;, x);  // Never prints!
+    x * 2
+});
+// Nothing happens!
+</code></pre>
+<p><strong>Why it fails:</strong></p>
+<pre><code class="language-rust">// This creates a Map&lt;Iter&lt;i32&gt;&gt; struct
+let _unused = vec![1, 2, 3].iter().map(|x| x * 2);
+// Map struct is created but .next() never called
+// Compiler may warn: &quot;unused `Map` that must be used&quot;
+</code></pre>
+<p><strong>The fix - add a consumer:</strong></p>
+<p><strong>Option 1: <code>.collect()</code></strong></p>
+<pre><code class="language-rust">vec![1, 2, 3].iter()
+    .map(|x| {
+        println!(&quot;Processing {}&quot;, x);  // Now prints!
+        x * 2
+    })
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p><strong>Option 2: <code>.for_each()</code></strong></p>
+<pre><code class="language-rust">vec![1, 2, 3].iter().for_each(|x| {
+    println!(&quot;Processing {}&quot;, x);  // Prints!
+});
+</code></pre>
+<p><strong>Option 3: <code>for</code> loop</strong></p>
+<pre><code class="language-rust">for x in vec![1, 2, 3].iter().map(|x| x * 2) {
+    println!(&quot;{}&quot;, x);  // Prints!
+}
+</code></pre>
+<p><strong>Other consumers that trigger execution:</strong>
+- <code>.sum()</code>, <code>.product()</code>
+- <code>.count()</code>, <code>.last()</code>, <code>.nth()</code>
+- <code>.find()</code>, <code>.any()</code>, <code>.all()</code>
+- <code>.fold()</code>, <code>.reduce()</code></p>
+<p><strong>Compiler warning:</strong></p>
+<pre><code>warning: unused `Map` that must be used
+  |
+  | vec![1, 2, 3].iter().map(|x| x * 2);
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: iterators are lazy and do nothing unless consumed
+</code></pre>
+<p><strong>Why this design:</strong>
+- Efficiency (don't compute what you don't need)
+- Composability (build complex chains)
+- Short-circuiting (stop early when possible)</p>
+<p><strong>Mental model:</strong> Adaptors write a recipe; consumers execute it. No consumer = no execution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expensive Closure Placement</h2>
+<p>Does the placement of expensive operations in iterator chains matter for performance? Explain with an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Due to lazy evaluation and short-circuiting, operation order significantly affects performance.</p>
+<p><strong>Bad order - expensive operation runs unnecessarily:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;_&gt; = huge_data.iter()
+    .map(|x| expensive_computation(x))  // Runs on ALL data
+    .take(10)  // Only need 10
+    .collect();
+</code></pre>
+<p><strong>Good order - expensive operation runs only when needed:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;_&gt; = huge_data.iter()
+    .take(10)  // Limit first
+    .map(|x| expensive_computation(x))  // Only runs 10 times
+    .collect();
+</code></pre>
+<p><strong>With filtering:</strong></p>
+<pre><code class="language-rust">// Bad - expensive operation before filter
+huge_data.iter()
+    .map(|x| expensive_process(x))  // Runs on everything
+    .filter(|x| x.is_valid())       // Then filters
+    .take(100)
+    .collect()
+
+// Good - filter first to reduce work
+huge_data.iter()
+    .filter(|x| x.is_valid())       // Cheap check first
+    .take(100)                       // Limit early
+    .map(|x| expensive_process(x))  // Only on valid, limited set
+    .collect()
+</code></pre>
+<p><strong>Why lazy evaluation makes this work:</strong></p>
+<pre><code class="language-rust">huge_data.iter()
+    .filter(cheap_check)    // Quick filter
+    .map(expensive_op)      // Expensive only on passed items
+    .find(|x| x.matches())  // Stops when found
+// expensive_op only runs until find() succeeds!
+</code></pre>
+<p><strong>Actual execution flow:</strong></p>
+<pre><code>1. Get next item from huge_data
+2. Apply cheap_check filter
+3. If passes, apply expensive_op
+4. Check if matches
+5. If matches, STOP (short-circuit)
+6. Otherwise, go to step 1
+</code></pre>
+<p><strong>Guidelines:</strong></p>
+<ol>
+<li><strong>Cheap operations first</strong> (filters, predicates)</li>
+<li><strong>Limit early</strong> (take, take_while) if possible</li>
+<li><strong>Expensive operations last</strong> (complex transformations)</li>
+<li><strong>Short-circuiting operations benefit most</strong> (find, any, take)</li>
+</ol>
+<p><strong>Exception - when you need all results:</strong></p>
+<pre><code class="language-rust">// When collecting all, order matters less
+// (but still good practice to filter first)
+data.iter()
+    .filter(cheap)
+    .map(expensive)
+    .collect()  // Need all results anyway
+</code></pre>
+<p>The lazy evaluation model means: <strong>operations only run on items that actually flow through the pipeline</strong>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filter Map vs Filter Plus Map</h2>
+<p>When should you use <code>.filter_map()</code> instead of <code>.filter().map()</code>? Show the performance difference.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>.filter_map()</code> when filtering and mapping can be combined into one operation returning <code>Option</code>.</p>
+<p><strong>Less efficient - separate operations:</strong></p>
+<pre><code class="language-rust">let numbers: Vec&lt;i32&gt; = strings.iter()
+    .filter(|s| s.parse::&lt;i32&gt;().is_ok())  // Parse once
+    .map(|s| s.parse::&lt;i32&gt;().unwrap())    // Parse again!
+    .collect();
+</code></pre>
+<p><strong>More efficient - combined operation:</strong></p>
+<pre><code class="language-rust">let numbers: Vec&lt;i32&gt; = strings.iter()
+    .filter_map(|s| s.parse::&lt;i32&gt;().ok())  // Parse once!
+    .collect();
+</code></pre>
+<p><strong>Why filter_map is better:</strong></p>
+<p><strong>1. Single evaluation:</strong></p>
+<pre><code class="language-rust">// filter + map: evaluates twice
+.filter(|x| expensive_check_returns_bool(x))
+.map(|x| expensive_transform(x))
+
+// filter_map: evaluates once
+.filter_map(|x| expensive_combined_operation(x))
+</code></pre>
+<p><strong>2. Natural with Option/Result:</strong></p>
+<pre><code class="language-rust">// Awkward
+vec_of_options.iter()
+    .filter(|opt| opt.is_some())
+    .map(|opt| opt.unwrap())
+
+// Natural
+vec_of_options.iter()
+    .filter_map(|opt| *opt)
+</code></pre>
+<p><strong>3. Pattern matching integration:</strong></p>
+<pre><code class="language-rust">enum Status { Active(u32), Inactive, Pending(u32) }
+
+// Elegant with filter_map
+items.into_iter()
+    .filter_map(|item| match item.status {
+        Status::Active(id) =&gt; Some(id),
+        Status::Pending(id) =&gt; Some(id),
+        Status::Inactive =&gt; None,
+    })
+    .collect()
+
+// Awkward with filter + map
+items.iter()
+    .filter(|item| matches!(item.status, Status::Active(_) | Status::Pending(_)))
+    .map(|item| match item.status {
+        Status::Active(id) | Status::Pending(id) =&gt; id,
+        _ =&gt; unreachable!(),
+    })
+</code></pre>
+<p><strong>When to use filter + map:</strong>
+- Filtering and mapping are logically separate
+- Filter is very cheap, map is very expensive
+- Better readability for simple cases</p>
+<p><strong>When to use filter_map:</strong>
+- Operation naturally returns Option
+- Checking and extracting are related
+- Avoiding double evaluation
+- Working with Option/Result chains</p>
+<p><strong>Performance:</strong> filter_map can be significantly faster when the operation is expensive or when working with large datasets.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Nested Reference Patterns</h2>
+<p>Why do you sometimes see <code>|&amp;&amp;x|</code> in filter closures? Explain the reference stacking.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Closures in adaptors receive references to the iterator's items, causing reference stacking.</p>
+<p><strong>The pattern:</strong></p>
+<pre><code class="language-rust">vec![1, 2, 3].iter()
+    .filter(|&amp;&amp;x| x &gt; 1)  // Why double &amp;?
+    .copied()
+    .collect()
+</code></pre>
+<p><strong>Understanding reference levels:</strong></p>
+<p><strong>Starting point:</strong></p>
+<pre><code class="language-rust">let vec = vec![1, 2, 3];  // Vec&lt;i32&gt;
+let iter = vec.iter();     // Iterator&lt;Item = &amp;i32&gt;
+</code></pre>
+<p><strong>In <code>.filter()</code>:</strong></p>
+<pre><code class="language-rust">fn filter&lt;P&gt;(self, predicate: P)
+where
+    P: FnMut(&amp;Self::Item) -&gt; bool
+    //         ^ Takes reference to Item
+</code></pre>
+<p><strong>So with <code>.iter()</code>:</strong>
+- Item is <code>&amp;i32</code>
+- Closure receives <code>&amp;Item</code> = <code>&amp;&amp;i32</code>
+- Hence: <code>|&amp;&amp;x|</code> to get <code>i32</code></p>
+<p><strong>Visual breakdown:</strong></p>
+<pre><code class="language-rust">vec![1, 2, 3]           // Vec&lt;i32&gt;
+    .iter()             // Item = &amp;i32
+    .filter(|x| ...)    // x is &amp;&amp;i32
+           //   ^^ reference to Item
+           //   ^ Item itself is &amp;i32
+</code></pre>
+<p><strong>Different patterns to handle this:</strong></p>
+<p><strong>1. Pattern match to unpack:</strong></p>
+<pre><code class="language-rust">.filter(|&amp;&amp;x| x &gt; 1)  // x is i32
+</code></pre>
+<p><strong>2. Explicit dereference:</strong></p>
+<pre><code class="language-rust">.filter(|x| **x &gt; 1)  // **x gets to i32
+</code></pre>
+<p><strong>3. Use <code>.copied()</code> first:</strong></p>
+<pre><code class="language-rust">.copied()              // Item = i32
+.filter(|&amp;x| x &gt; 1)    // x is i32 (only one &amp;)
+</code></pre>
+<p><strong>Comparison table:</strong></p>
+<p>| Iterator | Item type | Filter closure | Get i32 |
+|----------|-----------|----------------|---------|
+| <code>.into_iter()</code> | <code>i32</code> | <code>\|&amp;x\|</code> | <code>x</code> |
+| <code>.iter()</code> | <code>&amp;i32</code> | <code>\|&amp;&amp;x\|</code> | <code>x</code> |
+| <code>.iter_mut()</code> | <code>&amp;mut i32</code> | <code>\|x\|</code> | <code>*x</code> |</p>
+<p><strong>With <code>.map()</code> it's similar:</strong></p>
+<pre><code class="language-rust">vec.iter().map(|&amp;x| x * 2)  // x is i32
+// or
+vec.iter().map(|x| *x * 2)  // *x is i32
+</code></pre>
+<p><strong>Pro tip:</strong> When confused, let compiler infer:</p>
+<pre><code class="language-rust">vec.iter().filter(|x| {
+    // Hover over x in IDE to see its type
+    println!(&quot;{:?}&quot;, std::any::type_name_of_val(&amp;x));
+    **x &gt; 1
+})
+</code></pre>
+<p>Understanding reference levels prevents confusion and helps write idiomatic Rust.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Conditional Adaptor Application</h2>
+<p>How can you conditionally apply iterator adaptors? Show patterns for dynamic pipeline construction.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Conditionally applying adaptors requires careful handling because different adaptors create different types.</p>
+<p><strong>Problem - type mismatch:</strong></p>
+<pre><code class="language-rust">// This doesn't work - different types
+let iter = data.iter();
+let iter = if should_filter {
+    iter.filter(predicate)  // Type: Filter&lt;Iter&lt;T&gt;&gt;
+} else {
+    iter  // Type: Iter&lt;T&gt;
+};  // ❌ Type mismatch!
+</code></pre>
+<p><strong>Solution 1: Box<dyn Iterator></strong></p>
+<pre><code class="language-rust">let iter: Box&lt;dyn Iterator&lt;Item = &amp;i32&gt;&gt; = if should_filter {
+    Box::new(data.iter().filter(predicate))
+} else {
+    Box::new(data.iter())
+};
+
+let result: Vec&lt;_&gt; = iter.collect();
+</code></pre>
+<p><strong>Solution 2: Filter with always-true predicate</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;_&gt; = data.iter()
+    .filter(|x| if should_filter { predicate(x) } else { true })
+    .collect();
+</code></pre>
+<p><strong>Solution 3: Helper enum (Either pattern)</strong></p>
+<pre><code class="language-rust">enum Either&lt;L, R&gt; {
+    Left(L),
+    Right(R),
+}
+
+impl&lt;L, R, T&gt; Iterator for Either&lt;L, R&gt;
+where
+    L: Iterator&lt;Item = T&gt;,
+    R: Iterator&lt;Item = T&gt;,
+{
+    type Item = T;
+    fn next(&amp;mut self) -&gt; Option&lt;T&gt; {
+        match self {
+            Either::Left(l) =&gt; l.next(),
+            Either::Right(r) =&gt; r.next(),
+        }
+    }
+}
+
+let iter = if should_filter {
+    Either::Left(data.iter().filter(predicate))
+} else {
+    Either::Right(data.iter())
+};
+</code></pre>
+<p><strong>Solution 4: Closure approach</strong></p>
+<pre><code class="language-rust">fn process_data(
+    data: &amp;[Item],
+    should_filter: bool,
+    should_reverse: bool
+) -&gt; Vec&lt;Item&gt; {
+    let iter = data.iter();
+
+    let iter: Box&lt;dyn Iterator&lt;Item = _&gt;&gt; = match (should_filter, should_reverse) {
+        (true, true) =&gt; Box::new(iter.filter(pred).rev()),
+        (true, false) =&gt; Box::new(iter.filter(pred)),
+        (false, true) =&gt; Box::new(iter.rev()),
+        (false, false) =&gt; Box::new(iter),
+    };
+
+    iter.cloned().collect()
+}
+</code></pre>
+<p><strong>Solution 5: Build collection first (when small)</strong></p>
+<pre><code class="language-rust">let mut result: Vec&lt;_&gt; = data.iter().collect();
+
+if should_filter {
+    result.retain(|x| predicate(x));
+}
+
+if should_reverse {
+    result.reverse();
+}
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<p>| Approach | Pros | Cons |
+|----------|------|------|
+| Box<dyn> | Flexible | Heap allocation, dynamic dispatch |
+| Always-true filter | No allocation | Slight overhead from check |
+| Either enum | Zero-cost | More code |
+| Collection first | Simple | Not lazy, memory usage |</p>
+<p><strong>Best practice:</strong> If conditions known at compile time, consider separate functions. If runtime, Box<dyn> is most idiomatic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Adaptor Method Chaining Readability</h2>
+<p>What are best practices for formatting long iterator chains for readability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Well-formatted chains make complex pipelines understandable.</p>
+<p><strong>Bad - all on one line:</strong></p>
+<pre><code class="language-rust">let result = data.iter().filter(|x| x.is_valid()).map(|x| x.process()).filter(|x| x.score &gt; 50).take(10).collect::&lt;Vec&lt;_&gt;&gt;();
+</code></pre>
+<p><strong>Good - one operation per line:</strong></p>
+<pre><code class="language-rust">let result: Vec&lt;_&gt; = data.iter()
+    .filter(|x| x.is_valid())
+    .map(|x| x.process())
+    .filter(|x| x.score &gt; 50)
+    .take(10)
+    .collect();
+</code></pre>
+<p><strong>With comments for complex operations:</strong></p>
+<pre><code class="language-rust">let report = transactions.iter()
+    // Remove cancelled transactions
+    .filter(|tx| tx.status != Status::Cancelled)
+
+    // Normalize amounts to USD
+    .map(|tx| tx.to_usd())
+
+    // Group by date
+    .fold(HashMap::new(), |mut map, tx| {
+        map.entry(tx.date).or_insert_with(Vec::new).push(tx);
+        map
+    })
+
+    // Calculate daily totals
+    .into_iter()
+    .map(|(date, txs)| {
+        let total = txs.iter().map(|tx| tx.amount).sum();
+        (date, total)
+    })
+    .collect();
+</code></pre>
+<p><strong>For very long closures - extract to functions:</strong></p>
+<pre><code class="language-rust">fn is_valid_transaction(tx: &amp;Transaction) -&gt; bool {
+    tx.amount &gt; 0.0 
+        &amp;&amp; tx.status != Status::Cancelled
+        &amp;&amp; tx.date &lt;= today()
+}
+
+let filtered = transactions.iter()
+    .filter(is_valid_transaction)
+    .collect();
+</code></pre>
+<p><strong>Indentation for nested operations:</strong></p>
+<pre><code class="language-rust">let processed = data.iter()
+    .map(|item| {
+        let normalized = item.normalize();
+        let enhanced = normalized.enhance();
+        enhanced.finalize()
+    })
+    .collect();
+</code></pre>
+<p><strong>Grouping logical stages:</strong></p>
+<pre><code class="language-rust">let result = data.iter()
+    // Stage 1: Validation
+    .filter(|x| x.is_valid())
+    .filter(|x| x.timestamp.is_recent())
+
+    // Stage 2: Transformation
+    .map(|x| x.normalize())
+    .map(|x| x.enrich_with_metadata())
+
+    // Stage 3: Aggregation
+    .fold(Summary::default(), |acc, x| acc.update(x));
+</code></pre>
+<p><strong>Type annotations at the end:</strong></p>
+<pre><code class="language-rust">let ids: Vec&lt;u64&gt; = users.iter()
+    .filter(|u| u.is_active)
+    .map(|u| u.id)
+    .collect();  // Type clear from variable annotation
+</code></pre>
+<p><strong>Guidelines:</strong>
+1. One operation per line
+2. Align <code>.</code> at start of line
+3. Group related operations with blank lines
+4. Add comments for complex logic
+5. Extract complex closures to functions
+6. Put type annotation on variable or final collect()</p>
+<p>Good formatting makes iterator chains self-documenting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
