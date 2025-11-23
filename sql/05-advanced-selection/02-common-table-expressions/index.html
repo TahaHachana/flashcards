@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 05-Advanced-Selection - 02-Common-Table-Expressions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is A Common Table Expression?</h2>
+<p>What is a Common Table Expression (CTE), and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A CTE is a named temporary result set defined at the beginning of a query using the WITH clause.</p>
+<p>Key characteristics:
+- Defined using WITH clause at the top of a query
+- Must have a name (alias)
+- Acts like a temporary view that exists only for query duration (statement scope)
+- Can be referenced by name anywhere in the subsequent query
+- Multiple CTEs can be defined in one WITH clause (comma-separated)
+- Later CTEs can reference earlier CTEs defined above them</p>
+<p>Mental model: CTEs are named intermediate results that serve as building blocks. Instead of one giant nested query, you break it into logical, named steps.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic WITH Clause Syntax</h2>
+<p>What is the basic syntax for defining a CTE, and what are the key rules for multiple CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Basic syntax:
+WITH cte_name AS (
+  SELECT ...
+  FROM ...
+  WHERE ...
+)
+SELECT ...
+FROM cte_name;</p>
+<p>Multiple CTEs:
+WITH 
+  first_cte AS (SELECT ...),
+  second_cte AS (SELECT ...),
+  third_cte AS (SELECT ...)
+SELECT ...
+FROM first_cte JOIN second_cte ...;</p>
+<p>Key rules:
+- Separate multiple CTEs with commas (,)
+- No comma after the last CTE
+- Each CTE must have a unique name
+- CTEs are defined in order from top to bottom</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Versus Nested Subquery Readability</h2>
+<p>Why are CTEs more readable than nested subqueries? Explain with an example pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Nested subqueries require reading from inside-out (hard):
+SELECT ...
+FROM (
+  SELECT ...
+  FROM (SELECT ... FROM ...) inner
+  WHERE ...
+) outer
+WHERE ...;</p>
+<p>CTEs enable top-to-bottom reading (natural):
+WITH 
+  step_one AS (SELECT ... FROM ...),
+  step_two AS (SELECT ... FROM step_one WHERE ...),
+  step_three AS (SELECT ... FROM step_two)
+SELECT ... FROM step_three;</p>
+<p>Benefits:
+- Descriptive names explain purpose of each step
+- Natural reading order matches human thinking
+- Easy to test each step independently
+- Easy to add comments at each step
+- Simple to modify individual steps</p>
+<p>Principle: CTEs transform nested puzzles into step-by-step recipes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Chaining Mechanism</h2>
+<p>How does CTE chaining work, and what are the rules for referencing between CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>CTE chaining: Later CTEs can reference earlier CTEs defined in the same WITH clause.</p>
+<p>Example:
+WITH 
+  cte1 AS (SELECT ... FROM table),           -- Base data
+  cte2 AS (SELECT ... FROM cte1 WHERE ...),  -- Uses cte1
+  cte3 AS (SELECT ... FROM cte2)             -- Uses cte2
+SELECT ... FROM cte3;</p>
+<p>Rules:
+- Later CTEs CAN reference earlier CTEs
+- Earlier CTEs CANNOT reference later CTEs (not yet defined)
+- Non-recursive CTEs cannot reference themselves
+- Creates a pipeline of transformations</p>
+<p>Execution flow:
+1. cte1 executes first
+2. cte2 executes using cte1 results
+3. cte3 executes using cte2 results
+4. Main query uses cte3 results</p>
+<p>Like functional programming: data flows through a series of transformations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Versus Subquery In FROM Clause</h2>
+<p>What are the key differences between CTEs and subqueries in the FROM clause, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Subquery in FROM (derived table):
+- Defined inline where used
+- Anonymous (no reusable name)
+- Can only be referenced once
+- Scope limited to defining query</p>
+<p>CTE:
+- Defined at top of query
+- Has descriptive name
+- Can be referenced multiple times
+- Makes main query cleaner</p>
+<p>Use subquery in FROM when:
+- Subquery is simple and used only once
+- Writing quick, one-off query
+- Inline context makes it clearer</p>
+<p>Use CTE when:
+- Query is complex or used multiple times
+- Want to make query more readable
+- Building results step-by-step (chaining CTEs)
+- Need to explain/maintain the query
+- Need to test/debug intermediate results</p>
+<p>General principle: If readability matters (production code, shared queries, complex logic), use CTEs. If brevity matters (quick ad-hoc queries), use subqueries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple References To Same CTE</h2>
+<p>How can a CTE be referenced multiple times, and why is this valuable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A CTE can be referenced multiple times without repeating its definition.</p>
+<p>Example - Self-join for month-over-month comparison:
+WITH monthly_sales AS (
+  SELECT month, SUM(amount) as total
+  FROM sales
+  GROUP BY month
+)
+SELECT 
+  current.month,
+  current.total,
+  previous.total as prev_month,
+  current.total - previous.total as growth
+FROM monthly_sales current
+LEFT JOIN monthly_sales previous ON previous.month = current.month - 1;</p>
+<p>Why valuable:
+- DRY principle: Don't Repeat Yourself
+- Single definition means single point of maintenance
+- If calculation changes, change it once
+- Database may optimize by calculating CTE once and reusing results
+- Clearer intent than duplicating subquery logic</p>
+<p>Contrast with subqueries: Would need to repeat the entire aggregation logic twice.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Versus Temporary Table</h2>
+<p>What are the key differences between CTEs and temporary tables, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>CTEs:
+- Scope: Statement-level (exist only during query execution)
+- Usage: Only within the single query where defined
+- Performance: No indexing, but minimal overhead
+- Syntax: Just define and use
+- Use case: Making complex single queries readable</p>
+<p>Temporary Tables:
+- Scope: Session-level (persist until session ends or explicit DROP)
+- Usage: Can be used in multiple separate queries
+- Performance: Can be indexed for better performance
+- Syntax: Requires explicit CREATE and DROP
+- Use case: Multi-step ETL processes, complex workflows</p>
+<p>Use temporary tables when:
+- Multi-query workflows
+- Need to index intermediate data
+- Results used by multiple separate statements
+- Working with large datasets that benefit from persistence</p>
+<p>Use CTEs when:
+- Single complex query needs breaking down
+- Improving readability
+- Don't need results after query completes
+- Building step-by-step transformations</p>
+<p>Quote: "Those who utilize temporary tables to store query results for use in subsequent queries may find CTEs an attractive alternative."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Use Case Simplifying Aggregation Then Joining</h2>
+<p>How do CTEs simplify the pattern of "aggregate first, then join to other tables"?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Mixing aggregation with joins creates complex queries.</p>
+<p>Without CTE (messy):
+SELECT c.first_name, c.last_name, ct.city
+FROM customer c
+JOIN address a ON c.address_id = a.address_id
+JOIN city ct ON a.city_id = ct.city_id
+WHERE 20 = (SELECT COUNT(*) FROM rental r WHERE r.customer_id = c.customer_id);
+-- Correlated subquery runs once per customer</p>
+<p>With CTE (clean):
+WITH customer_rental_counts AS (
+  SELECT customer_id, COUNT(*) as rental_count
+  FROM rental
+  GROUP BY customer_id
+)
+SELECT c.first_name, c.last_name, ct.city, crc.rental_count
+FROM customer_rental_counts crc
+JOIN customer c ON crc.customer_id = c.customer_id
+JOIN address a ON c.address_id = a.address_id
+JOIN city ct ON a.city_id = ct.city_id
+WHERE crc.rental_count = 20;</p>
+<p>Benefits:
+- Aggregation logic isolated in CTE
+- Main query focuses on joining tables
+- Aggregation runs once, not once per row
+- Can reuse rental counts if needed elsewhere</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Use Case Finding Duplicates</h2>
+<p>How can CTEs be used to find and investigate duplicate data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pattern: Use CTE to identify duplicates, then join back to get full details.</p>
+<p>Example - Find customers with duplicate emails:
+WITH duplicate_emails AS (
+  SELECT email
+  FROM customer
+  GROUP BY email
+  HAVING COUNT(<em>) &gt; 1
+)
+SELECT c.</em>
+FROM customer c
+INNER JOIN duplicate_emails de ON c.email = de.email
+ORDER BY c.email, c.customer_id;</p>
+<p>How it works:
+1. CTE identifies emails that appear more than once
+2. Main query joins back to customer table to get full customer records
+3. Only customers with duplicate emails appear in results</p>
+<p>Benefits:
+- Duplicate detection logic is isolated and clear
+- Main query is simple: just join and display
+- Easy to modify what counts as "duplicate" (e.g., name + email)</p>
+<p>Multicolumn duplicates:
+WITH duplicate_names AS (
+  SELECT first_name, last_name
+  FROM customer
+  GROUP BY first_name, last_name
+  HAVING COUNT(<em>) &gt; 1
+)
+SELECT c.</em>
+FROM customer c
+JOIN duplicate_names dn ON c.first_name = dn.first_name AND c.last_name = dn.last_name;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Is A Recursive CTE?</h2>
+<p>What is a recursive CTE, and what are its two essential parts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A recursive CTE is a CTE that references itself, enabling queries over hierarchical or graph-structured data.</p>
+<p>Two essential parts:</p>
+<ol>
+<li>Anchor member (base case):</li>
+<li>Starting point of recursion</li>
+<li>Does NOT reference the CTE itself</li>
+<li>
+<p>Establishes initial rows</p>
+</li>
+<li>
+<p>Recursive member (recursive case):</p>
+</li>
+<li>References the CTE itself</li>
+<li>Builds on results from previous iteration</li>
+<li>Joined with UNION ALL</li>
+</ol>
+<p>Syntax:
+WITH RECURSIVE cte_name AS (
+  -- Anchor: Base case
+  SELECT ... FROM base_table WHERE base_condition</p>
+<p>UNION ALL</p>
+<p>-- Recursive: References cte_name
+  SELECT ... FROM base_table
+  JOIN cte_name ON ...
+  WHERE recursive_condition
+)
+SELECT * FROM cte_name;</p>
+<p>Execution: Anchor runs once, then recursive member repeats until it returns no rows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive CTE Execution Flow</h2>
+<p>Describe the execution flow of a recursive CTE with a concrete example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Example - Employee hierarchy (employees table: id, name, manager_id):</p>
+<p>WITH RECURSIVE employee_hierarchy AS (
+  -- Anchor: CEO (no manager)
+  SELECT id, name, manager_id, 1 as level
+  FROM employees
+  WHERE manager_id IS NULL</p>
+<p>UNION ALL</p>
+<p>-- Recursive: Find direct reports
+  SELECT e.id, e.name, e.manager_id, eh.level + 1
+  FROM employees e
+  JOIN employee_hierarchy eh ON e.manager_id = eh.id
+)
+SELECT * FROM employee_hierarchy;</p>
+<p>Execution flow:
+1. Iteration 1 (Anchor): Finds CEO (Alice) with level 1
+2. Iteration 2 (Recursive): Finds Alice's direct reports (Bob, Carol) with level 2
+3. Iteration 3 (Recursive): Finds Bob and Carol's reports (David, Emma, Frank) with level 3
+4. Iteration 4: No more employees found → recursion stops
+5. Final result: All employees with their hierarchy levels</p>
+<p>Key: Each iteration uses results from previous iteration to find the next level.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive CTE Common Patterns</h2>
+<p>What are common use cases for recursive CTEs? Provide examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Common patterns:</p>
+<ol>
+<li>Organizational Charts / Employee Hierarchies</li>
+<li>Start with top-level manager</li>
+<li>Recursively find all direct and indirect reports</li>
+<li>
+<p>Example: CEO → VPs → Managers → Staff</p>
+</li>
+<li>
+<p>Bill of Materials (BOM) / Product Assembly</p>
+</li>
+<li>Start with finished product</li>
+<li>Recursively find all components and sub-components</li>
+<li>
+<p>Example: Car → Engine → Pistons → Rings</p>
+</li>
+<li>
+<p>Graph Traversal</p>
+</li>
+<li>Start with a node</li>
+<li>Recursively find all connected nodes</li>
+<li>
+<p>Example: Social network connections, road networks</p>
+</li>
+<li>
+<p>File System Hierarchies</p>
+</li>
+<li>Start with root directory</li>
+<li>Recursively find all subdirectories and files</li>
+<li>
+<p>Example: / → /home → /home/user → /home/user/documents</p>
+</li>
+<li>
+<p>Category Trees</p>
+</li>
+<li>Start with top-level category</li>
+<li>Recursively find all subcategories</li>
+<li>Example: Electronics → Computers → Laptops → Gaming Laptops</li>
+</ol>
+<p>Common characteristic: Data has parent-child relationships forming a tree or graph structure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive CTE Infinite Loop Prevention</h2>
+<p>How can recursive CTEs create infinite loops, and what are strategies to prevent them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Danger - Infinite loop without stopping condition:
+WITH RECURSIVE infinite AS (
+  SELECT 1 as n
+  UNION ALL
+  SELECT n + 1 FROM infinite  -- Runs forever!
+)
+SELECT * FROM infinite;</p>
+<p>Prevention strategies:</p>
+<ol>
+<li>
+<p>Add termination condition in WHERE clause:
+WITH RECURSIVE numbers AS (
+  SELECT 1 as n
+  UNION ALL
+  SELECT n + 1 FROM numbers WHERE n &lt; 100  -- Stops at 100
+)
+SELECT * FROM numbers;</p>
+</li>
+<li>
+<p>Set maximum recursion depth (database-specific):
+-- MySQL
+SET SESSION cte_max_recursion_depth = 10;
+-- SQL Server
+OPTION (MAXRECURSION 10)</p>
+</li>
+<li>
+<p>Track visited nodes (for graphs with cycles):
+WITH RECURSIVE traversal AS (
+  SELECT node_id, ARRAY[node_id] as path
+  FROM graph WHERE node_id = 1
+  UNION ALL
+  SELECT g.node_id, t.path || g.node_id
+  FROM graph g
+  JOIN traversal t ON g.parent_id = t.node_id
+  WHERE NOT (g.node_id = ANY(t.path))  -- Don't revisit
+)
+SELECT * FROM traversal;</p>
+</li>
+</ol>
+<p>Always include a stopping condition or depth limit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Statement Scope Limitation</h2>
+<p>What does "statement scope" mean for CTEs, and how does this limit their usage?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Statement scope: CTEs exist only for the duration of the single statement where they're defined.</p>
+<p>Example of limitation:
+-- This works: CTE used in same statement
+WITH totals AS (SELECT customer_id, SUM(amount) FROM payment GROUP BY customer_id)
+SELECT * FROM totals;</p>
+<p>-- This does NOT work: CTE doesn't exist in second query
+WITH totals AS (SELECT customer_id, SUM(amount) FROM payment GROUP BY customer_id)
+SELECT * FROM customer;
+SELECT * FROM totals;  -- ERROR: totals doesn't exist</p>
+<p>After the statement completes:
+- CTE results are discarded
+- Memory is freed
+- Cannot be accessed by any subsequent query</p>
+<p>Contrast with:
+- Temporary tables: Session scope (persist until session ends)
+- Views: Persist in database until dropped
+- Subqueries: Also statement scope (same limitation)</p>
+<p>Solution: Use temporary tables if you need data across multiple queries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE No Indexing Limitation</h2>
+<p>Why is the inability to index CTEs a limitation, and what's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Limitation: CTEs cannot have indexes, which can impact performance on large datasets.</p>
+<p>Problem:
+WITH large_cte AS (
+  SELECT * FROM million_row_table WHERE condition1
+)
+SELECT * FROM large_cte WHERE condition2;  -- May be slow without index</p>
+<p>Why it matters:
+- Database must scan all CTE results for condition2
+- Cannot use index to quickly find matching rows
+- Performance degrades with large result sets</p>
+<p>Solution: Use temporary table when indexing is needed:
+CREATE TEMPORARY TABLE large_temp AS
+SELECT * FROM million_row_table WHERE condition1;</p>
+<p>CREATE INDEX idx_temp ON large_temp(column_for_condition2);</p>
+<p>SELECT * FROM large_temp WHERE condition2;  -- Much faster with index</p>
+<p>When to use temporary tables:
+- Large intermediate result sets
+- Multiple queries against same data
+- Need to filter/join on specific columns efficiently</p>
+<p>When CTEs are still fine:
+- Small to medium result sets
+- Single query usage
+- Readability is priority over maximum performance</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Nesting And Chaining</h2>
+<p>Can CTEs be nested, and what's the correct way to create dependent CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>CTEs cannot be nested directly, but they can be chained.</p>
+<p>This does NOT work (nesting):
+WITH outer_cte AS (
+  WITH inner_cte AS (SELECT ...)  -- ERROR: Can't nest CTEs
+  SELECT * FROM inner_cte
+)
+SELECT * FROM outer_cte;</p>
+<p>This DOES work (chaining):
+WITH 
+  inner_cte AS (SELECT ...),
+  outer_cte AS (SELECT * FROM inner_cte)
+SELECT * FROM outer_cte;</p>
+<p>Chaining pattern:
+- Define all CTEs in one WITH clause
+- Separate them with commas
+- Later CTEs reference earlier ones
+- Creates a pipeline of transformations</p>
+<p>Example:
+WITH 
+  step1 AS (SELECT ... FROM base_table),
+  step2 AS (SELECT ... FROM step1 WHERE ...),
+  step3 AS (SELECT ... FROM step2 JOIN other_table ON ...)
+SELECT * FROM step3;</p>
+<p>This is better than nesting because it's readable and follows natural top-to-bottom flow.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE ORDER BY Restriction</h2>
+<p>Why is ORDER BY typically not allowed in CTE definitions, and where should sorting occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>ORDER BY typically not allowed in CTE definitions because order is meaningless for intermediate results.</p>
+<p>This may not work:
+WITH sorted_cte AS (
+  SELECT * FROM customer ORDER BY last_name  -- May error or be ignored
+)
+SELECT * FROM sorted_cte;</p>
+<p>Why: 
+- CTEs are intermediate result sets, not final output
+- Order is not guaranteed to be preserved when CTE is used
+- Database may reorder for optimization
+- ORDER BY in CTE serves no purpose</p>
+<p>This DOES work (ordering in main query):
+WITH customer_cte AS (
+  SELECT * FROM customer  -- No ORDER BY
+)
+SELECT * FROM customer_cte ORDER BY last_name;  -- Order here</p>
+<p>Correct approach:
+- Perform ordering in the final SELECT
+- Only order the actual result set you'll return
+- CTE focuses on filtering and transforming, not ordering</p>
+<p>Exception: Some databases (SQL Server) allow ORDER BY if combined with TOP or OFFSET/FETCH, but this is database-specific and not portable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Materialization Versus Inlining</h2>
+<p>What is the difference between CTE materialization and inlining, and how does it affect performance?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Different databases handle CTE optimization differently:</p>
+<p>Inline expansion (common):
+- Database treats CTE like a macro
+- CTE definition substituted into main query
+- Optimized as one large query
+- CTE code may execute multiple times if referenced multiple times</p>
+<p>Materialization (sometimes):
+- Database executes CTE once, stores results in memory
+- Main query uses stored results
+- CTE executes only once even if referenced multiple times</p>
+<p>Example impact:
+WITH expensive_cte AS (
+  SELECT * FROM large_table WHERE complex_condition
+)
+SELECT * FROM expensive_cte WHERE filter1
+UNION ALL
+SELECT * FROM expensive_cte WHERE filter2;</p>
+<p>If materialized: expensive_cte runs once, results reused (faster)
+If inlined: expensive_cte runs twice, once per reference (potentially slower)</p>
+<p>Behavior:
+- Database-specific (varies by vendor)
+- May depend on query complexity
+- May depend on cost estimates
+- Often not under direct user control</p>
+<p>Optimization: Use EXPLAIN or EXPLAIN PLAN to see how your database handles specific CTEs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When CTEs Might Hurt Performance</h2>
+<p>In what scenarios might CTEs reduce performance, and what are alternatives?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Scenarios where CTEs might be slower:</p>
+<ol>
+<li>
+<p>Adding unnecessary complexity:
+-- Overkill
+WITH all_customers AS (SELECT * FROM customer)
+SELECT * FROM all_customers WHERE state = 'CA';
+-- Better
+SELECT * FROM customer WHERE state = 'CA';</p>
+</li>
+<li>
+<p>Preventing index usage:
+-- CTE may prevent index use
+WITH filtered AS (SELECT * FROM orders WHERE status = 'pending')
+SELECT * FROM filtered WHERE customer_id = 123;
+-- Better: Combined filters allow index
+SELECT * FROM orders WHERE status = 'pending' AND customer_id = 123;</p>
+</li>
+<li>
+<p>Large intermediate results without materialization:
+-- If inlined, may scan large result multiple times
+WITH large_cte AS (SELECT * FROM million_rows ...)
+SELECT ... FROM large_cte WHERE ...
+UNION ALL
+SELECT ... FROM large_cte WHERE ...;
+-- Consider temp table if not materialized</p>
+</li>
+<li>
+<p>Hiding optimization opportunities:
+-- Database can't see full picture to optimize
+-- May miss join reordering or predicate pushdown opportunities</p>
+</li>
+</ol>
+<p>General principle: Use CTEs for clarity and organization, but don't overuse for trivial queries. Profile with realistic data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Best Practice Descriptive Naming</h2>
+<p>Why are descriptive CTE names important, and what makes a good CTE name?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Importance: CTE names are documentation - they explain what the intermediate result contains.</p>
+<p>Bad (cryptic):
+WITH t1 AS (...), t2 AS (...), t3 AS (...)
+SELECT * FROM t3;
+-- What do t1, t2, t3 represent? Unclear!</p>
+<p>Good (descriptive):
+WITH active_customers AS (...),
+     customer_lifetime_value AS (...),
+     high_value_segments AS (...)
+SELECT * FROM high_value_segments;
+-- Clear: Each step explains itself</p>
+<p>Guidelines for good names:</p>
+<ol>
+<li>Use nouns or noun phrases (CTEs are things):</li>
+<li>✓ monthly_revenue</li>
+<li>
+<p>✗ calculate_revenue</p>
+</li>
+<li>
+<p>Describe the data, not the operation:</p>
+</li>
+<li>✓ customers_with_recent_orders</li>
+<li>
+<p>✗ filter_customers</p>
+</li>
+<li>
+<p>Be specific enough to differentiate:</p>
+</li>
+<li>✓ customer_payment_totals, customer_rental_counts</li>
+<li>
+<p>✗ customer_data, customer_info</p>
+</li>
+<li>
+<p>Follow project naming conventions:</p>
+</li>
+<li>snake_case or camelCase consistently</li>
+<li>Plural for sets: active_customers, not active_customer</li>
+</ol>
+<p>Think: "If I read this query in 6 months, will the CTE name tell me what it contains?"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Best Practice Add Comments</h2>
+<p>When and how should you add comments to CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When to add comments:
+- Complex filtering or transformation logic
+- Business rule implementations
+- Calculations that aren't self-evident
+- Exclusions or special cases
+- Any logic that might be questioned</p>
+<p>How to add effective comments:</p>
+<ol>
+<li>
+<p>Explain WHY, not WHAT:
+-- Bad: "Select revenue by month"
+-- Good: "Calculate monthly revenue for trend analysis"</p>
+</li>
+<li>
+<p>Document exclusions and special cases:
+WITH monthly_revenue AS (
+  -- Excludes refunded orders and cancelled subscriptions
+  -- per accounting policy doc #123
+  SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    SUM(amount) as revenue
+  FROM orders
+  WHERE status NOT IN ('refunded', 'cancelled')
+  GROUP BY DATE_TRUNC('month', order_date)
+)</p>
+</li>
+<li>
+<p>Document business logic:
+WITH high_value_customers AS (
+  -- "High value" defined as &gt;$1000 spend in last 90 days
+  -- OR &gt;20 orders lifetime (per marketing team definition)
+  SELECT customer_id
+  FROM ...
+)</p>
+</li>
+<li>
+<p>Note dependencies or assumptions:
+-- Assumes payment.status is always populated (validated in ETL)</p>
+</li>
+</ol>
+<p>Avoid: Obvious comments like "this selects customers" for "SELECT * FROM customer"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Best Practice Keep Focused</h2>
+<p>What does "keep CTEs focused" mean, and why is it important?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Principle: Each CTE should do ONE logical thing.</p>
+<p>Bad (CTE doing too much):
+WITH everything AS (
+  SELECT c.name, o.total, o.date, p.category,
+         CASE WHEN ... END as tier,
+         ROW_NUMBER() OVER (...) as rank
+  FROM customers c
+  JOIN orders o ON ... JOIN products p ON ...
+  WHERE complex conditions
+  GROUP BY ... HAVING ...
+)
+SELECT * FROM everything WHERE ...;
+-- What is this CTE's purpose? Unclear!</p>
+<p>Good (separate concerns):
+WITH customer_orders AS (
+  -- Get orders from 2024
+  SELECT customer_id, order_id, order_date, total
+  FROM orders
+  WHERE order_date &gt;= '2024-01-01'
+),
+order_categories AS (
+  -- Add product category to each order
+  SELECT co.order_id, p.category
+  FROM customer_orders co
+  JOIN products p ON ...
+),
+category_totals AS (
+  -- Calculate spending per customer per category
+  SELECT customer_id, category, SUM(total) as total
+  FROM customer_orders co
+  JOIN order_categories oc ON co.order_id = oc.order_id
+  GROUP BY customer_id, category
+)
+SELECT * FROM category_totals WHERE total &gt; 1000;</p>
+<p>Benefits of focused CTEs:
+- Each CTE has clear, single purpose
+- Easy to understand what each step does
+- Easy to test each step independently
+- Easy to modify one step without affecting others
+- Easy to reuse individual steps if needed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Best Practice Test Independently</h2>
+<p>How should you test CTEs during query development, and why is this approach valuable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Approach: Test each CTE independently before building on it.</p>
+<p>Development workflow:</p>
+<p>Step 1: Build and test first CTE
+WITH customer_totals AS (
+  SELECT customer_id, SUM(amount) as total
+  FROM payment
+  GROUP BY customer_id
+)
+SELECT * FROM customer_totals LIMIT 10;
+-- Verify: Does this return expected data?</p>
+<p>Step 2: Add second CTE and test
+WITH 
+  customer_totals AS (...),
+  high_value_customers AS (
+    SELECT customer_id FROM customer_totals WHERE total &gt; 100
+  )
+SELECT * FROM high_value_customers LIMIT 10;
+-- Verify: Are these the right high-value customers?</p>
+<p>Step 3: Add main query
+WITH 
+  customer_totals AS (...),
+  high_value_customers AS (...)
+SELECT c.first_name, c.last_name, hvc.customer_id
+FROM high_value_customers hvc
+JOIN customer c ON hvc.customer_id = c.customer_id;</p>
+<p>Why this is valuable:
+- Catches errors early in specific CTEs
+- Avoids debugging complex nested logic
+- Confirms each step produces expected results
+- Documents expected intermediate results
+- Makes development iterative and controlled</p>
+<p>Debugging: If final query is wrong, test each CTE independently to find which step has the problem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Versus Views</h2>
+<p>How do CTEs differ from views, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>CTEs (WITH clause):
+- Scope: Statement-level (exist only during query)
+- Storage: Not stored in database
+- Reusability: Only within the defining query
+- Security: No separate permissions
+- Definition: Inline with query
+- Modification: Change query directly</p>
+<p>Views (CREATE VIEW):
+- Scope: Database-level (persist until dropped)
+- Storage: Definition stored in database
+- Reusability: Can be used by many queries/users
+- Security: Can grant/revoke permissions
+- Definition: Separate database object
+- Modification: Requires ALTER VIEW or recreate</p>
+<p>When to use CTEs:
+- Query-specific logic that won't be reused
+- Breaking down one complex query
+- Exploratory/ad-hoc analysis
+- Temporary transformations</p>
+<p>When to use views:
+- Logic reused across multiple queries
+- Standard reports or common data access patterns
+- Security/access control (hide sensitive columns)
+- Abstraction layer over complex joins
+- Stable, well-understood transformations</p>
+<p>Example: If 10 different reports need "active customers," create a view. If one report needs temporary intermediate results, use CTEs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Versus Subquery When To Use Each</h2>
+<p>Summarize when to use CTEs versus subqueries (in any clause).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use CTEs when:
+- Complex query needs breaking into logical steps
+- Same intermediate result used multiple times
+- Query needs to be understood by others (or future you)
+- Building results progressively (chaining)
+- Working with hierarchical data (recursive CTEs)
+- Query will be maintained long-term</p>
+<p>Use subqueries when:
+- Query is simple enough without CTEs
+- Subquery used only once
+- Writing quick, one-off query
+- Inline context makes intent clearer
+- Performance is critical and inlining helps</p>
+<p>CTE advantages:
+- Named intermediate results (documentation)
+- Top-to-bottom readability
+- Easy to test/debug each step
+- Can reference multiple times without duplication
+- Enables recursive queries</p>
+<p>Subquery advantages:
+- Concise for simple cases
+- Can appear anywhere an expression is valid
+- Sometimes necessary (correlated subqueries in WHERE)
+- Less syntax overhead</p>
+<p>Rule of thumb: If the query will be read by others or maintained, prefer CTEs. If it's a quick throwaway query, subqueries are fine.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Primary Benefit Is Readability</h2>
+<p>What is the primary benefit of CTEs, and why does this matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Primary benefit: CTEs make complex queries readable and maintainable.</p>
+<p>Why readability matters:</p>
+<ol>
+<li>Code is read more than written</li>
+<li>Queries are read dozens of times</li>
+<li>
+<p>Written once, maintained for years</p>
+</li>
+<li>
+<p>Understanding enables maintenance</p>
+</li>
+<li>Can only fix or enhance what you understand</li>
+<li>
+<p>Six months later, even you won't remember complex nested logic</p>
+</li>
+<li>
+<p>Team collaboration</p>
+</li>
+<li>Other developers need to understand your queries</li>
+<li>
+<p>Code reviews are easier with readable queries</p>
+</li>
+<li>
+<p>Debugging is easier</p>
+</li>
+<li>Clear steps make it obvious where problems are</li>
+<li>
+<p>Can test each CTE independently</p>
+</li>
+<li>
+<p>Business logic documentation</p>
+</li>
+<li>CTE names document what each step does</li>
+<li>Comments can explain why</li>
+</ol>
+<p>Comparison:
+Nested subqueries: "Here's a puzzle to solve"
+CTEs: "Here's a recipe to follow"</p>
+<p>Performance note: CTEs are primarily about readability, not performance. In most cases, the database optimizes CTEs similarly to subqueries. Use CTEs when human understanding matters more than saving a few characters of syntax.</p>
+<p>Quote: "CTEs transform SQL from a write-only language into something you can actually read and maintain."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Real World Example Customer Segmentation</h2>
+<p>Walk through how CTEs improve a real-world customer segmentation query.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Task: Classify customers into tiers and analyze each tier.</p>
+<p>Without CTEs (hard to read):
+SELECT tier, COUNT(*), AVG(total_spent)
+FROM (
+  SELECT customer_id,
+         CASE WHEN (SELECT SUM(amount) FROM payment WHERE customer_id = c.customer_id) &gt;= 150 THEN 'Premium'
+              WHEN (SELECT SUM(amount) FROM payment WHERE customer_id = c.customer_id) &gt;= 75 THEN 'Standard'
+              ELSE 'Basic' END as tier,
+         (SELECT SUM(amount) FROM payment WHERE customer_id = c.customer_id) as total_spent
+  FROM customer c
+) subquery
+GROUP BY tier;</p>
+<p>With CTEs (clear and logical):
+WITH 
+  customer_totals AS (
+    -- Step 1: Calculate total spending per customer
+    SELECT customer_id, SUM(amount) as total_spent
+    FROM payment
+    GROUP BY customer_id
+  ),
+  customer_tiers AS (
+    -- Step 2: Classify customers into tiers
+    SELECT customer_id, total_spent,
+           CASE 
+             WHEN total_spent &gt;= 150 THEN 'Premium'
+             WHEN total_spent &gt;= 75 THEN 'Standard'
+             ELSE 'Basic'
+           END as tier
+    FROM customer_totals
+  )
+-- Step 3: Analyze each tier
+SELECT tier, 
+       COUNT(*) as customer_count,
+       AVG(total_spent) as avg_spent
+FROM customer_tiers
+GROUP BY tier;</p>
+<p>Improvements:
+- Each step has a name explaining its purpose
+- Logic flows naturally top-to-bottom
+- Can test customer_totals independently
+- No repeated calculations
+- Easy to modify tier definitions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive CTE Bill Of Materials Example</h2>
+<p>Explain how a recursive CTE handles a bill of materials (BOM) problem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Calculate total quantity of each component needed to build a product, accounting for nested assemblies.</p>
+<p>Table: parts(part_id, part_name, parent_part_id, quantity)
+Represents: Part X contains Y units of Part Z</p>
+<p>WITH RECURSIVE bom AS (
+  -- Anchor: Start with finished product
+  SELECT 
+    part_id, part_name, parent_part_id,
+    quantity,
+    1 as level
+  FROM parts
+  WHERE part_id = 1001  -- Finished product</p>
+<p>UNION ALL</p>
+<p>-- Recursive: Find components of parts found so far
+  SELECT 
+    p.part_id, p.part_name, p.parent_part_id,
+    p.quantity * bom.quantity,  -- Multiply quantities through tree
+    bom.level + 1
+  FROM parts p
+  JOIN bom ON p.parent_part_id = bom.part_id
+)
+SELECT part_name, quantity, level
+FROM bom
+ORDER BY level, part_name;</p>
+<p>How it works:
+1. Start with finished product (e.g., "Bicycle")
+2. Find direct components (e.g., "Frame", "Wheel" x2)
+3. Find components of those (e.g., Frame needs "Tube" x3)
+4. Continue until no more components
+5. Multiply quantities through the hierarchy</p>
+<p>Result: Complete list of every component needed with correct quantities.</p>
+<p>Why recursive CTE: Alternative would require knowing depth ahead of time or writing complex procedural code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>CTE Key Conceptual Insights</h2>
+<p>What are the three most important conceptual insights about CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>CTEs are named subqueries for readability</li>
+<li>Primary purpose: Make complex queries comprehensible</li>
+<li>Transform "nested puzzles" into "step-by-step recipes"</li>
+<li>Each CTE has a descriptive name explaining its purpose</li>
+<li>Code reads top-to-bottom, matching how humans think</li>
+<li>
+<p>Investment in readability pays off in maintenance</p>
+</li>
+<li>
+<p>CTEs enable compositional query building</p>
+</li>
+<li>Later CTEs can build on earlier CTEs (chaining)</li>
+<li>Create pipelines of transformations</li>
+<li>Each step is isolated and testable</li>
+<li>Complex logic broken into manageable pieces</li>
+<li>
+<p>Like functional programming: data flows through transformations</p>
+</li>
+<li>
+<p>Recursive CTEs unlock hierarchical queries</p>
+</li>
+<li>Special syntax allows CTE to reference itself</li>
+<li>Solves problems that require "repeat until done" logic</li>
+<li>Handles trees, graphs, and hierarchies elegantly</li>
+<li>Anchor member + recursive member + termination condition</li>
+<li>Without recursion, these queries would require procedural code</li>
+</ol>
+<p>Meta-insight: CTEs are primarily about human comprehension, not database optimization. They make SQL maintainable by making it readable. Master CTEs and your complex queries become blueprints instead of mysteries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When NOT To Use CTEs</h2>
+<p>When should you NOT use CTEs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Don't use CTEs when:</p>
+<ol>
+<li>Query is simple enough without them</li>
+<li>SELECT * FROM customer WHERE state = 'CA'</li>
+<li>
+<p>Adding CTE would just add complexity</p>
+</li>
+<li>
+<p>Need results across multiple separate queries</p>
+</li>
+<li>CTEs have statement scope (one query only)</li>
+<li>
+<p>Use temporary tables for multi-query workflows</p>
+</li>
+<li>
+<p>Need to index intermediate results</p>
+</li>
+<li>CTEs cannot be indexed</li>
+<li>
+<p>Use temporary tables for large intermediate datasets</p>
+</li>
+<li>
+<p>Writing one-time exploratory query</p>
+</li>
+<li>Quick ad-hoc analysis doesn't need full documentation</li>
+<li>
+<p>Subqueries might be faster to write</p>
+</li>
+<li>
+<p>CTE would just wrap a table with no transformation</p>
+</li>
+<li>WITH all_customers AS (SELECT * FROM customer)</li>
+<li>
+<p>Serves no purpose, just adds syntax</p>
+</li>
+<li>
+<p>Performance is critical and CTE prevents optimization</p>
+</li>
+<li>Profile first, optimize if proven necessary</li>
+<li>
+<p>Consider if CTE prevents index usage or predicate pushdown</p>
+</li>
+<li>
+<p>Simple subquery is clearer in context</p>
+</li>
+<li>WHERE customer_id = (SELECT MAX(customer_id) FROM customer)</li>
+<li>Inline subquery is clear enough</li>
+</ol>
+<p>General principle: Use CTEs when they improve comprehension or enable functionality (like recursion). Don't use them just because they exist. The goal is readable, maintainable code - not using every feature available.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
