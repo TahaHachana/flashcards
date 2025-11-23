@@ -1,0 +1,2464 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 03-Iterators-And-Closures - 05-Custom-Iterators</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Trait Requirements</h2>
+<p>What are the two requirements for implementing the Iterator trait? What do you get for free?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Only two things are required to implement Iterator:</p>
+<p><strong>1. Associated type <code>Item</code>:</strong></p>
+<pre><code class="language-rust">type Item = YourType;
+</code></pre>
+<p>Specifies what type the iterator yields.</p>
+<p><strong>2. Method <code>next(&amp;mut self)</code>:</strong></p>
+<pre><code class="language-rust">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+</code></pre>
+<p>Defines how to produce the next element.</p>
+<p><strong>Trait structure:</strong></p>
+<pre><code class="language-rust">pub trait Iterator {
+    type Item;  // Required
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;  // Required
+
+    // 70+ provided methods for free:
+    fn map&lt;F&gt;(self, f: F) -&gt; Map&lt;Self, F&gt; { /* ... */ }
+    fn filter&lt;P&gt;(self, predicate: P) -&gt; Filter&lt;Self, P&gt; { /* ... */ }
+    fn collect&lt;B&gt;(self) -&gt; B { /* ... */ }
+    fn sum&lt;S&gt;(self) -&gt; S { /* ... */ }
+    // ... and many more
+}
+</code></pre>
+<p><strong>What you get for free:</strong>
+- All adaptors (map, filter, take, skip, enumerate, zip, etc.)
+- All consumers (collect, sum, fold, count, find, any, all, etc.)
+- For loop support (with IntoIterator)
+- Iterator combinators (chain, flatten, etc.)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">struct Counter { count: u32, max: u32 }
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        if self.count &lt; self.max {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+
+// Now Counter has ALL iterator methods automatically!
+let sum: u32 = Counter { count: 0, max: 5 }.sum();
+let doubled: Vec&lt;_&gt; = Counter { count: 0, max: 3 }
+    .map(|x| x * 2)
+    .collect();
+</code></pre>
+<p>Implement two things, get 70+ methods free.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Next Method Contract</h2>
+<p>What is the contract for the <code>next()</code> method? Show the expected behavior pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>next()</code> method must follow a specific contract for correct iterator behavior.</p>
+<p><strong>Contract:</strong>
+1. Return <code>Some(item)</code> while elements remain
+2. Return <code>None</code> when exhausted
+3. Continue returning <code>None</code> forever after first <code>None</code>
+4. Take <code>&amp;mut self</code> to track internal state</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;
+</code></pre>
+<p><strong>Expected behavior:</strong></p>
+<pre><code class="language-rust">let mut iter = vec![1, 2, 3].into_iter();
+
+assert_eq!(iter.next(), Some(1));  // First element
+assert_eq!(iter.next(), Some(2));  // Second element
+assert_eq!(iter.next(), Some(3));  // Third element
+assert_eq!(iter.next(), None);     // Exhausted
+assert_eq!(iter.next(), None);     // Still None
+assert_eq!(iter.next(), None);     // Forever None
+</code></pre>
+<p><strong>Implementation pattern:</strong></p>
+<pre><code class="language-rust">struct MyIter {
+    data: Vec&lt;i32&gt;,
+    index: usize,
+}
+
+impl Iterator for MyIter {
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        if self.index &lt; self.data.len() {
+            let item = self.data[self.index];
+            self.index += 1;  // Advance state
+            Some(item)
+        } else {
+            None  // Exhausted
+        }
+    }
+}
+</code></pre>
+<p><strong>Why <code>&amp;mut self</code>:</strong>
+- Must track iteration position
+- Modify internal state on each call
+- Multiple calls advance through elements</p>
+<p><strong>Common mistake - not mutating state:</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - infinite loop returning same element
+fn next(&amp;self) -&gt; Option&lt;i32&gt; {
+    if self.index &lt; self.data.len() {
+        Some(self.data[self.index])  // Never advances!
+    } else {
+        None
+    }
+}
+</code></pre>
+<p>The contract ensures iterators behave predictably and work with all iterator methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Counter Iterator</h2>
+<p>Implement a simple Counter iterator that counts from 1 to max. Show how it integrates with iterator methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A Counter demonstrates the simplest custom iterator pattern.</p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-rust">struct Counter {
+    count: u32,
+    max: u32,
+}
+
+impl Counter {
+    fn new(max: u32) -&gt; Self {
+        Counter { count: 0, max }
+    }
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        if self.count &lt; self.max {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+</code></pre>
+<p><strong>Usage with for loop:</strong></p>
+<pre><code class="language-rust">let counter = Counter::new(5);
+
+for num in counter {
+    println!(&quot;{}&quot;, num);
+}
+// Prints: 1, 2, 3, 4, 5
+</code></pre>
+<p><strong>Free iterator methods:</strong></p>
+<pre><code class="language-rust">// Sum
+let sum: u32 = Counter::new(5).sum();
+// 15 (1+2+3+4+5)
+
+// Map and collect
+let doubled: Vec&lt;u32&gt; = Counter::new(3)
+    .map(|x| x * 2)
+    .collect();
+// [2, 4, 6]
+
+// Filter and count
+let count = Counter::new(10)
+    .filter(|x| x % 2 == 0)
+    .count();
+// 5 (even numbers)
+
+// Chain operations
+let result: Vec&lt;_&gt; = Counter::new(10)
+    .filter(|x| x % 2 == 0)
+    .map(|x| x * x)
+    .take(3)
+    .collect();
+// [4, 16, 36]
+</code></pre>
+<p><strong>Key points:</strong>
+- State stored in struct fields (<code>count</code>, <code>max</code>)
+- <code>next()</code> mutates state to advance
+- Returns <code>Some</code> while valid, then <code>None</code>
+- Automatically works with all iterator methods
+- Can be chained with other iterators</p>
+<p>This simple implementation demonstrates the power of the Iterator trait - implement two things, get entire ecosystem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Infinite Iterator Pattern</h2>
+<p>Show how to implement an infinite iterator. Why is this valid, and how must users consume it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Infinite iterators never return <code>None</code> from <code>next()</code> - this is valid and useful.</p>
+<p><strong>Fibonacci infinite iterator:</strong></p>
+<pre><code class="language-rust">struct Fibonacci {
+    current: u64,
+    next: u64,
+}
+
+impl Fibonacci {
+    fn new() -&gt; Self {
+        Fibonacci { current: 0, next: 1 }
+    }
+}
+
+impl Iterator for Fibonacci {
+    type Item = u64;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+        let current = self.current;
+
+        // Calculate next Fibonacci number
+        self.current = self.next;
+        self.next = current + self.next;
+
+        // Never returns None!
+        Some(current)
+    }
+}
+</code></pre>
+<p><strong>Why this is valid:</strong>
+- Iterator contract allows infinite sequences
+- Useful for generators, streams, sequences
+- Common pattern in Rust</p>
+<p><strong>Must use limiting operations:</strong></p>
+<pre><code class="language-rust">// ✅ Take limited number
+let first_ten: Vec&lt;u64&gt; = Fibonacci::new()
+    .take(10)
+    .collect();
+// [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+// ✅ Take while condition
+let small: Vec&lt;u64&gt; = Fibonacci::new()
+    .take_while(|&amp;x| x &lt; 100)
+    .collect();
+
+// ✅ Find stops when found
+let big = Fibonacci::new()
+    .find(|&amp;x| x &gt; 1000);
+// Some(1597)
+
+// ❌ Would run forever!
+// for n in Fibonacci::new() {
+//     println!(&quot;{}&quot;, n);
+// }
+
+// ❌ Would hang forever!
+// let all: Vec&lt;_&gt; = Fibonacci::new().collect();
+</code></pre>
+<p><strong>Other infinite iterator examples:</strong></p>
+<pre><code class="language-rust">// Always returns 1
+struct Ones;
+
+impl Iterator for Ones {
+    type Item = i32;
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        Some(1)
+    }
+}
+
+// Infinite counter
+struct InfiniteCounter { n: u64 }
+
+impl Iterator for InfiniteCounter {
+    type Item = u64;
+    fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+        let current = self.n;
+        self.n += 1;
+        Some(current)
+    }
+}
+</code></pre>
+<p><strong>Use cases:</strong>
+- Mathematical sequences
+- Random number generators
+- Event streams
+- Retry mechanisms</p>
+<p>Infinite iterators are powerful when combined with limiting adaptors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Consuming Collection Problem</h2>
+<p>What's the problem with implementing Iterator directly on a collection? Show the issue and solution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implementing Iterator directly on a collection consumes it on first iteration.</p>
+<p><strong>Problem - consuming the collection:</strong></p>
+<pre><code class="language-rust">struct BookCollection {
+    books: Vec&lt;String&gt;,
+}
+
+// ❌ Implementing Iterator directly
+impl Iterator for BookCollection {
+    type Item = String;
+
+    fn next(&amp;mut self) -&gt; Option&lt;String&gt; {
+        self.books.pop()  // Removes from collection!
+    }
+}
+
+// Usage issue:
+let mut books = BookCollection {
+    books: vec![&quot;Book 1&quot;.to_string(), &quot;Book 2&quot;.to_string()],
+};
+
+for book in books {
+    println!(&quot;{}&quot;, book);
+}
+// books is now EMPTY and can't be used again!
+</code></pre>
+<p><strong>Solution - separate iterator type:</strong></p>
+<pre><code class="language-rust">struct BookCollection {
+    books: Vec&lt;String&gt;,
+}
+
+// Separate iterator struct
+struct BookIter&lt;'a&gt; {
+    books: &amp;'a [String],
+    index: usize,
+}
+
+impl&lt;'a&gt; Iterator for BookIter&lt;'a&gt; {
+    type Item = &amp;'a String;
+
+    fn next(&amp;mut self) -&gt; Option&lt;&amp;'a String&gt; {
+        if self.index &lt; self.books.len() {
+            let book = &amp;self.books[self.index];
+            self.index += 1;
+            Some(book)
+        } else {
+            None
+        }
+    }
+}
+
+impl BookCollection {
+    fn iter(&amp;self) -&gt; BookIter {
+        BookIter {
+            books: &amp;self.books,
+            index: 0,
+        }
+    }
+}
+</code></pre>
+<p><strong>Now non-consuming:</strong></p>
+<pre><code class="language-rust">let collection = BookCollection {
+    books: vec![&quot;Book 1&quot;.to_string(), &quot;Book 2&quot;.to_string()],
+};
+
+// First iteration
+for book in collection.iter() {
+    println!(&quot;{}&quot;, book);
+}
+
+// Collection still available!
+for book in collection.iter() {
+    println!(&quot;{}&quot;, book);
+}
+
+// Can still access collection
+println!(&quot;Have {} books&quot;, collection.books.len());
+</code></pre>
+<p><strong>Pattern benefits:</strong>
+- Original collection preserved
+- Can iterate multiple times
+- Follows standard library conventions (Vec::iter(), etc.)
+- Can provide iter(), iter_mut(), and into_iter()</p>
+<p><strong>Standard library follows this:</strong></p>
+<pre><code class="language-rust">// Vec doesn't implement Iterator
+// Instead provides methods returning iterators:
+vec.iter()       // Returns Iter&lt;'_, T&gt;
+vec.iter_mut()   // Returns IterMut&lt;'_, T&gt;  
+vec.into_iter()  // Consumes Vec, returns IntoIter&lt;T&gt;
+</code></pre>
+<p>Always use separate iterator types to avoid consuming collections.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>IntoIterator Trait Purpose</h2>
+<p>What is the IntoIterator trait? Why do we need it in addition to Iterator?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>IntoIterator</code> enables <code>for</code> loops and provides a way to convert types into iterators.</p>
+<p><strong>Trait definition:</strong></p>
+<pre><code class="language-rust">pub trait IntoIterator {
+    type Item;                              // What's yielded
+    type IntoIter: Iterator&lt;Item = Self::Item&gt;;  // Iterator type
+
+    fn into_iter(self) -&gt; Self::IntoIter;  // Conversion method
+}
+</code></pre>
+<p><strong>Purpose:</strong>
+- Allows <code>for</code> loops to work with your type
+- Provides conversion to iterator
+- Separates "can be iterated" from "is an iterator"</p>
+<p><strong>Why both traits exist:</strong></p>
+<p><strong>Iterator</strong> = something that IS an iterator (has next())
+<strong>IntoIterator</strong> = something that CAN BE CONVERTED to iterator</p>
+<p><strong>For loop desugaring:</strong></p>
+<pre><code class="language-rust">// This code:
+for item in collection {
+    println!(&quot;{}&quot;, item);
+}
+
+// Desugars to:
+let mut iter = collection.into_iter();
+loop {
+    match iter.next() {
+        Some(item) =&gt; println!(&quot;{}&quot;, item),
+        None =&gt; break,
+    }
+}
+</code></pre>
+<p><strong>Example implementation:</strong></p>
+<pre><code class="language-rust">struct BookCollection {
+    books: Vec&lt;String&gt;,
+}
+
+// The iterator type
+struct BookIntoIter {
+    books: Vec&lt;String&gt;,
+    index: usize,
+}
+
+impl Iterator for BookIntoIter {
+    type Item = String;
+
+    fn next(&amp;mut self) -&gt; Option&lt;String&gt; {
+        if self.index &lt; self.books.len() {
+            let book = self.books[self.index].clone();
+            self.index += 1;
+            Some(book)
+        } else {
+            None
+        }
+    }
+}
+
+// IntoIterator implementation
+impl IntoIterator for BookCollection {
+    type Item = String;
+    type IntoIter = BookIntoIter;
+
+    fn into_iter(self) -&gt; Self::IntoIter {
+        BookIntoIter {
+            books: self.books,
+            index: 0,
+        }
+    }
+}
+
+// Now for loop works!
+let collection = BookCollection { /* ... */ };
+for book in collection {  // Calls into_iter()
+    println!(&quot;{}&quot;, book);
+}
+</code></pre>
+<p><strong>Key distinction:</strong></p>
+<pre><code class="language-rust">// Iterator - is an iterator
+let mut iter = some_iterator;
+iter.next();  // Has next() method
+
+// IntoIterator - converts to iterator
+let collection = some_collection;
+let iter = collection.into_iter();  // Converts
+iter.next();  // Now can call next()
+</code></pre>
+<p>IntoIterator is the "entry point" - it converts types into iterators so they can be used with for loops and iterator methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three IntoIterator Implementations</h2>
+<p>What are the three standard IntoIterator implementations? Show the pattern for each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Complete iterator support requires three IntoIterator implementations for different ownership scenarios.</p>
+<p><strong>The three implementations:</strong></p>
+<p><strong>1. By value (consumes collection):</strong></p>
+<pre><code class="language-rust">impl IntoIterator for BookCollection {
+    type Item = String;
+    type IntoIter = BookIntoIter;
+
+    fn into_iter(self) -&gt; Self::IntoIter {
+        BookIntoIter {
+            books: self.books,  // Takes ownership
+            index: 0,
+        }
+    }
+}
+
+// Usage: moves collection
+for book in collection {  // Consumes collection
+    println!(&quot;{}&quot;, book);
+}
+// collection no longer available
+</code></pre>
+<p><strong>2. By immutable reference (borrows collection):</strong></p>
+<pre><code class="language-rust">impl&lt;'a&gt; IntoIterator for &amp;'a BookCollection {
+    type Item = &amp;'a String;
+    type IntoIter = std::slice::Iter&lt;'a, String&gt;;
+
+    fn into_iter(self) -&gt; Self::IntoIter {
+        self.books.iter()  // Borrows
+    }
+}
+
+// Usage: borrows collection
+for book in &amp;collection {  // Non-consuming
+    println!(&quot;{}&quot;, book);
+}
+// collection still available
+</code></pre>
+<p><strong>3. By mutable reference (borrows mutably):</strong></p>
+<pre><code class="language-rust">impl&lt;'a&gt; IntoIterator for &amp;'a mut BookCollection {
+    type Item = &amp;'a mut String;
+    type IntoIter = std::slice::IterMut&lt;'a, String&gt;;
+
+    fn into_iter(self) -&gt; Self::IntoIter {
+        self.books.iter_mut()  // Mutable borrow
+    }
+}
+
+// Usage: mutable iteration
+for book in &amp;mut collection {  // Mutable borrow
+    book.push_str(&quot; - Read&quot;);
+}
+// collection still available (was mutated)
+</code></pre>
+<p><strong>Usage comparison:</strong></p>
+<pre><code class="language-rust">let mut collection = BookCollection { /* ... */ };
+
+// 1. Borrow immutably
+for book in &amp;collection {
+    println!(&quot;{}&quot;, book);
+}
+
+// 2. Borrow mutably
+for book in &amp;mut collection {
+    *book = book.to_uppercase();
+}
+
+// 3. Consume
+for book in collection {
+    println!(&quot;{}&quot;, book);
+}
+// collection moved, no longer available
+</code></pre>
+<p><strong>Pattern template:</strong></p>
+<pre><code class="language-rust">// By value
+impl IntoIterator for T { /* ... */ }
+
+// By reference
+impl&lt;'a&gt; IntoIterator for &amp;'a T { /* ... */ }
+
+// By mutable reference
+impl&lt;'a&gt; IntoIterator for &amp;'a mut T { /* ... */ }
+</code></pre>
+<p><strong>Standard library follows this:</strong></p>
+<pre><code class="language-rust">// Vec has all three
+for x in vec { }       // Moves
+for x in &amp;vec { }      // Borrows
+for x in &amp;mut vec { }  // Mut borrows
+</code></pre>
+<p>Implementing all three provides maximum flexibility and matches standard library conventions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Size Hint Optimization</h2>
+<p>What is <code>size_hint()</code> and why should you implement it? Show the performance benefit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>size_hint()</code> provides bounds on remaining elements, enabling important optimizations.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="language-rust">fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (lower_bound, upper_bound)
+}
+</code></pre>
+<p><strong>Returns:</strong>
+- Lower bound: minimum remaining elements (must be accurate)
+- Upper bound: maximum remaining elements (None = unknown)</p>
+<p><strong>Default implementation (suboptimal):</strong></p>
+<pre><code class="language-rust">fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (0, None)  // &quot;Don't know&quot;
+}
+</code></pre>
+<p><strong>Custom implementation:</strong></p>
+<pre><code class="language-rust">struct Counter {
+    current: u32,
+    max: u32,
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        if self.current &lt; self.max {
+            self.current += 1;
+            Some(self.current)
+        } else {
+            None
+        }
+    }
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        let remaining = (self.max - self.current) as usize;
+        (remaining, Some(remaining))  // Exact size known
+    }
+}
+</code></pre>
+<p><strong>Performance benefit - pre-allocation:</strong></p>
+<pre><code class="language-rust">// Without size_hint: multiple allocations
+let vec: Vec&lt;_&gt; = counter.collect();
+// Vec grows: 0 → 4 → 8 → 16 → 32 → ...
+// Multiple reallocations and copies!
+
+// With size_hint: single allocation
+let counter = Counter { current: 0, max: 100 };
+let vec: Vec&lt;_&gt; = counter.collect();
+// Allocates 100 slots immediately
+// No reallocations needed!
+</code></pre>
+<p><strong>Other optimizations enabled:</strong></p>
+<pre><code class="language-rust">// O(1) count instead of O(n)
+let counter = Counter { current: 0, max: 1000 };
+let count = counter.count();
+// Uses size_hint to return immediately without iterating!
+
+// Efficient zip
+let a = Counter::new(100);
+let b = Counter::new(50);
+let zipped: Vec&lt;_&gt; = a.zip(b).collect();
+// Knows result will be 50 pairs, allocates once
+</code></pre>
+<p><strong>Different scenarios:</strong></p>
+<pre><code class="language-rust">// Exact size known
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    let size = self.remaining();
+    (size, Some(size))
+}
+
+// Only lower bound known (filtered iterator)
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (0, self.inner.size_hint().1)  // Could be 0, at most inner's max
+}
+
+// Range known
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (self.min_remaining(), Some(self.max_possible()))
+}
+</code></pre>
+<p><strong>Accuracy is critical:</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - returning incorrect size
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (10, Some(10))  // But we have 5! Undefined behavior!
+}
+
+// ✅ Correct - conservative estimate
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (0, Some(10))  // Safe - lower bound conservative
+}
+</code></pre>
+<p>Implementing size_hint() can make collect() 2-10x faster for large collections.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Stateful Iterator Pattern</h2>
+<p>Show how to create an iterator that maintains state and transforms elements based on that state (running sum example).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Stateful iterators track accumulated state across iterations to transform elements.</p>
+<p><strong>Running sum iterator:</strong></p>
+<pre><code class="language-rust">struct RunningSum&lt;I&gt; {
+    inner: I,
+    sum: i32,
+}
+
+impl&lt;I&gt; RunningSum&lt;I&gt; {
+    fn new(inner: I) -&gt; Self {
+        RunningSum { inner, sum: 0 }
+    }
+}
+
+impl&lt;I&gt; Iterator for RunningSum&lt;I&gt;
+where
+    I: Iterator&lt;Item = i32&gt;,
+{
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        match self.inner.next() {
+            Some(n) =&gt; {
+                self.sum += n;  // Accumulate state
+                Some(self.sum)   // Return accumulated value
+            }
+            None =&gt; None,
+        }
+    }
+}
+
+// Usage
+let values = vec![1, 2, 3, 4, 5];
+let running = RunningSum::new(values.into_iter());
+let result: Vec&lt;_&gt; = running.collect();
+// [1, 3, 6, 10, 15]
+// Each element is sum of all previous
+</code></pre>
+<p><strong>Running average:</strong></p>
+<pre><code class="language-rust">struct RunningAverage&lt;I&gt; {
+    inner: I,
+    sum: f64,
+    count: usize,
+}
+
+impl&lt;I&gt; Iterator for RunningAverage&lt;I&gt;
+where
+    I: Iterator&lt;Item = f64&gt;,
+{
+    type Item = f64;
+
+    fn next(&amp;mut self) -&gt; Option&lt;f64&gt; {
+        match self.inner.next() {
+            Some(n) =&gt; {
+                self.sum += n;
+                self.count += 1;
+                Some(self.sum / self.count as f64)
+            }
+            None =&gt; None,
+        }
+    }
+}
+
+// Usage
+let temps = vec![70.0, 72.0, 68.0, 75.0];
+let avg = RunningAverage {
+    inner: temps.into_iter(),
+    sum: 0.0,
+    count: 0,
+};
+let result: Vec&lt;_&gt; = avg.collect();
+// [70.0, 71.0, 70.0, 71.25]
+</code></pre>
+<p><strong>Difference from previous:</strong></p>
+<pre><code class="language-rust">struct Differences&lt;I&gt; {
+    inner: I,
+    previous: Option&lt;i32&gt;,
+}
+
+impl&lt;I&gt; Iterator for Differences&lt;I&gt;
+where
+    I: Iterator&lt;Item = i32&gt;,
+{
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        match self.inner.next() {
+            Some(current) =&gt; {
+                let diff = match self.previous {
+                    Some(prev) =&gt; current - prev,
+                    None =&gt; 0,  // First element
+                };
+                self.previous = Some(current);
+                Some(diff)
+            }
+            None =&gt; None,
+        }
+    }
+}
+
+// Usage
+let values = vec![10, 15, 13, 20, 18];
+let diffs = Differences {
+    inner: values.into_iter(),
+    previous: None,
+};
+let result: Vec&lt;_&gt; = diffs.collect();
+// [0, 5, -2, 7, -2]
+</code></pre>
+<p><strong>Key pattern:</strong>
+1. Store state in iterator struct
+2. Update state in <code>next()</code>
+3. Use state to transform current element
+4. Wrap another iterator for composition</p>
+<p>This pattern enables powerful transformations while maintaining iterator composability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering Iterator Pattern</h2>
+<p>How do you create a filtering iterator that skips elements based on a condition?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Filtering iterators use a loop in <code>next()</code> to skip unwanted elements.</p>
+<p><strong>Pattern:</strong></p>
+<pre><code class="language-rust">struct EvensOnly&lt;I&gt; {
+    inner: I,
+}
+
+impl&lt;I&gt; Iterator for EvensOnly&lt;I&gt;
+where
+    I: Iterator&lt;Item = i32&gt;,
+{
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        // Loop until we find an even number
+        loop {
+            match self.inner.next() {
+                Some(n) if n % 2 == 0 =&gt; return Some(n),  // Found even
+                Some(_) =&gt; continue,  // Skip odd
+                None =&gt; return None,  // Exhausted
+            }
+        }
+    }
+}
+
+// Usage
+let evens = EvensOnly {
+    inner: 1..=10,
+};
+let result: Vec&lt;_&gt; = evens.collect();
+// [2, 4, 6, 8, 10]
+</code></pre>
+<p><strong>Why loop is needed:</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - only checks one element
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    match self.inner.next() {
+        Some(n) if n % 2 == 0 =&gt; Some(n),
+        _ =&gt; None,  // Returns None after first odd!
+    }
+}
+
+// ✅ Correct - keeps trying
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    loop {
+        match self.inner.next() {
+            Some(n) if n % 2 == 0 =&gt; return Some(n),
+            Some(_) =&gt; continue,  // Try next
+            None =&gt; return None,
+        }
+    }
+}
+</code></pre>
+<p><strong>Complex filtering:</strong></p>
+<pre><code class="language-rust">struct ValidOnly&lt;I, F&gt; {
+    inner: I,
+    predicate: F,
+}
+
+impl&lt;I, F&gt; Iterator for ValidOnly&lt;I, F&gt;
+where
+    I: Iterator,
+    F: FnMut(&amp;I::Item) -&gt; bool,
+{
+    type Item = I::Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;I::Item&gt; {
+        loop {
+            match self.inner.next() {
+                Some(item) if (self.predicate)(&amp;item) =&gt; {
+                    return Some(item)
+                }
+                Some(_) =&gt; continue,
+                None =&gt; return None,
+            }
+        }
+    }
+}
+
+// Usage
+let validator = |x: &amp;i32| x &gt; &amp;0 &amp;&amp; x &lt; &amp;100;
+let filtered = ValidOnly {
+    inner: vec![-5, 10, 150, 42, -3, 99].into_iter(),
+    predicate: validator,
+};
+let result: Vec&lt;_&gt; = filtered.collect();
+// [10, 42, 99]
+</code></pre>
+<p><strong>Alternative: while let pattern:</strong></p>
+<pre><code class="language-rust">fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    while let Some(n) = self.inner.next() {
+        if n % 2 == 0 {
+            return Some(n);
+        }
+    }
+    None  // Exhausted
+}
+</code></pre>
+<p><strong>Key technique:</strong>
+- Loop to skip unwanted elements
+- Continue until match found or exhausted
+- Essential for filtering iterators</p>
+<p>This is how <code>.filter()</code> is implemented in standard library!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Wrapper Pattern</h2>
+<p>Show the pattern for creating an iterator that wraps another iterator (similar to standard library adaptors).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Iterator wrappers delegate to an inner iterator while adding behavior.</p>
+<p><strong>Basic wrapper pattern:</strong></p>
+<pre><code class="language-rust">struct MyMap&lt;I, F&gt; {
+    iter: I,     // Wrapped iterator
+    func: F,     // Transformation function
+}
+
+impl&lt;B, I, F&gt; Iterator for MyMap&lt;I, F&gt;
+where
+    I: Iterator,
+    F: FnMut(I::Item) -&gt; B,
+{
+    type Item = B;
+
+    fn next(&amp;mut self) -&gt; Option&lt;B&gt; {
+        // Get next from inner, apply transformation
+        self.iter.next().map(&amp;mut self.func)
+    }
+}
+
+// Constructor function
+fn my_map&lt;I, F, B&gt;(iter: I, func: F) -&gt; MyMap&lt;I, F&gt;
+where
+    I: Iterator,
+    F: FnMut(I::Item) -&gt; B,
+{
+    MyMap { iter, func }
+}
+
+// Usage
+let doubled = my_map(vec![1, 2, 3].into_iter(), |x| x * 2);
+let result: Vec&lt;_&gt; = doubled.collect();
+// [2, 4, 6]
+</code></pre>
+<p><strong>Wrapper with state:</strong></p>
+<pre><code class="language-rust">struct Enumerate&lt;I&gt; {
+    iter: I,
+    count: usize,
+}
+
+impl&lt;I&gt; Iterator for Enumerate&lt;I&gt;
+where
+    I: Iterator,
+{
+    type Item = (usize, I::Item);
+
+    fn next(&amp;mut self) -&gt; Option&lt;(usize, I::Item)&gt; {
+        match self.iter.next() {
+            Some(item) =&gt; {
+                let index = self.count;
+                self.count += 1;
+                Some((index, item))
+            }
+            None =&gt; None,
+        }
+    }
+}
+</code></pre>
+<p><strong>Logging wrapper (side effects):</strong></p>
+<pre><code class="language-rust">struct Logging&lt;I&gt; {
+    iter: I,
+    count: usize,
+}
+
+impl&lt;I&gt; Iterator for Logging&lt;I&gt;
+where
+    I: Iterator,
+    I::Item: std::fmt::Debug,
+{
+    type Item = I::Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;I::Item&gt; {
+        match self.iter.next() {
+            Some(item) =&gt; {
+                self.count += 1;
+                println!(&quot;Item #{}: {:?}&quot;, self.count, item);
+                Some(item)
+            }
+            None =&gt; {
+                println!(&quot;Iterator exhausted after {} items&quot;, self.count);
+                None
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Extension trait pattern:</strong></p>
+<pre><code class="language-rust">trait IteratorExt: Iterator {
+    fn my_map&lt;F, B&gt;(self, f: F) -&gt; MyMap&lt;Self, F&gt;
+    where
+        Self: Sized,
+        F: FnMut(Self::Item) -&gt; B,
+    {
+        MyMap { iter: self, func: f }
+    }
+
+    fn logging(self) -&gt; Logging&lt;Self&gt;
+    where
+        Self: Sized,
+        Self::Item: std::fmt::Debug,
+    {
+        Logging { iter: self, count: 0 }
+    }
+}
+
+// Implement for all iterators
+impl&lt;I: Iterator&gt; IteratorExt for I {}
+
+// Usage - looks like built-in methods!
+let result: Vec&lt;_&gt; = vec![1, 2, 3]
+    .into_iter()
+    .my_map(|x| x * 2)
+    .logging()
+    .collect();
+</code></pre>
+<p><strong>Key pattern elements:</strong>
+1. Generic over inner iterator <code>I: Iterator</code>
+2. Store inner iterator in struct
+3. Delegate <code>next()</code> to inner
+4. Add transformation/filtering/side effects
+5. Return transformed result</p>
+<p>This is exactly how standard library adaptors (map, filter, etc.) work!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Double Ended Iterator</h2>
+<p>What is DoubleEndedIterator? Show how to implement bidirectional iteration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>DoubleEndedIterator</code> allows iteration from both ends simultaneously.</p>
+<p><strong>Trait definition:</strong></p>
+<pre><code class="language-rust">pub trait DoubleEndedIterator: Iterator {
+    fn next_back(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}
+</code></pre>
+<p><strong>Implementation example:</strong></p>
+<pre><code class="language-rust">struct BiDirRange {
+    start: i32,
+    end: i32,
+}
+
+// First implement Iterator (forward)
+impl Iterator for BiDirRange {
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        if self.start &lt; self.end {
+            let val = self.start;
+            self.start += 1;
+            Some(val)
+        } else {
+            None
+        }
+    }
+}
+
+// Then implement DoubleEndedIterator (backward)
+impl DoubleEndedIterator for BiDirRange {
+    fn next_back(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        if self.start &lt; self.end {
+            self.end -= 1;
+            Some(self.end)
+        } else {
+            None
+        }
+    }
+}
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-rust">let mut bi = BiDirRange { start: 0, end: 5 };
+
+// From front
+assert_eq!(bi.next(), Some(0));
+
+// From back
+assert_eq!(bi.next_back(), Some(4));
+
+// From front again
+assert_eq!(bi.next(), Some(1));
+
+// From back again
+assert_eq!(bi.next_back(), Some(3));
+
+// From front
+assert_eq!(bi.next(), Some(2));
+
+// Exhausted
+assert_eq!(bi.next(), None);
+assert_eq!(bi.next_back(), None);
+</code></pre>
+<p><strong>Enables .rev():</strong></p>
+<pre><code class="language-rust">let reversed: Vec&lt;_&gt; = BiDirRange { start: 0, end: 5 }
+    .rev()  // Only works if DoubleEndedIterator
+    .collect();
+// [4, 3, 2, 1, 0]
+</code></pre>
+<p><strong>Complex example - Vec wrapper:</strong></p>
+<pre><code class="language-rust">struct VecIter&lt;T&gt; {
+    data: Vec&lt;T&gt;,
+    front: usize,
+    back: usize,
+}
+
+impl&lt;T&gt; Iterator for VecIter&lt;T&gt;
+where
+    T: Clone,
+{
+    type Item = T;
+
+    fn next(&amp;mut self) -&gt; Option&lt;T&gt; {
+        if self.front &lt; self.back {
+            let item = self.data[self.front].clone();
+            self.front += 1;
+            Some(item)
+        } else {
+            None
+        }
+    }
+}
+
+impl&lt;T&gt; DoubleEndedIterator for VecIter&lt;T&gt;
+where
+    T: Clone,
+{
+    fn next_back(&amp;mut self) -&gt; Option&lt;T&gt; {
+        if self.front &lt; self.back {
+            self.back -= 1;
+            let item = self.data[self.back].clone();
+            Some(item)
+        } else {
+            None
+        }
+    }
+}
+</code></pre>
+<p><strong>Important invariant:</strong>
+Both <code>next()</code> and <code>next_back()</code> must maintain same remaining elements - they consume from opposite ends of the same sequence.</p>
+<p><strong>Use cases:</strong>
+- Reversing iteration
+- Processing from both ends
+- Palindrome checking
+- Window operations</p>
+<p>DoubleEndedIterator provides more flexibility than forward-only iteration.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Exact Size Iterator</h2>
+<p>What is ExactSizeIterator and when should you implement it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>ExactSizeIterator</code> indicates the iterator knows its exact remaining length at all times.</p>
+<p><strong>Trait definition:</strong></p>
+<pre><code class="language-rust">pub trait ExactSizeIterator: Iterator {
+    fn len(&amp;self) -&gt; usize {
+        let (lower, upper) = self.size_hint();
+        // Default: assumes size_hint is exact
+        upper.unwrap()
+    }
+}
+</code></pre>
+<p><strong>When to implement:</strong>
+- Exact remaining count always known
+- <code>size_hint()</code> returns <code>(n, Some(n))</code>
+- Length doesn't change during iteration</p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-rust">struct Counter {
+    current: u32,
+    max: u32,
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        if self.current &lt; self.max {
+            self.current += 1;
+            Some(self.current)
+        } else {
+            None
+        }
+    }
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        let remaining = (self.max - self.current) as usize;
+        (remaining, Some(remaining))
+    }
+}
+
+// Mark as exact size
+impl ExactSizeIterator for Counter {
+    fn len(&amp;self) -&gt; usize {
+        (self.max - self.current) as usize
+    }
+}
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<pre><code class="language-rust">let counter = Counter { current: 0, max: 100 };
+
+// O(1) length check
+assert_eq!(counter.len(), 100);
+
+// Efficient size-based operations
+if counter.len() &gt; 50 {
+    // Can make decisions without iterating
+}
+
+// collect() can pre-allocate exact size
+let vec: Vec&lt;_&gt; = counter.collect();
+</code></pre>
+<p><strong>When NOT to implement:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement for filtering iterators
+struct Filtered&lt;I, F&gt; {
+    inner: I,
+    predicate: F,
+}
+// Can't know how many will pass filter!
+
+// ❌ Don't implement if size can change
+struct MutatingIter {
+    data: Vec&lt;i32&gt;,
+}
+// If someone else can modify data, size not guaranteed
+
+// ✅ DO implement for fixed-size ranges
+impl ExactSizeIterator for Range&lt;i32&gt; {}
+
+// ✅ DO implement for known-size wrappers
+impl&lt;I: ExactSizeIterator&gt; ExactSizeIterator for Enumerate&lt;I&gt; {
+    fn len(&amp;self) -&gt; usize {
+        self.iter.len()  // Same as inner
+    }
+}
+</code></pre>
+<p><strong>Contract:</strong>
+- <code>len()</code> must always be accurate
+- Must equal number of remaining items
+- Should be O(1) or very fast</p>
+<p><strong>Compiler doesn't enforce accuracy</strong> - implementing ExactSizeIterator with wrong len() causes undefined behavior!</p>
+<p><strong>Standard library examples:</strong></p>
+<pre><code class="language-rust">// Vec iterators are ExactSizeIterator
+let v = vec![1, 2, 3, 4, 5];
+assert_eq!(v.iter().len(), 5);
+
+// Ranges are ExactSizeIterator
+assert_eq!((0..10).len(), 10);
+
+// But filter is NOT
+// (0..10).filter(|x| x % 2 == 0).len() // Won't compile
+</code></pre>
+<p>Only implement when you can guarantee exact remaining count at all times.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fused Iterator Trait</h2>
+<p>What is FusedIterator and why might you want to implement it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>FusedIterator</code> guarantees the iterator continues returning <code>None</code> after the first <code>None</code>.</p>
+<p><strong>Trait definition:</strong></p>
+<pre><code class="language-rust">pub trait FusedIterator: Iterator {}
+</code></pre>
+<p><strong>Purpose:</strong>
+- Marks iterator as "fused" (safe to call after exhaustion)
+- No required methods - just a marker trait
+- Enables optimizations in consuming code</p>
+<p><strong>Default iterator behavior (should but not guaranteed):</strong></p>
+<pre><code class="language-rust">let mut iter = vec![1, 2].into_iter();
+
+assert_eq!(iter.next(), Some(1));
+assert_eq!(iter.next(), Some(2));
+assert_eq!(iter.next(), None);
+assert_eq!(iter.next(), None);  // Should keep returning None
+</code></pre>
+<p><strong>Problem - non-fused iterator:</strong></p>
+<pre><code class="language-rust">struct Buggy {
+    state: bool,
+}
+
+impl Iterator for Buggy {
+    type Item = i32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        // ❌ Returns None, then Some, then None again!
+        self.state = !self.state;
+        if self.state {
+            Some(42)
+        } else {
+            None
+        }
+    }
+}
+// This violates expected behavior but compiles
+</code></pre>
+<p><strong>Fused implementation:</strong></p>
+<pre><code class="language-rust">struct Counter {
+    current: u32,
+    max: u32,
+    finished: bool,
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        // Once finished, always return None
+        if self.finished {
+            return None;
+        }
+
+        if self.current &lt; self.max {
+            self.current += 1;
+            Some(self.current)
+        } else {
+            self.finished = true;  // Mark as finished
+            None
+        }
+    }
+}
+
+// Mark as fused
+impl FusedIterator for Counter {}
+</code></pre>
+<p><strong>Why it matters:</strong></p>
+<pre><code class="language-rust">// Some adaptors can optimize with FusedIterator
+// Example: .fuse() does nothing if already fused
+let iter = counter.fuse();  // No-op if FusedIterator
+
+// flatten can optimize
+let nested: Vec&lt;Vec&lt;i32&gt;&gt; = /* ... */;
+nested.into_iter()
+    .flatten()  // Can optimize if inner is fused
+    .collect()
+</code></pre>
+<p><strong>When to implement:</strong>
+1. Iterator genuinely returns None forever after first None
+2. Have explicit "finished" flag
+3. Want to enable optimizations</p>
+<p><strong>When NOT to implement:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement if behavior isn't guaranteed
+struct MaybeFused {
+    inner: SomeIter,
+}
+
+impl Iterator for MaybeFused {
+    fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        // If inner isn't fused, neither are we
+        self.inner.next()
+    }
+}
+// Don't mark as FusedIterator without checking inner
+</code></pre>
+<p><strong>Standard library:</strong>
+Most standard iterators are fused:</p>
+<pre><code class="language-rust">vec.iter()      // Fused
+range           // Fused
+map/filter      // Fused if input is fused
+</code></pre>
+<p><strong>Testing fusion:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_fused() {
+    let mut iter = Counter::new(3);
+
+    assert_eq!(iter.next(), Some(1));
+    assert_eq!(iter.next(), Some(2));
+    assert_eq!(iter.next(), Some(3));
+    assert_eq!(iter.next(), None);
+
+    // Test it stays None
+    for _ in 0..100 {
+        assert_eq!(iter.next(), None);
+    }
+}
+</code></pre>
+<p>FusedIterator is a promise about behavior - implement only if you guarantee it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Testing Strategy</h2>
+<p>What are the essential tests for a custom iterator implementation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Comprehensive iterator testing covers basic behavior, edge cases, and integration.</p>
+<p><strong>Essential test categories:</strong></p>
+<p><strong>1. Basic iteration:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_basic_iteration() {
+    let mut iter = Counter::new(3);
+
+    assert_eq!(iter.next(), Some(1));
+    assert_eq!(iter.next(), Some(2));
+    assert_eq!(iter.next(), Some(3));
+    assert_eq!(iter.next(), None);
+}
+</code></pre>
+<p><strong>2. Exhaustion behavior:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_stays_none() {
+    let mut iter = Counter::new(2);
+
+    iter.next();
+    iter.next();
+    assert_eq!(iter.next(), None);
+
+    // Verify stays None
+    assert_eq!(iter.next(), None);
+    assert_eq!(iter.next(), None);
+}
+</code></pre>
+<p><strong>3. Empty iterator:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_empty() {
+    let mut iter = Counter::new(0);
+    assert_eq!(iter.next(), None);
+}
+</code></pre>
+<p><strong>4. Collect integration:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_collect() {
+    let result: Vec&lt;_&gt; = Counter::new(5).collect();
+    assert_eq!(result, vec![1, 2, 3, 4, 5]);
+}
+</code></pre>
+<p><strong>5. Chaining with adaptors:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_chaining() {
+    let result: Vec&lt;_&gt; = Counter::new(10)
+        .filter(|x| x % 2 == 0)
+        .map(|x| x * x)
+        .take(3)
+        .collect();
+    assert_eq!(result, vec![4, 16, 36]);
+}
+</code></pre>
+<p><strong>6. Consumer methods:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_consumers() {
+    // sum
+    let sum: u32 = Counter::new(5).sum();
+    assert_eq!(sum, 15);
+
+    // count
+    let count = Counter::new(10).count();
+    assert_eq!(count, 10);
+
+    // find
+    let found = Counter::new(20).find(|&amp;x| x &gt; 15);
+    assert_eq!(found, Some(16));
+
+    // any
+    assert!(Counter::new(10).any(|x| x == 5));
+    assert!(!Counter::new(10).any(|x| x &gt; 10));
+}
+</code></pre>
+<p><strong>7. size_hint accuracy:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_size_hint() {
+    let iter = Counter::new(10);
+    assert_eq!(iter.size_hint(), (10, Some(10)));
+
+    let iter = Counter { current: 7, max: 10 };
+    assert_eq!(iter.size_hint(), (3, Some(3)));
+
+    let mut iter = Counter::new(5);
+    iter.next();
+    iter.next();
+    assert_eq!(iter.size_hint(), (3, Some(3)));
+}
+</code></pre>
+<p><strong>8. For loop compatibility:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_for_loop() {
+    let mut sum = 0;
+    for num in Counter::new(5) {
+        sum += num;
+    }
+    assert_eq!(sum, 15);
+}
+</code></pre>
+<p><strong>9. DoubleEndedIterator (if implemented):</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_bidirectional() {
+    let mut iter = BiDirRange { start: 0, end: 5 };
+
+    assert_eq!(iter.next(), Some(0));
+    assert_eq!(iter.next_back(), Some(4));
+    assert_eq!(iter.next(), Some(1));
+    assert_eq!(iter.next_back(), Some(3));
+    assert_eq!(iter.next(), Some(2));
+    assert_eq!(iter.next(), None);
+    assert_eq!(iter.next_back(), None);
+}
+</code></pre>
+<p><strong>10. Clone behavior (if clonable):</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_clone() {
+    let iter1 = Counter::new(5);
+    let iter2 = iter1.clone();
+
+    assert_eq!(iter1.collect::&lt;Vec&lt;_&gt;&gt;(), iter2.collect::&lt;Vec&lt;_&gt;&gt;());
+}
+</code></pre>
+<p><strong>11. Large iterations:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_large_count() {
+    let count = Counter::new(10_000).count();
+    assert_eq!(count, 10_000);
+}
+</code></pre>
+<p><strong>12. State mutation:</strong></p>
+<pre><code class="language-rust">#[test]
+fn test_state_advances() {
+    let mut iter = Counter::new(3);
+
+    assert_eq!(iter.current, 0);
+    iter.next();
+    assert_eq!(iter.current, 1);
+    iter.next();
+    assert_eq!(iter.current, 2);
+}
+</code></pre>
+<p><strong>Test organization:</strong></p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod basic_behavior {
+        // Basic tests
+    }
+
+    mod edge_cases {
+        // Empty, exhaustion, etc.
+    }
+
+    mod integration {
+        // Chaining, consumers, etc.
+    }
+}
+</code></pre>
+<p>Thorough testing ensures your iterator works correctly with the entire ecosystem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Common Pitfalls</h2>
+<p>What are the most common mistakes when implementing custom iterators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Common pitfalls that break iterator behavior or cause bugs.</p>
+<p><strong>Pitfall 1: Not mutating state</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - infinite loop!
+fn next(&amp;self) -&gt; Option&lt;u32&gt; {  // Should be &amp;mut self
+    if self.count &lt; self.max {
+        Some(self.count)  // Never advances!
+    } else {
+        None
+    }
+}
+
+// ✅ Correct
+fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+    if self.count &lt; self.max {
+        self.count += 1;  // Advance state
+        Some(self.count)
+    } else {
+        None
+    }
+}
+</code></pre>
+<p><strong>Pitfall 2: Not handling exhaustion</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - panics after exhausted
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    self.index += 1;
+    Some(self.data[self.index])  // Panic when out of bounds!
+}
+
+// ✅ Correct
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    if self.index &lt; self.data.len() {
+        let item = self.data[self.index];
+        self.index += 1;
+        Some(item)
+    } else {
+        None
+    }
+}
+</code></pre>
+<p><strong>Pitfall 3: Incorrect size_hint</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - hardcoded size
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    (10, Some(10))  // Doesn't reflect current state!
+}
+
+// ✅ Correct
+fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+    let remaining = self.max - self.current;
+    (remaining, Some(remaining))
+}
+</code></pre>
+<p><strong>Pitfall 4: Returning Some after None</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - violates contract
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    self.toggle = !self.toggle;
+    if self.toggle {
+        Some(42)  // Returns Some after None!
+    } else {
+        None
+    }
+}
+
+// ✅ Correct - use finished flag
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    if self.finished {
+        return None;  // Once done, always None
+    }
+    // ... normal logic
+    if exhausted {
+        self.finished = true;
+        None
+    } else {
+        Some(value)
+    }
+}
+</code></pre>
+<p><strong>Pitfall 5: Consuming owned collection</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - collection unusable after
+impl Iterator for MyCollection {
+    fn next(&amp;mut self) -&gt; Option&lt;Item&gt; {
+        self.items.pop()  // Destroys collection!
+    }
+}
+
+// ✅ Correct - separate iterator type
+struct MyIter&lt;'a&gt; {
+    items: &amp;'a [Item],
+    index: usize,
+}
+
+impl&lt;'a&gt; Iterator for MyIter&lt;'a&gt; {
+    fn next(&amp;mut self) -&gt; Option&lt;&amp;'a Item&gt; {
+        // Doesn't consume collection
+    }
+}
+</code></pre>
+<p><strong>Pitfall 6: Incorrect DoubleEndedIterator</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - front and back don't coordinate
+impl DoubleEndedIterator for MyIter {
+    fn next_back(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        // Doesn't check if overlaps with front!
+        self.back -= 1;
+        Some(self.data[self.back])
+    }
+}
+
+// ✅ Correct - check boundaries
+fn next_back(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    if self.front &lt; self.back {  // Ensure no overlap
+        self.back -= 1;
+        Some(self.data[self.back])
+    } else {
+        None
+    }
+}
+</code></pre>
+<p><strong>Pitfall 7: Off-by-one errors</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - skips first element
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    self.index += 1;  // Increments before use!
+    if self.index &lt; self.len {
+        Some(self.data[self.index])
+    } else {
+        None
+    }
+}
+
+// ✅ Correct - use then increment
+fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    if self.index &lt; self.len {
+        let item = self.data[self.index];
+        self.index += 1;  // Increment after
+        Some(item)
+    } else {
+        None
+    }
+}
+</code></pre>
+<p><strong>Pitfall 8: Forgetting IntoIterator</strong></p>
+<pre><code class="language-rust">// ❌ Can't use in for loop
+struct MyCollection { /* ... */ }
+
+impl Iterator for MyCollection { /* ... */ }
+
+// for item in collection { }  // Doesn't work!
+
+// ✅ Implement IntoIterator
+impl IntoIterator for MyCollection {
+    type Item = /* ... */;
+    type IntoIter = /* ... */;
+    fn into_iter(self) -&gt; Self::IntoIter { /* ... */ }
+}
+</code></pre>
+<p><strong>Pitfall 9: Claiming ExactSizeIterator without guarantee</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - filtered size not exact
+impl ExactSizeIterator for Filtered&lt;I&gt; {
+    // Can't know filtered count ahead of time!
+}
+
+// ✅ Only for genuinely exact sizes
+impl ExactSizeIterator for Range&lt;i32&gt; {
+    fn len(&amp;self) -&gt; usize {
+        (self.end - self.start) as usize  // Always exact
+    }
+}
+</code></pre>
+<p><strong>Pitfall 10: Complex state causing bugs</strong></p>
+<pre><code class="language-rust">// ❌ Wrong - too much state, error-prone
+struct Complex {
+    index: usize,
+    sub_index: usize,
+    phase: Phase,
+    temp: Option&lt;Item&gt;,
+    // ...
+}
+
+// ✅ Better - simplify or use wrapper
+// Keep state minimal and clear
+</code></pre>
+<p><strong>Best practices to avoid pitfalls:</strong>
+1. Always test exhaustion behavior
+2. Verify size_hint matches actual count
+3. Check state advances correctly
+4. Test with empty inputs
+5. Use separate iterator types for collections
+6. Keep state minimal and obvious
+7. Test integration with adaptors</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Implement Custom Iterator</h2>
+<p>When should you implement a custom iterator vs using standard library methods?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Decision framework for custom iterators vs built-in functionality.</p>
+<p><strong>Implement custom iterator when:</strong></p>
+<p><strong>1. Complex iteration logic:</strong></p>
+<pre><code class="language-rust">// Custom: Generate Fibonacci sequence
+struct Fibonacci { current: u64, next: u64 }
+
+// Built-in approach would be convoluted
+</code></pre>
+<p><strong>2. Need custom state tracking:</strong></p>
+<pre><code class="language-rust">// Custom: Track position and running statistics
+struct StatsIterator {
+    data: Vec&lt;i32&gt;,
+    index: usize,
+    running_sum: i32,
+    running_avg: f64,
+}
+</code></pre>
+<p><strong>3. Infinite or lazy generation:</strong></p>
+<pre><code class="language-rust">// Custom: Generate values on demand
+struct RandomNumbers { seed: u64 }
+
+// Can't create infinite Vec
+</code></pre>
+<p><strong>4. Performance-critical iteration:</strong></p>
+<pre><code class="language-rust">// Custom: Specialized algorithm
+struct OptimizedBitIterator {
+    bits: u64,
+    position: u8,
+}
+
+// More efficient than generic approach
+</code></pre>
+<p><strong>5. Wrapping external types:</strong></p>
+<pre><code class="language-rust">// Custom: Iterate over tree structure
+struct TreeIterator&lt;'a, T&gt; {
+    stack: Vec&lt;&amp;'a Node&lt;T&gt;&gt;,
+}
+</code></pre>
+<p><strong>Don't implement when:</strong></p>
+<p><strong>1. Simple collection iteration:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement - use built-in
+// struct MyVecIter { ... }
+
+// ✅ Use built-in
+vec.iter()
+vec.iter_mut()
+vec.into_iter()
+</code></pre>
+<p><strong>2. Can achieve with adaptors:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement custom EvensOnly
+// struct EvensOnly { ... }
+
+// ✅ Use filter
+iter.filter(|x| x % 2 == 0)
+</code></pre>
+<p><strong>3. One-time use:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement iterator
+// struct OneTimeProcess { ... }
+
+// ✅ Use for loop or iterator methods directly
+for item in data {
+    process(item);
+}
+</code></pre>
+<p><strong>4. Simple transformations:</strong></p>
+<pre><code class="language-rust">// ❌ Don't implement custom Doubler
+// struct Doubler { ... }
+
+// ✅ Use map
+iter.map(|x| x * 2)
+</code></pre>
+<p><strong>Decision tree:</strong></p>
+<pre><code>Need to iterate?
+├─ Over standard collection?
+│  └─ Use .iter()/.iter_mut()/.into_iter()
+├─ Simple transformation?
+│  └─ Use .map()/.filter()/.flat_map()
+├─ Combining iterators?
+│  └─ Use .zip()/.chain()/.flatten()
+├─ Complex logic or state?
+│  └─ Implement custom Iterator ✓
+├─ Infinite sequence?
+│  └─ Implement custom Iterator ✓
+└─ Unique iteration pattern?
+   └─ Implement custom Iterator ✓
+</code></pre>
+<p><strong>Examples of good use cases:</strong></p>
+<pre><code class="language-rust">// ✅ Good: Fibonacci (infinite, stateful)
+struct Fibonacci { /* ... */ }
+
+// ✅ Good: Tree traversal (complex structure)
+struct TreeIter&lt;T&gt; { /* ... */ }
+
+// ✅ Good: Batching (custom grouping)
+struct Batcher&lt;I&gt; { /* ... */ }
+
+// ✅ Good: Running statistics (stateful)
+struct RunningStats&lt;I&gt; { /* ... */ }
+
+// ❌ Bad: Doubling values
+// struct Doubler { /* ... */ }
+// Use: iter.map(|x| x * 2)
+
+// ❌ Bad: Filtering evens
+// struct Evens { /* ... */ }
+// Use: iter.filter(|x| x % 2 == 0)
+</code></pre>
+<p><strong>Guidelines:</strong>
+1. Try standard library first
+2. Combine adaptors before custom implementation
+3. Custom iterators for domain-specific logic
+4. Consider maintenance cost
+5. Document why custom iterator is needed</p>
+<p><strong>Rule of thumb:</strong>
+If you can express it clearly with 1-3 adaptor chains, don't implement custom iterator. If logic is complex, stateful, or performance-critical, custom iterator makes sense.</p>
+<p>Custom iterators are powerful but add complexity - use when the benefits outweigh the cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Iterator Performance Optimization</h2>
+<p>What are the key performance optimizations for custom iterators?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Optimization strategies for efficient custom iterators.</p>
+<p><strong>1. Implement size_hint():</strong></p>
+<pre><code class="language-rust">impl Iterator for Counter {
+    // ...
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        let remaining = (self.max - self.current) as usize;
+        (remaining, Some(remaining))
+        // Enables pre-allocation in collect()
+    }
+}
+
+// Performance impact:
+let vec: Vec&lt;_&gt; = Counter::new(10000).collect();
+// Without size_hint: ~10 allocations
+// With size_hint: 1 allocation
+</code></pre>
+<p><strong>2. Mark as FusedIterator:</strong></p>
+<pre><code class="language-rust">impl FusedIterator for Counter {}
+
+// Enables optimization in chaining:
+iter.fuse().flatten()  // .fuse() is no-op
+</code></pre>
+<p><strong>3. Implement ExactSizeIterator:</strong></p>
+<pre><code class="language-rust">impl ExactSizeIterator for Counter {
+    fn len(&amp;self) -&gt; usize {
+        (self.max - self.current) as usize
+    }
+}
+
+// O(1) count instead of O(n):
+let count = counter.count();  // Instant!
+</code></pre>
+<p><strong>4. Use #[inline]:</strong></p>
+<pre><code class="language-rust">impl Iterator for Counter {
+    type Item = u32;
+
+    #[inline]  // Hot path - inline for performance
+    fn next(&amp;mut self) -&gt; Option&lt;u32&gt; {
+        if self.count &lt; self.max {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+</code></pre>
+<p><strong>5. Minimize state size:</strong></p>
+<pre><code class="language-rust">// ❌ Wasteful
+struct Wasteful {
+    index: usize,      // 8 bytes
+    max: usize,        // 8 bytes
+    data: Vec&lt;u64&gt;,    // 24 bytes
+    temp: Option&lt;u64&gt;, // 16 bytes
+}  // Total: 56 bytes
+
+// ✅ Compact
+struct Compact {
+    index: u32,     // 4 bytes
+    max: u32,       // 4 bytes  
+    data: &amp;[u64],   // 16 bytes (slice)
+}  // Total: 24 bytes - much better cache usage
+</code></pre>
+<p><strong>6. Avoid allocations in next():</strong></p>
+<pre><code class="language-rust">// ❌ Slow - allocates each iteration
+fn next(&amp;mut self) -&gt; Option&lt;String&gt; {
+    Some(format!(&quot;Item {}&quot;, self.index))  // Allocation!
+}
+
+// ✅ Fast - return reference or Copy type
+fn next(&amp;mut self) -&gt; Option&lt;&amp;str&gt; {
+    Some(&amp;self.data[self.index])  // No allocation
+}
+</code></pre>
+<p><strong>7. Implement DoubleEndedIterator when possible:</strong></p>
+<pre><code class="language-rust">impl DoubleEndedIterator for BiDir {
+    fn next_back(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        // Enables .rev() and reverse iteration
+    }
+}
+
+// Enables optimizations:
+iter.rev().find(predicate)  // Search from end
+</code></pre>
+<p><strong>8. Specialize hot methods:</strong></p>
+<pre><code class="language-rust">impl Iterator for MyIter {
+    // ...
+
+    // Override default implementation for performance
+    fn count(self) -&gt; usize {
+        // Specialized O(1) version
+        self.remaining_count()
+    }
+
+    fn nth(&amp;mut self, n: usize) -&gt; Option&lt;Self::Item&gt; {
+        // Specialized version that skips efficiently
+        self.index += n;
+        self.next()
+    }
+}
+</code></pre>
+<p><strong>9. Use unchecked operations (carefully):</strong></p>
+<pre><code class="language-rust">fn next(&amp;mut self) -&gt; Option&lt;i32&gt; {
+    if self.index &lt; self.len {
+        // Safe: we checked bounds
+        let item = unsafe {
+            *self.data.get_unchecked(self.index)
+        };
+        self.index += 1;
+        Some(item)
+    } else {
+        None
+    }
+}
+// Only if profiling shows bounds checks are bottleneck!
+</code></pre>
+<p><strong>10. Batch operations:</strong></p>
+<pre><code class="language-rust">struct BatchIter&lt;I&gt; {
+    inner: I,
+    batch_size: usize,
+}
+
+impl&lt;I&gt; Iterator for BatchIter&lt;I&gt;
+where
+    I: Iterator,
+{
+    type Item = Vec&lt;I::Item&gt;;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Vec&lt;I::Item&gt;&gt; {
+        // Pre-allocate batch
+        let mut batch = Vec::with_capacity(self.batch_size);
+
+        for _ in 0..self.batch_size {
+            match self.inner.next() {
+                Some(item) =&gt; batch.push(item),
+                None =&gt; break,
+            }
+        }
+
+        if batch.is_empty() {
+            None
+        } else {
+            Some(batch)
+        }
+    }
+}
+</code></pre>
+<p><strong>Performance comparison:</strong></p>
+<pre><code class="language-rust">// Unoptimized
+struct Slow {
+    data: Vec&lt;BigStruct&gt;,  // Heap allocation
+    index: usize,
+}
+// No size_hint, no inline, large state
+
+// Optimized  
+struct Fast {
+    data: &amp;'a [SmallStruct],  // Borrowed
+    index: u32,  // Smaller type
+}
+
+impl Fast {
+    #[inline]
+    fn next(&amp;mut self) -&gt; Option&lt;&amp;SmallStruct&gt; {
+        // ...
+    }
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        let remaining = (self.data.len() - self.index as usize);
+        (remaining, Some(remaining))
+    }
+}
+
+impl ExactSizeIterator for Fast {}
+impl FusedIterator for Fast {}
+</code></pre>
+<p><strong>Measurement:</strong></p>
+<pre><code class="language-rust">// Always benchmark!
+#[bench]
+fn bench_iterator(b: &amp;mut Bencher) {
+    b.iter(|| {
+        let sum: i32 = MyIter::new().take(10000).sum();
+        black_box(sum)
+    });
+}
+</code></pre>
+<p><strong>Priority:</strong>
+1. Implement size_hint (biggest win)
+2. Mark traits (FusedIterator, ExactSizeIterator)
+3. Inline hot paths
+4. Minimize state size
+5. Specialize when beneficial
+6. Profile before unsafe</p>
+<p>Most important: measure before and after optimizations!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
