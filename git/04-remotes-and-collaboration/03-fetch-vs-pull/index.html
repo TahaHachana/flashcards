@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 04-Remotes-And-Collaboration - 03-Fetch-Vs-Pull</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is git fetch</h2>
+<p>What does <code>git fetch</code> do and what does it NOT do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git fetch</code> downloads commits, files, and refs from remote into your local repository.</p>
+<p>Does:
+- Downloads new commits and branches
+- Updates remote tracking branches (origin/main)
+- Connects to remote repository</p>
+<p>Does NOT:
+- Merge anything
+- Modify working directory
+- Change current branch</p>
+<p>Think: "Get the latest info from remote, but don't touch my files yet."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is git pull</h2>
+<p>What does <code>git pull</code> do and what is it equivalent to?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>git pull</code> downloads changes from remote AND immediately integrates them into your current branch.</p>
+<p>Equivalent to:</p>
+<pre><code class="language-bash">git pull = git fetch + git merge
+</code></pre>
+<p>Steps:
+1. Runs <code>git fetch</code> (downloads changes)
+2. Automatically merges into current branch
+3. Updates working directory</p>
+<p>Think: "Get the latest changes and merge them into my current work."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fetch vs Pull Key Differences</h2>
+<p>What are the key differences between <code>git fetch</code> and <code>git pull</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Fetch:
+- Downloads only
+- No merge
+- Working directory unchanged
+- Safe (read-only)
+- Use for: Review before merge</p>
+<p>Pull:
+- Downloads + merges
+- Updates working directory
+- Can cause conflicts
+- Convenient
+- Use for: Quick sync</p>
+<p>Pull = fetch + merge (two operations in one)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Visual Fetch vs Pull</h2>
+<p>Visually, what's the difference between fetch and pull when local is behind remote?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Before:</p>
+<pre><code>Remote (origin/main): A---B---C---D---E
+Local (main):         A---B---C
+</code></pre>
+<p>After <code>git fetch</code>:</p>
+<pre><code>origin/main:          A---B---C---D---E
+Local (main):         A---B---C  (still here)
+</code></pre>
+<p>You know about D and E, but they're not merged.</p>
+<p>After <code>git pull</code>:</p>
+<pre><code>Remote:               A---B---C---D---E
+Local:                A---B---C---D---E  (updated)
+</code></pre>
+<p>D and E are merged into your working directory.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Fetch</h2>
+<p>When should you use <code>git fetch</code> instead of <code>git pull</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use fetch when:
+- Want to review changes before merging
+- Working on something and don't want interruptions
+- Checking multiple remotes
+- Want full control over integration</p>
+<p>Workflow:</p>
+<pre><code class="language-bash">git fetch origin
+git log origin/main          # Review
+git diff main origin/main    # Compare
+git merge origin/main        # Merge when ready
+</code></pre>
+<p>Fetch is safer—read-only operation that lets you review first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Pull</h2>
+<p>When should you use <code>git pull</code> instead of <code>git fetch</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use pull when:
+- Starting work on clean branch
+- Quick sync with remote
+- Trust the remote changes
+- Standard daily workflow</p>
+<p>Example:</p>
+<pre><code class="language-bash"># Daily routine
+git switch main
+git pull origin main    # Get latest
+git switch -c feature/new-work
+</code></pre>
+<p>Pull is convenient—one command for download + integrate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fetch-Review-Merge Workflow</h2>
+<p>What's the safe fetch-review-merge workflow?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Fetch updates:
+   <code>bash
+   git fetch origin</code></p>
+</li>
+<li>
+<p>Review what's new:
+   <code>bash
+   git log origin/main
+   git diff main origin/main</code></p>
+</li>
+<li>
+<p>Integrate (choose method):
+   <code>bash
+   git merge origin/main    # Merge
+   # or
+   git rebase origin/main   # Rebase</code></p>
+</li>
+</ol>
+<p>This gives full control and prevents surprises.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pull with Rebase</h2>
+<p>How do you pull with rebase instead of merge, and why would you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pull with rebase:</p>
+<pre><code class="language-bash">git pull --rebase
+</code></pre>
+<p>Equivalent to:</p>
+<pre><code class="language-bash">git fetch
+git rebase origin/main
+</code></pre>
+<p>Configure as default:</p>
+<pre><code class="language-bash">git config --global pull.rebase true
+</code></pre>
+<p>Advantage: Linear history (no merge commits)</p>
+<p>Choose based on team preference for history style.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fetch with Prune</h2>
+<p>What does <code>git fetch --prune</code> do and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash">git fetch --prune
+# or
+git fetch -p
+</code></pre>
+<p>Does:
+- Fetches new data
+- Removes references to deleted remote branches</p>
+<p>Example:</p>
+<pre><code class="language-bash"># Someone deleted origin/old-feature remotely
+git fetch --prune
+# * [pruned] origin/old-feature
+</code></pre>
+<p>Configure automatic pruning:</p>
+<pre><code class="language-bash">git config --global fetch.prune true
+</code></pre>
+<p>Keeps local tracking branches in sync with remote.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fetch All Remotes</h2>
+<p>How do you fetch from all configured remotes at once?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash">git fetch --all
+</code></pre>
+<p>Fetches from all remotes:</p>
+<pre><code class="language-bash">git remote -v
+# origin    https://github.com/user/project.git
+# upstream  https://github.com/original/project.git
+
+git fetch --all
+# Fetches from both origin and upstream
+</code></pre>
+<p>Useful when working with forks or multiple backup locations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pull with Uncommitted Changes</h2>
+<p>What happens if you try to pull with uncommitted changes, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error:</p>
+<pre><code class="language-bash">git pull
+# error: Your local changes would be overwritten by merge.
+# Please commit your changes or stash them.
+</code></pre>
+<p>Solutions:</p>
+<p>Option 1: Commit</p>
+<pre><code class="language-bash">git add .
+git commit -m &quot;WIP&quot;
+git pull
+</code></pre>
+<p>Option 2: Stash</p>
+<pre><code class="language-bash">git stash
+git pull
+git stash pop
+</code></pre>
+<p>Always have clean working directory before pull.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What are Tracking Branches</h2>
+<p>What is a tracking branch and how do you view them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A tracking branch is a local branch with a direct relationship to a remote branch.</p>
+<p>View tracking:</p>
+<pre><code class="language-bash">git branch -vv
+# * main    a1b2c3d [origin/main] Latest commit
+#   feature b2c3d4e [origin/feature: ahead 2]
+</code></pre>
+<p>Set tracking:</p>
+<pre><code class="language-bash">git push -u origin main        # During push
+# or
+git branch -u origin/main      # For existing branch
+</code></pre>
+<p>Tracking enables simple <code>git pull</code> and <code>git push</code> without specifying remote.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pull Fast-Forward Only</h2>
+<p>What does <code>git pull --ff-only</code> do and when would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash">git pull --ff-only
+</code></pre>
+<p>Only pulls if fast-forward is possible. Fails if branches diverged (prevents automatic merge commits).</p>
+<p>Configure as default:</p>
+<pre><code class="language-bash">git config --global pull.ff only
+</code></pre>
+<p>Use when:
+- Want to maintain linear history
+- Want to be notified if branches diverged
+- Prefer explicit merge/rebase decisions</p>
+<p>Forces you to handle divergence manually.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Configure Pull Behavior</h2>
+<p>What are the three ways to configure default pull behavior?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>
+<p>Merge (default):
+   <code>bash
+   git config pull.rebase false</code></p>
+</li>
+<li>
+<p>Rebase:
+   <code>bash
+   git config pull.rebase true</code></p>
+</li>
+<li>
+<p>Fast-forward only:
+   <code>bash
+   git config pull.ff only</code></p>
+</li>
+</ol>
+<p>Choose based on team workflow:
+- Merge: Preserves history (default)
+- Rebase: Linear history
+- FF-only: Strict linear, manual handling</p>
+<p>Can also use flags per-pull: <code>--rebase</code>, <code>--ff-only</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Fetch vs Pull Principles</h2>
+<p>What are the essential principles about fetch vs pull?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><code>fetch</code> downloads, doesn't merge (safe, read-only)</li>
+<li><code>pull</code> = fetch + merge (convenient, automatic)</li>
+<li>Fetch updates remote tracking branches only</li>
+<li>Pull updates working directory and current branch</li>
+<li>Fetch is safer for reviewing before integrating</li>
+<li>Pull is faster for quick synchronization</li>
+<li>Both require internet connection</li>
+<li>Configure pull behavior (merge, rebase, ff-only)</li>
+<li><code>fetch --prune</code> removes stale references</li>
+<li>Use fetch for control, pull for convenience</li>
+</ol>
+<p>Understanding the difference prevents surprises!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
