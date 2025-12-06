@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - SQL - 05-Advanced-Selection - 03-Set-Operations</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Are Set Operations</h2>
+<p>What are set operations in SQL, and how do they fundamentally differ from JOINs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Set operations combine rows from two or more result sets, stacking them vertically.</p>
+<p>Key distinction:
+- JOINs: Add columns from one table to another (horizontal combination)
+- Set operations: Add rows from one result set to another (vertical combination/stacking)</p>
+<p>Mental model:
+- Set operations: Stacking tables on top of each other (like stacking boxes)
+- JOINs: Placing tables side by side (like placing boxes next to each other)</p>
+<p>Example:
+SELECT first_name, last_name FROM customers;  -- 599 rows
+UNION
+SELECT first_name, last_name FROM employees;  -- 34 rows stacked below</p>
+<p>Result: Combined rows (vertical stacking), not combined columns (horizontal merging).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>UNION Operator Purpose</h2>
+<p>What does the UNION operator do, and how does it handle duplicate rows?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>UNION combines two result sets and removes duplicate rows.</p>
+<p>Set theory representation:
+Set A: {1, 2, 3, 4}
+Set B: {3, 4, 5, 6}
+A UNION B: {1, 2, 3, 4, 5, 6}  -- All unique rows</p>
+<p>Key characteristics:
+- Removes duplicate rows (rows identical across all columns)
+- May automatically sort results (implementation-dependent)
+- More expensive than UNION ALL (requires duplicate detection and removal)</p>
+<p>Example:
+SELECT first_name, last_name FROM customer WHERE first_name LIKE 'J%'
+UNION
+SELECT first_name, last_name FROM actor WHERE first_name LIKE 'J%';</p>
+<p>If "Jennifer Davis" appears in both tables, it appears once in results.</p>
+<p>Use when: You specifically need duplicates removed from combined results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>UNION ALL Operator Purpose</h2>
+<p>What does the UNION ALL operator do, and why is it generally preferred over UNION?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>UNION ALL combines two result sets and keeps all rows, including duplicates.</p>
+<p>Set theory representation:
+Set A: {1, 2, 3, 4}
+Set B: {3, 4, 5, 6}
+A UNION ALL B: {1, 2, 3, 4, 3, 4, 5, 6}  -- All rows, duplicates included</p>
+<p>Key characteristics:
+- Keeps all rows, including duplicates
+- No sorting or duplicate checking
+- MUCH faster and more efficient than UNION
+- Row count = sum of all input result sets</p>
+<p>Performance advantage: Doesn't need to check for duplicates or sort, making it significantly faster for large result sets.</p>
+<p>Why generally preferred:
+- Default choice unless you specifically need deduplication
+- More explicit about intent
+- Better performance</p>
+<p>Example:
+SELECT first_name, last_name FROM customer  -- 599 rows
+UNION ALL
+SELECT first_name, last_name FROM actor;    -- 200 rows
+-- Result: All 799 rows (599 + 200)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>INTERSECT Operator Purpose</h2>
+<p>What does the INTERSECT operator do, and what are common use cases?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>INTERSECT returns only rows that appear in ALL result sets (the overlap).</p>
+<p>Set theory representation:
+Set A: {1, 2, 3, 4}
+Set B: {3, 4, 5, 6}
+A INTERSECT B: {3, 4}  -- Only rows in both</p>
+<p>Key characteristics:
+- Returns only rows that exist in all input sets
+- If sets don't overlap, returns empty set
+- Automatically removes duplicates (like UNION)</p>
+<p>Example - Find people who are both customers AND actors:
+SELECT first_name, last_name FROM customer
+INTERSECT
+SELECT first_name, last_name FROM actor;
+-- Result: Only names appearing in both tables</p>
+<p>Common use cases:
+- Finding commonality between datasets
+- Answering "which items appear in both A and B?"
+- Verification queries ("do these queries return the same data?")</p>
+<p>Note: MySQL 8.0+ supports INTERSECT. Earlier versions require workarounds using JOINs or EXISTS.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>EXCEPT Operator Purpose</h2>
+<p>What does the EXCEPT operator do, and why does order matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>EXCEPT returns rows from the first result set that are NOT in the second result set (set difference).</p>
+<p>Set theory representation:
+Set A: {1, 2, 3, 4}
+Set B: {3, 4, 5, 6}
+A EXCEPT B: {1, 2}  -- Rows in A but not in B</p>
+<p>Key characteristics:
+- ORDER MATTERS: A EXCEPT B ≠ B EXCEPT A
+- Returns rows unique to the first set
+- Automatically removes duplicates</p>
+<p>Example:
+SELECT first_name, last_name FROM customer
+EXCEPT
+SELECT first_name, last_name FROM actor;
+-- Result: Customers who are NOT also actors (by name)</p>
+<p>Oracle difference: Uses MINUS instead of EXCEPT (non-standard but same functionality).</p>
+<p>Common use cases:
+- Finding differences between datasets
+- "Which customers haven't made purchases?"
+- Data validation and quality checks</p>
+<p>Mental model: "Subtraction" - first set minus the second set.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Same Number Columns Requirement</h2>
+<p>Why must result sets in set operations have the same number of columns, and what happens if they don't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rule: Both result sets must have the same number of columns.</p>
+<p>Example error:
+SELECT first_name, last_name, email FROM customer  -- 3 columns
+UNION
+SELECT first_name, last_name FROM actor;  -- 2 columns
+-- ERROR: Different column counts</p>
+<p>Why this requirement exists:
+SQL needs to know which column from the first set corresponds to which column in the second set. With different counts, alignment is impossible.</p>
+<p>Think of it like stacking boxes:
+- You can stack boxes that are the same width
+- You can't stack a wide box on a narrow box (unstable/undefined)</p>
+<p>Solution: Ensure all queries return the same number of columns:
+SELECT first_name, last_name, email FROM customer
+UNION
+SELECT first_name, last_name, email FROM actor;  -- Now matches</p>
+<p>Or add NULL placeholders:
+SELECT first_name, last_name, email FROM customer
+UNION
+SELECT first_name, last_name, NULL AS email FROM actor;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Compatible Data Types Requirement</h2>
+<p>What are the data type requirements for set operations, and how do different databases handle type mismatches?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rule: Corresponding columns must have compatible data types (or database must be able to convert one to the other).</p>
+<p>Example error:
+SELECT email, first_name, last_name FROM customer  -- email is VARCHAR
+UNION
+SELECT customer_id, first_name, last_name FROM actor;  -- customer_id is INT
+-- ERROR in most databases: Can't stack text on number</p>
+<p>Database-specific behavior:
+- Strict (PostgreSQL, Oracle, SQL Server): Reject type mismatches
+- Permissive (MySQL/MariaDB): May auto-convert types
+- SQLite: Doesn't enforce types strictly</p>
+<p>Best practice - Explicit casting:
+SELECT email, first_name, last_name FROM customer
+UNION
+SELECT CAST(customer_id AS VARCHAR(50)), first_name, last_name FROM actor;</p>
+<p>Why: Ensures predictable behavior across databases and makes intent clear.</p>
+<p>Mental model: All items in a column must be the same "kind of thing" - you can't mix apples and numbers in the same column.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Column Order Position Matching</h2>
+<p>How does SQL match columns in set operations, and why is this dangerous?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rule: SQL matches columns by POSITION, not by NAME.</p>
+<p>Dangerous example - Columns reversed:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT last_name, first_name FROM employee;  -- REVERSED!</p>
+<p>Result: first_name column contains last names from employees
+        last_name column contains first names from employees</p>
+<p>Why dangerous: Query runs without error, but data is nonsensical because columns are misaligned.</p>
+<p>Correct approach:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT first_name, last_name FROM employee;  -- Consistent order</p>
+<p>When different column names is useful:
+SELECT givenname, familyname FROM customers
+UNION ALL
+SELECT firstname, lastname FROM sorting;
+-- Works because they're in the same logical positions (1st position = first name, 2nd position = last name)</p>
+<p>Best practice: Visually align queries to ensure column order consistency.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Column Names From First Query</h2>
+<p>Which query's column names and aliases appear in the final result of a set operation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rule: Only the FIRST query's column names and aliases are used in the final result.</p>
+<p>Example:
+SELECT first_name AS fname, last_name FROM customer
+UNION
+SELECT first_name, last_name AS lname FROM employee;</p>
+<p>Result columns: fname, last_name
+(The 'lname' alias from the second query is ignored)</p>
+<p>Implication: Only bother with column aliases in the first SELECT statement.</p>
+<p>Best practice:
+SELECT first_name AS fname, last_name AS lname FROM customer
+UNION
+SELECT first_name, last_name FROM employee;
+-- Result columns: fname, lname</p>
+<p>Why this matters:
+- Saves typing (don't alias in subsequent queries)
+- Makes intent clear (aliases show what final result will look like)
+- Subsequent queries can still use aliases for readability, but they won't affect the result</p>
+<p>Mental model: The first query "defines the schema" for the combined result set.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Cannot Sort Individual Queries</h2>
+<p>Why can't individual queries in a set operation have ORDER BY clauses, and where does ORDER BY go instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rule: Individual queries cannot have ORDER BY clauses. Only the final combined result can be sorted.</p>
+<p>Error example:
+SELECT first_name, last_name FROM customer
+ORDER BY last_name  -- WRONG
+UNION
+SELECT first_name, last_name FROM employee
+ORDER BY last_name;  -- ALSO WRONG</p>
+<p>Why: A set operation combines result sets, which are mathematically unordered sets. Sorting part of the result before combination makes no logical sense - like sorting half a deck before shuffling it together.</p>
+<p>Correct approach:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT first_name, last_name FROM employee
+ORDER BY last_name, first_name;  -- Sorts the entire combined result</p>
+<p>What's being sorted: The entire combined result set, not individual components.</p>
+<p>Formatting for clarity:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT first_name, last_name FROM employee
+-- Sort the combined results:
+ORDER BY last_name, first_name;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Use Case Combining Similar Data</h2>
+<p>How are set operations used to combine data from similar tables, and when should you add identifying columns?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use case: Combine similar data from multiple sources into one list.</p>
+<p>Example - Invite customers and employees to event:
+SELECT first_name, last_name, email, 'Customer' AS type
+FROM customer
+UNION ALL
+SELECT first_name, last_name, email, 'Employee' AS type
+FROM employee
+ORDER BY last_name, first_name;</p>
+<p>Why UNION ALL: We want all people, even if some names appear in both tables (they're different people who happen to share names).</p>
+<p>Adding type column: The literal 'Customer' and 'Employee' help track the source of each row.</p>
+<p>Pattern - Adding identifying columns:
+SELECT columns, 'SOURCE_A' AS source FROM table_a
+UNION ALL
+SELECT columns, 'SOURCE_B' AS source FROM table_b;</p>
+<p>Benefit: Helps interpret results, especially when combining similar data from different sources. You can filter, group by, or report on the source.</p>
+<p>When to use: Combining contact lists, transaction logs, event data, or any similar structures from multiple tables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Use Case Finding Overlaps</h2>
+<p>How do you use INTERSECT to find overlapping data between tables for validation purposes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use case: Find records that appear in multiple places (data validation, finding dual roles).</p>
+<p>Example - Find names in both customers and employees:
+SELECT first_name, last_name FROM customer
+INTERSECT
+SELECT first_name, last_name FROM employee;</p>
+<p>Result: Names that exist in both tables (potential dual-role people).</p>
+<p>Important limitation: Matching by name alone isn't definitive - they could be different people with the same name. Better to match on unique identifiers (IDs, email) if available.</p>
+<p>Improved version with IDs:
+SELECT customer_id FROM customer
+INTERSECT
+SELECT employee_id FROM employee_customer_map;</p>
+<p>Use cases:
+- Finding people with multiple roles
+- Verifying data synchronization between systems
+- Identifying duplicate records across tables
+- Quality checks ("these should/shouldn't overlap")</p>
+<p>Key insight: INTERSECT answers "what's in both?" - useful for validation and finding relationships between datasets.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Use Case Finding Missing Data</h2>
+<p>How do you use EXCEPT to find missing data, and when is it better than a LEFT JOIN?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use case: Find records in one table that don't exist in another (missing data, gaps).</p>
+<p>Example - Customers with no purchases:
+SELECT customer_id FROM customer
+EXCEPT
+SELECT customer_id FROM sales;</p>
+<p>Result: Customer IDs with no sales records.</p>
+<p>Alternative with OUTER JOIN:
+SELECT c.customer_id
+FROM customer c
+LEFT JOIN sales s ON c.customer_id = s.customer_id
+WHERE s.customer_id IS NULL;</p>
+<p>When to use EXCEPT:
+- Only need the IDs (simpler, clearer intent)
+- Want to emphasize "set difference" logic
+- Result is just a list of missing items</p>
+<p>When to use LEFT JOIN:
+- Need additional details from the customer table
+- Building a more complex query with multiple joins
+- Need to count or aggregate the missing items</p>
+<p>Key difference: EXCEPT focuses on the difference itself; LEFT JOIN gives you access to full rows for further processing.</p>
+<p>Other use cases: Orphaned records, incomplete processes, data quality checks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Use Case Combining Aggregates</h2>
+<p>How can set operations be used to combine detail rows with summary rows in a single result set?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use case: Combine detail aggregates with grand totals in one result set.</p>
+<p>Example - Monthly sales plus grand total:
+SELECT DATE_TRUNC('month', order_date) AS month,
+       SUM(amount) AS total
+FROM orders
+GROUP BY DATE_TRUNC('month', order_date)</p>
+<p>UNION ALL</p>
+<p>SELECT NULL AS month,  -- NULL represents "all months"
+       SUM(amount) AS total
+FROM orders;</p>
+<p>Result:
+ month    | total
+----------+--------
+2024-01   | 15000
+2024-02   | 17500
+2024-03   | 16200
+NULL      | 48700  ← Grand total</p>
+<p>Pattern: Detail rows UNION ALL summary row(s)</p>
+<p>Why this works:
+- Detail query groups by time period
+- Summary query doesn't group (gives grand total)
+- NULL in month column indicates "all periods"
+- UNION ALL combines them</p>
+<p>Use cases:
+- Reports with subtotals and grand totals
+- Combining different aggregation levels
+- Dashboard summaries with detail breakdowns</p>
+<p>Alternative: Window functions with ROLLUP (database-dependent).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Use Case Comparing Query Results</h2>
+<p>How can set operations be used to verify that two different queries produce identical results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use case: Verify that two different queries (e.g., optimized version vs original) produce the same results.</p>
+<p>Using UNION (removes duplicates):
+SELECT customer_id, total FROM query_version_1
+UNION
+SELECT customer_id, total FROM query_version_2;</p>
+<p>Verification logic:
+- If queries return identical data, UNION removes "duplicates" (second query's rows)
+- Result row count = row count of first query
+- If row counts differ, queries don't produce identical results</p>
+<p>Using EXCEPT (shows differences):
+-- Rows in query 1 but not in query 2
+SELECT customer_id, total FROM query_version_1
+EXCEPT
+SELECT customer_id, total FROM query_version_2;
+-- Should be empty if identical</p>
+<p>-- Rows in query 2 but not in query 1
+SELECT customer_id, total FROM query_version_2
+EXCEPT
+SELECT customer_id, total FROM query_version_1;
+-- Should also be empty if identical</p>
+<p>Using INTERSECT (shows overlap):
+SELECT customer_id, total FROM query_version_1
+INTERSECT
+SELECT customer_id, total FROM query_version_2;
+-- Row count should equal both individual queries if identical</p>
+<p>Best practice: Use both directions of EXCEPT to catch all differences.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Versus JOINs Conceptual Difference</h2>
+<p>What is the fundamental conceptual difference between set operations and JOINs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>JOINs:
+- Combine tables HORIZONTALLY (adding columns)
+- Match rows based on relationships (foreign keys)
+- Result: Wider table (more columns)
+- Use case: "I need data from multiple related tables in the same row"</p>
+<p>Set Operations:
+- Combine result sets VERTICALLY (adding rows)
+- Stack rows from different sources
+- Result: Taller table (more rows, same columns)
+- Use case: "I need rows from multiple similar sources in one list"</p>
+<p>JOIN example - Customer orders with product details:
+SELECT c.first_name, c.last_name, o.order_date, o.total
+FROM customer c
+INNER JOIN orders o ON c.customer_id = o.customer_id;
+-- Each row has customer columns + order columns (wider)</p>
+<p>Set operation example - All people from multiple tables:
+SELECT first_name, last_name, 'Customer' AS type FROM customer
+UNION ALL
+SELECT first_name, last_name, 'Employee' AS type FROM employee;
+-- All rows from both tables stacked together (taller)</p>
+<p>Mental model: JOINs = side by side; Set operations = stacked on top.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When To Use Set Operations Over JOINs</h2>
+<p>When should you use set operations instead of JOINs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use set operations when:</p>
+<ol>
+<li>Combining similar data from multiple sources</li>
+<li>All customers from different regional databases</li>
+<li>Current + archived sales data</li>
+<li>
+<p>Example: SELECT * FROM current_sales UNION ALL SELECT * FROM archived_sales</p>
+</li>
+<li>
+<p>Building union of disparate but structurally similar data</p>
+</li>
+<li>Contact list: customers + suppliers + employees</li>
+<li>
+<p>All transactions: sales + refunds + adjustments</p>
+</li>
+<li>
+<p>Finding differences or overlaps between datasets</p>
+</li>
+<li>INTERSECT: What's in both?</li>
+<li>EXCEPT: What's in A but not B?</li>
+<li>
+<p>Example: SELECT id FROM should_exist EXCEPT SELECT id FROM actually_exists</p>
+</li>
+<li>
+<p>Creating comprehensive views spanning multiple tables</p>
+</li>
+<li>All events: user logins + purchases + support tickets</li>
+<li>Timeline of activities from different sources</li>
+</ol>
+<p>Use JOINs when:</p>
+<ol>
+<li>Need columns from multiple tables in the same row</li>
+<li>
+<p>Customer name + order details + product info</p>
+</li>
+<li>
+<p>Working with relationships between tables</p>
+</li>
+<li>Orders with their line items</li>
+<li>
+<p>Employees with their departments</p>
+</li>
+<li>
+<p>Aggregating across relationships</p>
+</li>
+<li>Total sales per customer (JOIN customer to orders)</li>
+</ol>
+<p>Key distinction: Set operations answer "stack these together"; JOINs answer "merge these side by side."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Anti Pattern Using UNION Instead Of OR</h2>
+<p>Why is using UNION on the same table with different filters an anti-pattern, and what's the better approach?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Anti-pattern - Using UNION for filtering same table:
+SELECT first_name, last_name FROM customer
+WHERE state = 'VIC'
+UNION ALL
+SELECT first_name, last_name FROM customer
+WHERE dob &lt; '1980-01-01';</p>
+<p>Problems:
+- Two separate table scans (inefficient)
+- More complex execution plan
+- Unnecessary duplicate work</p>
+<p>Better approach - Use OR operator:
+SELECT first_name, last_name FROM customer
+WHERE state = 'VIC' OR dob &lt; '1980-01-01';</p>
+<p>Why better:
+- Single table scan instead of two
+- Simpler query execution plan
+- Database can use indexes more effectively
+- Clearer intent</p>
+<p>When UNION is appropriate:
+- Combining fundamentally different tables (not just different filters on the same table)
+- Each query has complex JOINs to different tables
+- Combining data from multiple sources (regional databases, current + archived)</p>
+<p>Rule of thumb: If you're applying set operations to the same table with only filter differences, use OR/IN instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Adding Identifying Columns Pattern</h2>
+<p>What is the pattern for adding identifying columns in set operations, and why is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pattern: Add literal columns to track the source of data.</p>
+<p>Example:
+SELECT first_name, last_name, 'CUST' AS type
+FROM customer
+UNION ALL
+SELECT first_name, last_name, 'ACTR' AS type
+FROM actor;</p>
+<p>The type column identifies where each row came from:
+- 'CUST' = from customer table
+- 'ACTR' = from actor table</p>
+<p>Benefits:</p>
+<ol>
+<li>
+<p>Interpretation: Helps understand the source of each row in results</p>
+</li>
+<li>
+<p>Filtering: Can filter combined results by source
+   WHERE type = 'CUST'</p>
+</li>
+<li>
+<p>Grouping: Can aggregate by source
+   GROUP BY type</p>
+</li>
+<li>
+<p>Reporting: Include source in reports
+   "Show me counts by source type"</p>
+</li>
+<li>
+<p>Debugging: Quickly see data distribution across sources</p>
+</li>
+</ol>
+<p>Common variations:
+- 'Employee', 'Customer', 'Contractor' (descriptive names)
+- 1, 2, 3 (numeric codes)
+- 'US', 'EU', 'APAC' (regions)</p>
+<p>Best practice: Use descriptive strings rather than codes for readability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Chaining Multiple Operations</h2>
+<p>How do you chain multiple set operations, and what are the precedence rules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can chain multiple set operations together:</p>
+<p>Example - Three tables:
+SELECT first_name, last_name FROM customer
+UNION ALL
+SELECT first_name, last_name FROM employee
+UNION ALL
+SELECT first_name, last_name FROM actor
+ORDER BY last_name, first_name;</p>
+<p>Execution: Operations performed left-to-right (or by precedence with mixing).</p>
+<p>Precedence when mixing operators:
+Standard ANSI SQL precedence:
+1. INTERSECT (highest)
+2. UNION and EXCEPT (equal)</p>
+<p>Example without parentheses:
+SELECT ... FROM A
+UNION
+SELECT ... FROM B
+INTERSECT
+SELECT ... FROM C;
+-- Executes as: A UNION (B INTERSECT C)</p>
+<p>Example with parentheses for clarity:
+(SELECT ... FROM A
+ UNION
+ SELECT ... FROM B)
+INTERSECT
+SELECT ... FROM C;
+-- Executes as: (A UNION B) INTERSECT C</p>
+<p>Best practice: Use parentheses for clarity, don't rely on precedence rules. Explicit is better than implicit.</p>
+<p>Note: Most queries use only one type of operator, so precedence rarely matters in practice.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>UNION Versus UNION ALL Performance</h2>
+<p>What are the performance differences between UNION and UNION ALL, and when should you choose each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>UNION:
+- Must check for duplicates across entire combined result set
+- May sort results (database-dependent)
+- More memory intensive
+- Slower, especially on large datasets</p>
+<p>UNION ALL:
+- No duplicate checking
+- No sorting
+- Simply appends result sets
+- MUCH faster for large datasets</p>
+<p>Performance comparison (hypothetical):
+- 1M rows UNION 1M rows: ~10 seconds
+- 1M rows UNION ALL 1M rows: ~2 seconds</p>
+<p>When to use UNION:
+- You specifically need duplicates removed
+- Result set is small (performance difference negligible)
+- Correctness requires deduplication</p>
+<p>When to use UNION ALL (default choice):
+- You know duplicates don't exist
+- You want to keep duplicates
+- Performance matters
+- Being explicit about keeping all rows</p>
+<p>Best practice: Default to UNION ALL unless you specifically need deduplication. It's faster and more explicit about intent.</p>
+<p>Rule of thumb: If you're unsure whether duplicates exist, profile with both and see if UNION removes any rows. If it doesn't, use UNION ALL.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Performance Optimization Strategies</h2>
+<p>What are the main strategies for optimizing set operation performance?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Optimization strategies:</p>
+<ol>
+<li>Use UNION ALL when possible</li>
+<li>Fastest option, no duplicate checking overhead</li>
+<li>
+<p>Default choice unless deduplication required</p>
+</li>
+<li>
+<p>Limit rows before combining</p>
+</li>
+<li>Filter in each query before set operation</li>
+<li>Don't combine everything then filter</li>
+</ol>
+<p>Bad: (SELECT * FROM large_table UNION SELECT * FROM large_table) WHERE filter
+   Good: SELECT * FROM large_table WHERE filter UNION SELECT * FROM large_table WHERE filter</p>
+<ol>
+<li>Index appropriately</li>
+<li>Ensure each individual query is optimized</li>
+<li>Set operations can only be as fast as their slowest component</li>
+<li>
+<p>Add indexes on filter columns used in WHERE clauses</p>
+</li>
+<li>
+<p>Use EXPLAIN/EXPLAIN PLAN</p>
+</li>
+<li>Understand how database executes the set operation</li>
+<li>Look for sequential scans on large tables</li>
+<li>
+<p>Check if indexes are being used</p>
+</li>
+<li>
+<p>Consider alternatives for large datasets</p>
+</li>
+<li>Temporary tables with indexes (if combining repeatedly)</li>
+<li>Materialized views (if result reused frequently)</li>
+<li>Application-level combination (if performance critical)</li>
+</ol>
+<p>When set operations are slow:
+- Large result sets with UNION (duplicate detection expensive)
+- Many operations chained (multiple passes over data)
+- Complex subqueries in each part (each executes independently)</p>
+<p>Key insight: Optimize each component query first; set operation speed depends on component speed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Pitfall Column Order Mismatch</h2>
+<p>What is the column order mismatch pitfall, and how do you avoid it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Pitfall: Columns in different order between queries, causing data scrambling.</p>
+<p>Problem example:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT last_name, first_name FROM employee;  -- REVERSED!</p>
+<p>Result: first_name column contains last names from employees
+        last_name column contains first names from employees</p>
+<p>Why dangerous:
+- Query runs without error
+- Data appears valid
+- Results are completely wrong
+- Hard to detect without careful inspection</p>
+<p>How to avoid:</p>
+<ol>
+<li>
+<p>Maintain consistent column order:
+SELECT first_name, last_name FROM customer
+UNION
+SELECT first_name, last_name FROM employee;</p>
+</li>
+<li>
+<p>Visually align queries for review:
+SELECT first_name,  last_name  FROM customer
+UNION
+SELECT first_name,  last_name  FROM employee;</p>
+</li>
+<li>
+<p>Use same table aliases/column names when possible</p>
+</li>
+<li>
+<p>Test with known data to verify correctness</p>
+</li>
+<li>
+<p>Add comments documenting column purposes</p>
+</li>
+</ol>
+<p>Prevention mindset: Treat column order as part of the contract between queries. Visual alignment makes mismatches obvious.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Pitfall NULL Handling</h2>
+<p>How do set operations handle NULL values, and what unexpected behavior can occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>NULL behavior in set operations:</p>
+<p>Key rule: NULL = NULL in set operations (NULLs are treated as equal)</p>
+<p>Example:
+SELECT email FROM customer  -- Some emails are NULL
+UNION
+SELECT email FROM employee;  -- Some emails are NULL</p>
+<p>Result: Multiple NULLs from both tables are consolidated to one NULL in the result.</p>
+<p>Why this matters:</p>
+<ol>
+<li>UNION removes duplicate NULLs (treats them as equal)</li>
+<li>UNION ALL keeps all NULLs (includes each one)</li>
+<li>INTERSECT finds NULL if it exists in both sets</li>
+<li>EXCEPT can be affected by NULL presence</li>
+</ol>
+<p>Potential issues:
+- Losing information about how many NULLs existed
+- Unexpected deduplication behavior
+- Misinterpreting results (one NULL could represent many missing values)</p>
+<p>Solutions:</p>
+<ol>
+<li>
+<p>Filter NULLs if they're problematic:
+SELECT email FROM customer WHERE email IS NOT NULL
+UNION
+SELECT email FROM employee WHERE email IS NOT NULL;</p>
+</li>
+<li>
+<p>Replace NULLs with meaningful values:
+SELECT COALESCE(email, 'no-email') AS email FROM customer
+UNION
+SELECT COALESCE(email, 'no-email') AS email FROM employee;</p>
+</li>
+</ol>
+<p>Best practice: Be explicitly aware of NULL handling in your set operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Pitfall EXCEPT Direction</h2>
+<p>Why is EXCEPT direction important, and how can you remember which way it works?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Critical rule: EXCEPT is directional. A EXCEPT B ≠ B EXCEPT A</p>
+<p>Example showing difference:
+-- Customers not in employees
+SELECT name FROM customers EXCEPT SELECT name FROM employees;</p>
+<p>-- Employees not in customers<br />
+SELECT name FROM employees EXCEPT SELECT name FROM customers;</p>
+<p>These return completely different results!</p>
+<p>How to remember direction:</p>
+<p>Mental model 1 - Subtraction:
+A EXCEPT B = "A minus B" = "Start with A, subtract anything that's also in B"</p>
+<p>Mental model 2 - Filtering:
+A EXCEPT B = "From A, exclude anything in B"</p>
+<p>Mental model 3 - Left to right:
+"Take the left set, remove anything that appears in the right set"</p>
+<p>Common mistake:
+Using EXCEPT when you need both directions:
+- Want: "Items only in A" OR "Items only in B"
+- Wrong: A EXCEPT B (only gets "items only in A")
+- Right: (A EXCEPT B) UNION (B EXCEPT A)</p>
+<p>Best practice: Always explicitly think "which set am I starting from?" when using EXCEPT.</p>
+<p>Oracle note: MINUS follows the same directional logic as EXCEPT.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Pitfall Type Casting Issues</h2>
+<p>What type casting issues can occur in set operations, and how should you handle them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Implicit type casting can produce unexpected or invalid results.</p>
+<p>Problematic example:
+SELECT customer_id FROM customer  -- INT
+UNION
+SELECT email FROM customer;  -- VARCHAR</p>
+<p>Database-specific behavior:
+- Some databases allow this, converting INT to VARCHAR
+- Result: '123' (as string) mixed with 'email@example.com'
+- Probably not what you intended!</p>
+<p>Why dangerous:
+- May work in one database, fail in another
+- Silent conversion may hide logic errors
+- Result type may not be what you expect</p>
+<p>Correct approach - Explicit casting:
+SELECT CAST(customer_id AS VARCHAR(50)) FROM customer
+UNION
+SELECT email FROM customer;</p>
+<p>Best practices:</p>
+<ol>
+<li>Always ensure compatible types explicitly</li>
+<li>Use CAST() to make conversions clear</li>
+<li>Consider if the combination even makes logical sense</li>
+<li>Document why you're mixing types if intentional</li>
+</ol>
+<p>Prevention:
+- Review column types before writing set operation
+- Think: "Does it make sense to stack these values?"
+- Test with sample data to catch type issues early</p>
+<p>Key insight: Explicit is better than implicit. Don't rely on database auto-conversion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations When To Choose INTERSECT</h2>
+<p>When should you use INTERSECT, and what questions does it answer?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use INTERSECT when you need to answer: "What's in both A AND B?"</p>
+<p>Ideal use cases:</p>
+<ol>
+<li>Finding commonality between datasets</li>
+<li>Which customers are also employees?</li>
+<li>
+<p>Which products sold in both regions?</p>
+</li>
+<li>
+<p>Validating data appears in multiple places</p>
+</li>
+<li>Verify records exist in both source and destination</li>
+<li>
+<p>Check synchronization between systems</p>
+</li>
+<li>
+<p>Finding dual roles or relationships</p>
+</li>
+<li>People who are both buyers and sellers</li>
+<li>
+<p>Products that are both inputs and outputs</p>
+</li>
+<li>
+<p>Set-based validation</p>
+</li>
+<li>Does this list match that list?</li>
+<li>Are these two queries equivalent?</li>
+</ol>
+<p>Example scenarios:</p>
+<p>Business: "Find customers who bought products from both categories"
+SELECT customer_id FROM purchases WHERE category = 'Electronics'
+INTERSECT
+SELECT customer_id FROM purchases WHERE category = 'Clothing';</p>
+<p>Validation: "Which IDs exist in both our system and partner system?"
+SELECT id FROM our_records
+INTERSECT
+SELECT external_id FROM partner_records;</p>
+<p>Key advantage: Makes "commonality" intent explicit and clear.</p>
+<p>Alternative: INNER JOIN with DISTINCT can achieve similar results but INTERSECT is more direct for pure set membership questions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations When To Choose EXCEPT</h2>
+<p>When should you use EXCEPT, and what questions does it answer?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use EXCEPT when you need to answer: "What's in A but NOT in B?"</p>
+<p>Ideal use cases:</p>
+<ol>
+<li>Finding missing data</li>
+<li>Customers who haven't made purchases</li>
+<li>Products with no sales</li>
+<li>
+<p>Required records that are missing</p>
+</li>
+<li>
+<p>Data quality checks</p>
+</li>
+<li>Records that should exist but don't</li>
+<li>Orphaned records (references to non-existent data)</li>
+<li>
+<p>Gaps in sequences</p>
+</li>
+<li>
+<p>Finding exclusive membership</p>
+</li>
+<li>Customers who only bought from category A, not B</li>
+<li>
+<p>Users who took action X but not action Y</p>
+</li>
+<li>
+<p>Comparative analysis</p>
+</li>
+<li>What changed between yesterday and today?</li>
+<li>New items in current data vs historical</li>
+</ol>
+<p>Example scenarios:</p>
+<p>Missing data: "Customers with no purchases"
+SELECT customer_id FROM customer
+EXCEPT
+SELECT customer_id FROM purchases;</p>
+<p>Data quality: "Products referenced but not in catalog"
+SELECT DISTINCT product_id FROM order_items
+EXCEPT
+SELECT product_id FROM products;</p>
+<p>Change tracking: "New users this week"
+SELECT user_id FROM users_current
+EXCEPT
+SELECT user_id FROM users_last_week;</p>
+<p>When alternative is better: LEFT JOIN with NULL check gives you full row details; EXCEPT gives you just the ID.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Complex Queries In Each Part</h2>
+<p>Can individual queries in a set operation be complex, and what's an example?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes! Each SELECT in a set operation can be arbitrarily complex: JOINs, subqueries, aggregation, CTEs, etc.</p>
+<p>Example - Combining monthly and yearly aggregates:
+WITH monthly_totals AS (
+  SELECT customer_id, 
+         DATE_TRUNC('month', order_date) AS month,
+         SUM(amount) AS total
+  FROM orders
+  WHERE EXTRACT(YEAR FROM order_date) = 2024
+  GROUP BY customer_id, DATE_TRUNC('month', order_date)
+)
+SELECT customer_id, month, total, 'Monthly' AS type
+FROM monthly_totals</p>
+<p>UNION ALL</p>
+<p>SELECT customer_id, 
+       NULL AS month, 
+       SUM(amount) AS total, 
+       'Yearly' AS type
+FROM orders
+WHERE EXTRACT(YEAR FROM order_date) = 2024
+GROUP BY customer_id</p>
+<p>ORDER BY customer_id, month NULLS LAST;</p>
+<p>What this demonstrates:
+- First query uses CTE with grouping
+- Second query has different aggregation level
+- Complex filtering and date functions
+- Combined into single result set</p>
+<p>Key insight: Set operations work at the result set level. Internal query complexity doesn't matter - only that results are compatible (same columns, types).</p>
+<p>Flexibility: Each part can use different tables, JOINs, aggregations, whatever's needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Set Operations Key Conceptual Insights</h2>
+<p>What are the three most important conceptual insights about set operations?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Set operations combine rows vertically, JOINs combine columns horizontally</li>
+<li>Set operations: Stack result sets (more rows, same columns)</li>
+<li>JOINs: Merge tables side-by-side (same rows, more columns)</li>
+<li>Fundamentally different operations serving different purposes</li>
+<li>
+<p>Choose based on whether you need "more rows" or "more columns"</p>
+</li>
+<li>
+<p>Three operations map directly to set theory</p>
+</li>
+<li>UNION: Combination (A + B - duplicates)</li>
+<li>INTERSECT: Overlap (only what's in both A and B)</li>
+<li>EXCEPT: Difference (A minus B)</li>
+<li>Understanding set theory diagrams helps visualize results</li>
+<li>
+<p>Each has specific use cases based on the question being asked</p>
+</li>
+<li>
+<p>Requirements are strict but logical</p>
+</li>
+<li>Same number of columns (for alignment)</li>
+<li>Compatible types (so they can stack)</li>
+<li>Order matters for columns (position, not name)</li>
+<li>First query defines names/aliases</li>
+<li>Sort only the final result, not individual parts</li>
+</ol>
+<p>Special insight: UNION ALL is usually better than UNION
+   - Faster (no duplicate checking)
+   - More explicit about intent
+   - Default choice unless deduplication specifically needed</p>
+<p>Master these insights and set operations become natural tools for "stacking" data from multiple sources.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
