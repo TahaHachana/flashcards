@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 02-Deref-And-Drop-Traits</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Deref Trait Definition</h2>
+<p>What is the <code>Deref</code> trait signature, and what does each part mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">pub trait Deref {
+    type Target: ?Sized;
+    fn deref(&amp;self) -&gt; &amp;Self::Target;
+}
+</code></pre>
+<p><strong>Components:</strong>
+- <code>type Target</code>: Associated type - the type that <code>&amp;Self</code> will dereference to
+- <code>?Sized</code>: The target doesn't need a known size at compile time
+- <code>fn deref(&amp;self)</code>: Takes <code>&amp;self</code> and returns <code>&amp;Self::Target</code></p>
+<p><strong>Key insight:</strong> <code>deref()</code> returns a <strong>reference</strong> to the target, not the target itself. This is crucial for maintaining borrow checking rules.</p>
+<p>Example:</p>
+<pre><code class="language-rust">impl Deref for Box&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T { /* ... */ }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementing Deref for Custom Type</h2>
+<p>Implement <code>Deref</code> for a tuple struct <code>HoldsANumber(u8)</code> that allows using the <code>*</code> operator to access the inner <code>u8</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::ops::Deref;
+
+struct HoldsANumber(u8);
+
+impl Deref for HoldsANumber {
+    type Target = u8;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0  // Return reference to inner u8
+    }
+}
+
+fn main() {
+    let my_number = HoldsANumber(20);
+    println!(&quot;{}&quot;, *my_number);       // 20
+    println!(&quot;{}&quot;, *my_number + 10);  // 30
+}
+</code></pre>
+<p><strong>What happens when you write <code>*my_number</code>:</strong>
+1. Rust calls <code>my_number.deref()</code>
+2. Gets back <code>&amp;u8</code>
+3. Automatically dereferences that <code>&amp;u8</code> to get the <code>u8</code> value</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is Deref Coercion?</h2>
+<p>What is deref coercion, and provide an example showing how <code>&amp;String</code> automatically converts to <code>&amp;str</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Deref coercion</strong> is Rust's automatic conversion between reference types by calling <code>.deref()</code> as many times as needed.</p>
+<p>Example:</p>
+<pre><code class="language-rust">fn print_str(s: &amp;str) {
+    println!(&quot;{}&quot;, s);
+}
+
+fn main() {
+    let my_string = String::from(&quot;hello&quot;);
+    print_str(&amp;my_string);  // &amp;String automatically converts to &amp;str
+}
+</code></pre>
+<p><strong>How it works:</strong>
+1. Compiler sees <code>&amp;String</code> where <code>&amp;str</code> is expected
+2. Checks if <code>String</code> implements <code>Deref</code>
+3. Finds <code>impl Deref for String { type Target = str; }</code>
+4. Automatically calls <code>.deref()</code> to convert <code>&amp;String</code> to <code>&amp;str</code></p>
+<p>This makes smart pointers ergonomic - you can pass them to functions expecting references to the inner type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Chained Deref Coercion</h2>
+<p>Explain how chained deref coercion works with an example involving <code>Rc&lt;String&gt;</code> being passed to a function expecting <code>&amp;str</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Deref coercion can chain through multiple types:</p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+fn print_str(s: &amp;str) {
+    println!(&quot;{}&quot;, s);
+}
+
+fn main() {
+    let rc_string = Rc::new(String::from(&quot;hello&quot;));
+    print_str(&amp;rc_string);  // Works!
+}
+</code></pre>
+<p><strong>Deref chain:</strong>
+1. Start with <code>&amp;Rc&lt;String&gt;</code>
+2. <code>Rc</code> implements <code>Deref&lt;Target = String&gt;</code> → <code>&amp;String</code>
+3. <code>String</code> implements <code>Deref&lt;Target = str&gt;</code> → <code>&amp;str</code>
+4. Function receives <code>&amp;str</code></p>
+<p>Rust automatically follows the chain: <code>&amp;Rc&lt;String&gt;</code> → <code>&amp;String</code> → <code>&amp;str</code></p>
+<p>Each step calls <code>.deref()</code> on the previous result until reaching the expected type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Deref is Called Automatically</h2>
+<p>In what two situations does Rust automatically call <code>deref()</code>? Provide examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. When using the <code>*</code> operator explicitly:</strong></p>
+<pre><code class="language-rust">let boxed = Box::new(5);
+let value = *boxed;  // Calls boxed.deref() then dereferences result
+</code></pre>
+<p><strong>2. When using the dot operator for method calls:</strong></p>
+<pre><code class="language-rust">use std::ops::Deref;
+
+struct HoldsANumber(u8);
+
+impl Deref for HoldsANumber {
+    type Target = u8;
+    fn deref(&amp;self) -&gt; &amp;Self::Target { &amp;self.0 }
+}
+
+fn main() {
+    let my_number = HoldsANumber(20);
+
+    // Method from u8, accessed through Deref
+    println!(&quot;{:?}&quot;, my_number.checked_sub(100));
+    // Becomes: (*my_number).checked_sub(100)
+    // Which is: my_number.deref().checked_sub(100)
+}
+</code></pre>
+<p>The dot operator automatically dereferences as needed to find the method.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Benefits of Implementing Deref</h2>
+<p>What three main benefits do you get from implementing <code>Deref</code> for a type?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Access to the target type's methods:</strong></p>
+<pre><code class="language-rust">impl Deref for HoldsANumber {
+    type Target = u8;
+    fn deref(&amp;self) -&gt; &amp;Self::Target { &amp;self.0 }
+}
+
+my_number.checked_sub(100);  // u8 method available
+my_number.pow(2);            // Another u8 method
+</code></pre>
+<p><strong>2. You can still add your own custom methods:</strong></p>
+<pre><code class="language-rust">impl HoldsANumber {
+    fn print_doubled(&amp;self) {
+        println!(&quot;{}&quot;, self.0 * 2);
+    }
+}
+
+my_number.checked_sub(100);  // From u8 via Deref
+my_number.print_doubled();   // Our own method
+</code></pre>
+<p><strong>3. Ergonomic use in function calls:</strong></p>
+<pre><code class="language-rust">fn takes_u8_ref(n: &amp;u8) { }
+
+let my_number = HoldsANumber(20);
+takes_u8_ref(&amp;my_number);  // Works via deref coercion!
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The DerefMut Trait Definition</h2>
+<p>What is the <code>DerefMut</code> trait signature, and what's the relationship between <code>DerefMut</code> and <code>Deref</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">pub trait DerefMut: Deref {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Self::Target;
+}
+</code></pre>
+<p><strong>Key points:</strong>
+- <code>DerefMut: Deref</code> means <code>DerefMut</code> requires <code>Deref</code> to be implemented first
+- Uses the same <code>Target</code> type from <code>Deref</code> (no new associated type needed)
+- Takes <code>&amp;mut self</code> instead of <code>&amp;self</code>
+- Returns <code>&amp;mut Self::Target</code> instead of <code>&amp;Self::Target</code></p>
+<p><strong>Relationship:</strong> You cannot implement <code>DerefMut</code> without first implementing <code>Deref</code>. The <code>Target</code> type is shared between both traits.</p>
+<p>Example:</p>
+<pre><code class="language-rust">impl Deref for MyType {
+    type Target = u8;
+    fn deref(&amp;self) -&gt; &amp;u8 { &amp;self.0 }
+}
+
+impl DerefMut for MyType {
+    // No type Target needed - inherited from Deref
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut u8 { &amp;mut self.0 }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Implementing DerefMut Pattern</h2>
+<p>What's the pattern for implementing <code>DerefMut</code> after you already have <code>Deref</code> implemented?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern: Copy Deref, Add Muts</strong></p>
+<ol>
+<li>Copy your <code>Deref</code> implementation</li>
+<li>Remove the <code>type Target</code> line (inherited from <code>Deref</code>)</li>
+<li>Add <code>mut</code> everywhere: <code>deref_mut</code>, <code>&amp;mut self</code>, <code>&amp;mut Self::Target</code></li>
+</ol>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::ops::{Deref, DerefMut};
+
+struct HoldsANumber(u8);
+
+// Step 1: Implement Deref
+impl Deref for HoldsANumber {
+    type Target = u8;
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+
+// Step 2: Implement DerefMut - copy and add muts
+impl DerefMut for HoldsANumber {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Self::Target {
+        &amp;mut self.0
+    }
+}
+
+fn main() {
+    let mut my_number = HoldsANumber(20);
+    *my_number = 30;  // Now can mutate through dereference!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Deref Coercion Rules</h2>
+<p>What are the three cases where Rust will automatically perform deref coercion?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. From <code>&amp;T</code> to <code>&amp;U</code> when <code>T: Deref&lt;Target=U&gt;</code></strong></p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+let str_ref: &amp;str = &amp;s;  // &amp;String -&gt; &amp;str
+</code></pre>
+<p><strong>2. From <code>&amp;mut T</code> to <code>&amp;mut U</code> when <code>T: DerefMut&lt;Target=U&gt;</code></strong></p>
+<pre><code class="language-rust">let mut s = String::from(&quot;hello&quot;);
+let str_ref: &amp;mut str = &amp;mut s;  // &amp;mut String -&gt; &amp;mut str
+</code></pre>
+<p><strong>3. From <code>&amp;mut T</code> to <code>&amp;U</code> when <code>T: Deref&lt;Target=U&gt;</code></strong></p>
+<pre><code class="language-rust">let mut s = String::from(&quot;hello&quot;);
+let str_ref: &amp;str = &amp;mut s;  // &amp;mut String -&gt; &amp;str (mutable to immutable)
+</code></pre>
+<p><strong>Important:</strong> You <strong>cannot</strong> coerce <code>&amp;T</code> to <code>&amp;mut U</code> (immutable to mutable). This would violate Rust's borrowing rules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Deref Coercion Doesn't Happen</h2>
+<p>In what contexts does deref coercion work, and when doesn't it work?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>✅ Works:</strong></p>
+<p><strong>Function arguments:</strong></p>
+<pre><code class="language-rust">fn takes_str(s: &amp;str) { }
+takes_str(&amp;my_string);  // &amp;String coerced to &amp;str
+</code></pre>
+<p><strong>Method calls:</strong></p>
+<pre><code class="language-rust">my_string.len();  // String doesn't have len(), but &amp;str does
+</code></pre>
+<p><strong>Explicit type annotation:</strong></p>
+<pre><code class="language-rust">let s: &amp;str = &amp;my_string;  // Coercion happens
+</code></pre>
+<p><strong>❌ Doesn't work:</strong></p>
+<p><strong>Assignment without type annotation:</strong></p>
+<pre><code class="language-rust">let s = &amp;my_string;  // Type is &amp;String, NOT &amp;str
+// No coercion without explicit type
+</code></pre>
+<p><strong>Deref coercion only happens in specific contexts</strong> where the compiler knows the expected type. Without type information, no coercion occurs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Drop Trait Definition</h2>
+<p>What is the <code>Drop</code> trait signature, and what is its purpose?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">pub trait Drop {
+    fn drop(&amp;mut self);
+}
+</code></pre>
+<p><strong>Purpose:</strong> Customize what happens when a value goes out of scope. It's Rust's version of a destructor.</p>
+<p><strong>Key characteristics:</strong>
+- Single method: <code>drop(&amp;mut self)</code>
+- Called automatically when value goes out of scope
+- Cannot be called manually directly (use <code>std::mem::drop()</code> instead)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">struct CustomPointer {
+    data: String,
+}
+
+impl Drop for CustomPointer {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping: {}&quot;, self.data);
+    }
+}
+
+fn main() {
+    let c = CustomPointer {
+        data: String::from(&quot;my stuff&quot;),
+    };
+}  // c.drop() called automatically here
+</code></pre>
+<p>Drop enables RAII (Resource Acquisition Is Initialization) pattern in Rust.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Automatic Drop Behavior</h2>
+<p>Explain the automatic drop process. What happens when a value goes out of scope?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>When a value goes out of scope:</strong></p>
+<pre><code class="language-rust">fn main() {
+    {
+        let s = String::from(&quot;hello&quot;);
+        // Use s
+    }  // &lt;- s goes out of scope and is dropped here
+
+    // s is no longer accessible
+}
+</code></pre>
+<p><strong>What happens during drop:</strong>
+1. Rust calls <code>s.drop()</code> if <code>Drop</code> is implemented
+2. Recursively drops all fields
+3. Deallocates the memory</p>
+<p><strong>Every value in Rust is automatically dropped</strong> - you don't need to manually free memory. This is how Rust achieves memory safety without garbage collection.</p>
+<p><strong>Drop order:</strong> Variables are dropped in <strong>reverse order of creation</strong> (LIFO - Last In, First Out).</p>
+<pre><code class="language-rust">let a = DebugDrop { name: &quot;a&quot; };
+let b = DebugDrop { name: &quot;b&quot; };
+let c = DebugDrop { name: &quot;c&quot; };
+// Drops: c, then b, then a
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Drop Use Cases</h2>
+<p>What are four common use cases for implementing the <code>Drop</code> trait?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Releasing Resources:</strong></p>
+<pre><code class="language-rust">struct FileHandle {
+    file: std::fs::File,
+}
+
+impl Drop for FileHandle {
+    fn drop(&amp;mut self) {
+        println!(&quot;Closing file&quot;);
+        // File automatically closed
+    }
+}
+</code></pre>
+<p><strong>2. Logging/Debugging:</strong></p>
+<pre><code class="language-rust">impl Drop for DebugDrop {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping: {}&quot;, self.name);
+    }
+}
+</code></pre>
+<p><strong>3. Reference Counting:</strong></p>
+<pre><code class="language-rust">// Rc&lt;T&gt; uses Drop to decrement reference count
+// and free memory when count reaches 0
+</code></pre>
+<p><strong>4. Mutex Guards:</strong></p>
+<pre><code class="language-rust">// MutexGuard uses Drop to release the lock
+// when the guard goes out of scope
+</code></pre>
+<p>Drop is essential for RAII - ensuring resources are cleaned up even if panics occur.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Manual Drop with std::mem::drop</h2>
+<p>Why can't you call <code>.drop()</code> directly, and how do you drop a value early?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Cannot call <code>.drop()</code> directly:</strong></p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+// s.drop();  // Error! Can't call drop explicitly
+</code></pre>
+<p><strong>Error reason:</strong> Rust will still call <code>drop()</code> when <code>s</code> goes out of scope, which would cause a double-free.</p>
+<p><strong>Solution: Use <code>std::mem::drop()</code>:</strong></p>
+<pre><code class="language-rust">fn main() {
+    let s = String::from(&quot;hello&quot;);
+    println!(&quot;Created: {}&quot;, s);
+
+    drop(s);  // Explicitly drop s early
+
+    // println!(&quot;{}&quot;, s);  // Error! s was moved into drop
+}
+</code></pre>
+<p><strong>Why <code>std::mem::drop()</code> works:</strong></p>
+<pre><code class="language-rust">pub fn drop&lt;T&gt;(_x: T) { }
+</code></pre>
+<p>It takes ownership of the value and does nothing. When <code>drop()</code> returns, its parameter goes out of scope and is naturally dropped. This prevents double-drop because the value was moved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Drop and Move Semantics</h2>
+<p>What happens to <code>Drop</code> when a value is moved? Demonstrate with an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>When a value is moved, <code>Drop</code> is NOT called on the original location:</strong></p>
+<pre><code class="language-rust">struct Loud;
+
+impl Drop for Loud {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping!&quot;);
+    }
+}
+
+fn main() {
+    let x = Loud;
+    let y = x;  // x moved to y, x.drop() is NOT called
+
+    // Only y.drop() is called when y goes out of scope
+}
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Dropping!
+</code></pre>
+<p>Only <strong>one</strong> "Dropping!" is printed, for <code>y</code>.</p>
+<p><strong>Why:</strong> After the move, <code>x</code> is considered uninitialized. Only the current owner (<code>y</code>) has its drop called. This prevents double-free errors.</p>
+<p><strong>Key insight:</strong> Drop follows ownership. Only the current owner's drop is called.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Drop Order in Structs and Functions</h2>
+<p>Explain the drop order for variables in a function and fields in a struct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Variables in a function - Reverse order (LIFO):</strong></p>
+<pre><code class="language-rust">fn main() {
+    let a = DebugDrop { name: &quot;a&quot; };
+    let b = DebugDrop { name: &quot;b&quot; };
+    let c = DebugDrop { name: &quot;c&quot; };
+}
+// Output: Dropping: c, Dropping: b, Dropping: a
+</code></pre>
+<p>Variables drop in <strong>reverse order of creation</strong> - last created, first dropped.</p>
+<p><strong>Fields in a struct - Declaration order:</strong></p>
+<pre><code class="language-rust">struct Container {
+    first: DebugDrop,
+    second: DebugDrop,
+}
+
+impl Drop for Container {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping Container&quot;);
+        // Then fields drop in declaration order:
+        // 1. first
+        // 2. second
+    }
+}
+</code></pre>
+<p>Fields drop in the <strong>order they're declared</strong> in the struct definition.</p>
+<p><strong>Why it matters:</strong> Understanding drop order is crucial for managing resources that depend on each other.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Box Uses Deref and Drop</h2>
+<p>Explain how <code>Box&lt;T&gt;</code> implements both <code>Deref</code> and <code>Drop</code> traits, and what each enables.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Deref implementation:</strong></p>
+<pre><code class="language-rust">impl&lt;T&gt; Deref for Box&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;T {
+        // Returns reference to heap data
+    }
+}
+</code></pre>
+<p><strong>Enables:</strong> Using <code>Box&lt;T&gt;</code> like <code>&amp;T</code></p>
+<pre><code class="language-rust">fn takes_i32(n: &amp;i32) { }
+
+let boxed = Box::new(5);
+takes_i32(&amp;boxed);  // &amp;Box&lt;i32&gt; -&gt; &amp;i32 via Deref
+</code></pre>
+<p><strong>Drop implementation:</strong></p>
+<pre><code class="language-rust">impl&lt;T&gt; Drop for Box&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        // Deallocates heap memory
+    }
+}
+</code></pre>
+<p><strong>Enables:</strong> Automatic cleanup</p>
+<pre><code class="language-rust">{
+    let boxed = Box::new(5);
+    // Use boxed
+}  // Heap memory automatically freed via Drop
+</code></pre>
+<p><strong>Together:</strong> Box acts like a reference but owns its data and cleans up automatically.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How Rc Uses Deref and Drop</h2>
+<p>Explain how <code>Rc&lt;T&gt;</code> implements both <code>Deref</code> and <code>Drop</code> traits for reference counting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Deref implementation:</strong></p>
+<pre><code class="language-rust">impl&lt;T&gt; Deref for Rc&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;T {
+        // Returns reference to shared data
+    }
+}
+</code></pre>
+<p><strong>Enables:</strong> Accessing inner data ergonomically</p>
+<pre><code class="language-rust">let rc = Rc::new(String::from(&quot;hello&quot;));
+println!(&quot;{}&quot;, rc.len());  // Can call String methods
+</code></pre>
+<p><strong>Drop implementation:</strong></p>
+<pre><code class="language-rust">impl&lt;T&gt; Drop for Rc&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        // Decrements reference count
+        // Frees memory if count reaches 0
+    }
+}
+</code></pre>
+<p><strong>Reference counting in action:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let rc1 = Rc::new(5);        // Count: 1
+let rc2 = Rc::clone(&amp;rc1);   // Count: 2
+
+drop(rc1);  // Count: 1, memory still alive
+drop(rc2);  // Count: 0, memory freed
+</code></pre>
+<p>Drop ensures memory is freed only when the last owner is dropped.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How String Uses Deref and Drop</h2>
+<p>Explain how <code>String</code> implements both <code>Deref</code> and <code>Drop</code> traits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Deref implementation:</strong></p>
+<pre><code class="language-rust">impl Deref for String {
+    type Target = str;
+
+    fn deref(&amp;self) -&gt; &amp;str {
+        // Returns &amp;str slice of the string data
+    }
+}
+</code></pre>
+<p><strong>Enables:</strong> Using <code>String</code> where <code>&amp;str</code> is expected</p>
+<pre><code class="language-rust">fn takes_str(s: &amp;str) { }
+
+let s = String::from(&quot;hello&quot;);
+takes_str(&amp;s);      // &amp;String -&gt; &amp;str via Deref
+println!(&quot;{}&quot;, s.len());  // Can call str methods
+</code></pre>
+<p><strong>Drop implementation:</strong></p>
+<pre><code class="language-rust">impl Drop for String {
+    fn drop(&amp;mut self) {
+        // Deallocates heap buffer
+    }
+}
+</code></pre>
+<p><strong>Enables:</strong> Automatic memory management</p>
+<pre><code class="language-rust">{
+    let s = String::from(&quot;hello&quot;);
+    // Use s
+}  // Heap buffer automatically freed
+</code></pre>
+<p>This is why String is easy to use but doesn't leak memory - Deref makes it ergonomic, Drop makes it safe.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Good Use Cases for Implementing Deref</h2>
+<p>What are three good use cases for implementing <code>Deref</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Smart pointers:</strong></p>
+<pre><code class="language-rust">struct MyBox&lt;T&gt;(T);
+
+impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T { &amp;self.0 }
+}
+</code></pre>
+<p><strong>2. Newtype pattern for type safety:</strong></p>
+<pre><code class="language-rust">struct Email(String);
+
+impl Deref for Email {
+    type Target = str;
+    fn deref(&amp;self) -&gt; &amp;str { &amp;self.0 }
+}
+
+// Email has String/str methods but is a distinct type
+// Can't pass String where Email is expected
+</code></pre>
+<p><strong>3. Wrapper types with single field:</strong></p>
+<pre><code class="language-rust">struct SanitizedInput(String);
+
+impl Deref for SanitizedInput {
+    type Target = str;
+    fn deref(&amp;self) -&gt; &amp;str { &amp;self.0 }
+}
+</code></pre>
+<p><strong>Common theme:</strong> The type is pointer-like or a thin wrapper around a single inner value. The deref relationship is obvious and intuitive.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Bad Use Cases for Implementing Deref</h2>
+<p>Provide examples of when you should NOT implement <code>Deref</code>, and explain why.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Bad: Type isn't pointer-like</strong></p>
+<pre><code class="language-rust">// ❌ Character isn't a pointer to i8
+struct Character {
+    name: String,
+    hp: i8,
+}
+
+impl Deref for Character {
+    type Target = i8;
+    fn deref(&amp;self) -&gt; &amp;i8 { &amp;self.hp }  // Confusing!
+}
+
+let billy = Character { name: &quot;Billy&quot;.into(), hp: 100 };
+let hp = *billy;  // What?? Character derefs to i8??
+</code></pre>
+<p><strong>Bad: Deref relationship isn't obvious</strong></p>
+<pre><code class="language-rust">// ❌ Why would Person deref to String?
+struct Person {
+    name: String,
+    age: u32,
+}
+
+impl Deref for Person {
+    type Target = String;
+    fn deref(&amp;self) -&gt; &amp;String { &amp;self.name }
+}
+</code></pre>
+<p><strong>Why bad:</strong> Makes code confusing and unintuitive. Readers must search for Deref implementation to understand behavior.</p>
+<p><strong>Better alternatives:</strong> Use methods with clear names like <code>get_hp()</code>, <code>get_name()</code>.</p>
+<p><strong>Rule:</strong> Only implement Deref for actual smart pointer patterns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RAII Pattern with Drop</h2>
+<p>What is the RAII pattern, and how does <code>Drop</code> enable it in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>RAII (Resource Acquisition Is Initialization):</strong> Resources are acquired in a constructor and automatically released in a destructor.</p>
+<p><strong>How Drop enables RAII:</strong></p>
+<pre><code class="language-rust">struct Guard&lt;'a&gt; {
+    resource: &amp;'a mut Resource,
+}
+
+impl&lt;'a&gt; Guard&lt;'a&gt; {
+    fn new(resource: &amp;'a mut Resource) -&gt; Self {
+        resource.acquire();  // Acquire in constructor
+        Guard { resource }
+    }
+}
+
+impl Drop for Guard&lt;'_&gt; {
+    fn drop(&amp;mut self) {
+        self.resource.release();  // Release in destructor
+    }
+}
+
+// Usage
+{
+    let mut resource = Resource::new();
+    let _guard = Guard::new(&amp;mut resource);
+    // Use resource safely
+}  // Guard dropped, resource automatically released
+</code></pre>
+<p><strong>Benefits:</strong>
+- Guaranteed cleanup even if panic occurs
+- Impossible to forget to release resources
+- Scope-based resource management</p>
+<p><strong>Examples in std:</strong> <code>MutexGuard</code>, <code>File</code>, <code>JoinHandle</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Transparent Wrapper Pattern</h2>
+<p>Demonstrate the transparent wrapper pattern using <code>Deref</code> and <code>DerefMut</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::ops::{Deref, DerefMut};
+
+struct Wrapper&lt;T&gt;(T);
+
+impl&lt;T&gt; Deref for Wrapper&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T { 
+        &amp;self.0 
+    }
+}
+
+impl&lt;T&gt; DerefMut for Wrapper&lt;T&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut T { 
+        &amp;mut self.0 
+    }
+}
+
+// Now Wrapper&lt;T&gt; acts transparently like T
+fn main() {
+    let mut wrapped = Wrapper(vec![1, 2, 3]);
+
+    // Can call Vec methods directly
+    wrapped.push(4);           // Via DerefMut
+    println!(&quot;{}&quot;, wrapped.len());  // Via Deref
+
+    // Can pass to functions expecting Vec
+    fn takes_vec(v: &amp;Vec&lt;i32&gt;) { }
+    takes_vec(&amp;wrapped);  // Works!
+}
+</code></pre>
+<p><strong>Purpose:</strong> Add functionality to existing types while maintaining transparent access to the wrapped value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Insights About Deref and Drop</h2>
+<p>What are the seven key insights about the <code>Deref</code> and <code>Drop</code> traits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Deref enables transparency:</strong> Smart pointers act like the data they contain while maintaining ownership</p>
+<p><strong>2. Deref coercion is powerful:</strong> Automatic conversions make smart pointers ergonomic to use</p>
+<p><strong>3. Drop enables RAII:</strong> Resources are automatically cleaned up, preventing leaks</p>
+<p><strong>4. They work together:</strong> Deref makes smart pointers easy to use, Drop makes them safe</p>
+<p><strong>5. Use judiciously:</strong> Implement Deref only for pointer-like types to avoid confusion</p>
+<p><strong>6. Drop order matters:</strong> Understanding LIFO drop order is important for complex scenarios</p>
+<p><strong>7. Manual drop when needed:</strong> Use <code>std::mem::drop()</code> for early cleanup, but you can't call <code>.drop()</code> directly</p>
+<p><strong>Bottom line:</strong> These two traits are what make smart pointers "smart" - they provide both ergonomic access (Deref) and automatic cleanup (Drop) while maintaining Rust's safety guarantees.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Gotchas with Deref and Drop</h2>
+<p>What are four common gotchas when working with <code>Deref</code> and <code>Drop</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Gotcha 1: Can't call .drop() directly</strong></p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+// s.drop();  // ❌ Error!
+drop(s);      // ✅ Use std::mem::drop instead
+</code></pre>
+<p><strong>Gotcha 2: DerefMut requires Deref</strong></p>
+<pre><code class="language-rust">// ❌ Can't implement DerefMut without Deref
+impl DerefMut for MyType { ... }  // Error!
+
+// ✅ Must implement Deref first
+impl Deref for MyType { ... }
+impl DerefMut for MyType { ... }
+</code></pre>
+<p><strong>Gotcha 3: Deref coercion doesn't work everywhere</strong></p>
+<pre><code class="language-rust">let s = String::from(&quot;hello&quot;);
+let r = &amp;s;           // Type: &amp;String (no coercion)
+let r: &amp;str = &amp;s;     // Type: &amp;str (coercion with annotation)
+</code></pre>
+<p><strong>Gotcha 4: Move prevents drop</strong></p>
+<pre><code class="language-rust">let x = Loud;
+let y = x;  // x moved
+// x.drop() NOT called - only y.drop() called
+</code></pre>
+<p>Understanding these gotchas prevents common mistakes and confusion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

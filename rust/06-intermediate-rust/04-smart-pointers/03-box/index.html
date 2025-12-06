@@ -1,0 +1,1347 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 03-Box</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is Box<T>?</h2>
+<p>What is <code>Box&lt;T&gt;</code> and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;T&gt;</code> is Rust's most fundamental smart pointer that provides heap allocation. When you wrap a value in a <code>Box</code>, the value moves from the stack to the heap, while the <code>Box</code> itself (just a pointer) stays on the stack.</p>
+<p><strong>Key characteristics:</strong>
+- Allocates data on the heap
+- Has a known, fixed size (pointer-sized, typically 8 bytes)
+- Owns the data it points to
+- Automatically deallocates when dropped
+- Zero runtime overhead (no reference counting)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">let boxed = Box::new(5);  // 5 is on heap, pointer on stack
+let value = *boxed;       // Access with *
+</code></pre>
+<p>Think of <code>Box</code> as saying: "Put this data on the heap and give me a pointer to it."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Doesn't Implement Copy</h2>
+<p>Why doesn't <code>Box&lt;T&gt;</code> implement <code>Copy</code>, and what do you use instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;T&gt;</code> doesn't implement <code>Copy</code> because copying a <code>Box</code> would mean duplicating the heap allocation, which is expensive and could be unexpected.</p>
+<p><strong>Example showing the issue:</strong></p>
+<pre><code class="language-rust">fn just_takes&lt;T&gt;(item: T) {}
+
+let my_number = 1;
+just_takes(my_number);
+just_takes(my_number);  // ✅ Works - i32 is Copy
+
+let my_box = Box::new(1);
+just_takes(my_box.clone());  // Need explicit clone
+just_takes(my_box);          // ✅ Works - first was cloned
+</code></pre>
+<p><strong>Solution:</strong> Use <code>.clone()</code> explicitly when you need a copy. This:
+- Makes the cost visible (explicit heap allocation)
+- Prevents accidental expensive operations
+- Forces you to think about whether you really need a copy</p>
+<p><code>Box</code> implements <code>Clone</code>, not <code>Copy</code>, requiring explicit duplication.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Stack vs Heap Memory</h2>
+<p>Compare stack and heap memory, and explain when you'd use <code>Box</code> to move data from stack to heap.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Stack:</strong>
+- Fast allocation/deallocation (just move a pointer)
+- Limited size (typically 2-8MB)
+- Automatic cleanup
+- LIFO (Last In, First Out) order</p>
+<p><strong>Heap:</strong>
+- Slower allocation (need to find free space)
+- Large size available
+- Manual cleanup (Rust automates via <code>Drop</code>)
+- No particular order</p>
+<p><strong>When to use Box:</strong></p>
+<pre><code class="language-rust">// ❌ Risk of stack overflow
+// let large = [0; 1_000_000];
+
+// ✅ Safe on heap
+let large = Box::new([0; 1_000_000]);
+</code></pre>
+<p><strong>Use Box when:</strong>
+- Data is too large for stack (&gt;1MB)
+- You need recursive types
+- You want to control where data lives
+- You're transferring ownership of large data</p>
+<p>Stack is faster but limited; heap (via Box) is slower but virtually unlimited.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive Types Problem</h2>
+<p>Why can't Rust compile recursive types without <code>Box</code>, and what error does the compiler give?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust needs to know the size of every type at compile time. Recursive types (types that contain themselves) have theoretically infinite size.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">// ❌ This doesn't compile
+struct Node {
+    value: i32,
+    next: Option&lt;Node&gt;,  // Node contains Node - infinite!
+}
+</code></pre>
+<p><strong>Compiler error:</strong></p>
+<pre><code>error[E0072]: recursive type `Node` has infinite size
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`)
+</code></pre>
+<p><strong>Why infinite?</strong>
+Size of <code>Node</code> = size of <code>i32</code> + size of <code>Option&lt;Node&gt;</code>
+But <code>Option&lt;Node&gt;</code> contains <code>Node</code>, which contains <code>Option&lt;Node&gt;</code>, which...
+→ Never ends!</p>
+<p><strong>The compiler can't calculate:</strong> "How much memory do I need for this type?"</p>
+<p>This is why indirection (like <code>Box</code>) is necessary for recursive types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Solves Recursive Types</h2>
+<p>How does <code>Box</code> solve the recursive type problem? Provide a working example of a linked list node.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box</code> provides indirection with a known size (pointer-sized, typically 8 bytes), breaking the infinite size recursion.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-rust">// ✅ This works!
+struct Node {
+    value: i32,
+    next: Option&lt;Box&lt;Node&gt;&gt;,  // Box has known size
+}
+
+fn main() {
+    let node3 = Node { value: 3, next: None };
+
+    let node2 = Node {
+        value: 2,
+        next: Some(Box::new(node3)),
+    };
+
+    let node1 = Node {
+        value: 1,
+        next: Some(Box::new(node2)),
+    };
+}
+</code></pre>
+<p><strong>Why this works:</strong>
+- <code>Box&lt;Node&gt;</code> is always 8 bytes (just a pointer)
+- The actual <code>Node</code> data is on the heap
+- Compiler only needs to know pointer size, not the full recursive structure</p>
+<p><strong>Key insight:</strong> Box has fixed size regardless of what it points to.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary Tree with Box</h2>
+<p>Implement a binary tree node structure using <code>Box</code> for the child nodes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">#[derive(Debug)]
+struct TreeNode&lt;T&gt; {
+    value: T,
+    left: Option&lt;Box&lt;TreeNode&lt;T&gt;&gt;&gt;,
+    right: Option&lt;Box&lt;TreeNode&lt;T&gt;&gt;&gt;,
+}
+
+fn main() {
+    // Build tree:    5
+    //               / \
+    //              3   7
+    let tree = TreeNode {
+        value: 5,
+        left: Some(Box::new(TreeNode {
+            value: 3,
+            left: None,
+            right: None,
+        })),
+        right: Some(Box::new(TreeNode {
+            value: 7,
+            left: None,
+            right: None,
+        })),
+    };
+
+    println!(&quot;{:#?}&quot;, tree);
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+- Root node owns its data
+- Children are <code>Option&lt;Box&lt;TreeNode&lt;T&gt;&gt;&gt;</code>
+- <code>None</code> represents absence of a child
+- Each <code>Box</code> allows recursive structure without infinite size</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Objects Problem</h2>
+<p>Why can't you return a trait directly from a function? What error occurs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Different types implementing the same trait can have different sizes, so the compiler doesn't know how much space to allocate for the return value.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">trait Animal {
+    fn speak(&amp;self);
+}
+
+struct Dog;  // Some size
+impl Animal for Dog {
+    fn speak(&amp;self) { println!(&quot;Woof!&quot;); }
+}
+
+struct Cat;  // Different size
+impl Animal for Cat {
+    fn speak(&amp;self) { println!(&quot;Meow!&quot;); }
+}
+
+// ❌ This doesn't work
+fn get_animal() -&gt; Animal {
+    Dog  // Error: trait objects have unknown size
+}
+</code></pre>
+<p><strong>Compiler error:</strong></p>
+<pre><code>error[E0746]: return type cannot have an unboxed trait object
+   --&gt; doesn't have a size known at compile-time
+</code></pre>
+<p><strong>Why:</strong> The compiler doesn't know if the function will return <code>Dog</code>, <code>Cat</code>, or something else. These types can have different sizes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box<dyn Trait> Solution</h2>
+<p>How does <code>Box&lt;dyn Trait&gt;</code> solve the trait object size problem? Provide a working example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;dyn Trait&gt;</code> has a known size (pointer + vtable pointer) regardless of the actual type inside.</p>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-rust">trait Animal {
+    fn speak(&amp;self);
+}
+
+struct Dog;
+impl Animal for Dog {
+    fn speak(&amp;self) { println!(&quot;Woof!&quot;); }
+}
+
+struct Cat;
+impl Animal for Cat {
+    fn speak(&amp;self) { println!(&quot;Meow!&quot;); }
+}
+
+// ✅ This works!
+fn get_animal(is_dog: bool) -&gt; Box&lt;dyn Animal&gt; {
+    if is_dog {
+        Box::new(Dog)
+    } else {
+        Box::new(Cat)
+    }
+}
+
+fn main() {
+    let animal = get_animal(true);
+    animal.speak();  // Woof!
+}
+</code></pre>
+<p><strong>How it works:</strong>
+- <code>Box&lt;dyn Animal&gt;</code> has known size (16 bytes: pointer + vtable)
+- Actual type (<code>Dog</code> or <code>Cat</code>) is on heap
+- Dynamic dispatch uses vtable to call correct method at runtime</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Dynamic vs Static Dispatch</h2>
+<p>Explain the difference between static and dynamic dispatch, and when each is used. What does the <code>dyn</code> keyword indicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Static dispatch (compile-time):</strong></p>
+<pre><code class="language-rust">fn static_dispatch&lt;T: Animal&gt;(animal: T) {
+    animal.speak();  // Compiler knows exact type
+}
+</code></pre>
+<ul>
+<li>Compiler generates specific code for each type</li>
+<li>Faster (no indirection)</li>
+<li>Used with generics</li>
+<li>Code size grows with each concrete type</li>
+</ul>
+<p><strong>Dynamic dispatch (runtime):</strong></p>
+<pre><code class="language-rust">fn dynamic_dispatch(animal: Box&lt;dyn Animal&gt;) {
+    animal.speak();  // Type determined at runtime
+}
+</code></pre>
+<ul>
+<li>Compiler generates code to look up methods in vtable at runtime</li>
+<li>Slight performance overhead (one extra indirection)</li>
+<li>Used with trait objects</li>
+<li>Enables returning different types from function</li>
+</ul>
+<p><strong>The <code>dyn</code> keyword:</strong>
+- Explicitly indicates <strong>dyn</strong>amic dispatch
+- Shows you're working with a trait object, not a concrete type
+- Required syntax: <code>dyn Trait</code> not just <code>Trait</code></p>
+<p><strong>When to use dynamic dispatch:</strong> Returning different types, heterogeneous collections, plugin systems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Heterogeneous Collections with Box</h2>
+<p>How do you store different types implementing the same trait in a single collection? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>Vec&lt;Box&lt;dyn Trait&gt;&gt;</code> to store different types in one collection:</p>
+<pre><code class="language-rust">trait Draw {
+    fn draw(&amp;self);
+}
+
+struct Circle { radius: f64 }
+impl Draw for Circle {
+    fn draw(&amp;self) { println!(&quot;Drawing circle&quot;); }
+}
+
+struct Square { side: f64 }
+impl Draw for Square {
+    fn draw(&amp;self) { println!(&quot;Drawing square&quot;); }
+}
+
+fn main() {
+    // ✅ Can store different types that implement Draw
+    let shapes: Vec&lt;Box&lt;dyn Draw&gt;&gt; = vec![
+        Box::new(Circle { radius: 5.0 }),
+        Box::new(Square { side: 10.0 }),
+        Box::new(Circle { radius: 3.0 }),
+    ];
+
+    for shape in shapes.iter() {
+        shape.draw();
+    }
+}
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Drawing circle
+Drawing square
+Drawing circle
+</code></pre>
+<p><strong>Key insight:</strong> Without <code>Box&lt;dyn Trait&gt;</code>, you can't store different concrete types in the same Vec.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box for Large Data</h2>
+<p>When should you use <code>Box</code> to avoid stack overflow, and what's the performance trade-off?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>Box</code> when data is too large for the stack to prevent stack overflow.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">// ⚠️ Risky - might overflow stack (2-8MB limit)
+// let large_array = [0u8; 10_000_000];
+</code></pre>
+<p><strong>The solution:</strong></p>
+<pre><code class="language-rust">// ✅ Safe - data on heap
+let large_array = Box::new([0u8; 10_000_000]);
+</code></pre>
+<p><strong>When to use Box for large data:</strong>
+- Arrays or structs larger than ~1MB
+- Data that might grow in size
+- When unsure about stack limits</p>
+<p><strong>Performance trade-off:</strong></p>
+<pre><code class="language-rust">// Stack: Fast (~1ms for 1M allocations)
+let small = [0; 100];
+
+// Heap: Slower (~50ms for 1M allocations) but safer
+let large = Box::new([0; 1_000_000]);
+</code></pre>
+<p><strong>Trade-off:</strong>
+- Stack: Fast but limited (2-8MB)
+- Heap (via Box): Slower allocation but virtually unlimited</p>
+<p><strong>Rule of thumb:</strong> Data &gt;1MB → use Box</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Efficient Ownership Transfer with Box</h2>
+<p>How does <code>Box</code> make transferring ownership of large data more efficient?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Moving a <code>Box</code> only moves the pointer (8 bytes), not the data itself.</p>
+<p><strong>Without Box (inefficient):</strong></p>
+<pre><code class="language-rust">struct LargeStruct {
+    data: [u8; 10_000],
+}
+
+fn take_large(s: LargeStruct) {
+    // Use s
+}
+
+let large = LargeStruct { data: [0; 10_000] };
+take_large(large);  // ❌ Copies entire 10,000 bytes
+</code></pre>
+<p><strong>With Box (efficient):</strong></p>
+<pre><code class="language-rust">fn take_boxed(s: Box&lt;LargeStruct&gt;) {
+    // Use s
+}
+
+let boxed = Box::new(LargeStruct { data: [0; 10_000] });
+take_boxed(boxed);  // ✅ Only copies 8-byte pointer
+</code></pre>
+<p><strong>Benefit:</strong>
+- Moving stack value: Copies all bytes
+- Moving Box: Copies only pointer (8 bytes)
+- Data stays on heap, only ownership of pointer transfers</p>
+<p><strong>Use when:</strong> Frequently moving large structs between functions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Size and Memory Layout</h2>
+<p>What is the size of <code>Box&lt;T&gt;</code> vs <code>Box&lt;[T]&gt;</code>, and why the difference? Illustrate the memory layout.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Sizes:</strong></p>
+<pre><code class="language-rust">use std::mem::size_of;
+
+size_of::&lt;Box&lt;i32&gt;&gt;()          // 8 bytes
+size_of::&lt;Box&lt;[i32; 100]&gt;&gt;()   // 8 bytes
+size_of::&lt;Box&lt;[i32]&gt;&gt;()        // 16 bytes (!)
+</code></pre>
+<p><strong>Why the difference?</strong>
+- <code>Box&lt;T&gt;</code>: Just stores pointer to heap data (8 bytes)
+- <code>Box&lt;[T]&gt;</code>: Stores pointer + length, because slice can be any size (16 bytes)</p>
+<p><strong>Memory Layout:</strong></p>
+<pre><code>Box&lt;T&gt;:
+Stack                    Heap
+┌──────────┐            ┌──────────┐
+│  Box&lt;T&gt;  │───────────▶│    T     │
+│ (8 bytes)│            │  (data)  │
+└──────────┘            └──────────┘
+
+Box&lt;[T]&gt;:
+Stack                    Heap
+┌──────────┐            ┌──────────┐
+│ pointer  │───────────▶│   [T]    │
+│ length   │            │  (data)  │
+│(16 bytes)│            └──────────┘
+└──────────┘
+</code></pre>
+<p><strong>Key:</strong> Fixed-size types need only pointer; dynamically-sized types need pointer + metadata.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Box</h2>
+<p>List the scenarios when you should use <code>Box&lt;T&gt;</code>, and when you should NOT use it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>✅ Use Box when:</strong></p>
+<ol>
+<li><strong>Recursive types:</strong></li>
+</ol>
+<pre><code class="language-rust">struct Node { next: Option&lt;Box&lt;Node&gt;&gt; }
+</code></pre>
+<ol>
+<li><strong>Large data (stack overflow risk):</strong></li>
+</ol>
+<pre><code class="language-rust">let large = Box::new([0; 1_000_000]);
+</code></pre>
+<ol>
+<li><strong>Efficient transfer of large data:</strong></li>
+</ol>
+<pre><code class="language-rust">fn take(data: Box&lt;LargeStruct&gt;) { }
+</code></pre>
+<ol>
+<li><strong>Trait objects (type erasure):</strong></li>
+</ol>
+<pre><code class="language-rust">fn get() -&gt; Box&lt;dyn Draw&gt; { }
+</code></pre>
+<ol>
+<li><strong>Ensure heap allocation:</strong></li>
+</ol>
+<pre><code class="language-rust">let heap_data = Box::new(value);
+</code></pre>
+<p><strong>❌ Don't use Box when:</strong></p>
+<ol>
+<li><strong>Data is small:</strong> Stack is faster</li>
+<li><strong>Need shared ownership:</strong> Use <code>Rc</code> or <code>Arc</code></li>
+<li><strong>Need interior mutability:</strong> Use <code>RefCell</code> or <code>Mutex</code></li>
+<li><strong>Performance critical + small data:</strong> Heap allocation overhead matters</li>
+</ol>
+<p><strong>Rule:</strong> Use Box when you specifically need its benefits, not as default.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box and Automatic Cleanup</h2>
+<p>Explain how <code>Box</code> automatically cleans up heap memory. What happens when Box goes out of scope?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box</code> implements the <code>Drop</code> trait, which automatically frees heap memory when the Box goes out of scope.</p>
+<p><strong>Automatic cleanup:</strong></p>
+<pre><code class="language-rust">fn main() {
+    {
+        let boxed = Box::new(String::from(&quot;Hello&quot;));
+        println!(&quot;{}&quot;, boxed);
+    }  // boxed dropped here, heap memory freed automatically
+
+    // boxed no longer accessible
+}
+</code></pre>
+<p><strong>What happens:</strong>
+1. <code>boxed</code> goes out of scope (closing <code>}</code>)
+2. <code>Drop::drop()</code> is called on <code>boxed</code>
+3. Heap memory is deallocated
+4. No memory leaks!</p>
+<p><strong>Manual drop:</strong></p>
+<pre><code class="language-rust">let boxed = Box::new(String::from(&quot;Hello&quot;));
+
+// Explicitly drop early
+drop(boxed);
+
+// println!(&quot;{}&quot;, boxed);  // Error! Already dropped
+</code></pre>
+<p><strong>Key insight:</strong> You never need to manually free <code>Box</code> memory - Rust's ownership system guarantees cleanup.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box<dyn Error> for Multiple Error Types</h2>
+<p>Why is <code>Box&lt;dyn Error&gt;</code> useful for error handling, and how do you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;dyn Error&gt;</code> allows a function to return different error types, since all errors implement the <code>Error</code> trait.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::fs::File;
+use std::io::Read;
+
+// ❌ Can't return different error types
+// fn read_data() -&gt; Result&lt;String, ???&gt; {
+//     let f = File::open(&quot;file.txt&quot;)?;  // io::Error
+//     let n: i32 = &quot;42&quot;.parse()?;       // ParseIntError
+//     Ok(String::new())
+// }
+</code></pre>
+<p><strong>The solution:</strong></p>
+<pre><code class="language-rust">use std::error::Error;
+use std::fs::File;
+use std::io::Read;
+
+// ✅ Box&lt;dyn Error&gt; can hold any error type
+fn read_data() -&gt; Result&lt;String, Box&lt;dyn Error&gt;&gt; {
+    let mut f = File::open(&quot;file.txt&quot;)?;  // io::Error
+    let mut s = String::new();
+    f.read_to_string(&amp;mut s)?;
+
+    let n: i32 = &quot;42&quot;.parse()?;  // ParseIntError
+
+    Ok(s)
+}
+</code></pre>
+<p><strong>Why this works:</strong>
+- Both errors implement <code>Error</code> trait
+- <code>?</code> operator automatically boxes the errors
+- Caller gets unified error type</p>
+<p><strong>Use for:</strong> Application-level error handling where you don't care about specific error types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Factory Pattern with Box</h2>
+<p>Demonstrate the factory pattern using <code>Box&lt;dyn Trait&gt;</code> to return different types based on runtime conditions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">trait Logger {
+    fn log(&amp;self, message: &amp;str);
+}
+
+struct FileLogger;
+impl Logger for FileLogger {
+    fn log(&amp;self, message: &amp;str) {
+        println!(&quot;File: {}&quot;, message);
+    }
+}
+
+struct ConsoleLogger;
+impl Logger for ConsoleLogger {
+    fn log(&amp;self, message: &amp;str) {
+        println!(&quot;Console: {}&quot;, message);
+    }
+}
+
+// Factory function
+fn create_logger(use_file: bool) -&gt; Box&lt;dyn Logger&gt; {
+    if use_file {
+        Box::new(FileLogger)
+    } else {
+        Box::new(ConsoleLogger)
+    }
+}
+
+fn main() {
+    let logger = create_logger(true);
+    logger.log(&quot;Hello&quot;);  // File: Hello
+
+    let logger = create_logger(false);
+    logger.log(&quot;World&quot;);  // Console: World
+}
+</code></pre>
+<p><strong>Pattern benefits:</strong>
+- Encapsulates object creation logic
+- Returns different types through same interface
+- Caller doesn't need to know concrete type</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Recursive Expression Tree with Box</h2>
+<p>Create an arithmetic expression evaluator using <code>Box</code> for recursive expressions. Support numbers, addition, and multiplication.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">#[derive(Debug)]
+enum Expression {
+    Number(i32),
+    Add(Box&lt;Expression&gt;, Box&lt;Expression&gt;),
+    Multiply(Box&lt;Expression&gt;, Box&lt;Expression&gt;),
+}
+
+fn eval(expr: &amp;Expression) -&gt; i32 {
+    match expr {
+        Expression::Number(n) =&gt; *n,
+        Expression::Add(left, right) =&gt; {
+            eval(left) + eval(right)
+        }
+        Expression::Multiply(left, right) =&gt; {
+            eval(left) * eval(right)
+        }
+    }
+}
+
+fn main() {
+    // Build: (2 + 3) * 4 = 20
+    let expr = Expression::Multiply(
+        Box::new(Expression::Add(
+            Box::new(Expression::Number(2)),
+            Box::new(Expression::Number(3)),
+        )),
+        Box::new(Expression::Number(4)),
+    );
+
+    println!(&quot;Result: {}&quot;, eval(&amp;expr));  // 20
+}
+</code></pre>
+<p><strong>Pattern:</strong> Recursive data structures for tree-like computations (parsers, compilers, interpreters).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Performance Considerations</h2>
+<p>What are the performance costs of using <code>Box</code>, and when do they matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Two main costs:</strong></p>
+<p><strong>1. Allocation cost:</strong></p>
+<pre><code class="language-rust">// Heap allocation (slower: ~50ms for 1M allocations)
+let boxed = Box::new(42);
+
+// Stack allocation (faster: ~1ms for 1M allocations)
+let value = 42;
+</code></pre>
+<p><strong>2. Indirection cost:</strong></p>
+<pre><code class="language-rust">let value = 42;
+let result = value + 1;  // Direct access
+
+let boxed = Box::new(42);
+let result = *boxed + 1;  // One pointer dereference
+</code></pre>
+<p><strong>When costs matter:</strong>
+- Tight loops with millions of iterations
+- Performance-critical hot paths
+- Small data that fits easily on stack
+- Allocating/deallocating frequently</p>
+<p><strong>When costs don't matter:</strong>
+- Data only allocated once or infrequently
+- Large data (heap allocation unavoidable)
+- Recursive structures (Box is necessary)
+- Trait objects (Box enables pattern)</p>
+<p><strong>Rule:</strong> Don't optimize prematurely. Use Box where it makes sense conceptually, profile if performance matters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Box Gotchas</h2>
+<p>What are three common gotchas when working with <code>Box</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Gotcha 1: Box doesn't implement Copy</strong></p>
+<pre><code class="language-rust">let b1 = Box::new(5);
+let b2 = b1;  // Move, not copy
+// println!(&quot;{}&quot;, b1);  // ❌ Error! b1 was moved
+
+// Use clone if you need a copy
+let b1 = Box::new(5);
+let b2 = b1.clone();  // ✅ Explicit copy
+</code></pre>
+<p><strong>Gotcha 2: Can't create Box of unsized type directly</strong></p>
+<pre><code class="language-rust">trait Animal { }
+struct Dog;
+
+// ❌ Can't box trait directly
+// let boxed: Box&lt;dyn Animal&gt; = Dog;
+
+// ✅ Must use Box::new
+let boxed: Box&lt;dyn Animal&gt; = Box::new(Dog);
+</code></pre>
+<p><strong>Gotcha 3: Box&lt;[T]&gt; vs Box&lt;[T; N]&gt; size difference</strong></p>
+<pre><code class="language-rust">// Box&lt;[i32; 3]&gt;: 8 bytes (just pointer)
+let array_box: Box&lt;[i32; 3]&gt; = Box::new([1, 2, 3]);
+
+// Box&lt;[i32]&gt;: 16 bytes (pointer + length)
+let slice_box: Box&lt;[i32]&gt; = vec![1, 2, 3].into_boxed_slice();
+</code></pre>
+<p>Understanding these prevents common mistakes and confusion.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Key Insights</h2>
+<p>What are the seven key insights about <code>Box&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Box is indirection:</strong> Moves data to heap, gives you a pointer</p>
+<p><strong>2. Enables recursive types:</strong> Provides known size for self-referential structures</p>
+<p><strong>3. Enables trait objects:</strong> Allows returning different types through same interface</p>
+<p><strong>4. Automatic cleanup:</strong> Drop ensures no memory leaks</p>
+<p><strong>5. Single ownership:</strong> Box cannot be shared (use Rc/Arc for that)</p>
+<p><strong>6. Zero runtime overhead:</strong> Besides allocation, no ongoing cost like reference counting</p>
+<p><strong>7. Use judiciously:</strong> Stack is faster; use Box when you need its specific benefits</p>
+<p><strong>Mental model:</strong> Box is Rust's way of saying "put this on the heap" while maintaining ownership and safety guarantees.</p>
+<p><strong>Bottom line:</strong> Box is simple but powerful - it's the foundation for heap allocation in safe Rust.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box vs Other Smart Pointers</h2>
+<p>Compare <code>Box&lt;T&gt;</code> with <code>Rc&lt;T&gt;</code> and <code>Arc&lt;T&gt;</code>. When would you choose each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Box<T>:</strong>
+- Single ownership
+- Heap allocation
+- No runtime overhead (besides allocation)
+- Not shareable</p>
+<pre><code class="language-rust">let b = Box::new(5);
+// Cannot have multiple owners
+</code></pre>
+<p><strong>Rc<T>:</strong> (next topic in roadmap)
+- Multiple ownership (single-threaded)
+- Reference counting
+- Small runtime overhead (increment/decrement)
+- Shareable within one thread</p>
+<pre><code class="language-rust">let rc1 = Rc::new(5);
+let rc2 = Rc::clone(&amp;rc1);  // Both own the data
+</code></pre>
+<p><strong>Arc<T>:</strong> (coming after Rc)
+- Multiple ownership (multi-threaded)
+- Atomic reference counting
+- Larger runtime overhead (atomic operations)
+- Shareable across threads</p>
+<pre><code class="language-rust">let arc1 = Arc::new(5);
+let arc2 = Arc::clone(&amp;arc1);  // Thread-safe
+</code></pre>
+<p><strong>Choose:</strong>
+- <code>Box</code>: Single owner, heap allocation
+- <code>Rc</code>: Multiple owners, single thread
+- <code>Arc</code>: Multiple owners, multiple threads</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box and Deref Coercion</h2>
+<p>How does <code>Box&lt;T&gt;</code> use deref coercion, and what does this enable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box&lt;T&gt;</code> implements <code>Deref&lt;Target = T&gt;</code>, allowing automatic conversion from <code>&amp;Box&lt;T&gt;</code> to <code>&amp;T</code>.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">fn takes_i32_ref(n: &amp;i32) {
+    println!(&quot;{}&quot;, n);
+}
+
+fn main() {
+    let boxed = Box::new(42);
+
+    // All these work due to Deref:
+    takes_i32_ref(&amp;boxed);      // &amp;Box&lt;i32&gt; -&gt; &amp;i32
+    println!(&quot;{}&quot;, *boxed);     // Dereference to i32
+    println!(&quot;{}&quot;, boxed + 10); // Automatic deref in expression
+}
+</code></pre>
+<p><strong>What this enables:</strong>
+1. <strong>Transparent use:</strong> Box acts like the value it contains
+2. <strong>Ergonomic APIs:</strong> Pass Box where <code>&amp;T</code> is expected
+3. <strong>Method access:</strong> Call <code>T</code>'s methods on <code>Box&lt;T&gt;</code></p>
+<p><strong>Under the hood:</strong></p>
+<pre><code class="language-rust">impl&lt;T&gt; Deref for Box&lt;T&gt; {
+    type Target = T;
+    fn deref(&amp;self) -&gt; &amp;T {
+        // Returns reference to heap data
+    }
+}
+</code></pre>
+<p><strong>Benefit:</strong> You can mostly forget you're working with a Box and treat it like the inner value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box for Avoiding Lifetime Complexity</h2>
+<p>How can <code>Box</code> help avoid complex lifetime annotations in structs that hold data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Box</code> owns its data, so you don't need lifetime parameters for the data it contains.</p>
+<p><strong>Without Box (requires lifetime):</strong></p>
+<pre><code class="language-rust">// ❌ Complex: needs lifetime parameter
+struct Container&lt;'a&gt; {
+    data: &amp;'a str,
+}
+
+// Must track where data comes from
+fn create&lt;'a&gt;(s: &amp;'a str) -&gt; Container&lt;'a&gt; {
+    Container { data: s }
+}
+</code></pre>
+<p><strong>With Box (no lifetime needed):</strong></p>
+<pre><code class="language-rust">// ✅ Simple: Box owns the data
+struct Container {
+    data: Box&lt;str&gt;,
+}
+
+fn create(s: &amp;str) -&gt; Container {
+    Container {
+        data: s.to_string().into_boxed_str(),
+    }
+}
+</code></pre>
+<p><strong>Trade-off:</strong>
+- Without Box: No allocation, but lifetime complexity
+- With Box: Heap allocation, but simpler lifetimes</p>
+<p><strong>Use when:</strong> Lifetime annotations become too complex, and allocation cost is acceptable.</p>
+<p><strong>Note:</strong> This is a trade-off - you're exchanging compile-time complexity for runtime allocation cost.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box in Real-World Scenarios</h2>
+<p>Provide three real-world scenarios where <code>Box</code> is the right choice, with brief examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Parser/Compiler AST (Abstract Syntax Trees):</strong></p>
+<pre><code class="language-rust">enum ASTNode {
+    Number(i32),
+    BinaryOp {
+        op: Operation,
+        left: Box&lt;ASTNode&gt;,   // Recursive structure
+        right: Box&lt;ASTNode&gt;,
+    },
+}
+// Enables recursive tree structures for code representation
+</code></pre>
+<p><strong>2. Plugin System:</strong></p>
+<pre><code class="language-rust">trait Plugin {
+    fn execute(&amp;self);
+}
+
+fn load_plugins() -&gt; Vec&lt;Box&lt;dyn Plugin&gt;&gt; {
+    vec![
+        Box::new(AudioPlugin),
+        Box::new(VideoPlugin),
+        // Different plugin types in one collection
+    ]
+}
+</code></pre>
+<p><strong>3. Large Configuration Structs:</strong></p>
+<pre><code class="language-rust">struct AppConfig {
+    // Avoid stack overflow with large config
+    database: Box&lt;DatabaseConfig&gt;,  // 1000s of bytes
+    cache: Box&lt;CacheConfig&gt;,        // 1000s of bytes
+    network: Box&lt;NetworkConfig&gt;,    // 1000s of bytes
+}
+// Keeps stack frame small while allowing large configs
+</code></pre>
+<p><strong>Common thread:</strong> Box enables patterns that would be impossible or problematic otherwise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
