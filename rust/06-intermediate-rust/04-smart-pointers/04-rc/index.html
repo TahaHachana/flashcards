@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 04-Rc</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is Rc<T>?</h2>
+<p>What is <code>Rc&lt;T&gt;</code> and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Rc&lt;T&gt;</code> (Reference Counted) is a smart pointer that enables <strong>multiple ownership</strong> of the same data in single-threaded contexts. It keeps track of how many references exist to a value and automatically cleans up when the count reaches zero.</p>
+<p><strong>Key characteristics:</strong>
+- Enables multiple ownership (multiple <code>Rc</code> pointers to same data)
+- Single-threaded only (not thread-safe)
+- Reference counting overhead (increment/decrement on clone/drop)
+- Immutable by default (data cannot be mutated through <code>Rc</code> alone)
+- Zero owners → automatic cleanup</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let data = Rc::new(String::from(&quot;shared&quot;));
+let data2 = Rc::clone(&amp;data);  // Both own the same data
+let data3 = Rc::clone(&amp;data);  // All three share ownership
+</code></pre>
+<p>Think of <code>Rc</code> as a "shared ownership contract" where data stays alive as long as anyone holds a copy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Rc Exists - The Ownership Problem</h2>
+<p>What ownership problem does <code>Rc</code> solve? Provide an example showing the problem and solution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust's ownership rules say every value has <strong>one owner</strong>, but sometimes multiple parts of code need to own the same data.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">fn takes_a_string(_s: String) { }
+
+fn main() {
+    let name = String::from(&quot;Alice&quot;);
+    takes_a_string(name);
+    takes_a_string(name);  // ❌ Error: value already moved!
+}
+</code></pre>
+<p><strong>Traditional solutions:</strong>
+- Clone: <code>takes_a_string(name.clone())</code> - expensive for large data
+- References: <code>&amp;name</code> - lifetime complexity</p>
+<p><strong>Rc solution:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+fn takes_a_string(_s: Rc&lt;String&gt;) { }
+
+fn main() {
+    let name = Rc::new(String::from(&quot;Alice&quot;));
+    takes_a_string(Rc::clone(&amp;name));  // ✅ Works!
+    takes_a_string(Rc::clone(&amp;name));  // ✅ Works!
+}
+</code></pre>
+<p><code>Rc</code> allows multiple ownership without cloning the actual data - only the pointer is cloned.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc::clone vs .clone()</h2>
+<p>What's the difference between <code>Rc::clone(&amp;rc)</code> and <code>rc.clone()</code>, and why is <code>Rc::clone</code> preferred?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both work identically, but <code>Rc::clone(&amp;rc)</code> is preferred for clarity.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let rc = Rc::new(String::from(&quot;data&quot;));
+
+let rc2 = Rc::clone(&amp;rc);  // ✅ Preferred: explicit Rc clone
+let rc3 = rc.clone();      // ⚠️  Less clear: might be String clone?
+</code></pre>
+<p><strong>Why <code>Rc::clone(&amp;rc)</code> is better:</strong>
+- Makes it explicit you're cloning the <code>Rc</code> pointer, not the inner data
+- Distinguishes from potentially expensive <code>.clone()</code> on the inner type
+- Conventional in Rust code (signals cheap operation)</p>
+<p><strong>Key insight:</strong> Cloning an <code>Rc</code> is cheap (just increments a counter), unlike cloning the data which could be expensive.</p>
+<p><strong>What actually happens:</strong></p>
+<pre><code class="language-rust">Rc::clone(&amp;rc)  // Increments counter (~2-3 CPU cycles)
+rc.clone()      // Same thing, but less obvious it's cheap
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Counting Mechanism</h2>
+<p>Explain how reference counting works in <code>Rc&lt;T&gt;</code>. Show the count changing through creation, clones, and drops.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Rc</code> maintains a count of how many <code>Rc</code> pointers exist to the data:</p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let data = Rc::new(String::from(&quot;hello&quot;));
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;data));  // 1
+
+let data2 = Rc::clone(&amp;data);
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;data));  // 2
+
+let data3 = Rc::clone(&amp;data);
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;data));  // 3
+
+drop(data2);
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;data));  // 2
+
+drop(data3);
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;data));  // 1
+// data dropped, count = 0, memory freed
+</code></pre>
+<p><strong>The lifecycle:</strong>
+1. <strong>Create</strong>: <code>Rc::new()</code> → count = 1
+2. <strong>Clone</strong>: <code>Rc::clone()</code> → count increments
+3. <strong>Drop</strong>: Each drop → count decrements
+4. <strong>Cleanup</strong>: Count reaches 0 → data freed automatically</p>
+<p><strong>Memory layout:</strong></p>
+<pre><code>Heap:
+┌──────────────────┐
+│ Strong Count: 3  │
+│ Weak Count: 0    │
+│ Data: &quot;hello&quot;    │
+└──────────────────┘
+   ↑   ↑   ↑
+  rc1 rc2 rc3
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sharing Data with Rc - Practical Example</h2>
+<p>Demonstrate how <code>Rc</code> solves the problem of sharing expensive data between multiple structs without cloning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Without Rc (doesn't work):</strong></p>
+<pre><code class="language-rust">struct City {
+    name: String,
+    history: String,  // Expensive data
+}
+
+struct CityData {
+    names: Vec&lt;String&gt;,
+    histories: Vec&lt;String&gt;,
+}
+
+let calgary = City {
+    name: &quot;Calgary&quot;.to_string(),
+    history: &quot;Long history...&quot;.to_string(),
+};
+
+let data = CityData {
+    names: vec![calgary.name],      // Takes ownership!
+    histories: vec![calgary.history],  // Takes ownership!
+};
+// ❌ Error: calgary fields moved
+</code></pre>
+<p><strong>With Rc (works):</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+struct City {
+    name: Rc&lt;String&gt;,
+    history: Rc&lt;String&gt;,
+}
+
+struct CityData {
+    names: Vec&lt;Rc&lt;String&gt;&gt;,
+    histories: Vec&lt;Rc&lt;String&gt;&gt;,
+}
+
+let name = Rc::new(&quot;Calgary&quot;.to_string());
+let history = Rc::new(&quot;Long history...&quot;.to_string());
+
+let calgary = City {
+    name: Rc::clone(&amp;name),
+    history: Rc::clone(&amp;history),
+};
+
+let data = CityData {
+    names: vec![Rc::clone(&amp;name)],
+    histories: vec![Rc::clone(&amp;history)],
+};
+
+// ✅ Both can access the data!
+println!(&quot;{}&quot;, calgary.history);
+println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;history));  // 3
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc and Immutability</h2>
+<p>Why can't you mutate data through <code>Rc</code>, and what's the solution for shared mutable state?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let data = Rc::new(String::from(&quot;hello&quot;));
+
+// ❌ Cannot mutate through Rc
+// data.push_str(&quot; world&quot;);  // Error!
+</code></pre>
+<p><strong>Why?</strong> Multiple owners with mutable access would violate Rust's aliasing rules. <code>Rc</code> ensures safety by only allowing shared immutable access.</p>
+<p><strong>The solution: Rc<RefCell\<T>></strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+let data = Rc::new(RefCell::new(String::from(&quot;hello&quot;)));
+let data2 = Rc::clone(&amp;data);
+
+// Mutate through RefCell (runtime borrow checking)
+data.borrow_mut().push_str(&quot; world&quot;);
+
+// Both see the change
+println!(&quot;{}&quot;, data.borrow());   // &quot;hello world&quot;
+println!(&quot;{}&quot;, data2.borrow());  // &quot;hello world&quot;
+</code></pre>
+<p><strong>Pattern:</strong> <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> is the standard pattern for shared mutable state in single-threaded contexts.</p>
+<p><strong>Trade-off:</strong> Borrow checking moves from compile-time to runtime (can panic).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Cycles Problem</h2>
+<p>What is a reference cycle with <code>Rc</code>, why does it cause a memory leak, and how do you detect it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A <strong>reference cycle</strong> occurs when two or more <code>Rc</code> pointers point at each other, preventing the count from ever reaching zero.</p>
+<p><strong>Example of a cycle:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Node {
+    next: Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,
+}
+
+let node1 = Rc::new(RefCell::new(Node { next: None }));
+let node2 = Rc::new(RefCell::new(Node { 
+    next: Some(Rc::clone(&amp;node1))  // node2 → node1
+}));
+
+// Create cycle: node1 → node2
+node1.borrow_mut().next = Some(Rc::clone(&amp;node2));
+
+// ⚠️ Memory leak!
+</code></pre>
+<p><strong>Why it leaks:</strong>
+- <code>node1</code> count: 2 (original + node2's reference)
+- <code>node2</code> count: 2 (original + node1's reference)
+- When both go out of scope, each drops one reference
+- Both still have count = 1, so neither is freed!</p>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-rust">println!(&quot;node1 count: {}&quot;, Rc::strong_count(&amp;node1));  // 2
+println!(&quot;node2 count: {}&quot;, Rc::strong_count(&amp;node2));  // 2
+// If count never reaches 1 after expected drops, you may have a cycle
+</code></pre>
+<p><strong>Solution:</strong> Use <code>Weak</code> references to break cycles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Weak References Solution</h2>
+<p>What is <code>Weak&lt;T&gt;</code>, how does it differ from <code>Rc&lt;T&gt;</code>, and how do you use it to prevent reference cycles?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Weak&lt;T&gt;</code> is a weak reference that doesn't keep data alive - it doesn't contribute to the strong count.</p>
+<p><strong>Key differences:</strong>
+- <strong>Strong (<code>Rc</code>)</strong>: Keeps data alive, prevents cleanup
+- <strong>Weak (<code>Weak</code>)</strong>: Doesn't keep data alive, can become invalid</p>
+<p><strong>Creating and using Weak:</strong></p>
+<pre><code class="language-rust">use std::rc::{Rc, Weak};
+
+// Create weak reference
+let rc = Rc::new(String::from(&quot;data&quot;));
+let weak: Weak&lt;String&gt; = Rc::downgrade(&amp;rc);
+
+println!(&quot;Strong: {}&quot;, Rc::strong_count(&amp;rc));  // 1
+println!(&quot;Weak: {}&quot;, Rc::weak_count(&amp;rc));      // 1
+
+// Use weak reference (must upgrade)
+match weak.upgrade() {
+    Some(rc) =&gt; println!(&quot;Data: {}&quot;, rc),  // Data still alive
+    None =&gt; println!(&quot;Data was freed&quot;),     // Data dropped
+}
+</code></pre>
+<p><strong>Preventing cycles:</strong></p>
+<pre><code class="language-rust">struct Node {
+    next: Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,      // Strong (child)
+    prev: Option&lt;Weak&lt;RefCell&lt;Node&gt;&gt;&gt;,    // Weak (parent)
+}
+
+// Child holds strong ref, parent holds weak ref
+// No cycle because weak doesn't prevent cleanup
+</code></pre>
+<p><strong>Rule:</strong> Data is freed when strong count reaches 0, regardless of weak count.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Rc</h2>
+<p>List four scenarios when you should use <code>Rc&lt;T&gt;</code> and four when you shouldn't.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>✅ Use Rc when:</strong></p>
+<ol>
+<li><strong>Multiple parts need to own the same data:</strong></li>
+</ol>
+<pre><code class="language-rust">struct Graph {
+    nodes: Vec&lt;Rc&lt;Node&gt;&gt;,
+}
+</code></pre>
+<ol>
+<li><strong>Avoid expensive clones:</strong></li>
+</ol>
+<pre><code class="language-rust">let expensive = Rc::new(large_string);  // Share cheaply
+</code></pre>
+<ol>
+<li><strong>Avoid complex lifetime annotations:</strong></li>
+</ol>
+<pre><code class="language-rust">struct City {
+    name: Rc&lt;String&gt;,  // No lifetime needed
+}
+</code></pre>
+<ol>
+<li><strong>Building tree/graph structures:</strong></li>
+</ol>
+<pre><code class="language-rust">struct Node {
+    children: Vec&lt;Rc&lt;Node&gt;&gt;,
+    parent: Weak&lt;Node&gt;,
+}
+</code></pre>
+<p><strong>❌ Don't use Rc when:</strong></p>
+<ol>
+<li><strong>Single ownership suffices:</strong></li>
+</ol>
+<pre><code class="language-rust">let data = String::from(&quot;hello&quot;);  // Better than Rc
+</code></pre>
+<ol>
+<li><strong>Need thread safety:</strong></li>
+</ol>
+<pre><code class="language-rust">// Use Arc instead for multi-threaded
+</code></pre>
+<ol>
+<li><strong>Need mutability:</strong></li>
+</ol>
+<pre><code class="language-rust">// Use Rc&lt;RefCell&lt;T&gt;&gt; for interior mutability
+</code></pre>
+<ol>
+<li><strong>Performance is critical:</strong></li>
+</ol>
+<pre><code class="language-rust">// Rc has overhead; stack allocation is faster
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc vs Box vs Regular Ownership</h2>
+<p>Compare <code>Rc</code>, <code>Box</code>, and regular ownership across key features. When would you choose each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Feature | Ownership | Box | Rc |
+|---------|-----------|-----|-----|
+| <strong>Owners</strong> | One | One | Multiple |
+| <strong>Overhead</strong> | None | None | Counter updates |
+| <strong>Mutability</strong> | Via <code>mut</code> | Via <code>mut</code> | Needs <code>RefCell</code> |
+| <strong>Thread-safe</strong> | Yes | Yes | No (use <code>Arc</code>) |
+| <strong>Use case</strong> | Default | Heap allocation | Shared ownership |</p>
+<p><strong>Decision guide:</strong></p>
+<pre><code>Need shared ownership?
+  ├─ No → Use regular ownership or Box
+  │       ├─ Need heap? → Box
+  │       └─ Stack okay? → Regular ownership
+  └─ Yes → Need thread safety?
+      ├─ No → Use Rc
+      └─ Yes → Use Arc
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-rust">// Regular ownership: single owner, stack
+let data = String::from(&quot;hello&quot;);
+
+// Box: single owner, heap
+let data = Box::new(LargeData);
+
+// Rc: multiple owners, single-threaded
+let data = Rc::new(String::from(&quot;shared&quot;));
+let data2 = Rc::clone(&amp;data);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc Performance Costs</h2>
+<p>What are the performance costs of using <code>Rc</code>, and when do they matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Operations and costs:</strong></p>
+<p><strong>Allocation (same as Box):</strong></p>
+<pre><code class="language-rust">let rc = Rc::new(data);  // One heap allocation
+</code></pre>
+<p><strong>Cloning (very cheap):</strong></p>
+<pre><code class="language-rust">let rc2 = Rc::clone(&amp;rc);  // ~2-3 CPU instructions (counter++)
+</code></pre>
+<p><strong>Dropping (cheap):</strong></p>
+<pre><code class="language-rust">drop(rc);  // ~5-10 CPU instructions (counter--, check zero)
+</code></pre>
+<p><strong>Benchmark comparison:</strong></p>
+<pre><code class="language-rust">// Rc clone: ~10ms for 1M operations
+let rc = Rc::new(vec![1, 2, 3]);
+for _ in 0..1_000_000 {
+    let _clone = Rc::clone(&amp;rc);
+}
+
+// Vec clone: ~100ms for 1M operations  
+let vec = vec![1, 2, 3];
+for _ in 0..1_000_000 {
+    let _clone = vec.clone();
+}
+</code></pre>
+<p><strong>When costs matter:</strong>
+- Tight loops with millions of allocations/drops
+- Performance-critical hot paths
+- Real-time systems</p>
+<p><strong>When costs don't matter:</strong>
+- Normal application code
+- Data shared across program (allocated once)
+- When avoiding clones is more important</p>
+<p><strong>Takeaway:</strong> <code>Rc</code> overhead is negligible compared to cloning actual data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Graph Pattern with Rc</h2>
+<p>Demonstrate how to use <code>Rc</code> to implement a graph where multiple nodes can point to the same neighbor.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+
+struct Node {
+    value: i32,
+    edges: Vec&lt;Rc&lt;Node&gt;&gt;,
+}
+
+fn main() {
+    // Create shared node
+    let node1 = Rc::new(Node {
+        value: 1,
+        edges: vec![],
+    });
+
+    // Multiple nodes point to node1
+    let node2 = Rc::new(Node {
+        value: 2,
+        edges: vec![Rc::clone(&amp;node1)],
+    });
+
+    let node3 = Rc::new(Node {
+        value: 3,
+        edges: vec![Rc::clone(&amp;node1)],
+    });
+
+    println!(&quot;node1 count: {}&quot;, Rc::strong_count(&amp;node1));  // 3
+
+    // node1 is shared by node2 and node3
+}
+</code></pre>
+<p><strong>Why Rc is needed:</strong>
+- Multiple nodes need to "own" the same neighbor
+- Can't use references (lifetime complexity)
+- Don't want to clone the entire node (expensive)
+- Rc allows cheap shared ownership</p>
+<p><strong>Pattern:</strong> Common in graphs, DAGs, and any structure with shared nodes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Caching Pattern with Rc</h2>
+<p>Show how to use <code>Rc</code> for caching/memoization where expensive data is shared.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+use std::collections::HashMap;
+
+struct ExpensiveData {
+    content: String,
+}
+
+impl ExpensiveData {
+    fn compute(key: &amp;str) -&gt; Self {
+        // Simulate expensive computation
+        ExpensiveData {
+            content: format!(&quot;Computed data for {}&quot;, key),
+        }
+    }
+}
+
+struct Cache {
+    data: HashMap&lt;String, Rc&lt;ExpensiveData&gt;&gt;,
+}
+
+impl Cache {
+    fn new() -&gt; Self {
+        Cache { data: HashMap::new() }
+    }
+
+    fn get(&amp;mut self, key: &amp;str) -&gt; Rc&lt;ExpensiveData&gt; {
+        self.data
+            .entry(key.to_string())
+            .or_insert_with(|| {
+                Rc::new(ExpensiveData::compute(key))
+            })
+            .clone()  // Cheap Rc clone, not data clone!
+    }
+}
+
+fn main() {
+    let mut cache = Cache::new();
+
+    let data1 = cache.get(&quot;key1&quot;);
+    let data2 = cache.get(&quot;key1&quot;);  // Same Rc, not recomputed
+
+    // Both point to same data
+    assert!(Rc::ptr_eq(&amp;data1, &amp;data2));
+}
+</code></pre>
+<p><strong>Benefits:</strong>
+- Expensive data computed only once
+- Multiple users can hold references
+- Data stays in cache as long as anyone uses it
+- Automatic cleanup when all users done</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tracking Reference Counts for Debugging</h2>
+<p>How do you debug <code>Rc</code> usage by tracking strong and weak counts? Provide a debugging helper.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+
+// Helper function to print counts
+fn print_counts&lt;T&gt;(name: &amp;str, rc: &amp;Rc&lt;T&gt;) {
+    println!(
+        &quot;{}: strong={}, weak={}&quot;,
+        name,
+        Rc::strong_count(rc),
+        Rc::weak_count(rc)
+    );
+}
+
+fn main() {
+    let data = Rc::new(String::from(&quot;data&quot;));
+    print_counts(&quot;Initial&quot;, &amp;data);
+    // Initial: strong=1, weak=0
+
+    let weak = Rc::downgrade(&amp;data);
+    print_counts(&quot;After weak&quot;, &amp;data);
+    // After weak: strong=1, weak=1
+
+    let data2 = Rc::clone(&amp;data);
+    print_counts(&quot;After clone&quot;, &amp;data);
+    // After clone: strong=2, weak=1
+
+    drop(data2);
+    print_counts(&quot;After drop&quot;, &amp;data);
+    // After drop: strong=1, weak=1
+}
+</code></pre>
+<p><strong>Debugging tips:</strong>
+- Strong count should match expected number of owners
+- If count never decreases, you may have a leak
+- If count is higher than expected, check for unintended clones
+- Use <code>Rc::ptr_eq()</code> to check if two Rc's point to same data</p>
+<p><strong>Finding leaks:</strong></p>
+<pre><code class="language-rust">// Count should eventually return to 1 or 0
+if Rc::strong_count(&amp;data) &gt; expected {
+    println!(&quot;Possible leak or cycle!&quot;);
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Rc is Not Thread-Safe</h2>
+<p>What happens if you try to send <code>Rc</code> across threads? What's the error and solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::thread;
+
+let data = Rc::new(vec![1, 2, 3]);
+
+// ❌ This won't compile
+thread::spawn(move || {
+    println!(&quot;{:?}&quot;, data);
+});
+</code></pre>
+<p><strong>Error:</strong></p>
+<pre><code>error[E0277]: `Rc&lt;Vec&lt;i32&gt;&gt;` cannot be sent between threads safely
+   |
+   = help: the trait `Send` is not implemented for `Rc&lt;Vec&lt;i32&gt;&gt;`
+</code></pre>
+<p><strong>Why?</strong> <code>Rc</code> uses non-atomic reference counting (not thread-safe). Multiple threads could corrupt the counter.</p>
+<p><strong>The solution: Use <code>Arc</code> (Atomic Reference Counted):</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::thread;
+
+let data = Arc::new(vec![1, 2, 3]);
+
+// ✅ Works! Arc is thread-safe
+thread::spawn(move || {
+    println!(&quot;{:?}&quot;, data);
+});
+</code></pre>
+<p><strong>Rule:</strong> 
+- Single thread? → <code>Rc</code>
+- Multiple threads? → <code>Arc</code></p>
+<p><strong>Cost:</strong> Arc is slightly slower due to atomic operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Reference Cycles Cause Memory Leaks</h2>
+<p>Demonstrate a reference cycle memory leak and show the fix using <code>Weak</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The leak:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Node {
+    next: Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,
+}
+
+fn main() {
+    let node1 = Rc::new(RefCell::new(Node { next: None }));
+    let node2 = Rc::new(RefCell::new(Node {
+        next: Some(Rc::clone(&amp;node1)),
+    }));
+
+    // Create cycle
+    node1.borrow_mut().next = Some(Rc::clone(&amp;node2));
+
+    println!(&quot;node1: {}&quot;, Rc::strong_count(&amp;node1));  // 2
+    println!(&quot;node2: {}&quot;, Rc::strong_count(&amp;node2));  // 2
+
+    // ⚠️ Memory leaked! Both have count = 2, never freed
+}
+</code></pre>
+<p><strong>The fix:</strong></p>
+<pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct Node {
+    next: Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,      // Strong
+    prev: Option&lt;Weak&lt;RefCell&lt;Node&gt;&gt;&gt;,    // Weak
+}
+
+fn main() {
+    let node1 = Rc::new(RefCell::new(Node {
+        next: None,
+        prev: None,
+    }));
+
+    let node2 = Rc::new(RefCell::new(Node {
+        next: None,
+        prev: Some(Rc::downgrade(&amp;node1)),  // Weak reference
+    }));
+
+    node1.borrow_mut().next = Some(Rc::clone(&amp;node2));
+
+    // ✅ No cycle! Weak doesn't prevent cleanup
+}
+</code></pre>
+<p><strong>Pattern:</strong> Use <code>Weak</code> for "parent" or "back" pointers to break cycles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Rc Doesn't Allow Direct Mutation</h2>
+<p>Why can't you directly mutate data in <code>Rc</code>, and what's the pattern to work around this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let data = Rc::new(vec![1, 2, 3]);
+
+// ❌ Cannot mutate
+// data.push(4);  // Error: Rc&lt;Vec&gt; doesn't have push
+</code></pre>
+<p><strong>Why?</strong> <code>Rc</code> only provides shared immutable access (<code>&amp;T</code>). Multiple owners with mutable access would violate aliasing rules.</p>
+<p><strong>Solution 1: Rc<RefCell\<T>> pattern:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+let data = Rc::new(RefCell::new(vec![1, 2, 3]));
+let data2 = Rc::clone(&amp;data);
+
+// Mutate through RefCell
+data.borrow_mut().push(4);
+
+// Both see the change
+println!(&quot;{:?}&quot;, data.borrow());   // [1, 2, 3, 4]
+println!(&quot;{:?}&quot;, data2.borrow());  // [1, 2, 3, 4]
+</code></pre>
+<p><strong>Solution 2: Make the Rc itself mutable:</strong></p>
+<pre><code class="language-rust">let mut data = Rc::new(vec![1, 2, 3]);
+
+// Replace entire Rc
+data = Rc::new(vec![4, 5, 6]);
+// Old data dropped if no other Rc's exist
+</code></pre>
+<p><strong>Pattern:</strong> <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> is standard for shared mutable state (single-threaded).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Comparing Rc Values vs Pointers</h2>
+<p>How does <code>==</code> work with <code>Rc</code>, and how do you compare pointers instead of values?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Comparing values (default):</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+let rc1 = Rc::new(String::from(&quot;hello&quot;));
+let rc2 = Rc::new(String::from(&quot;hello&quot;));
+let rc3 = Rc::clone(&amp;rc1);
+
+// Compares the inner values, not pointers
+assert!(rc1 == rc2);   // ✅ true (both contain &quot;hello&quot;)
+assert!(rc1 == rc3);   // ✅ true (same value)
+</code></pre>
+<p><strong>Comparing pointers:</strong></p>
+<pre><code class="language-rust">// Check if Rc's point to same allocation
+assert!(!Rc::ptr_eq(&amp;rc1, &amp;rc2));  // ✅ false (different allocations)
+assert!(Rc::ptr_eq(&amp;rc1, &amp;rc3));   // ✅ true (same allocation)
+</code></pre>
+<p><strong>When to use each:</strong>
+- <code>==</code> → Compare values (do they contain the same data?)
+- <code>Rc::ptr_eq()</code> → Compare pointers (do they point to the same memory?)</p>
+<p><strong>Example use case:</strong></p>
+<pre><code class="language-rust">// Check if data is actually shared
+if Rc::ptr_eq(&amp;rc1, &amp;rc2) {
+    println!(&quot;Sharing the same data&quot;);
+} else {
+    println!(&quot;Different data, even if equal values&quot;);
+}
+</code></pre>
+<p><strong>Gotcha:</strong> Assuming <code>==</code> compares pointers when it actually compares values.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Configuration Sharing Pattern</h2>
+<p>Demonstrate using <code>Rc</code> to share configuration across multiple components without cloning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+
+struct Config {
+    database_url: String,
+    max_connections: u32,
+    timeout_ms: u64,
+}
+
+struct App {
+    config: Rc&lt;Config&gt;,
+}
+
+struct DatabasePool {
+    config: Rc&lt;Config&gt;,
+}
+
+struct Logger {
+    config: Rc&lt;Config&gt;,
+}
+
+fn main() {
+    // Create config once
+    let config = Rc::new(Config {
+        database_url: &quot;postgres://localhost&quot;.to_string(),
+        max_connections: 100,
+        timeout_ms: 5000,
+    });
+
+    // Share across components (cheap)
+    let app = App {
+        config: Rc::clone(&amp;config),
+    };
+
+    let pool = DatabasePool {
+        config: Rc::clone(&amp;config),
+    };
+
+    let logger = Logger {
+        config: Rc::clone(&amp;config),
+    };
+
+    // All share the same config
+    println!(&quot;Connections: {}&quot;, app.config.max_connections);
+    println!(&quot;Strong count: {}&quot;, Rc::strong_count(&amp;config));  // 4
+}
+</code></pre>
+<p><strong>Benefits:</strong>
+- Config created once, shared everywhere
+- No expensive clones of configuration data
+- All components see consistent config
+- Automatic cleanup when last component drops</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tree with Parent Pointers Pattern</h2>
+<p>Implement a tree node with both parent and child pointers using <code>Rc</code> and <code>Weak</code> to avoid cycles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct TreeNode {
+    value: i32,
+    parent: RefCell&lt;Weak&lt;TreeNode&gt;&gt;,           // Weak to parent
+    children: RefCell&lt;Vec&lt;Rc&lt;TreeNode&gt;&gt;&gt;,      // Strong to children
+}
+
+impl TreeNode {
+    fn new(value: i32) -&gt; Rc&lt;Self&gt; {
+        Rc::new(TreeNode {
+            value,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![]),
+        })
+    }
+
+    fn add_child(parent: &amp;Rc&lt;TreeNode&gt;, child: Rc&lt;TreeNode&gt;) {
+        // Set child's parent (weak reference)
+        *child.parent.borrow_mut() = Rc::downgrade(parent);
+        // Add child to parent's children (strong reference)
+        parent.children.borrow_mut().push(child);
+    }
+}
+
+fn main() {
+    let root = TreeNode::new(1);
+    let child1 = TreeNode::new(2);
+    let child2 = TreeNode::new(3);
+
+    TreeNode::add_child(&amp;root, child1);
+    TreeNode::add_child(&amp;root, child2);
+
+    // ✅ No cycle! Parent→child is strong, child→parent is weak
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+- <strong>Downward (parent→child)</strong>: Strong <code>Rc</code> (parents own children)
+- <strong>Upward (child→parent)</strong>: Weak (children don't own parents)
+- Prevents cycles while allowing bidirectional traversal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc Key Insights</h2>
+<p>What are the seven key insights about <code>Rc&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Rc enables shared ownership:</strong> Multiple parts can own the same data</p>
+<p><strong>2. Reference counting is automatic:</strong> No manual tracking needed</p>
+<p><strong>3. Cloning is cheap:</strong> Just increments a counter (~2-3 CPU cycles)</p>
+<p><strong>4. Single-threaded only:</strong> Use <code>Arc</code> for threads (Rc lacks <code>Send</code>/<code>Sync</code>)</p>
+<p><strong>5. Immutable by default:</strong> Need <code>RefCell</code> for mutation (<code>Rc&lt;RefCell&lt;T&gt;&gt;</code>)</p>
+<p><strong>6. Weak prevents cycles:</strong> Use <code>Weak</code> for back-references to avoid leaks</p>
+<p><strong>7. Zero count = cleanup:</strong> Automatic when last owner drops</p>
+<p><strong>Mental model:</strong>
+- <code>Rc</code> = "reference counter" = shared ownership contract
+- Data stays alive as long as someone holds a copy
+- Cheap to share (clone pointer), expensive to copy (clone data)
+- Like garbage collection, but deterministic</p>
+<p><strong>Bottom line:</strong> Rc provides safe shared ownership in single-threaded contexts without the complexity of lifetimes or the expense of cloning.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Rc Drops Data</h2>
+<p>Explain precisely when <code>Rc</code> drops the inner data. Show with an example tracking the lifecycle.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Data is dropped when the <strong>strong count reaches zero</strong>, regardless of weak count.</p>
+<p><strong>Example tracking lifecycle:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+struct Data {
+    value: String,
+}
+
+impl Drop for Data {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping: {}&quot;, self.value);
+    }
+}
+
+fn main() {
+    println!(&quot;Creating rc1&quot;);
+    let rc1 = Rc::new(Data {
+        value: &quot;data&quot;.to_string(),
+    });
+    println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;rc1));  // 1
+
+    {
+        println!(&quot;Creating rc2&quot;);
+        let rc2 = Rc::clone(&amp;rc1);
+        println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;rc1));  // 2
+
+        println!(&quot;Creating weak&quot;);
+        let weak = Rc::downgrade(&amp;rc1);
+        println!(&quot;Strong: {}, Weak: {}&quot;,
+                 Rc::strong_count(&amp;rc1),
+                 Rc::weak_count(&amp;rc1));  // Strong: 2, Weak: 1
+
+        println!(&quot;Dropping rc2&quot;);
+    }  // rc2 dropped, count: 1
+
+    println!(&quot;Count: {}&quot;, Rc::strong_count(&amp;rc1));  // 1
+    println!(&quot;Dropping rc1&quot;);
+}  // rc1 dropped, count: 0, data is freed
+
+// Output:
+// Creating rc1
+// Count: 1
+// Creating rc2
+// Count: 2
+// Creating weak
+// Strong: 2, Weak: 1
+// Dropping rc2
+// Count: 1
+// Dropping rc1
+// Dropping: data
+</code></pre>
+<p><strong>Rule:</strong> Strong count = 0 → Drop, regardless of weak count.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc vs Arc Decision Matrix</h2>
+<p>Create a decision matrix: when to use <code>Rc</code> vs <code>Arc</code> (or neither)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Need shared ownership?
+  │
+  ├─ No → Don't use Rc or Arc
+  │       Use regular ownership or Box
+  │
+  └─ Yes → Is data accessed from multiple threads?
+      │
+      ├─ No (single-threaded)
+      │   │
+      │   └─ Use Rc&lt;T&gt;
+      │       ├─ Need mutation? → Rc&lt;RefCell&lt;T&gt;&gt;
+      │       └─ Read-only? → Rc&lt;T&gt;
+      │
+      └─ Yes (multi-threaded)
+          │
+          └─ Use Arc&lt;T&gt;
+              ├─ Need mutation? → Arc&lt;Mutex&lt;T&gt;&gt; or Arc&lt;RwLock&lt;T&gt;&gt;
+              └─ Read-only? → Arc&lt;T&gt;
+</code></pre>
+<p><strong>Quick reference table:</strong></p>
+<p>| Scenario | Choice | Reason |
+|----------|--------|--------|
+| Single owner | Regular ownership | Simplest, fastest |
+| Single owner, heap | <code>Box&lt;T&gt;</code> | Heap allocation |
+| Multiple owners, 1 thread | <code>Rc&lt;T&gt;</code> | Cheap shared ownership |
+| Multiple owners, threads | <code>Arc&lt;T&gt;</code> | Thread-safe |
+| Shared mutation, 1 thread | <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> | Interior mutability |
+| Shared mutation, threads | <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> | Thread-safe mutation |</p>
+<p><strong>Cost comparison:</strong>
+- Regular ownership: Zero overhead
+- <code>Box</code>: Heap allocation only
+- <code>Rc</code>: Heap + counter updates
+- <code>Arc</code>: Heap + atomic counter updates (slowest)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Upgrading Weak References</h2>
+<p>How do you safely use a <code>Weak</code> reference? What happens if the data was already freed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Weak</code> references must be "upgraded" to strong references before use, which can fail if data was dropped.</p>
+<p><strong>Pattern:</strong></p>
+<pre><code class="language-rust">use std::rc::{Rc, Weak};
+
+fn use_weak(weak: &amp;Weak&lt;String&gt;) {
+    match weak.upgrade() {
+        Some(rc) =&gt; {
+            // Data still alive, got strong reference
+            println!(&quot;Data: {}&quot;, rc);
+            // rc dropped when scope ends
+        }
+        None =&gt; {
+            // Data was freed
+            println!(&quot;Data no longer available&quot;);
+        }
+    }
+}
+
+fn main() {
+    let rc = Rc::new(String::from(&quot;hello&quot;));
+    let weak = Rc::downgrade(&amp;rc);
+
+    use_weak(&amp;weak);  // Some(&quot;hello&quot;)
+
+    drop(rc);  // Last strong ref dropped, data freed
+
+    use_weak(&amp;weak);  // None (data was freed)
+}
+</code></pre>
+<p><strong>Why upgrade can fail:</strong>
+- Weak doesn't keep data alive
+- If all strong refs dropped, data is freed
+- <code>upgrade()</code> returns <code>Option&lt;Rc&lt;T&gt;&gt;</code></p>
+<p><strong>Common patterns:</strong></p>
+<pre><code class="language-rust">// Pattern 1: Early return
+if let Some(rc) = weak.upgrade() {
+    // Use rc
+} else {
+    return;  // Data gone
+}
+
+// Pattern 2: Conditional logic
+let data = weak.upgrade()
+    .expect(&quot;Data should still be alive&quot;);
+
+// Pattern 3: Default value
+let data = weak.upgrade()
+    .unwrap_or_else(|| Rc::new(default_value()));
+</code></pre>
+<p><strong>Key insight:</strong> Weak is "try to access" not "definitely access".</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc and Garbage Collection Comparison</h2>
+<p>How is <code>Rc</code> similar to and different from garbage collection in languages like Java or Python?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Similarities:</strong>
+- Automatic memory management
+- No manual <code>free()</code> or <code>delete</code> needed
+- Data cleaned up when no longer referenced
+- Tracks how many references exist</p>
+<p><strong>Key differences:</strong></p>
+<p>| Aspect | Rc | Garbage Collection |
+|--------|-----|-------------------|
+| <strong>When</strong> | Deterministic (when count = 0) | Non-deterministic (GC runs eventually) |
+| <strong>Overhead</strong> | Reference counting only | Runtime with GC pauses |
+| <strong>Cycles</strong> | Leaks (need Weak) | Handled automatically |
+| <strong>Predictability</strong> | Immediate cleanup | Unpredictable timing |
+| <strong>Performance</strong> | No pauses | Can pause program |</p>
+<p><strong>Example showing determinism:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+struct Data(String);
+
+impl Drop for Data {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropped: {}&quot;, self.0);
+    }
+}
+
+fn main() {
+    let rc = Rc::new(Data(&quot;data&quot;.to_string()));
+    {
+        let rc2 = Rc::clone(&amp;rc);
+        println!(&quot;Using data&quot;);
+    }  // rc2 dropped here, count: 1
+    println!(&quot;Still using&quot;);
+}  // rc dropped here, count: 0, IMMEDIATELY prints &quot;Dropped: data&quot;
+</code></pre>
+<p><strong>In GC languages:</strong> Drop timing is unpredictable.
+<strong>With Rc:</strong> Drop happens immediately when last Rc is dropped.</p>
+<p><strong>Trade-off:</strong> Rc requires handling cycles manually (Weak), but provides deterministic cleanup.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

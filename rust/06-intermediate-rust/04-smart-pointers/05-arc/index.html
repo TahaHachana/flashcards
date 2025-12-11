@@ -1,0 +1,1583 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 05-Arc</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is Arc<T>?</h2>
+<p>What is <code>Arc&lt;T&gt;</code> and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Arc&lt;T&gt;</code> (Atomic Reference Counted) is the thread-safe version of <code>Rc&lt;T&gt;</code>. It enables <strong>multiple ownership</strong> of the same data across <strong>multiple threads</strong> using atomic operations for reference counting.</p>
+<p><strong>Key characteristics:</strong>
+- Enables shared ownership across threads
+- Thread-safe (atomic reference counting)
+- Slightly slower than <code>Rc</code> (atomic operations overhead)
+- Immutable by default (combine with <code>Mutex</code>/<code>RwLock</code> for mutation)
+- Implements <code>Send</code> and <code>Sync</code> traits</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::thread;
+
+let data = Arc::new(vec![1, 2, 3]);
+let data_clone = Arc::clone(&amp;data);
+
+thread::spawn(move || {
+    println!(&quot;{:?}&quot;, data_clone);  // Safe across threads!
+});
+</code></pre>
+<p>Think of <code>Arc</code> as <code>Rc</code> but designed for multi-threaded programs - it's the safe way to share data between threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc vs Rc Comparison</h2>
+<p>Compare <code>Arc</code> and <code>Rc</code> across key features. When should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Feature | Rc | Arc |
+|---------|-----|-----|
+| <strong>Thread-safe</strong> | No | Yes |
+| <strong>Counting</strong> | Non-atomic | Atomic |
+| <strong>Performance</strong> | Faster | Slightly slower |
+| <strong>Send</strong> | No | Yes |
+| <strong>Sync</strong> | No | Yes |
+| <strong>Use case</strong> | Single-threaded | Multi-threaded |</p>
+<p><strong>Simple rule:</strong>
+- One thread? → Use <code>Rc</code> (faster)
+- Multiple threads? → Use <code>Arc</code> (thread-safe)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">// Single-threaded: use Rc
+let rc = Rc::new(data);
+
+// Multi-threaded: use Arc
+let arc = Arc::new(data);
+thread::spawn(move || {
+    // Use arc
+});
+</code></pre>
+<p><strong>Performance difference:</strong> Arc is ~50% slower due to atomic operations, but still very fast in absolute terms.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Rc Fails with Threads</h2>
+<p>Why can't you use <code>Rc</code> with threads? What error does the compiler give?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>Rc</code> uses non-atomic reference counting, which isn't thread-safe. The compiler prevents sending <code>Rc</code> between threads.</p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::thread;
+
+let data = Rc::new(vec![1, 2, 3]);
+
+// ❌ This won't compile
+thread::spawn(move || {
+    println!(&quot;{:?}&quot;, data);
+});
+</code></pre>
+<p><strong>Error:</strong></p>
+<pre><code>error[E0277]: `Rc&lt;Vec&lt;i32&gt;&gt;` cannot be sent between threads safely
+   |
+   = help: the trait `Send` is not implemented for `Rc&lt;Vec&lt;i32&gt;&gt;`
+</code></pre>
+<p><strong>Why it's unsafe:</strong>
+If two threads increment/decrement the counter simultaneously, the count could become corrupted, leading to:
+- Memory leaks (data never freed)
+- Use-after-free (data freed while still in use)
+- Data races</p>
+<p><strong>Solution:</strong> Use <code>Arc</code> which has atomic operations that prevent these issues.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Understanding Atomic Operations</h2>
+<p>What are atomic operations, and how do they make <code>Arc</code> thread-safe? Show the difference between atomic and non-atomic operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Atomic</strong> means "indivisible" - an operation that either completes fully or doesn't happen at all. No thread can see the operation "in progress."</p>
+<p><strong>Non-atomic operation (Rc):</strong></p>
+<pre><code>Thread 1: Read count (5)
+Thread 2: Read count (5)    ← Both see 5 at same time!
+Thread 1: Write count (6)
+Thread 2: Write count (6)   ← Lost Thread 1's increment!
+Result: Count is 6, should be 7 ❌
+</code></pre>
+<p><strong>Atomic operation (Arc):</strong></p>
+<pre><code>Thread 1: Atomic increment (5 → 6)  ← Complete operation
+Thread 2: Atomic increment (6 → 7)  ← Complete operation
+Result: Count is 7 ✓
+</code></pre>
+<p><strong>How Arc uses atomics:</strong>
+- Counter updates are indivisible
+- Other threads must wait for operation to complete
+- No race conditions possible
+- Always produces correct count</p>
+<p><strong>Example race condition without atomics:</strong></p>
+<pre><code class="language-rust">// Thread 1 and 2 both do: x += 1
+// Expected final value: 12
+// Actual: 11-12 (unpredictable)
+</code></pre>
+<p>With Arc's atomic operations, result is always predictable and correct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Basic Arc Usage with Threads</h2>
+<p>Demonstrate the pattern for sharing data across multiple threads using <code>Arc</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::Arc;
+use std::thread;
+
+fn main() {
+    // 1. Create Arc
+    let data = Arc::new(vec![1, 2, 3]);
+    let mut handles = vec![];
+
+    // 2. Spawn multiple threads
+    for i in 0..10 {
+        // 3. Clone Arc for each thread
+        let data_clone = Arc::clone(&amp;data);
+
+        // 4. Move clone into thread
+        let handle = thread::spawn(move || {
+            println!(&quot;Thread {}: {:?}&quot;, i, data_clone);
+        });
+
+        handles.push(handle);
+    }
+
+    // 5. Wait for all threads
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Strong count: {}&quot;, Arc::strong_count(&amp;data));  // 1
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+1. Create <code>Arc</code> in main thread
+2. Clone <code>Arc</code> for each thread (cheap - just increments atomic counter)
+3. Move clone into thread
+4. Each thread safely accesses shared data
+5. Join threads to wait for completion</p>
+<p><strong>Key insight:</strong> Original <code>data</code> is still usable in main thread after spawning threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc and Immutability</h2>
+<p>Why can't you mutate data through <code>Arc</code> alone, and what's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+
+let data = Arc::new(vec![1, 2, 3]);
+
+// ❌ Cannot mutate through Arc
+// data.push(4);  // Error!
+</code></pre>
+<p><strong>Why?</strong> Multiple threads with mutable access would violate Rust's aliasing rules and cause data races.</p>
+<p><strong>Solution: Arc<Mutex\<T>></strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+let data = Arc::new(Mutex::new(vec![1, 2, 3]));
+let mut handles = vec![];
+
+for i in 0..5 {
+    let data_clone = Arc::clone(&amp;data);
+
+    let handle = thread::spawn(move || {
+        // Lock, mutate, automatically unlock
+        data_clone.lock().unwrap().push(i);
+    });
+
+    handles.push(handle);
+}
+
+for handle in handles {
+    handle.join().unwrap();
+}
+
+println!(&quot;{:?}&quot;, data.lock().unwrap());
+</code></pre>
+<p><strong>Pattern:</strong> <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> is the standard pattern for shared mutable state across threads.</p>
+<p>Arc provides sharing, Mutex provides safe mutation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc<Mutex\<T>> Complete Pattern</h2>
+<p>Explain the <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> pattern with a counter example. What does each layer provide?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Counter example:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    // Spawn 10 threads, each increments 10 times
+    for _ in 0..10 {
+        let counter_clone = Arc::clone(&amp;counter);
+
+        let handle = thread::spawn(move || {
+            for _ in 0..10 {
+                *counter_clone.lock().unwrap() += 1;
+            }
+        });
+
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Result: {}&quot;, counter.lock().unwrap());  // 100
+}
+</code></pre>
+<p><strong>Understanding the layers:</strong></p>
+<pre><code>Arc&lt;Mutex&lt;i32&gt;&gt;
+│
+├─ Arc: Enables sharing across threads (atomic ref counting)
+│
+└─ Mutex: Enables safe mutation (one thread at a time)
+   │
+   └─ i32: The actual data
+</code></pre>
+<p><strong>Each layer solves a problem:</strong>
+- <code>i32</code> alone: Can't share across threads
+- <code>Arc&lt;i32&gt;</code>: Can share, but immutable
+- <code>Arc&lt;Mutex&lt;i32&gt;&gt;</code>: Can share AND mutate safely ✓</p>
+<p>Output is always <code>100</code> (predictable and safe).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send and Sync Traits</h2>
+<p>Explain the <code>Send</code> and <code>Sync</code> traits. Which types implement them and why does it matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>These marker traits determine thread safety:</p>
+<p><strong>Send:</strong> Type can be <strong>transferred</strong> between threads</p>
+<pre><code class="language-rust">// Can move ownership to another thread
+thread::spawn(move || {
+    // take ownership
+});
+</code></pre>
+<p><strong>Sync:</strong> Type can be <strong>shared</strong> between threads (via <code>&amp;T</code>)</p>
+<pre><code class="language-rust">// Multiple threads can hold references
+let reference = &amp;data;
+</code></pre>
+<p><strong>Trait implementations:</strong></p>
+<p>| Type | Send | Sync | Thread Safety |
+|------|------|------|---------------|
+| <code>i32</code> | Yes | Yes | Safe to send/share |
+| <code>Rc&lt;T&gt;</code> | No | No | Not thread-safe |
+| <code>Arc&lt;T&gt;</code> | Yes<em> | Yes</em> | Thread-safe |
+| <code>Mutex&lt;T&gt;</code> | Yes<em> | Yes</em> | Provides thread-safe mutation |</p>
+<p>*If T is Send/Sync</p>
+<p><strong>Why it matters:</strong></p>
+<pre><code class="language-rust">// ❌ Rc doesn't implement Send
+let rc = Rc::new(5);
+thread::spawn(move || { });  // Error!
+
+// ✅ Arc implements Send
+let arc = Arc::new(5);
+thread::spawn(move || { });  // Works!
+</code></pre>
+<p>The compiler uses these traits to prevent thread-unsafe code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Performance Cost</h2>
+<p>What is the performance cost of <code>Arc</code> compared to <code>Rc</code>, and when does it matter?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Benchmark comparison:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::rc::Rc;
+
+// Rc clone: ~10ms for 1M operations
+let rc = Rc::new(5);
+for _ in 0..1_000_000 {
+    let _clone = Rc::clone(&amp;rc);
+}
+
+// Arc clone: ~15ms for 1M operations  
+let arc = Arc::new(5);
+for _ in 0..1_000_000 {
+    let _clone = Arc::clone(&amp;arc);
+}
+</code></pre>
+<p><strong>Cost:</strong> Arc is ~50% slower than Rc due to atomic operations.</p>
+<p><strong>When it matters:</strong>
+- Tight loops with millions of clones
+- Low-latency real-time systems
+- Single-threaded code (use Rc instead)</p>
+<p><strong>When it doesn't matter:</strong>
+- Normal application code
+- Data shared across threads (no alternative)
+- Infrequent cloning/dropping</p>
+<p><strong>Optimization:</strong></p>
+<pre><code class="language-rust">// ❌ Unnecessary clone in loop
+for i in 0..1000 {
+    let data_clone = Arc::clone(&amp;data);
+    // Use once
+}
+
+// ✅ Clone once, reuse
+let data_clone = Arc::clone(&amp;data);
+for i in 0..1000 {
+    // Use many times
+}
+</code></pre>
+<p><strong>Takeaway:</strong> Arc overhead is real but small. Use where needed for thread safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Pool with Shared Config Pattern</h2>
+<p>Demonstrate using <code>Arc</code> to share configuration across a thread pool.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::Arc;
+use std::thread;
+
+struct Config {
+    thread_count: usize,
+    timeout_ms: u64,
+    api_key: String,
+}
+
+fn worker(id: usize, config: Arc&lt;Config&gt;) {
+    println!(&quot;Worker {}: timeout = {}ms&quot;, 
+             id, config.timeout_ms);
+    // Worker uses config...
+}
+
+fn main() {
+    // Create config once
+    let config = Arc::new(Config {
+        thread_count: 4,
+        timeout_ms: 5000,
+        api_key: &quot;secret&quot;.to_string(),
+    });
+
+    let mut handles = vec![];
+
+    // Share config across all workers
+    for i in 0..config.thread_count {
+        let config_clone = Arc::clone(&amp;config);
+        let handle = thread::spawn(move || {
+            worker(i, config_clone);
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+</code></pre>
+<p><strong>Benefits:</strong>
+- Config created once, shared everywhere
+- No expensive clones of configuration data
+- All workers see consistent config
+- Automatic cleanup when all workers done</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallel Data Processing Pattern</h2>
+<p>Show how to use <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> for parallel data processing with shared results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let results = Arc::new(Mutex::new(Vec::new()));
+    let mut handles = vec![];
+
+    // Split work across threads
+    for chunk in data.chunks(3) {
+        let results_clone = Arc::clone(&amp;results);
+        let chunk_vec = chunk.to_vec();
+
+        let handle = thread::spawn(move || {
+            // Process chunk
+            let sum: i32 = chunk_vec.iter().sum();
+
+            // Store result (safe with Mutex)
+            results_clone.lock().unwrap().push(sum);
+        });
+
+        handles.push(handle);
+    }
+
+    // Wait for all threads
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Results: {:?}&quot;, results.lock().unwrap());
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+- Each thread processes a portion of data
+- Results stored in shared <code>Arc&lt;Mutex&lt;Vec&gt;&gt;</code>
+- Mutex ensures safe concurrent writes
+- Main thread collects all results</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc with RwLock</h2>
+<p>When should you use <code>Arc&lt;RwLock&lt;T&gt;&gt;</code> instead of <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>? Demonstrate the pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use RwLock when:</strong>
+- Many readers
+- Few writers
+- Reads are more common than writes</p>
+<p><strong>Pattern:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, RwLock};
+use std::thread;
+
+fn main() {
+    let data = Arc::new(RwLock::new(vec![1, 2, 3]));
+    let mut handles = vec![];
+
+    // Many readers (can read concurrently)
+    for i in 0..5 {
+        let data_clone = Arc::clone(&amp;data);
+        let handle = thread::spawn(move || {
+            let read_guard = data_clone.read().unwrap();
+            println!(&quot;Reader {}: {:?}&quot;, i, *read_guard);
+            // Multiple readers can hold locks simultaneously
+        });
+        handles.push(handle);
+    }
+
+    // One writer (exclusive access)
+    let data_clone = Arc::clone(&amp;data);
+    let handle = thread::spawn(move || {
+        let mut write_guard = data_clone.write().unwrap();
+        write_guard.push(4);
+        println!(&quot;Writer: modified data&quot;);
+        // Only one writer at a time
+    });
+    handles.push(handle);
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+</code></pre>
+<p><strong>RwLock rules:</strong>
+- Multiple <code>.read()</code> locks simultaneously: ✅
+- One <code>.write()</code> lock at a time: ✅
+- <code>.write()</code> blocks all <code>.read()</code> and other <code>.write()</code>: ✅</p>
+<p><strong>Benefit:</strong> Better performance when reads &gt;&gt; writes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Deadlocks</h2>
+<p>What is a deadlock with <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, how does it happen, and how do you prevent it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>A deadlock occurs when threads wait for each other indefinitely.</strong></p>
+<p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+let data1 = Arc::new(Mutex::new(0));
+let data2 = Arc::new(Mutex::new(0));
+
+let d1 = Arc::clone(&amp;data1);
+let d2 = Arc::clone(&amp;data2);
+
+// Thread 1: locks data1, then data2
+thread::spawn(move || {
+    let _g1 = d1.lock().unwrap();
+    thread::sleep(Duration::from_millis(10));
+    let _g2 = d2.lock().unwrap();  // ⚠️ Waits for Thread 2
+});
+
+let d1 = Arc::clone(&amp;data1);
+let d2 = Arc::clone(&amp;data2);
+
+// Thread 2: locks data2, then data1
+thread::spawn(move || {
+    let _g2 = d2.lock().unwrap();
+    thread::sleep(Duration::from_millis(10));
+    let _g1 = d1.lock().unwrap();  // ⚠️ Waits for Thread 1
+});
+// Both threads wait forever - deadlock!
+</code></pre>
+<p><strong>Why it happens:</strong>
+- Thread 1 holds lock on data1, waits for data2
+- Thread 2 holds lock on data2, waits for data1
+- Neither can proceed</p>
+<p><strong>Solution: Always lock in the same order</strong></p>
+<pre><code class="language-rust">// Both threads lock data1 first, then data2
+thread::spawn(move || {
+    let _g1 = d1.lock().unwrap();  // Always lock data1 first
+    let _g2 = d2.lock().unwrap();
+});
+
+thread::spawn(move || {
+    let _g1 = d1.lock().unwrap();  // Same order here
+    let _g2 = d2.lock().unwrap();
+});
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Holding Locks Too Long</h2>
+<p>What's the problem with holding Mutex locks too long, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+
+// ❌ Bad: holds lock during expensive operation
+let result = {
+    let data = arc_mutex.lock().unwrap();
+    expensive_operation(&amp;data)  // Lock held entire time!
+    // Other threads blocked during entire operation
+};
+</code></pre>
+<p><strong>Why it's bad:</strong>
+- Lock held while doing slow work
+- Other threads blocked unnecessarily
+- Reduces parallelism
+- Can cause performance bottlenecks</p>
+<p><strong>Solution: Copy what you need, release lock</strong></p>
+<pre><code class="language-rust">// ✅ Good: minimal lock duration
+let data_copy = {
+    let data = arc_mutex.lock().unwrap();
+    data.clone()  // Quick operation
+};  // Lock released immediately
+
+// Do expensive work without holding lock
+let result = expensive_operation(&amp;data_copy);
+</code></pre>
+<p><strong>Pattern:</strong>
+1. Lock
+2. Copy/extract what you need (quickly)
+3. Unlock (automatic when guard drops)
+4. Do expensive work outside lock</p>
+<p><strong>Alternative: explicit drop</strong></p>
+<pre><code class="language-rust">{
+    let mut data = arc_mutex.lock().unwrap();
+    data.some_quick_update();
+    drop(data);  // Explicitly release lock
+}
+// Do other work
+</code></pre>
+<p><strong>Key insight:</strong> Minimize time between <code>.lock()</code> and guard drop.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Forgetting to Join Threads</h2>
+<p>What happens if you forget to join threads when using <code>Arc</code>, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let data = Arc::new(Mutex::new(0));
+
+    for _ in 0..10 {
+        let data_clone = Arc::clone(&amp;data);
+        thread::spawn(move || {
+            *data_clone.lock().unwrap() += 1;
+        });
+    }
+
+    // ⚠️ main() might end before threads finish!
+    println!(&quot;{}&quot;, data.lock().unwrap());  // Might print 0-10
+}
+</code></pre>
+<p><strong>What happens:</strong>
+- Threads spawned but not joined
+- <code>main()</code> can exit while threads still running
+- Program terminates, killing incomplete threads
+- Unpredictable results</p>
+<p><strong>Solution: Store handles and join</strong></p>
+<pre><code class="language-rust">fn main() {
+    let data = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let data_clone = Arc::clone(&amp;data);
+        let handle = thread::spawn(move || {
+            *data_clone.lock().unwrap() += 1;
+        });
+        handles.push(handle);  // Store handle
+    }
+
+    // Wait for all threads to complete
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;{}&quot;, data.lock().unwrap());  // Always prints 10
+}
+</code></pre>
+<p><strong>Key insight:</strong> Always join threads unless you specifically want detached threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Arc Doesn't Make T Thread-Safe</h2>
+<p>Can you put any type <code>T</code> inside <code>Arc&lt;T&gt;</code> and send it across threads? What's the rule?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The gotcha:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::rc::Rc;
+use std::thread;
+
+// ❌ This won't compile
+let arc_rc = Arc::new(Rc::new(5));
+thread::spawn(move || {
+    println!(&quot;{}&quot;, arc_rc);
+});
+</code></pre>
+<p><strong>Error:</strong></p>
+<pre><code>error[E0277]: `Rc&lt;i32&gt;` cannot be sent between threads safely
+   |
+   = help: the trait `Send` is not implemented for `Rc&lt;i32&gt;`
+</code></pre>
+<p><strong>The rule:</strong> <code>Arc&lt;T&gt;</code> is only thread-safe if <code>T</code> is thread-safe (implements <code>Send</code>).</p>
+<p><strong>Why?</strong> 
+- <code>Arc</code> makes the <strong>pointer</strong> thread-safe
+- But not the <strong>data</strong> inside
+- If <code>T</code> isn't <code>Send</code>, you can't send it between threads
+- Compiler prevents this at compile time</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-rust">// ✅ Works: i32 implements Send
+let arc = Arc::new(5);
+thread::spawn(move || { });
+
+// ✅ Works: String implements Send  
+let arc = Arc::new(String::from(&quot;hello&quot;));
+thread::spawn(move || { });
+
+// ❌ Fails: Rc doesn't implement Send
+let arc = Arc::new(Rc::new(5));
+thread::spawn(move || { });  // Compile error
+
+// ❌ Fails: RefCell doesn't implement Sync
+let arc = Arc::new(RefCell::new(5));
+thread::spawn(move || { });  // Compile error
+</code></pre>
+<p><strong>Key insight:</strong> Arc provides thread-safe sharing, but T must be thread-safe itself.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Concurrent Cache Pattern</h2>
+<p>Implement a concurrent cache using <code>Arc&lt;Mutex&lt;HashMap&gt;&gt;</code> that multiple threads can read from and write to.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::collections::HashMap;
+use std::thread;
+
+type Cache = Arc&lt;Mutex&lt;HashMap&lt;String, String&gt;&gt;&gt;;
+
+fn get_or_compute(cache: Cache, key: String) -&gt; String {
+    // Check cache (short lock)
+    {
+        let cache_read = cache.lock().unwrap();
+        if let Some(value) = cache_read.get(&amp;key) {
+            return value.clone();
+        }
+    }  // Lock released
+
+    // Compute (expensive, no lock held)
+    let value = format!(&quot;computed_{}&quot;, key);
+
+    // Update cache (short lock)
+    cache.lock().unwrap().insert(key.clone(), value.clone());
+
+    value
+}
+
+fn main() {
+    let cache: Cache = Arc::new(Mutex::new(HashMap::new()));
+    let mut handles = vec![];
+
+    for i in 0..10 {
+        let cache_clone = Arc::clone(&amp;cache);
+        let key = format!(&quot;key_{}&quot;, i % 3);  // Some keys repeated
+
+        let handle = thread::spawn(move || {
+            let value = get_or_compute(cache_clone, key);
+            println!(&quot;Got: {}&quot;, value);
+        });
+
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+</code></pre>
+<p><strong>Pattern benefits:</strong>
+- Thread-safe concurrent access
+- Lock held for minimal time
+- Expensive computation outside lock
+- Cache shared across all threads</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Step-by-Step Breakdown</h2>
+<p>Break down what happens at each step when using <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> across threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+// 1. Create Arc&lt;Mutex&lt;T&gt;&gt;
+let data = Arc::new(Mutex::new(0));
+// Heap: RefCount=1, Data=Mutex(0)
+
+// 2. Clone Arc for thread
+let data_clone = Arc::clone(&amp;data);
+// Heap: RefCount=2 (atomic increment), same Mutex
+
+// 3. Move into thread
+thread::spawn(move || {
+    // data_clone moved, data still usable in main
+
+    // 4. Lock the mutex (blocks if already locked)
+    let mut guard = data_clone.lock().unwrap();
+    // MutexGuard holds exclusive access
+
+    // 5. Mutate through guard
+    *guard += 1;
+
+    // 6. Guard dropped, mutex unlocked automatically
+});  // data_clone dropped, RefCount decremented
+
+// Main thread can still use data
+println!(&quot;{}&quot;, data.lock().unwrap());
+</code></pre>
+<p><strong>What happens to counts:</strong></p>
+<pre><code>Initial:           RefCount=1
+After clone:       RefCount=2
+After thread move: RefCount=2 (ownership transferred)
+After thread ends: RefCount=1 (decrement when dropped)
+After main ends:   RefCount=0 → data freed
+</code></pre>
+<p><strong>Key insights:</strong>
+- Arc cloning is cheap (atomic counter update)
+- Mutex locking can block (wait for unlock)
+- Guard automatically unlocks on drop
+- Data freed when last Arc dropped</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Producer-Consumer with Arc Pattern</h2>
+<p>Implement a producer-consumer pattern using <code>Arc&lt;Mutex&lt;Vec&gt;&gt;</code> for a shared queue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let queue = Arc::new(Mutex::new(Vec::new()));
+
+    // Producer thread
+    let queue_clone = Arc::clone(&amp;queue);
+    let producer = thread::spawn(move || {
+        for i in 0..10 {
+            queue_clone.lock().unwrap().push(i);
+            println!(&quot;Produced: {}&quot;, i);
+            thread::sleep(Duration::from_millis(100));
+        }
+    });
+
+    // Consumer thread
+    let queue_clone = Arc::clone(&amp;queue);
+    let consumer = thread::spawn(move || {
+        loop {
+            let item = {
+                let mut queue = queue_clone.lock().unwrap();
+                queue.pop()
+            };  // Lock released
+
+            if let Some(item) = item {
+                println!(&quot;Consumed: {}&quot;, item);
+                thread::sleep(Duration::from_millis(150));
+            } else {
+                thread::sleep(Duration::from_millis(50));
+            }
+        }
+    });
+
+    producer.join().unwrap();
+    // Consumer runs forever in this example
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+- Shared queue wrapped in <code>Arc&lt;Mutex&lt;Vec&gt;&gt;</code>
+- Producer adds items
+- Consumer removes items
+- Both can run concurrently
+- Mutex ensures safe access</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Key Insights</h2>
+<p>What are the seven key insights about <code>Arc&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Arc is thread-safe Rc:</strong> Same concept, atomic operations for thread safety</p>
+<p><strong>2. Atomic operations have cost:</strong> ~50% slower than Rc, but still very fast</p>
+<p><strong>3. Use with Mutex for mutation:</strong> <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> is the standard pattern for shared mutable state</p>
+<p><strong>4. Send and Sync matter:</strong> These traits determine what can cross thread boundaries</p>
+<p><strong>5. Prefer Rc in single-threaded:</strong> Rc is faster when threads aren't needed</p>
+<p><strong>6. Beware deadlocks:</strong> Lock order matters with multiple mutexes</p>
+<p><strong>7. Arc doesn't make T thread-safe:</strong> T must implement Send/Sync itself</p>
+<p><strong>Mental model:</strong></p>
+<pre><code>Arc = Thread-safe shared ownership
+Arc&lt;Mutex&lt;T&gt;&gt; = Thread-safe shared mutable state
+Arc&lt;RwLock&lt;T&gt;&gt; = Multiple readers, single writer
+</code></pre>
+<p><strong>Bottom line:</strong> Arc is essential for safe multi-threaded programming in Rust. It provides shared ownership guarantees while maintaining thread safety through atomic operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Arc Decision Tree</h2>
+<p>Create a decision tree for when to use <code>Arc</code>, <code>Rc</code>, or neither.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Need shared ownership?
+  │
+  ├─ No → Use regular ownership or Box
+  │       Don't add unnecessary complexity
+  │
+  └─ Yes → Multiple threads?
+      │
+      ├─ No (single-threaded)
+      │   │
+      │   └─ Use Rc&lt;T&gt;
+      │       ├─ Need mutation? → Rc&lt;RefCell&lt;T&gt;&gt;
+      │       └─ Read-only? → Rc&lt;T&gt;
+      │
+      └─ Yes (multi-threaded)
+          │
+          └─ Use Arc&lt;T&gt;
+              ├─ Need mutation? → Arc&lt;Mutex&lt;T&gt;&gt; or Arc&lt;RwLock&lt;T&gt;&gt;
+              │   ├─ Many readers, few writers? → Arc&lt;RwLock&lt;T&gt;&gt;
+              │   └─ General case? → Arc&lt;Mutex&lt;T&gt;&gt;
+              └─ Read-only? → Arc&lt;T&gt;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-rust">// Single owner
+let data = String::from(&quot;hello&quot;);
+
+// Multiple owners, one thread
+let data = Rc::new(String::from(&quot;hello&quot;));
+
+// Multiple owners, multiple threads
+let data = Arc::new(String::from(&quot;hello&quot;));
+
+// Shared mutable, multiple threads
+let data = Arc::new(Mutex::new(vec![]));
+</code></pre>
+<p><strong>Rule of thumb:</strong> Start simple (regular ownership), add complexity only when needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Atomic Operations Platform Support</h2>
+<p>Are atomic operations available on all platforms? What should you know about Arc's portability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Generally available:</strong> Atomic operations are widely supported and Arc works on most platforms.</p>
+<p><strong>Notable exceptions:</strong>
+- PowerPC and MIPS with 32-bit pointers: no <code>AtomicU64</code>/<code>AtomicI64</code>
+- Some ARM platforms (e.g., <code>armv5te</code>): limited atomic operations
+- Very old or rare processors: may lack full atomic support</p>
+<p><strong>Documentation quote:</strong></p>
+<blockquote>
+<p>"The atomic types here are all widely available, however, and can generally be relied upon existing."</p>
+</blockquote>
+<p><strong>What this means for you:</strong></p>
+<pre><code class="language-rust">// This works on virtually all platforms
+let arc = Arc::new(data);
+
+// This works on most, but not all platforms
+let arc_atomic_u64 = Arc::new(AtomicU64::new(0));
+</code></pre>
+<p><strong>Practical advice:</strong>
+- For modern systems (x86, ARM64, etc.): Don't worry about it
+- For embedded/exotic platforms: Check documentation
+- Arc itself is almost always available
+- Some specific atomic types might not be</p>
+<p><strong>Bottom line:</strong> Unless you're targeting very old or rare hardware, Arc is available and works as expected.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc with Scoped Threads Alternative</h2>
+<p>When can you avoid using <code>Arc</code> by using scoped threads instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Scoped threads</strong> can borrow data without requiring <code>Arc</code>, as long as threads complete within a defined scope.</p>
+<p><strong>Without scoped threads (needs Arc):</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::thread;
+
+let data = Arc::new(vec![1, 2, 3]);
+
+let handle = thread::spawn(move || {
+    // Needs Arc because thread might outlive data
+    println!(&quot;{:?}&quot;, data);
+});
+
+handle.join().unwrap();
+</code></pre>
+<p><strong>With scoped threads (no Arc needed):</strong></p>
+<pre><code class="language-rust">use std::thread;
+
+let data = vec![1, 2, 3];
+
+thread::scope(|s| {
+    s.spawn(|| {
+        // Can borrow! Scope guarantees thread ends before data dies
+        println!(&quot;{:?}&quot;, data);
+    });
+
+    s.spawn(|| {
+        println!(&quot;{:?}&quot;, data);  // Multiple borrows OK
+    });
+
+    // All threads automatically joined at end of scope
+});
+</code></pre>
+<p><strong>Why it works:</strong>
+- Scope guarantees threads complete before scope ends
+- Data guaranteed to outlive threads
+- No need for ownership transfer
+- Follows normal borrowing rules</p>
+<p><strong>When to use each:</strong>
+- <strong>Scoped threads</strong>: Threads complete within defined scope, can borrow
+- <strong>Regular threads + Arc</strong>: Threads may outlive scope, need shared ownership</p>
+<p><strong>Benefit:</strong> Simpler code when scoped threads fit the use case.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Clone Performance Optimization</h2>
+<p>What are three ways to optimize Arc clone performance?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Clone once, reuse multiple times:</strong></p>
+<pre><code class="language-rust">// ❌ Bad: Clone in every iteration
+for i in 0..1000 {
+    let data_clone = Arc::clone(&amp;data);
+    use_data(&amp;data_clone);
+}
+
+// ✅ Good: Clone once, reuse
+let data_clone = Arc::clone(&amp;data);
+for i in 0..1000 {
+    use_data(&amp;data_clone);
+}
+</code></pre>
+<p><strong>2. Pass Arc by reference when possible:</strong></p>
+<pre><code class="language-rust">// ❌ Clone to pass to function
+fn process(data: Arc&lt;Data&gt;) { }
+process(Arc::clone(&amp;data));
+
+// ✅ Better: pass reference, no clone
+fn process(data: &amp;Arc&lt;Data&gt;) { }
+process(&amp;data);
+</code></pre>
+<p><strong>3. Minimize Arc scope:</strong></p>
+<pre><code class="language-rust">// ❌ Arc lives longer than needed
+let data = Arc::new(expensive_data);
+// ... lots of code ...
+use_data(&amp;data);
+
+// ✅ Create Arc close to where it's needed
+// ... lots of code ...
+let data = Arc::new(expensive_data);
+use_data(&amp;data);
+</code></pre>
+<p><strong>Benchmark difference:</strong></p>
+<pre><code class="language-rust">// Clone in loop: ~1000ms
+// Clone once: ~10ms
+// 100x faster!
+</code></pre>
+<p><strong>Key principle:</strong> Atomic operations are fast but not free. Minimize unnecessary clones.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Real-World Use Cases</h2>
+<p>Provide four real-world scenarios where <code>Arc</code> is the right choice.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Web server with shared connection pool:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+
+struct ConnectionPool {
+    connections: Vec&lt;Connection&gt;,
+}
+
+let pool = Arc::new(ConnectionPool::new());
+
+// Each request handler gets a clone
+for _ in 0..100 {
+    let pool_clone = Arc::clone(&amp;pool);
+    thread::spawn(move || {
+        handle_request(pool_clone);
+    });
+}
+</code></pre>
+<p><strong>2. Game engine with shared world state:</strong></p>
+<pre><code class="language-rust">struct GameWorld {
+    entities: HashMap&lt;EntityId, Entity&gt;,
+    physics: PhysicsEngine,
+}
+
+let world = Arc::new(RwLock::new(GameWorld::new()));
+
+// Rendering thread (read)
+let world_clone = Arc::clone(&amp;world);
+thread::spawn(move || {
+    render_loop(world_clone);
+});
+
+// Physics thread (write)
+let world_clone = Arc::clone(&amp;world);
+thread::spawn(move || {
+    physics_loop(world_clone);
+});
+</code></pre>
+<p><strong>3. Multi-threaded logger:</strong></p>
+<pre><code class="language-rust">struct Logger {
+    logs: Mutex&lt;Vec&lt;LogEntry&gt;&gt;,
+    config: LogConfig,
+}
+
+static LOGGER: Arc&lt;Logger&gt; = ...;
+
+// Any thread can log
+thread::spawn(move || {
+    LOGGER.log(&quot;Event happened&quot;);
+});
+</code></pre>
+<p><strong>4. Parallel data processing with shared results:</strong></p>
+<pre><code class="language-rust">let results = Arc::new(Mutex::new(Vec::new()));
+
+for chunk in data.chunks(1000) {
+    let results_clone = Arc::clone(&amp;results);
+    thread::spawn(move || {
+        let processed = process_chunk(chunk);
+        results_clone.lock().unwrap().push(processed);
+    });
+}
+</code></pre>
+<p><strong>Common thread:</strong> Arc enables safe sharing of data across multiple threads in concurrent systems.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

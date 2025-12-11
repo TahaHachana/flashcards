@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 06-Refcell</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What is RefCell<T>?</h2>
+<p>What is <code>RefCell&lt;T&gt;</code> and what are its key characteristics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>RefCell&lt;T&gt;</code> provides <strong>interior mutability</strong> - the ability to mutate data even when there are immutable references to it. Unlike normal Rust borrowing which is checked at compile time, <code>RefCell</code> enforces borrowing rules at <strong>runtime</strong>.</p>
+<p><strong>Key characteristics:</strong>
+- Interior mutability pattern
+- Runtime borrow checking (not compile-time)
+- Can panic at runtime if rules violated
+- Single-threaded only (not thread-safe)
+- Allows mutation through immutable reference</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+struct Data {
+    value: RefCell&lt;i32&gt;,
+}
+
+let data = Data {
+    value: RefCell::new(5),
+};
+
+// Can mutate through immutable reference!
+*data.value.borrow_mut() = 10;
+</code></pre>
+<p>Think of <code>RefCell</code> as saying: "Trust me, I'll follow the borrowing rules, but check them when the program runs instead of when it compiles."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Interior Mutability Problem</h2>
+<p>What problem does interior mutability solve? Show an example where you need to mutate but only have <code>&amp;self</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem: API requires immutable reference but you need mutation</strong></p>
+<pre><code class="language-rust">struct PhoneModel {
+    company: String,
+    model: String,
+    on_sale: bool,  // Want to change this
+}
+
+impl PhoneModel {
+    fn make_not_on_sale(&amp;self) {  // Takes &amp;self, not &amp;mut self
+        // ❌ Can't do this!
+        // self.on_sale = false;
+    }
+}
+</code></pre>
+<p><strong>The solution: RefCell</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+struct PhoneModel {
+    company: String,
+    model: String,
+    on_sale: RefCell&lt;bool&gt;,  // Wrapped in RefCell
+}
+
+impl PhoneModel {
+    fn make_not_on_sale(&amp;self) {
+        // ✅ Can mutate through &amp;self!
+        *self.on_sale.borrow_mut() = false;
+    }
+}
+</code></pre>
+<p><strong>Why this matters:</strong>
+- API requires <code>&amp;self</code> not <code>&amp;mut self</code>
+- Don't want entire struct mutable
+- Need to mutate just one field
+- External code expects immutable reference</p>
+<p>RefCell allows mutation through an immutable reference by moving borrow checking to runtime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Borrowing Rules</h2>
+<p>What borrowing rules does <code>RefCell</code> enforce, and when are they checked?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>RefCell</code> enforces the <strong>same rules as regular Rust</strong>, just at <strong>runtime</strong> instead of compile-time:</p>
+<ol>
+<li>✅ <strong>Multiple immutable borrows</strong> - OK</li>
+<li>✅ <strong>One mutable borrow</strong> - OK  </li>
+<li>❌ <strong>Mutable + immutable together</strong> - Panic!</li>
+</ol>
+<p><strong>Compile-time (regular Rust):</strong></p>
+<pre><code class="language-rust">let mut x = 5;
+let r1 = &amp;x;
+let r2 = &amp;x;      // ✅ Multiple immutable OK
+// let r3 = &amp;mut x;  // ❌ Won't compile
+</code></pre>
+<p><strong>Runtime (RefCell):</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+let x = RefCell::new(5);
+let r1 = x.borrow();
+let r2 = x.borrow();      // ✅ Multiple immutable OK
+// let r3 = x.borrow_mut();  // ⚠️ Will panic at runtime!
+</code></pre>
+<p><strong>Key difference:</strong>
+- Regular Rust: Error at compile time (safer)
+- RefCell: Error at runtime (more flexible, can panic)</p>
+<p>The rules are identical - only the timing of enforcement changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Borrow Methods</h2>
+<p>What are the four main methods for borrowing from <code>RefCell</code>, and what does each return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. <code>.borrow()</code> - Immutable borrow:</strong></p>
+<pre><code class="language-rust">let cell = RefCell::new(vec![1, 2, 3]);
+let borrowed = cell.borrow();  // Returns Ref&lt;Vec&lt;i32&gt;&gt;
+println!(&quot;{:?}&quot;, *borrowed);
+</code></pre>
+<ul>
+<li>Returns: <code>Ref&lt;T&gt;</code> (acts like <code>&amp;T</code>)</li>
+<li>Panics if: Already mutably borrowed</li>
+</ul>
+<p><strong>2. <code>.borrow_mut()</code> - Mutable borrow:</strong></p>
+<pre><code class="language-rust">let cell = RefCell::new(vec![1, 2, 3]);
+let mut borrowed = cell.borrow_mut();  // Returns RefMut&lt;Vec&lt;i32&gt;&gt;
+borrowed.push(4);
+</code></pre>
+<ul>
+<li>Returns: <code>RefMut&lt;T&gt;</code> (acts like <code>&amp;mut T</code>)</li>
+<li>Panics if: Already borrowed (mutably or immutably)</li>
+</ul>
+<p><strong>3. <code>.try_borrow()</code> - Safe immutable borrow:</strong></p>
+<pre><code class="language-rust">match cell.try_borrow() {
+    Ok(value) =&gt; println!(&quot;{:?}&quot;, *value),
+    Err(_) =&gt; println!(&quot;Already borrowed!&quot;),
+}
+</code></pre>
+<ul>
+<li>Returns: <code>Result&lt;Ref&lt;T&gt;, BorrowError&gt;</code></li>
+<li>Doesn't panic, returns error</li>
+</ul>
+<p><strong>4. <code>.try_borrow_mut()</code> - Safe mutable borrow:</strong></p>
+<pre><code class="language-rust">match cell.try_borrow_mut() {
+    Ok(mut value) =&gt; value.push(5),
+    Err(_) =&gt; println!(&quot;Can't borrow mutably!&quot;),
+}
+</code></pre>
+<ul>
+<li>Returns: <code>Result&lt;RefMut&lt;T&gt;, BorrowMutError&gt;</code></li>
+<li>Doesn't panic, returns error</li>
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Runtime Panic Example</h2>
+<p>Show code that compiles but panics at runtime with <code>RefCell</code>. Why does it compile?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::cell::RefCell;
+
+fn main() {
+    let cell = RefCell::new(5);
+
+    let borrow1 = cell.borrow_mut();  // First mutable borrow
+    let borrow2 = cell.borrow_mut();  // ⚠️ Panic!
+}
+</code></pre>
+<p><strong>Error at runtime:</strong></p>
+<pre><code>thread 'main' panicked at 'already borrowed: BorrowMutError'
+</code></pre>
+<p><strong>Why it compiles:</strong>
+- The compiler can't check RefCell borrows at compile time
+- RefCell's whole purpose is runtime borrow checking
+- The code is syntactically valid</p>
+<p><strong>Why it panics:</strong>
+- At runtime, RefCell detects the violation
+- Already have one mutable borrow
+- Can't have a second one
+- Enforces borrowing rules by panicking</p>
+<p><strong>Key insight:</strong> RefCell trades compile-time safety for runtime flexibility. You get more flexibility but must handle potential panics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Avoiding RefCell Panics</h2>
+<p>What are three strategies to avoid panics when using <code>RefCell</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Strategy 1: Immediate mutation (no variables)</strong></p>
+<pre><code class="language-rust">// ✅ Safe: borrow guard dropped immediately
+*cell.borrow_mut() = 10;
+*cell.borrow_mut() = 20;  // No conflict - first borrow already dropped
+</code></pre>
+<p><strong>Strategy 2: Explicit scopes</strong></p>
+<pre><code class="language-rust">{
+    let mut borrow = cell.borrow_mut();
+    *borrow = 10;
+}  // borrow dropped here
+
+// Now can borrow again
+let borrow2 = cell.borrow_mut();
+</code></pre>
+<p><strong>Strategy 3: Use try_ methods</strong></p>
+<pre><code class="language-rust">if let Ok(mut value) = cell.try_borrow_mut() {
+    *value = 10;
+} else {
+    println!(&quot;Couldn't borrow, skipping&quot;);
+    // Handle gracefully instead of panicking
+}
+</code></pre>
+<p><strong>Best practices:</strong>
+- Keep borrows short-lived
+- Drop guards explicitly when done
+- Use <code>try_</code> methods when unsure
+- Avoid storing <code>Ref</code>/<code>RefMut</code> guards in structs</p>
+<p><strong>Golden rule:</strong> If no variables hold the guard, you can't panic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use RefCell</h2>
+<p>List four good use cases and three bad use cases for <code>RefCell</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>✅ Good use cases:</strong></p>
+<p><strong>1. API requires immutable reference:</strong></p>
+<pre><code class="language-rust">trait Logger {
+    fn log(&amp;self, msg: &amp;str);  // Must take &amp;self
+}
+
+struct FileLogger {
+    logs: RefCell&lt;Vec&lt;String&gt;&gt;,  // Can mutate!
+}
+</code></pre>
+<p><strong>2. Mock objects in tests:</strong></p>
+<pre><code class="language-rust">struct MockDatabase {
+    calls: RefCell&lt;Vec&lt;String&gt;&gt;,  // Track method calls
+}
+</code></pre>
+<p><strong>3. Caching/memoization:</strong></p>
+<pre><code class="language-rust">struct Calculator {
+    cache: RefCell&lt;HashMap&lt;String, i32&gt;&gt;,
+}
+</code></pre>
+<p><strong>4. Graph/tree with parent pointers:</strong></p>
+<pre><code class="language-rust">struct Node {
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+</code></pre>
+<p><strong>❌ Bad use cases:</strong></p>
+<p><strong>1. Regular mut works:</strong></p>
+<pre><code class="language-rust">// Just use let mut instead
+</code></pre>
+<p><strong>2. Multi-threaded context:</strong></p>
+<pre><code class="language-rust">// Use Mutex instead - RefCell is not thread-safe
+</code></pre>
+<p><strong>3. Can restructure to avoid:</strong></p>
+<pre><code class="language-rust">// Prefer compile-time safety when possible
+</code></pre>
+<p><strong>Rule:</strong> Use RefCell only when architecture demands mutability through immutable references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc<RefCell\<T>> Pattern</h2>
+<p>Why is <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> a common pattern? What does each layer provide?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The combination provides:</strong>
+- <strong>Shared ownership</strong> (from Rc)
+- <strong>Interior mutability</strong> (from RefCell)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+fn main() {
+    let data = Rc::new(RefCell::new(vec![1, 2, 3]));
+
+    // Multiple owners
+    let data2 = Rc::clone(&amp;data);
+    let data3 = Rc::clone(&amp;data);
+
+    // All can mutate
+    data.borrow_mut().push(4);
+    data2.borrow_mut().push(5);
+    data3.borrow_mut().push(6);
+
+    println!(&quot;{:?}&quot;, data.borrow());  // [1, 2, 3, 4, 5, 6]
+}
+</code></pre>
+<p><strong>Why you need both:</strong>
+- <code>Rc&lt;T&gt;</code> alone: Can share, but immutable
+- <code>RefCell&lt;T&gt;</code> alone: Can mutate, but single owner
+- <code>Rc&lt;RefCell&lt;T&gt;&gt;</code>: Can share AND mutate ✓</p>
+<p><strong>Understanding the layers:</strong></p>
+<pre><code>Rc&lt;RefCell&lt;Vec&lt;i32&gt;&gt;&gt;
+│
+├─ Rc: Multiple ownership (reference counting)
+│
+└─ RefCell: Interior mutability (runtime borrow checking)
+   │
+   └─ Vec&lt;i32&gt;: The actual data
+</code></pre>
+<p><strong>Standard pattern</strong> for shared mutable state in single-threaded contexts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cell vs RefCell vs Mutex</h2>
+<p>Compare <code>Cell</code>, <code>RefCell</code>, and <code>Mutex</code> across key features. When do you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Feature | Cell | RefCell | Mutex |
+|---------|------|---------|-------|
+| <strong>Interior mutability</strong> | Yes | Yes | Yes |
+| <strong>Works with</strong> | Copy types | Any type | Any type |
+| <strong>Borrow checking</strong> | None | Runtime | Runtime |
+| <strong>Thread-safe</strong> | No | No | Yes |
+| <strong>Methods</strong> | <code>get()</code>, <code>set()</code> | <code>borrow()</code>, <code>borrow_mut()</code> | <code>lock()</code> |
+| <strong>Can panic</strong> | No | Yes | No (deadlock) |
+| <strong>Overhead</strong> | None | Small | Larger |</p>
+<p><strong>Decision guide:</strong></p>
+<pre><code>Need interior mutability?
+  │
+  ├─ Single-threaded?
+  │   ├─ Type is Copy? → Cell
+  │   └─ Type is not Copy? → RefCell
+  │
+  └─ Multi-threaded? → Mutex (or RwLock)
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-rust">// Cell: for Copy types
+let cell = Cell::new(5);
+cell.set(10);
+
+// RefCell: for any type (single-threaded)
+let refcell = RefCell::new(vec![1, 2, 3]);
+refcell.borrow_mut().push(4);
+
+// Mutex: for any type (multi-threaded)
+let mutex = Mutex::new(vec![1, 2, 3]);
+mutex.lock().unwrap().push(4);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Logger Pattern with RefCell</h2>
+<p>Implement a logger using <code>RefCell</code> that can accumulate log messages through immutable references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::cell::RefCell;
+
+struct Logger {
+    logs: RefCell&lt;Vec&lt;String&gt;&gt;,
+}
+
+impl Logger {
+    fn new() -&gt; Self {
+        Logger {
+            logs: RefCell::new(Vec::new()),
+        }
+    }
+
+    // Takes &amp;self, not &amp;mut self
+    fn log(&amp;self, message: &amp;str) {
+        self.logs.borrow_mut().push(message.to_string());
+    }
+
+    fn get_logs(&amp;self) -&gt; Vec&lt;String&gt; {
+        self.logs.borrow().clone()
+    }
+}
+
+fn main() {
+    let logger = Logger::new();
+
+    // Can pass &amp;Logger to functions
+    process_data(&amp;logger);
+    process_more_data(&amp;logger);
+
+    println!(&quot;Logs: {:?}&quot;, logger.get_logs());
+}
+
+fn process_data(logger: &amp;Logger) {
+    logger.log(&quot;Processing data&quot;);
+}
+
+fn process_more_data(logger: &amp;Logger) {
+    logger.log(&quot;Processing more data&quot;);
+}
+</code></pre>
+<p><strong>Why RefCell?</strong>
+- Functions take <code>&amp;Logger</code>, not <code>&amp;mut Logger</code>
+- Still need to mutate internal state (add logs)
+- RefCell provides interior mutability
+- Single-threaded context (use Mutex for multi-threaded)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Graph with Bidirectional References</h2>
+<p>Demonstrate using <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> to create a graph with bidirectional connections.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Node {
+    value: i32,
+    neighbors: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+
+impl Node {
+    fn new(value: i32) -&gt; Rc&lt;Self&gt; {
+        Rc::new(Node {
+            value,
+            neighbors: RefCell::new(vec![]),
+        })
+    }
+
+    fn connect(&amp;self, other: &amp;Rc&lt;Node&gt;) {
+        // Add other to self's neighbors
+        self.neighbors.borrow_mut().push(Rc::clone(other));
+        // Add self to other's neighbors
+        other.neighbors.borrow_mut().push(Rc::clone(&amp;Rc::new(self.clone())));
+    }
+}
+
+fn main() {
+    let node1 = Node::new(1);
+    let node2 = Node::new(2);
+
+    // Create bidirectional connection
+    node1.neighbors.borrow_mut().push(Rc::clone(&amp;node2));
+    node2.neighbors.borrow_mut().push(Rc::clone(&amp;node1));
+
+    println!(&quot;Node 1 has {} neighbors&quot;, 
+             node1.neighbors.borrow().len());
+}
+</code></pre>
+<p><strong>Pattern breakdown:</strong>
+- <code>Rc</code>: Multiple nodes can point to same neighbor
+- <code>RefCell</code>: Can modify neighbor list through shared reference
+- Together: Build complex graph structures safely</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Cache Pattern with RefCell</h2>
+<p>Implement a cache using <code>RefCell</code> that computes values on first access and returns cached values on subsequent accesses.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::cell::RefCell;
+use std::collections::HashMap;
+
+struct Cache {
+    data: RefCell&lt;HashMap&lt;String, String&gt;&gt;,
+}
+
+impl Cache {
+    fn new() -&gt; Self {
+        Cache {
+            data: RefCell::new(HashMap::new()),
+        }
+    }
+
+    fn get(&amp;self, key: &amp;str) -&gt; Option&lt;String&gt; {
+        self.data.borrow().get(key).cloned()
+    }
+
+    fn set(&amp;self, key: String, value: String) {
+        self.data.borrow_mut().insert(key, value);
+    }
+
+    fn get_or_compute&lt;F&gt;(&amp;self, key: &amp;str, compute: F) -&gt; String
+    where
+        F: FnOnce() -&gt; String,
+    {
+        // Check cache first (short borrow)
+        if let Some(value) = self.get(key) {
+            return value;
+        }
+
+        // Compute (no borrow held)
+        let value = compute();
+
+        // Cache result
+        self.set(key.to_string(), value.clone());
+        value
+    }
+}
+
+fn main() {
+    let cache = Cache::new();
+
+    let result1 = cache.get_or_compute(&quot;key1&quot;, || {
+        println!(&quot;Computing...&quot;);
+        &quot;expensive_result&quot;.to_string()
+    });  // Prints &quot;Computing...&quot;
+
+    let result2 = cache.get_or_compute(&quot;key1&quot;, || {
+        println!(&quot;Computing...&quot;);
+        &quot;expensive_result&quot;.to_string()
+    });  // Doesn't print - cached!
+}
+</code></pre>
+<p><strong>Pattern:</strong> Lazy evaluation with memoization through immutable API.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Performance and Overhead</h2>
+<p>What is the performance overhead of <code>RefCell</code> compared to regular mutation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Runtime overhead components:</strong></p>
+<p><strong>1. Borrow state storage (1-2 bytes):</strong></p>
+<pre><code class="language-rust">// RefCell stores whether it's borrowed
+// and how many immutable borrows exist
+</code></pre>
+<p><strong>2. Borrow checking (~5-10 CPU cycles):</strong></p>
+<pre><code class="language-rust">let x = RefCell::new(5);
+*x.borrow_mut() += 1;  // Checks borrow state at runtime
+</code></pre>
+<p><strong>3. Guard object creation (stack allocation):</strong></p>
+<pre><code class="language-rust">let guard = x.borrow_mut();  // Creates RefMut guard
+</code></pre>
+<p><strong>Comparison:</strong></p>
+<pre><code class="language-rust">// Zero runtime cost
+let mut x = 5;
+x += 1;
+
+// Small runtime cost
+let x = RefCell::new(5);
+*x.borrow_mut() += 1;
+</code></pre>
+<p><strong>Trade-off: Flexibility vs Performance</strong>
+- RefCell: More flexible, small runtime cost
+- Regular mut: Less flexible, zero cost</p>
+<p><strong>When it matters:</strong>
+- Tight loops (millions of operations)
+- Performance-critical hot paths</p>
+<p><strong>When it doesn't matter:</strong>
+- Normal application code
+- Infrequent updates
+- When flexibility is worth the cost</p>
+<p><strong>Bottom line:</strong> Overhead is small but real. Use when architecture demands it, not by default.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Forgetting Guards are Held</h2>
+<p>What's the problem with holding RefCell guards too long? Show the gotcha and solution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The gotcha:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+let cell = RefCell::new(vec![1, 2, 3]);
+
+// ❌ Guard held too long
+let borrow = cell.borrow();
+println!(&quot;{:?}&quot;, borrow);
+// ... lots of code ...
+// cell.borrow_mut();  // Would panic! borrow still held
+
+// ... more code ...
+println!(&quot;{:?}&quot;, borrow);  // Still using guard
+</code></pre>
+<p><strong>Problem:</strong> The immutable borrow (<code>borrow</code>) lives until end of scope, blocking mutable borrows.</p>
+<p><strong>Solution 1: Explicit scopes</strong></p>
+<pre><code class="language-rust">// ✅ Drop guard early
+{
+    let borrow = cell.borrow();
+    println!(&quot;{:?}&quot;, borrow);
+}  // Guard dropped here
+
+cell.borrow_mut();  // OK now
+</code></pre>
+<p><strong>Solution 2: Don't store guards</strong></p>
+<pre><code class="language-rust">// ✅ Use and drop immediately
+println!(&quot;{:?}&quot;, cell.borrow());  // Guard dropped after line
+
+cell.borrow_mut();  // OK
+</code></pre>
+<p><strong>Solution 3: Explicit drop</strong></p>
+<pre><code class="language-rust">let borrow = cell.borrow();
+println!(&quot;{:?}&quot;, borrow);
+drop(borrow);  // Explicitly release
+
+cell.borrow_mut();  // OK
+</code></pre>
+<p><strong>Rule:</strong> Keep guard lifetimes as short as possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Double Borrow in Same Expression</h2>
+<p>What's wrong with borrowing a RefCell multiple times in the same expression? Show the gotcha and fix.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The gotcha:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+let cell = RefCell::new(vec![1, 2, 3]);
+
+// ⚠️ This might panic!
+cell.borrow_mut().push(*cell.borrow().first().unwrap());
+//   └─ mutable ─┘       └─ immutable ─┘
+// Both borrows active at same time!
+</code></pre>
+<p><strong>Why it panics:</strong>
+1. <code>cell.borrow_mut()</code> creates mutable borrow
+2. Then <code>cell.borrow()</code> tries immutable borrow
+3. Can't have both at same time
+4. Runtime panic!</p>
+<p><strong>Solution: Separate the borrows</strong></p>
+<pre><code class="language-rust">// ✅ Correct: separate borrows
+let first = *cell.borrow().first().unwrap();
+// Immutable borrow dropped here
+
+cell.borrow_mut().push(first);
+// Mutable borrow happens after immutable is done
+</code></pre>
+<p><strong>Another example:</strong></p>
+<pre><code class="language-rust">// ❌ Bad
+let sum = *cell.borrow() + *cell.borrow();
+
+// ✅ Good
+let value = *cell.borrow();
+let sum = value + value;
+</code></pre>
+<p><strong>Rule:</strong> Don't borrow the same RefCell multiple times in one expression.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - Storing Ref/RefMut Guards</h2>
+<p>Why can't you store <code>Ref</code> or <code>RefMut</code> guards in structs, and what should you do instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::cell::{RefCell, Ref};
+
+// ❌ Can't store guards in structs (lifetime issues)
+struct Holder&lt;'a&gt; {
+    borrow: Ref&lt;'a, Vec&lt;i32&gt;&gt;,  // Won't work well
+}
+</code></pre>
+<p><strong>Why it doesn't work:</strong>
+- <code>Ref</code> and <code>RefMut</code> have lifetimes tied to the <code>RefCell</code>
+- Storing guards creates complex lifetime constraints
+- Hard to use the struct without lifetime errors</p>
+<p><strong>Solution: Store RefCell instead</strong></p>
+<pre><code class="language-rust">// ✅ Store RefCell, not guards
+struct Holder {
+    cell: RefCell&lt;Vec&lt;i32&gt;&gt;,
+}
+
+impl Holder {
+    fn get(&amp;self) -&gt; i32 {
+        self.cell.borrow()[0]  // Borrow when needed
+    }
+
+    fn set(&amp;self, value: i32) {
+        self.cell.borrow_mut()[0] = value;
+    }
+}
+</code></pre>
+<p><strong>Pattern:</strong>
+- Store <code>RefCell&lt;T&gt;</code> in struct
+- Create guards (Ref/RefMut) in methods
+- Guards live only for method duration
+- No lifetime complexity</p>
+<p><strong>Alternative: Use Rc<RefCell\<T>></strong></p>
+<pre><code class="language-rust">struct Holder {
+    data: Rc&lt;RefCell&lt;Vec&lt;i32&gt;&gt;&gt;,
+}
+</code></pre>
+<p><strong>Key insight:</strong> Guards are temporary - use them in functions, don't store them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Gotcha - RefCell is Not Thread-Safe</h2>
+<p>What happens if you try to use <code>RefCell</code> across threads? What's the error and solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+use std::thread;
+
+let cell = RefCell::new(5);
+
+// ❌ Won't compile
+thread::spawn(move || {
+    *cell.borrow_mut() = 10;
+});
+</code></pre>
+<p><strong>Error:</strong></p>
+<pre><code>error[E0277]: `RefCell&lt;i32&gt;` cannot be sent between threads safely
+   |
+   = help: the trait `Send` is not implemented for `RefCell&lt;i32&gt;`
+</code></pre>
+<p><strong>Why?</strong> RefCell uses non-atomic operations for borrow tracking, which isn't thread-safe.</p>
+<p><strong>Solution: Use Mutex</strong></p>
+<pre><code class="language-rust">use std::sync::Mutex;
+use std::thread;
+
+let mutex = Mutex::new(5);
+
+// ✅ Works! Mutex is thread-safe
+thread::spawn(move || {
+    *mutex.lock().unwrap() = 10;
+});
+</code></pre>
+<p><strong>Comparison:</strong></p>
+<pre><code>Single-threaded interior mutability:
+- RefCell: Runtime borrow checking, fast
+- Cell: For Copy types, fastest
+
+Multi-threaded interior mutability:
+- Mutex: Thread-safe locking
+- RwLock: Multiple readers, single writer
+</code></pre>
+<p><strong>Rule:</strong> RefCell is for single-threaded code only. Use Mutex/RwLock for threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Observable Pattern with RefCell</h2>
+<p>Implement an observable pattern using <code>RefCell</code> where observers are notified when a value changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Observable {
+    value: RefCell&lt;i32&gt;,
+    observers: RefCell&lt;Vec&lt;Rc&lt;dyn Fn(i32)&gt;&gt;&gt;,
+}
+
+impl Observable {
+    fn new(value: i32) -&gt; Self {
+        Observable {
+            value: RefCell::new(value),
+            observers: RefCell::new(vec![]),
+        }
+    }
+
+    fn subscribe(&amp;self, observer: Rc&lt;dyn Fn(i32)&gt;) {
+        self.observers.borrow_mut().push(observer);
+    }
+
+    fn set(&amp;self, new_value: i32) {
+        *self.value.borrow_mut() = new_value;
+        self.notify(new_value);
+    }
+
+    fn notify(&amp;self, value: i32) {
+        for observer in self.observers.borrow().iter() {
+            observer(value);
+        }
+    }
+}
+
+fn main() {
+    let observable = Observable::new(0);
+
+    observable.subscribe(Rc::new(|v| {
+        println!(&quot;Observer 1: {}&quot;, v);
+    }));
+
+    observable.subscribe(Rc::new(|v| {
+        println!(&quot;Observer 2: {}&quot;, v);
+    }));
+
+    observable.set(10);  // Both observers notified
+    // Output:
+    // Observer 1: 10
+    // Observer 2: 10
+}
+</code></pre>
+<p><strong>Why RefCell:</strong>
+- Subscribe and set take <code>&amp;self</code>, not <code>&amp;mut self</code>
+- Need to mutate internal collections
+- Single-threaded event system</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Compile-Time vs Runtime Safety Trade-off</h2>
+<p>Compare compile-time vs runtime borrow checking. What are the trade-offs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Compile-time checking (regular Rust):</strong></p>
+<pre><code class="language-rust">let mut x = 5;
+let r1 = &amp;x;
+// let r2 = &amp;mut x;  // ❌ Won't compile
+</code></pre>
+<p><strong>Pros:</strong>
+- Catch bugs at compile time (earlier = better)
+- Zero runtime cost
+- Can't forget to check
+- Guaranteed safe</p>
+<p><strong>Cons:</strong>
+- Less flexible
+- Can't express some patterns
+- More restrictive</p>
+<p><strong>Runtime checking (RefCell):</strong></p>
+<pre><code class="language-rust">let x = RefCell::new(5);
+let r1 = x.borrow();
+// let r2 = x.borrow_mut();  // ⚠️ Will panic
+</code></pre>
+<p><strong>Pros:</strong>
+- More flexible
+- Can express patterns impossible otherwise
+- Works with APIs requiring <code>&amp;self</code></p>
+<p><strong>Cons:</strong>
+- Can panic at runtime (bugs reach production)
+- Small runtime cost
+- Must manually ensure correctness
+- Need tests to catch violations</p>
+<p><strong>Trade-off decision matrix:</strong></p>
+<pre><code>Can satisfy borrows at compile time?
+  ├─ Yes → Use regular mut (safer, faster)
+  └─ No → Consider RefCell
+      ├─ Single-threaded? → RefCell
+      └─ Multi-threaded? → Mutex
+</code></pre>
+<p><strong>Rule:</strong> Prefer compile-time safety (regular mut) when possible. Use RefCell when architecture demands runtime flexibility.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Key Insights</h2>
+<p>What are the seven key insights about <code>RefCell&lt;T&gt;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Interior mutability trades compile-time for runtime:</strong> RefCell moves borrow checking from compilation to execution</p>
+<p><strong>2. Same rules, different timing:</strong> The borrowing rules are identical, just enforced at runtime</p>
+<p><strong>3. Use sparingly:</strong> Prefer regular mut when possible, RefCell when necessary</p>
+<p><strong>4. Common with Rc:</strong> <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> is the standard pattern for shared mutable state (single-threaded)</p>
+<p><strong>5. Not thread-safe:</strong> Use <code>Mutex</code> for multi-threaded interior mutability</p>
+<p><strong>6. Can panic:</strong> Unlike compile-time checks, RefCell can panic at runtime if rules violated</p>
+<p><strong>7. Prefer try_ methods:</strong> Use <code>.try_borrow()</code> and <code>.try_borrow_mut()</code> when unsure to avoid panics</p>
+<p><strong>Mental model:</strong></p>
+<pre><code>Regular Rust: Compiler enforces rules → Safe, strict
+RefCell: You enforce rules → Flexible, can panic
+</code></pre>
+<p><strong>When to use:</strong>
+- API requires <code>&amp;self</code> but need mutation
+- Building mock objects for tests
+- Implementing caching
+- Complex data structures (graphs/trees)</p>
+<p><strong>Bottom line:</strong> RefCell is a powerful tool for interior mutability. Use it when architecture demands mutation through immutable references, but prefer compile-time safety whenever possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mock Object Pattern with RefCell</h2>
+<p>Why is <code>RefCell</code> perfect for mock objects in tests? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Why RefCell is perfect for mocks:</strong>
+- Test APIs often require <code>&amp;self</code> not <code>&amp;mut self</code>
+- Need to track calls, arguments, return values
+- Must mutate internal state through immutable reference
+- Single-threaded (tests run in one thread)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+struct MockDatabase {
+    calls: RefCell&lt;Vec&lt;String&gt;&gt;,
+    query_results: RefCell&lt;Vec&lt;String&gt;&gt;,
+}
+
+impl MockDatabase {
+    fn new() -&gt; Self {
+        MockDatabase {
+            calls: RefCell::new(vec![]),
+            query_results: RefCell::new(vec![&quot;result1&quot;.into()]),
+        }
+    }
+
+    // Takes &amp;self to match real database API
+    fn query(&amp;self, sql: &amp;str) -&gt; Option&lt;String&gt; {
+        // Track the call
+        self.calls.borrow_mut().push(sql.to_string());
+
+        // Return canned result
+        self.query_results.borrow_mut().pop()
+    }
+
+    // Verification methods
+    fn was_called_with(&amp;self, sql: &amp;str) -&gt; bool {
+        self.calls.borrow().contains(&amp;sql.to_string())
+    }
+
+    fn call_count(&amp;self) -&gt; usize {
+        self.calls.borrow().len()
+    }
+}
+
+#[test]
+fn test_user_service() {
+    let mock_db = MockDatabase::new();
+
+    // Use mock in test
+    let result = mock_db.query(&quot;SELECT * FROM users&quot;);
+
+    // Verify behavior
+    assert!(mock_db.was_called_with(&quot;SELECT * FROM users&quot;));
+    assert_eq!(mock_db.call_count(), 1);
+}
+</code></pre>
+<p><strong>Pattern benefits:</strong>
+- Matches production API (<code>&amp;self</code>)
+- Tracks test interactions
+- Enables verification
+- No need for <code>&amp;mut</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When RefCell Makes Sense Decision Tree</h2>
+<p>Create a decision tree for determining when to use <code>RefCell</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Need to mutate data?
+  │
+  ├─ No → Don't use RefCell
+  │
+  └─ Yes → Have &amp;mut access?
+      │
+      ├─ Yes → Use regular &amp;mut (prefer this)
+      │        Don't need RefCell
+      │
+      └─ No → Why not?
+          │
+          ├─ API requires &amp;self → RefCell candidate ✓
+          │   │
+          │   ├─ Single-threaded? → Use RefCell
+          │   └─ Multi-threaded? → Use Mutex
+          │
+          ├─ Multiple owners need mutation
+          │   │
+          │   ├─ Single-threaded? → Rc&lt;RefCell&lt;T&gt;&gt;
+          │   └─ Multi-threaded? → Arc&lt;Mutex&lt;T&gt;&gt;
+          │
+          └─ Building mock/cache/graph? → RefCell candidate ✓
+</code></pre>
+<p><strong>Quick checks:</strong></p>
+<pre><code class="language-rust">// ✅ Good for RefCell
+trait Component {
+    fn update(&amp;self);  // API forces &amp;self
+}
+
+// ❌ Bad - just use mut
+fn process(data: &amp;mut Vec&lt;i32&gt;) {
+    // Have &amp;mut, don't need RefCell
+}
+
+// ✅ Good for RefCell
+struct Cache {
+    data: RefCell&lt;HashMap&lt;K, V&gt;&gt;,  // Interior mutability
+}
+</code></pre>
+<p><strong>Rule of thumb:</strong> If you can use regular <code>&amp;mut</code>, do that. Use RefCell only when the API or architecture makes it necessary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Borrow Guard Lifetimes</h2>
+<p>Explain the lifetime behavior of <code>Ref</code> and <code>RefMut</code> guards. How long do they live?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Guards live until dropped:</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+let cell = RefCell::new(vec![1, 2, 3]);
+
+// Guard created
+let guard = cell.borrow();
+println!(&quot;{:?}&quot;, guard);
+
+// ... guard still alive ...
+// cell.borrow_mut();  // Would panic - guard still exists
+
+// Guard dropped at end of scope
+// Now can borrow again
+</code></pre>
+<p><strong>Lifetime is lexical scope:</strong></p>
+<pre><code class="language-rust">{
+    let guard = cell.borrow();
+    // guard lives here
+}  // guard dropped
+
+cell.borrow_mut();  // OK now
+</code></pre>
+<p><strong>Early drop:</strong></p>
+<pre><code class="language-rust">let guard = cell.borrow();
+println!(&quot;{:?}&quot;, guard);
+drop(guard);  // Explicitly drop
+
+cell.borrow_mut();  // OK - guard gone
+</code></pre>
+<p><strong>No drop needed:</strong></p>
+<pre><code class="language-rust">// Guard created and dropped in same expression
+println!(&quot;{:?}&quot;, cell.borrow());
+// Already dropped!
+
+cell.borrow_mut();  // OK
+</code></pre>
+<p><strong>Key insight:</strong> Guards follow RAII (Resource Acquisition Is Initialization):
+- Created when you call <code>.borrow()</code>/<code>.borrow_mut()</code>
+- Automatically track active borrows
+- Automatically release when dropped
+- Can't violate rules while guard exists</p>
+<p><strong>Pattern:</strong> Keep guard lifetimes as short as possible to avoid conflicts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell vs Cell for Copy Types</h2>
+<p>When should you use <code>Cell</code> instead of <code>RefCell</code> for interior mutability? What's the difference?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Cell: For <code>Copy</code> types only</strong></p>
+<pre><code class="language-rust">use std::cell::Cell;
+
+let cell = Cell::new(5);
+
+// Simple get/set, no borrowing
+let value = cell.get();  // Gets copy
+cell.set(10);            // Sets value
+</code></pre>
+<p><strong>RefCell: For any type</strong></p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+let refcell = RefCell::new(vec![1, 2, 3]);
+
+// Need to borrow
+let value = refcell.borrow();  // Returns guard
+refcell.borrow_mut().push(4);  // Mutable guard
+</code></pre>
+<p><strong>Comparison:</strong></p>
+<p>| Feature | Cell | RefCell |
+|---------|------|---------|
+| <strong>Works with</strong> | Copy types only | Any type |
+| <strong>Borrow checking</strong> | None | Runtime |
+| <strong>Methods</strong> | <code>get()</code>, <code>set()</code> | <code>borrow()</code>, <code>borrow_mut()</code> |
+| <strong>Can panic</strong> | No | Yes |
+| <strong>Overhead</strong> | Zero | Small |</p>
+<p><strong>When to use Cell:</strong></p>
+<pre><code class="language-rust">struct Config {
+    enabled: Cell&lt;bool&gt;,      // ✅ bool is Copy
+    count: Cell&lt;u32&gt;,         // ✅ u32 is Copy
+    // name: Cell&lt;String&gt;,    // ❌ String is not Copy
+}
+
+// Simple to use
+config.enabled.set(true);
+let is_enabled = config.enabled.get();
+</code></pre>
+<p><strong>When to use RefCell:</strong></p>
+<pre><code class="language-rust">struct Config {
+    name: RefCell&lt;String&gt;,      // String not Copy
+    items: RefCell&lt;Vec&lt;Item&gt;&gt;,  // Vec not Copy
+}
+
+// Need borrowing
+*config.name.borrow_mut() = &quot;new&quot;.to_string();
+</code></pre>
+<p><strong>Rule:</strong> If type is <code>Copy</code>, prefer <code>Cell</code> (simpler, no panics). Otherwise use <code>RefCell</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Best Practices Summary</h2>
+<p>Summarize the best practices for using <code>RefCell</code> effectively and safely.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Prefer compile-time safety:</strong></p>
+<pre><code class="language-rust">// ✅ Try this first
+let mut data = vec![1, 2, 3];
+
+// Only if API requires &amp;self
+let data = RefCell::new(vec![1, 2, 3]);
+</code></pre>
+<p><strong>2. Keep borrows short:</strong></p>
+<pre><code class="language-rust">// ❌ Bad - long-lived guard
+let guard = cell.borrow();
+do_lots_of_work();
+use_guard(&amp;guard);
+
+// ✅ Good - minimal lifetime
+{
+    let guard = cell.borrow();
+    use_guard(&amp;guard);
+}
+do_lots_of_work();
+</code></pre>
+<p><strong>3. Don't store guards:</strong></p>
+<pre><code class="language-rust">// ❌ Don't store Ref/RefMut
+struct Holder&lt;'a&gt; {
+    guard: Ref&lt;'a, Data&gt;,
+}
+
+// ✅ Store RefCell
+struct Holder {
+    cell: RefCell&lt;Data&gt;,
+}
+</code></pre>
+<p><strong>4. Use try_ methods when unsure:</strong></p>
+<pre><code class="language-rust">// ✅ Safe - won't panic
+if let Ok(mut data) = cell.try_borrow_mut() {
+    data.update();
+}
+</code></pre>
+<p><strong>5. Immediate mutations need no variables:</strong></p>
+<pre><code class="language-rust">// ✅ Safe - guard immediately dropped
+*cell.borrow_mut() = new_value;
+</code></pre>
+<p><strong>6. Combine with Rc for shared mutable state:</strong></p>
+<pre><code class="language-rust">// ✅ Standard pattern
+let shared = Rc::new(RefCell::new(data));
+</code></pre>
+<p><strong>7. Document why you're using RefCell:</strong></p>
+<pre><code class="language-rust">/// Uses RefCell because Logger trait requires &amp;self
+struct FileLogger {
+    logs: RefCell&lt;Vec&lt;String&gt;&gt;,
+}
+</code></pre>
+<p><strong>Golden rules:</strong>
+- Use only when necessary
+- Keep borrows short
+- Use try_ methods in uncertain contexts
+- Test thoroughly (runtime checks!)
+- Document the rationale</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
