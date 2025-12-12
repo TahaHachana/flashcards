@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 07-Combinations-And-Patterns</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Combine Smart Pointers?</h2>
+<p>Why do we need to combine smart pointers? What different problems does each layer solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Smart pointers solve different, orthogonal problems:</p>
+<p><strong>Ownership:</strong>
+- Single owner: <code>Box</code>
+- Multiple owners: <code>Rc</code> (single-threaded) or <code>Arc</code> (multi-threaded)</p>
+<p><strong>Thread safety:</strong>
+- Single-threaded: <code>Rc</code>, <code>RefCell</code>
+- Multi-threaded: <code>Arc</code>, <code>Mutex</code>, <code>RwLock</code></p>
+<p><strong>Mutability:</strong>
+- Compile-time: <code>&amp;mut T</code>
+- Runtime (interior mutability): <code>RefCell</code>, <code>Mutex</code>, <code>RwLock</code></p>
+<p><strong>Example needs:</strong></p>
+<pre><code>Need: Multiple owners + Mutability + Single-threaded
+├─ Multiple owners → Rc
+└─ Mutability → RefCell
+Result: Rc&lt;RefCell&lt;T&gt;&gt;
+
+Need: Multiple owners + Mutability + Multi-threaded
+├─ Multiple owners → Arc
+└─ Thread-safe mutability → Mutex
+Result: Arc&lt;Mutex&lt;T&gt;&gt;
+</code></pre>
+<p>Often you need multiple capabilities at once, which requires combining smart pointers. Each layer addresses one specific problem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc<RefCell\<T>> Pattern</h2>
+<p>What is <code>Rc&lt;RefCell&lt;T&gt;&gt;</code>, what does each layer provide, and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What it provides:</strong></p>
+<pre><code>Rc&lt;RefCell&lt;T&gt;&gt;
+│
+├─ Rc: Multiple owners can share the same data
+│
+└─ RefCell: Data can be mutated through immutable references
+</code></pre>
+<p><strong>Capabilities:</strong>
+- ✅ Multiple owners (reference counting)
+- ✅ Interior mutability (runtime borrow checking)
+- ✅ Single-threaded (no atomic overhead)
+- ❌ Not thread-safe</p>
+<p><strong>When to use:</strong>
+1. Multiple parts of code need to own the data
+2. Data needs to be mutable
+3. Code is single-threaded
+4. Building complex data structures (graphs, trees)</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+let data = Rc::new(RefCell::new(vec![1, 2, 3]));
+
+let data1 = Rc::clone(&amp;data);
+let data2 = Rc::clone(&amp;data);
+
+// Both can mutate
+data1.borrow_mut().push(4);
+data2.borrow_mut().push(5);
+
+println!(&quot;{:?}&quot;, data.borrow());  // [1, 2, 3, 4, 5]
+</code></pre>
+<p><strong>Common use cases:</strong> UI component trees, game entity graphs, single-threaded event systems</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc<RefCell\<T>> Graph Example</h2>
+<p>Demonstrate using <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> to build a graph where nodes can have multiple neighbors and connections can be added after creation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Node {
+    value: i32,
+    neighbors: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+
+impl Node {
+    fn new(value: i32) -&gt; Rc&lt;Self&gt; {
+        Rc::new(Node {
+            value,
+            neighbors: RefCell::new(vec![]),
+        })
+    }
+
+    fn add_neighbor(&amp;self, neighbor: Rc&lt;Node&gt;) {
+        self.neighbors.borrow_mut().push(neighbor);
+    }
+}
+
+fn main() {
+    let node1 = Node::new(1);
+    let node2 = Node::new(2);
+    let node3 = Node::new(3);
+
+    // Create graph connections
+    node1.add_neighbor(Rc::clone(&amp;node2));
+    node1.add_neighbor(Rc::clone(&amp;node3));
+    node2.add_neighbor(Rc::clone(&amp;node1));  // Bidirectional
+
+    println!(&quot;Node 1 has {} neighbors&quot;, 
+             node1.neighbors.borrow().len());
+}
+</code></pre>
+<p><strong>Why Rc<RefCell\<T>>?</strong>
+- Multiple nodes reference same neighbor → <code>Rc</code>
+- Neighbor lists change after creation → <code>RefCell</code>
+- Graph is single-threaded → Not <code>Arc</code>/<code>Mutex</code></p>
+<p><strong>Breaking down the layers:</strong></p>
+<pre><code>Rc&lt;Node&gt;
+│
+└─ neighbors: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;
+              │          │
+              │          └─ Multiple nodes point to same neighbor
+              └─ Can modify neighbor list through &amp;self
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc<RefCell\<T>> with Weak for Trees</h2>
+<p>Show how to use <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> with <code>Weak</code> to build a tree with parent pointers that doesn't leak memory.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct TreeNode {
+    value: i32,
+    children: RefCell&lt;Vec&lt;Rc&lt;TreeNode&gt;&gt;&gt;,
+    parent: RefCell&lt;Weak&lt;TreeNode&gt;&gt;,  // Weak to avoid cycles
+}
+
+impl TreeNode {
+    fn new(value: i32) -&gt; Rc&lt;Self&gt; {
+        Rc::new(TreeNode {
+            value,
+            children: RefCell::new(vec![]),
+            parent: RefCell::new(Weak::new()),
+        })
+    }
+
+    fn add_child(parent: &amp;Rc&lt;TreeNode&gt;, child: Rc&lt;TreeNode&gt;) {
+        // Set child's parent (weak reference)
+        *child.parent.borrow_mut() = Rc::downgrade(parent);
+
+        // Add child to parent
+        parent.children.borrow_mut().push(child);
+    }
+}
+
+fn main() {
+    let root = TreeNode::new(1);
+    let child1 = TreeNode::new(2);
+    let child2 = TreeNode::new(3);
+
+    TreeNode::add_child(&amp;root, child1);
+    TreeNode::add_child(&amp;root, child2);
+}
+</code></pre>
+<p><strong>Pattern notes:</strong>
+- Children → <code>Rc</code> (parent owns children)
+- Parent pointer → <code>Weak</code> (prevents reference cycles)
+- Both use <code>RefCell</code> (tree structure changes)</p>
+<p><strong>Why Weak?</strong> Prevents cycle: parent → child (strong) and child → parent (weak) means parent can be freed when no other references exist.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc<Mutex\<T>> Pattern</h2>
+<p>What is <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, what does each layer provide, and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What it provides:</strong></p>
+<pre><code>Arc&lt;Mutex&lt;T&gt;&gt;
+│
+├─ Arc: Multiple threads can share the same data (atomic ref counting)
+│
+└─ Mutex: Only one thread can access data at a time (mutual exclusion)
+</code></pre>
+<p><strong>Capabilities:</strong>
+- ✅ Multiple owners across threads
+- ✅ Thread-safe mutation
+- ✅ Prevents data races
+- ⚠️ Higher overhead (atomics + OS locks)</p>
+<p><strong>When to use:</strong>
+1. Multiple threads need to own the data
+2. Data needs to be mutable
+3. General-purpose thread-safe shared state
+4. Writes and reads are roughly balanced</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+let counter = Arc::new(Mutex::new(0));
+let mut handles = vec![];
+
+for _ in 0..10 {
+    let counter_clone = Arc::clone(&amp;counter);
+
+    let handle = thread::spawn(move || {
+        for _ in 0..100 {
+            *counter_clone.lock().unwrap() += 1;
+        }
+    });
+
+    handles.push(handle);
+}
+
+for handle in handles {
+    handle.join().unwrap();
+}
+
+println!(&quot;Result: {}&quot;, counter.lock().unwrap());  // 1000
+</code></pre>
+<p><strong>Common use cases:</strong> Shared counters, thread-safe caches, connection pools, shared application state</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc<Mutex\<T>> vs Rc<RefCell\<T>></h2>
+<p>Compare <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> and <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>. When do you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-markdown">| Feature           | Rc&lt;RefCell&lt;T&gt;&gt;   | Arc&lt;Mutex&lt;T&gt;&gt;     |
+|-------------------|------------------|-------------------|
+| Thread-safe       | No               | Yes               |
+| Overhead          | Small            | Larger            |
+| Borrow checking   | Runtime          | Runtime (via lock)|
+| Performance       | ~5ns per borrow  | ~100ns per lock   |
+| Use case          | Single-threaded  | Multi-threaded    |
+</code></pre>
+<p><strong>Use Rc<RefCell\<T>> when:</strong>
+- ✅ Guaranteed single-threaded
+- ✅ Need best performance
+- ✅ Building UI or game engine
+- ✅ Complex data structures</p>
+<p><strong>Use Arc<Mutex\<T>> when:</strong>
+- ✅ Might use threads now or later
+- ✅ Need thread safety
+- ✅ Building server or concurrent system
+- ✅ Shared state across threads</p>
+<p><strong>Performance comparison:</strong></p>
+<pre><code class="language-rust">// Single-threaded: Rc&lt;RefCell&lt;T&gt;&gt;
+let data = Rc::new(RefCell::new(vec![]));
+data.borrow_mut().push(1);  // ~5ns overhead
+
+// Multi-threaded: Arc&lt;Mutex&lt;T&gt;&gt;
+let data = Arc::new(Mutex::new(vec![]));
+data.lock().unwrap().push(1);  // ~100ns overhead
+</code></pre>
+<p><strong>Rule:</strong> Choose based on threading requirements, not micro-optimizations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc<RwLock\<T>> Pattern</h2>
+<p>What is <code>Arc&lt;RwLock&lt;T&gt;&gt;</code>, when should you use it instead of <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, and what are the trade-offs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What it provides:</strong></p>
+<pre><code>Arc&lt;RwLock&lt;T&gt;&gt;
+│
+├─ Arc: Multiple threads can share the same data
+│
+└─ RwLock: Multiple readers OR one writer at a time
+</code></pre>
+<p><strong>Capabilities:</strong>
+- ✅ Multiple concurrent readers
+- ✅ Exclusive writer access
+- ✅ Better performance when reads &gt;&gt; writes
+- ⚠️ More complex than Mutex</p>
+<p><strong>Use Arc<RwLock\<T>> when:</strong>
+- Reads are much more common than writes (10:1 or more)
+- Read operations are slow enough that concurrency helps
+- Multiple readers benefit from parallelism
+- Writer starvation isn't a concern</p>
+<p><strong>Use Arc<Mutex\<T>> when:</strong>
+- Reads and writes balanced
+- Simple locking logic needed
+- Operations are fast
+- Default choice</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, RwLock};
+
+let data = Arc::new(RwLock::new(vec![1, 2, 3]));
+
+// Many readers (can read concurrently)
+let read_guard = data.read().unwrap();
+println!(&quot;{:?}&quot;, *read_guard);
+
+// One writer (exclusive access)
+let mut write_guard = data.write().unwrap();
+write_guard.push(4);
+</code></pre>
+<p><strong>Performance:</strong></p>
+<pre><code>90% reads, 10% writes:
+Mutex:  ~100ms for 1M operations
+RwLock: ~60ms for 1M operations
+
+50% reads, 50% writes:
+Mutex:  ~100ms
+RwLock: ~120ms (worse!)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Pool with Arc<Mutex\<T>></h2>
+<p>Demonstrate using <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> to implement a shared work queue for a thread pool.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+use std::collections::VecDeque;
+
+type Job = Box&lt;dyn FnOnce() + Send + 'static&gt;;
+
+struct WorkQueue {
+    jobs: Arc&lt;Mutex&lt;VecDeque&lt;Job&gt;&gt;&gt;,
+}
+
+impl WorkQueue {
+    fn new() -&gt; Self {
+        WorkQueue {
+            jobs: Arc::new(Mutex::new(VecDeque::new())),
+        }
+    }
+
+    fn push(&amp;self, job: Job) {
+        self.jobs.lock().unwrap().push_back(job);
+    }
+
+    fn pop(&amp;self) -&gt; Option&lt;Job&gt; {
+        self.jobs.lock().unwrap().pop_front()
+    }
+
+    fn spawn_workers(&amp;self, count: usize) {
+        for id in 0..count {
+            let jobs_clone = Arc::clone(&amp;self.jobs);
+
+            thread::spawn(move || {
+                loop {
+                    let job = jobs_clone.lock().unwrap().pop_front();
+
+                    match job {
+                        Some(job) =&gt; job(),
+                        None =&gt; thread::sleep(Duration::from_millis(10)),
+                    }
+                }
+            });
+        }
+    }
+}
+</code></pre>
+<p><strong>Why Arc<Mutex\<T>>?</strong>
+- Multiple worker threads need access → <code>Arc</code>
+- Queue is modified (push/pop) → <code>Mutex</code>
+- Workers run concurrently → Thread-safe</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complete Decision Matrix</h2>
+<p>Provide a step-by-step decision tree for choosing the right smart pointer combination.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Step 1: Need heap allocation?
+├─ Yes, for large data → Box&lt;T&gt;
+├─ Yes, for recursive type → Box&lt;T&gt;
+├─ Yes, for trait object → Box&lt;dyn Trait&gt;
+└─ Also need sharing? → Continue to Step 2
+
+Step 2: Need multiple owners?
+├─ No → Box&lt;T&gt; or regular ownership
+└─ Yes → Continue to Step 3
+
+Step 3: Single-threaded or multi-threaded?
+├─ Single-threaded → Rc&lt;T&gt;
+├─ Multi-threaded → Arc&lt;T&gt;
+└─ Continue to Step 4 if mutation needed
+
+Step 4: Need mutability?
+├─ No → Stop at Rc&lt;T&gt; or Arc&lt;T&gt;
+└─ Yes → Continue to Step 5
+
+Step 5: Choose interior mutability type
+├─ Single-threaded?
+│   ├─ Copy type → Rc&lt;Cell&lt;T&gt;&gt;
+│   └─ Any type → Rc&lt;RefCell&lt;T&gt;&gt;
+│
+└─ Multi-threaded?
+    ├─ Many reads, few writes → Arc&lt;RwLock&lt;T&gt;&gt;
+    └─ General case → Arc&lt;Mutex&lt;T&gt;&gt;
+</code></pre>
+<p><strong>Quick reference:</strong>
+- Shared, immutable (single-thread) → <code>Rc&lt;T&gt;</code>
+- Shared, mutable (single-thread) → <code>Rc&lt;RefCell&lt;T&gt;&gt;</code>
+- Shared, immutable (multi-thread) → <code>Arc&lt;T&gt;</code>
+- Shared, mutable (multi-thread) → <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>
+- Shared, read-heavy (multi-thread) → <code>Arc&lt;RwLock&lt;T&gt;&gt;</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Selection Example - UI Tree</h2>
+<p>Walk through choosing the right smart pointer pattern for a UI component tree. What are the requirements and what pattern fits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Requirements:</strong>
+- Components reference each other (parent/children)
+- Components need to update state
+- Single-threaded (UI runs on main thread)
+- Tree structure changes dynamically</p>
+<p><strong>Decision process:</strong></p>
+<pre><code>Need multiple owners? 
+└─ Yes (parent and children reference same components)
+    └─ Single or multi-threaded?
+        └─ Single-threaded (UI thread)
+            └─ Need mutability?
+                └─ Yes (update state, modify tree)
+                    └─ Pattern: Rc&lt;RefCell&lt;T&gt;&gt;
+</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct Component {
+    id: String,
+    children: RefCell&lt;Vec&lt;Rc&lt;Component&gt;&gt;&gt;,
+    parent: RefCell&lt;Weak&lt;Component&gt;&gt;,
+    state: RefCell&lt;State&gt;,
+}
+
+impl Component {
+    fn update_state(&amp;self, new_state: State) {
+        *self.state.borrow_mut() = new_state;
+    }
+
+    fn add_child(&amp;self, child: Rc&lt;Component&gt;) {
+        *child.parent.borrow_mut() = Rc::downgrade(&amp;Rc::new(self.clone()));
+        self.children.borrow_mut().push(child);
+    }
+}
+</code></pre>
+<p><strong>Why this pattern:</strong>
+- <code>Rc</code>: Multiple components reference same child
+- <code>RefCell</code>: State and tree structure change
+- <code>Weak</code>: Parent pointer prevents cycles
+- Not <code>Arc</code>: UI is single-threaded</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Selection Example - Web Server</h2>
+<p>Walk through choosing the right smart pointer pattern for a web server request counter. What are the requirements and what pattern fits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Requirements:</strong>
+- Multiple threads handling requests
+- Shared counter incremented on each request
+- Simple read/write pattern
+- Need accurate count</p>
+<p><strong>Decision process:</strong></p>
+<pre><code>Need multiple owners?
+└─ Yes (multiple request handler threads)
+    └─ Single or multi-threaded?
+        └─ Multi-threaded (concurrent requests)
+            └─ Need mutability?
+                └─ Yes (increment counter)
+                    └─ Read-heavy or balanced?
+                        └─ Balanced (increment is write)
+                            └─ Pattern: Arc&lt;Mutex&lt;T&gt;&gt;
+</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+struct Server {
+    request_count: Arc&lt;Mutex&lt;u64&gt;&gt;,
+}
+
+impl Server {
+    fn handle_request(&amp;self) {
+        // Increment counter
+        *self.request_count.lock().unwrap() += 1;
+
+        // Handle request...
+    }
+
+    fn get_count(&amp;self) -&gt; u64 {
+        *self.request_count.lock().unwrap()
+    }
+}
+
+fn main() {
+    let server = Arc::new(Server {
+        request_count: Arc::new(Mutex::new(0)),
+    });
+
+    // Spawn request handlers
+    for _ in 0..10 {
+        let server_clone = Arc::clone(&amp;server);
+        thread::spawn(move || {
+            server_clone.handle_request();
+        });
+    }
+}
+</code></pre>
+<p><strong>Why this pattern:</strong>
+- <code>Arc</code>: Multiple threads share counter
+- <code>Mutex</code>: Counter is modified (not read-heavy)
+- Simple and correct</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Pattern Selection Example - Config Service</h2>
+<p>Walk through choosing the right smart pointer pattern for a configuration service. What are the requirements and what pattern fits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Requirements:</strong>
+- Multiple threads reading config
+- Rare config updates (mostly reads)
+- Config reads are frequent
+- Updates need to be visible to all threads</p>
+<p><strong>Decision process:</strong></p>
+<pre><code>Need multiple owners?
+└─ Yes (multiple threads access config)
+    └─ Single or multi-threaded?
+        └─ Multi-threaded (concurrent access)
+            └─ Need mutability?
+                └─ Yes (rare updates)
+                    └─ Read-heavy or balanced?
+                        └─ Read-heavy (90%+ reads)
+                            └─ Pattern: Arc&lt;RwLock&lt;T&gt;&gt;
+</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, RwLock};
+use std::collections::HashMap;
+
+type Config = Arc&lt;RwLock&lt;HashMap&lt;String, String&gt;&gt;&gt;;
+
+struct ConfigService {
+    config: Config,
+}
+
+impl ConfigService {
+    fn new() -&gt; Self {
+        ConfigService {
+            config: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+
+    fn get(&amp;self, key: &amp;str) -&gt; Option&lt;String&gt; {
+        self.config.read().unwrap().get(key).cloned()
+    }
+
+    fn set(&amp;self, key: String, value: String) {
+        self.config.write().unwrap().insert(key, value);
+    }
+}
+</code></pre>
+<p><strong>Why this pattern:</strong>
+- <code>Arc</code>: Multiple threads share config
+- <code>RwLock</code>: Many concurrent reads, rare writes
+- Better performance than <code>Mutex</code> for this access pattern</p>
+<p><strong>Alternative:</strong> Could use <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> if simplicity preferred over read performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Observable Pattern with Rc<RefCell\<T>></h2>
+<p>Implement an observable pattern using <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> where observers are notified when a value changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+type Observer = Rc&lt;dyn Fn(i32)&gt;;
+
+struct Observable {
+    value: RefCell&lt;i32&gt;,
+    observers: RefCell&lt;Vec&lt;Observer&gt;&gt;,
+}
+
+impl Observable {
+    fn new(value: i32) -&gt; Self {
+        Observable {
+            value: RefCell::new(value),
+            observers: RefCell::new(vec![]),
+        }
+    }
+
+    fn subscribe(&amp;self, observer: Observer) {
+        self.observers.borrow_mut().push(observer);
+    }
+
+    fn set(&amp;self, new_value: i32) {
+        *self.value.borrow_mut() = new_value;
+
+        // Notify all observers
+        for observer in self.observers.borrow().iter() {
+            observer(new_value);
+        }
+    }
+
+    fn get(&amp;self) -&gt; i32 {
+        *self.value.borrow()
+    }
+}
+
+fn main() {
+    let observable = Observable::new(0);
+
+    observable.subscribe(Rc::new(|v| {
+        println!(&quot;Observer 1 sees: {}&quot;, v);
+    }));
+
+    observable.subscribe(Rc::new(|v| {
+        println!(&quot;Observer 2 sees: {}&quot;, v);
+    }));
+
+    observable.set(10);  // Both observers notified
+}
+</code></pre>
+<p><strong>Why Rc<RefCell\<T>>:</strong>
+- Observers shared by value and observer list → <code>Rc</code>
+- Value and list modified through <code>&amp;self</code> → <code>RefCell</code>
+- Single-threaded event system → Not <code>Arc</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box<dyn Trait> Pattern</h2>
+<p>When do you use <code>Box&lt;dyn Trait&gt;</code> and why? Provide an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>When to use:</strong>
+- Need dynamic dispatch
+- Different types implementing same trait
+- Size not known at compile time
+- Single ownership (not sharing)</p>
+<p><strong>Example: Plugin System</strong></p>
+<pre><code class="language-rust">trait Plugin {
+    fn execute(&amp;self);
+}
+
+struct AudioPlugin;
+impl Plugin for AudioPlugin {
+    fn execute(&amp;self) {
+        println!(&quot;Playing audio&quot;);
+    }
+}
+
+struct VideoPlugin;
+impl Plugin for VideoPlugin {
+    fn execute(&amp;self) {
+        println!(&quot;Playing video&quot;);
+    }
+}
+
+fn main() {
+    let plugins: Vec&lt;Box&lt;dyn Plugin&gt;&gt; = vec![
+        Box::new(AudioPlugin),
+        Box::new(VideoPlugin),
+    ];
+
+    for plugin in plugins {
+        plugin.execute();
+    }
+}
+</code></pre>
+<p><strong>Why Box<dyn Trait>:</strong>
+- Different plugin types in same collection
+- Dynamic dispatch (runtime method lookup)
+- Each plugin owned by vector
+- Size known (pointer + vtable pointer)</p>
+<p><strong>Alternatives:</strong>
+- <code>Rc&lt;dyn Trait&gt;</code> - Shared ownership (single-threaded)
+- <code>Arc&lt;dyn Trait&gt;</code> - Shared ownership (multi-threaded)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Quick Reference Table</h2>
+<p>Create a quick reference table for choosing smart pointer combinations based on common needs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-markdown">| Need                  | Single-Threaded    | Multi-Threaded     |
+|-----------------------|--------------------|--------------------|
+| Shared, immutable     | Rc&lt;T&gt;              | Arc&lt;T&gt;             |
+| Shared, mutable       | Rc&lt;RefCell&lt;T&gt;&gt;     | Arc&lt;Mutex&lt;T&gt;&gt;      |
+| Shared, read-heavy    | Rc&lt;RefCell&lt;T&gt;&gt;     | Arc&lt;RwLock&lt;T&gt;&gt;     |
+| Single owner, heap    | Box&lt;T&gt;             | Box&lt;T&gt;             |
+| Trait object          | Box&lt;dyn T&gt;         | Box&lt;dyn T + Send&gt;  |
+| Shared trait object   | Rc&lt;dyn T&gt;          | Arc&lt;dyn T&gt;         |
+</code></pre>
+<p><strong>Decision shortcuts:</strong></p>
+<p><strong>Threading?</strong>
+- One thread → <code>Rc</code> family
+- Multiple threads → <code>Arc</code> family</p>
+<p><strong>Mutability?</strong>
+- No → Just <code>Rc</code> or <code>Arc</code>
+- Yes (single-thread) → Add <code>RefCell</code>
+- Yes (multi-thread) → Add <code>Mutex</code> or <code>RwLock</code></p>
+<p><strong>Read/write pattern?</strong>
+- Balanced or write-heavy → <code>Mutex</code>
+- Read-heavy (90%+ reads) → <code>RwLock</code></p>
+<p><strong>Ownership?</strong>
+- Single owner → <code>Box</code>
+- Multiple owners → <code>Rc</code> or <code>Arc</code></p>
+<p><strong>Remember:</strong> Start simple, add complexity only when needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection Pool Pattern</h2>
+<p>Implement a connection pool using <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> that multiple threads can acquire and release connections from.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::collections::VecDeque;
+use std::thread;
+
+struct Connection {
+    id: usize,
+}
+
+struct ConnectionPool {
+    connections: Arc&lt;Mutex&lt;VecDeque&lt;Connection&gt;&gt;&gt;,
+}
+
+impl ConnectionPool {
+    fn new(size: usize) -&gt; Self {
+        let mut connections = VecDeque::new();
+        for id in 0..size {
+            connections.push_back(Connection { id });
+        }
+
+        ConnectionPool {
+            connections: Arc::new(Mutex::new(connections)),
+        }
+    }
+
+    fn acquire(&amp;self) -&gt; Option&lt;Connection&gt; {
+        self.connections.lock().unwrap().pop_front()
+    }
+
+    fn release(&amp;self, conn: Connection) {
+        self.connections.lock().unwrap().push_back(conn);
+    }
+
+    fn available(&amp;self) -&gt; usize {
+        self.connections.lock().unwrap().len()
+    }
+}
+
+fn main() {
+    let pool = Arc::new(ConnectionPool::new(5));
+    let mut handles = vec![];
+
+    for i in 0..10 {
+        let pool_clone = Arc::clone(&amp;pool);
+
+        let handle = thread::spawn(move || {
+            if let Some(conn) = pool_clone.acquire() {
+                println!(&quot;Thread {} got connection {}&quot;, i, conn.id);
+                thread::sleep(Duration::from_millis(100));
+                pool_clone.release(conn);
+            }
+        });
+
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+</code></pre>
+<p><strong>Pattern:</strong> Multiple threads safely share and modify a pool of resources.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Not to Use Smart Pointers</h2>
+<p>Give three examples where using smart pointers is unnecessary and show the simpler alternative.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Single owner doesn't need Arc:</strong></p>
+<pre><code class="language-rust">// ❌ Unnecessary
+let data = Arc::new(vec![]);
+// Only used in one thread
+
+// ✅ Simple ownership
+let data = vec![];
+</code></pre>
+<p><strong>2. Can use &amp;mut instead of RefCell:</strong></p>
+<pre><code class="language-rust">// ❌ Overcomplicating
+struct Container {
+    data: RefCell&lt;Vec&lt;i32&gt;&gt;,
+}
+
+fn process(c: &amp;Container) {
+    c.data.borrow_mut().push(1);
+}
+
+// ✅ Simple mut
+struct Container {
+    data: Vec&lt;i32&gt;,
+}
+
+fn process(c: &amp;mut Container) {
+    c.data.push(1);
+}
+</code></pre>
+<p><strong>3. Cloning Arc when borrowing works:</strong></p>
+<pre><code class="language-rust">// ❌ Unnecessary clone
+fn helper(data: Arc&lt;Data&gt;) { }
+helper(Arc::clone(&amp;data));
+
+// ✅ Borrow when possible
+fn helper(data: &amp;Data) { }
+helper(&amp;data);
+</code></pre>
+<p><strong>Principle:</strong> Start with simplest option:
+1. Stack allocation (default)
+2. Regular ownership
+3. Borrowing (&amp;T, &amp;mut T)
+4. Smart pointers (only when needed)</p>
+<p>Add complexity only when requirements demand it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Three Smart Pointers</h2>
+<p>Can you combine more than two smart pointers? Show an example and explain when this might be needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can nest multiple smart pointers when you need multiple capabilities.</p>
+<p><strong>Example: Shared trait object with interior mutability</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+trait Component {
+    fn update(&amp;mut self);
+}
+
+struct Button {
+    label: String,
+}
+
+impl Component for Button {
+    fn update(&amp;mut self) {
+        self.label = &quot;Clicked&quot;.to_string();
+    }
+}
+
+// Three layers
+type SharedComponent = Rc&lt;RefCell&lt;Box&lt;dyn Component&gt;&gt;&gt;;
+
+fn main() {
+    let component: SharedComponent = Rc::new(
+        RefCell::new(
+            Box::new(Button {
+                label: &quot;Click me&quot;.to_string(),
+            })
+        )
+    );
+
+    let component2 = Rc::clone(&amp;component);
+
+    // Can mutate through either reference
+    component.borrow_mut().update();
+}
+</code></pre>
+<p><strong>Breaking down the layers:</strong></p>
+<pre><code>Rc&lt;RefCell&lt;Box&lt;dyn Component&gt;&gt;&gt;
+│    │       │
+│    │       └─ Box: Trait object (dynamic dispatch)
+│    └─ RefCell: Interior mutability
+└─ Rc: Shared ownership
+</code></pre>
+<p><strong>When needed:</strong>
+- Multiple owners → <code>Rc</code>
+- Interior mutability → <code>RefCell</code>
+- Trait object → <code>Box&lt;dyn Trait&gt;</code></p>
+<p><strong>Caution:</strong> More layers = more complexity. Use only when all three capabilities genuinely needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc<T> vs Arc<T> Decision</h2>
+<p>What's the key question for deciding between <code>Rc</code> and <code>Arc</code>? What are the trade-offs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Key question: Will this data cross thread boundaries?</strong></p>
+<p><strong>Use Rc when:</strong>
+- ✅ Guaranteed single-threaded
+- ✅ UI applications (main thread only)
+- ✅ Single-threaded game engines
+- ✅ Need best performance (~20% faster than Arc)</p>
+<p><strong>Use Arc when:</strong>
+- ✅ Data shared across threads
+- ✅ Might add threading later
+- ✅ Web servers, async code
+- ✅ Safety over micro-optimization</p>
+<p><strong>Trade-offs:</strong></p>
+<pre><code class="language-markdown">| Feature      | Rc                        | Arc                             |
+|--------------|---------------------------|---------------------------------|
+| Performance  | Faster (~60ns allocation) | Slower (~80ns allocation)       |
+| Clone cost   | ~2-3 CPU cycles           | ~5-10 CPU cycles (atomic)       |
+| Thread-safe  | No                        | Yes                             |
+| Overhead     | Reference count           | Atomic reference count          |
+| Traits       | No Send/Sync              | Send + Sync                     |
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">// Rc: single-threaded
+let data = Rc::new(vec![1, 2, 3]);
+// ❌ Can't send to thread
+
+// Arc: multi-threaded
+let data = Arc::new(vec![1, 2, 3]);
+thread::spawn(move || {  // ✅ Can send to thread
+    println!(&quot;{:?}&quot;, data);
+});
+</code></pre>
+<p><strong>Rule:</strong> Default to <code>Arc</code> if unsure. The performance difference is negligible in most code, and <code>Arc</code> gives you threading flexibility.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Pattern Insights</h2>
+<p>What are the seven key insights about smart pointer combinations and patterns?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Combinations solve multiple problems:</strong> Each smart pointer addresses one capability; combining them provides multiple capabilities at once</p>
+<p><strong>2. Thread safety is the main distinction:</strong> Single-threaded (<code>Rc</code>/<code>RefCell</code>) vs multi-threaded (<code>Arc</code>/<code>Mutex</code>) is the primary decision point</p>
+<p><strong>3. Interior mutability is common:</strong> Most real-world shared ownership needs <code>RefCell</code> or <code>Mutex</code> for mutation</p>
+<p><strong>4. Start simple, add complexity:</strong> Begin with simpler types, add smart pointers only as needed</p>
+<p><strong>5. Performance vs safety trade-off:</strong> Single-threaded types are faster, multi-threaded types are safer and more flexible</p>
+<p><strong>6. Common patterns are well-established:</strong> <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> and <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> are idiomatic and widely used</p>
+<p><strong>7. Choose based on requirements:</strong> Threading model and mutability needs determine the right combination</p>
+<p><strong>Mental models:</strong></p>
+<pre><code>Rc&lt;RefCell&lt;T&gt;&gt; = &quot;Shared mutable state (single-threaded)&quot;
+Arc&lt;Mutex&lt;T&gt;&gt; = &quot;Shared mutable state (multi-threaded)&quot;
+Arc&lt;RwLock&lt;T&gt;&gt; = &quot;Read-heavy shared state (multi-threaded)&quot;
+</code></pre>
+<p><strong>Decision framework:</strong>
+1. Threading? → <code>Rc</code> vs <code>Arc</code>
+2. Mutability? → Add <code>RefCell</code> or <code>Mutex</code>
+3. Access pattern? → <code>Mutex</code> vs <code>RwLock</code></p>
+<p><strong>Bottom line:</strong> Understanding these patterns and when to use them is essential for building complex Rust applications.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

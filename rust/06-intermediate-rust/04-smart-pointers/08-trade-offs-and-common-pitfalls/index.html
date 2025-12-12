@@ -1,0 +1,1410 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 04-Smart-Pointers - 08-Trade-Offs-And-Common-Pitfalls</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Smart Pointer Allocation Costs</h2>
+<p>Compare the allocation costs of stack, Box, Rc, and Arc. Provide benchmark times for 1 million allocations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Allocation costs (approximate):</strong></p>
+<pre><code class="language-markdown">| Type  | Cost per allocation | 1M allocations |
+|-------|---------------------|----------------|
+| Stack | ~0ns                | ~0ms           |
+| Box   | ~50ns               | ~50ms          |
+| Rc    | ~60ns               | ~60ms          |
+| Arc   | ~80ns               | ~80ms          |
+</code></pre>
+<p><strong>What each adds:</strong>
+- <strong>Stack:</strong> Just moving stack pointer (instant)
+- <strong>Box:</strong> Heap allocator call (~50ns)
+- <strong>Rc:</strong> Heap + reference count storage (~60ns)
+- <strong>Arc:</strong> Heap + atomic reference count (~80ns)</p>
+<p><strong>Example benchmark:</strong></p>
+<pre><code class="language-rust">use std::time::Instant;
+
+// Stack: ~0ms
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _x = 5;
+}
+println!(&quot;Stack: {:?}&quot;, start.elapsed());
+
+// Box: ~50ms
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _x = Box::new(5);
+}
+println!(&quot;Box: {:?}&quot;, start.elapsed());
+
+// Rc: ~60ms
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _x = Rc::new(5);
+}
+println!(&quot;Rc: {:?}&quot;, start.elapsed());
+
+// Arc: ~80ms
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _x = Arc::new(5);
+}
+println!(&quot;Arc: {:?}&quot;, start.elapsed());
+</code></pre>
+<p><strong>Key insight:</strong> Smart pointers add overhead, but are 10-100x faster than cloning actual data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Clone Costs Comparison</h2>
+<p>Compare the cost of cloning Rc, Arc, and actual data. What makes smart pointer clones cheap?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Clone costs (1 million clones):</strong></p>
+<pre><code class="language-markdown">| Operation  | Cost    | What happens          |
+|------------|---------|------------------------|
+| Rc clone   | ~10ms   | Increment counter (~2-3 CPU cycles) |
+| Arc clone  | ~15ms   | Atomic increment (~5-10 CPU cycles) |
+| Vec clone  | ~100ms  | Deep copy all data     |
+</code></pre>
+<p><strong>Benchmark:</strong></p>
+<pre><code class="language-rust">// Rc clone: ~10ms
+let rc = Rc::new(vec![1, 2, 3]);
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _clone = Rc::clone(&amp;rc);
+}
+println!(&quot;Rc: {:?}&quot;, start.elapsed());
+
+// Arc clone: ~15ms (atomic overhead)
+let arc = Arc::new(vec![1, 2, 3]);
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _clone = Arc::clone(&amp;arc);
+}
+println!(&quot;Arc: {:?}&quot;, start.elapsed());
+
+// Actual data: ~100ms (deep copy)
+let vec = vec![1, 2, 3];
+let start = Instant::now();
+for _ in 0..1_000_000 {
+    let _clone = vec.clone();
+}
+println!(&quot;Vec: {:?}&quot;, start.elapsed());
+</code></pre>
+<p><strong>Why smart pointer clones are cheap:</strong>
+- Only increment reference counter
+- Don't copy actual data
+- Rc: simple counter (2-3 CPU cycles)
+- Arc: atomic counter (5-10 CPU cycles)</p>
+<p><strong>Key insight:</strong> Smart pointer clones are 10-100x faster than cloning data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell and Mutex Overhead</h2>
+<p>Compare the runtime overhead of regular mutation, RefCell, and Mutex. What does each add?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Operation costs:</strong></p>
+<pre><code class="language-markdown">| Operation      | Cost       | What's added              |
+|----------------|------------|---------------------------|
+| Regular &amp;mut   | ~0ns       | Nothing (compile-time)    |
+| RefCell        | ~5-10ns    | Runtime borrow check      |
+| Mutex          | ~100-200ns | OS lock + atomics         |
+</code></pre>
+<p><strong>Comparison:</strong></p>
+<pre><code class="language-rust">// Regular mutation: ~0ns
+let mut x = 5;
+x += 1;
+
+// RefCell: ~5-10ns per borrow
+let x = RefCell::new(5);
+*x.borrow_mut() += 1;
+
+// Mutex: ~100-200ns per lock
+let x = Mutex::new(5);
+*x.lock().unwrap() += 1;
+</code></pre>
+<p><strong>What each adds:</strong></p>
+<p><strong>RefCell:</strong>
+- Borrow state storage (1-2 bytes)
+- Runtime borrow checking (~5-10 CPU cycles)
+- Guard object creation (stack allocation)</p>
+<p><strong>Mutex:</strong>
+- OS-level locking (~100ns)
+- Context switch potential
+- Cache synchronization
+- Atomic operations</p>
+<p><strong>Trade-off:</strong>
+- Regular <code>&amp;mut</code>: Zero cost, compile-time safety, less flexible
+- RefCell: Small cost, runtime safety, more flexible (single-threaded)
+- Mutex: Larger cost, runtime safety, thread-safe</p>
+<p><strong>When overhead matters:</strong> Tight loops, low-latency systems, hot paths.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reference Cycles Problem</h2>
+<p>What is a reference cycle with <code>Rc</code>, why does it cause a memory leak, and how do you detect it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What is a reference cycle?</strong>
+When two or more <code>Rc</code> pointers reference each other, creating a loop that prevents the reference count from ever reaching zero.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::rc::Rc;
+use std::cell::RefCell;
+
+struct Node {
+    next: RefCell&lt;Option&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+
+fn main() {
+    let node1 = Rc::new(Node {
+        next: RefCell::new(None),
+    });
+
+    let node2 = Rc::new(Node {
+        next: RefCell::new(Some(Rc::clone(&amp;node1))),
+    });
+
+    // Create cycle: node1 → node2 → node1
+    *node1.next.borrow_mut() = Some(Rc::clone(&amp;node2));
+
+    // Memory leak!
+}
+</code></pre>
+<p><strong>Why it leaks:</strong></p>
+<pre><code>After cycle creation:
+- node1: count = 2 (local + node2's reference)
+- node2: count = 2 (local + node1's reference)
+
+After scope ends:
+- node1: count = 1 (node2's reference remains)
+- node2: count = 1 (node1's reference remains)
+
+Neither reaches count = 0, so neither is freed!
+</code></pre>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-rust">println!(&quot;node1 count: {}&quot;, Rc::strong_count(&amp;node1));  // 2
+println!(&quot;node2 count: {}&quot;, Rc::strong_count(&amp;node2));  // 2
+
+// If counts don't decrease as expected after drops, investigate cycles
+</code></pre>
+<p><strong>Tools:</strong>
+- Valgrind: <code>valgrind --leak-check=full ./program</code>
+- Address Sanitizer
+- Memory profilers (heaptrack, massif)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Weak References Solution</h2>
+<p>How do <code>Weak</code> references solve reference cycles? Show the solution pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Weak references don't keep data alive</strong> - they don't contribute to the strong count.</p>
+<p><strong>Solution pattern:</strong></p>
+<pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct Node {
+    value: i32,
+    next: RefCell&lt;Option&lt;Rc&lt;Node&gt;&gt;&gt;,      // Strong (forward)
+    prev: RefCell&lt;Option&lt;Weak&lt;Node&gt;&gt;&gt;,    // Weak (backward)
+}
+
+fn main() {
+    let node1 = Rc::new(Node {
+        value: 1,
+        next: RefCell::new(None),
+        prev: RefCell::new(None),
+    });
+
+    let node2 = Rc::new(Node {
+        value: 2,
+        next: RefCell::new(None),
+        prev: RefCell::new(Some(Rc::downgrade(&amp;node1))),  // Weak!
+    });
+
+    *node1.next.borrow_mut() = Some(Rc::clone(&amp;node2));
+
+    // No cycle! Weak doesn't prevent cleanup
+    println!(&quot;node1 strong: {}&quot;, Rc::strong_count(&amp;node1));  // 1
+    println!(&quot;node1 weak: {}&quot;, Rc::weak_count(&amp;node1));      // 1
+}
+</code></pre>
+<p><strong>Pattern for bidirectional references:</strong>
+- Parent → Child: Strong (<code>Rc</code>)
+- Child → Parent: Weak (<code>Weak</code>)
+- Forward: Strong (<code>Rc</code>)
+- Backward: Weak (<code>Weak</code>)</p>
+<p><strong>Using Weak:</strong></p>
+<pre><code class="language-rust">let rc = Rc::new(5);
+let weak: Weak&lt;i32&gt; = Rc::downgrade(&amp;rc);
+
+// Must upgrade to use (might fail)
+match weak.upgrade() {
+    Some(rc) =&gt; println!(&quot;Data: {}&quot;, rc),
+    None =&gt; println!(&quot;Data was dropped&quot;),
+}
+</code></pre>
+<p><strong>Rule:</strong> Use Weak for back-references to break cycles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tree with Weak Parent Pointers</h2>
+<p>Demonstrate using <code>Weak</code> to create a tree with parent pointers that doesn't leak memory.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct TreeNode {
+    value: i32,
+    children: RefCell&lt;Vec&lt;Rc&lt;TreeNode&gt;&gt;&gt;,
+    parent: RefCell&lt;Weak&lt;TreeNode&gt;&gt;,  // Weak prevents cycles
+}
+
+impl TreeNode {
+    fn new(value: i32) -&gt; Rc&lt;Self&gt; {
+        Rc::new(TreeNode {
+            value,
+            children: RefCell::new(vec![]),
+            parent: RefCell::new(Weak::new()),
+        })
+    }
+
+    fn add_child(parent: &amp;Rc&lt;TreeNode&gt;, child: Rc&lt;TreeNode&gt;) {
+        // Set child's parent (weak reference)
+        *child.parent.borrow_mut() = Rc::downgrade(parent);
+
+        // Add child to parent (strong reference)
+        parent.children.borrow_mut().push(child);
+    }
+}
+
+fn main() {
+    let root = TreeNode::new(1);
+    let child1 = TreeNode::new(2);
+    let child2 = TreeNode::new(3);
+
+    TreeNode::add_child(&amp;root, child1);
+    TreeNode::add_child(&amp;root, child2);
+
+    // No leaks - weak references don't create cycles
+}
+</code></pre>
+<p><strong>Why no cycle:</strong>
+- Parent → Child: Strong (parent owns children)
+- Child → Parent: Weak (doesn't keep parent alive)
+- When root dropped, children can be freed
+- Weak references don't prevent cleanup</p>
+<p><strong>Memory cleanup order:</strong>
+1. Root goes out of scope
+2. Strong count to root becomes 0
+3. Root freed, drops children strong refs
+4. Children freed (weak parent refs don't matter)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Runtime Panic</h2>
+<p>Show code that compiles but panics at runtime with <code>RefCell</code>. Why does it compile and why does it panic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">use std::cell::RefCell;
+
+fn main() {
+    let cell = RefCell::new(vec![1, 2, 3]);
+
+    let borrow1 = cell.borrow_mut();  // First mutable borrow
+    let borrow2 = cell.borrow_mut();  // ⚠️ Panic!
+}
+</code></pre>
+<p><strong>Error at runtime:</strong></p>
+<pre><code>thread 'main' panicked at 'already borrowed: BorrowMutError'
+</code></pre>
+<p><strong>Why it compiles:</strong>
+- The compiler can't check RefCell borrows at compile time
+- RefCell's purpose is runtime borrow checking
+- Code is syntactically valid
+- Types are correct</p>
+<p><strong>Why it panics:</strong>
+- At runtime, RefCell detects the violation
+- Already have one mutable borrow (borrow1)
+- Can't have a second mutable borrow
+- RefCell enforces rules by panicking</p>
+<p><strong>The borrowing rules (still apply!):</strong>
+1. ✅ Multiple immutable borrows
+2. ✅ One mutable borrow
+3. ❌ Mutable + immutable together</p>
+<p><strong>Trade-off:</strong> RefCell trades compile-time safety for runtime flexibility. You get more flexibility but must handle potential panics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing RefCell Panics</h2>
+<p>What are five strategies to prevent RefCell panics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Strategy 1: Immediate mutation (no variables)</strong></p>
+<pre><code class="language-rust">// ✅ Guard dropped immediately
+*cell.borrow_mut() = vec![1, 2, 3];
+*cell.borrow_mut() = vec![4, 5, 6];  // Safe - no conflict
+</code></pre>
+<p><strong>Strategy 2: Explicit scopes</strong></p>
+<pre><code class="language-rust">{
+    let mut borrow = cell.borrow_mut();
+    borrow.push(1);
+}  // Guard dropped here
+
+cell.borrow_mut().push(2);  // Safe now
+</code></pre>
+<p><strong>Strategy 3: Use try_ methods</strong></p>
+<pre><code class="language-rust">match cell.try_borrow_mut() {
+    Ok(mut data) =&gt; {
+        data.push(1);
+    }
+    Err(_) =&gt; {
+        println!(&quot;Already borrowed, skipping&quot;);
+        // Handle gracefully
+    }
+}
+</code></pre>
+<p><strong>Strategy 4: Separate borrows</strong></p>
+<pre><code class="language-rust">// ❌ Bad: double borrow
+cell.borrow_mut().push(*cell.borrow().first().unwrap());
+
+// ✅ Good: separate
+let first = *cell.borrow().first().unwrap();
+cell.borrow_mut().push(first);
+</code></pre>
+<p><strong>Strategy 5: Explicit drops</strong></p>
+<pre><code class="language-rust">let mut borrow = cell.borrow_mut();
+borrow.push(1);
+drop(borrow);  // Explicitly release
+
+cell.borrow();  // Safe now
+</code></pre>
+<p><strong>Golden rule:</strong> If no variables hold the guard, you can't panic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common RefCell Panic Scenarios</h2>
+<p>Describe three common scenarios that cause RefCell panics and how to avoid each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Scenario 1: Forgetting guards are held</strong></p>
+<pre><code class="language-rust">let cell = RefCell::new(vec![]);
+
+// ❌ Panic
+let borrow = cell.borrow();
+// ... lots of code ...
+cell.borrow_mut();  // Panic! borrow still alive
+
+// ✅ Fix: explicit scope
+{
+    let borrow = cell.borrow();
+    // Use borrow
+}  // Dropped
+cell.borrow_mut();  // Safe
+</code></pre>
+<p><strong>Scenario 2: Double borrow in expression</strong></p>
+<pre><code class="language-rust">// ❌ Panic: both borrows active simultaneously
+cell.borrow_mut().push(*cell.borrow().first().unwrap());
+
+// ✅ Fix: separate borrows
+let first = *cell.borrow().first().unwrap();
+cell.borrow_mut().push(first);
+</code></pre>
+<p><strong>Scenario 3: Recursive function calls</strong></p>
+<pre><code class="language-rust">struct Data {
+    value: RefCell&lt;i32&gt;,
+}
+
+impl Data {
+    fn process(&amp;self) {
+        let mut val = self.value.borrow_mut();
+        *val += 1;
+        self.helper();  // ⚠️ Might try to borrow again
+    }
+
+    fn helper(&amp;self) {
+        let val = self.value.borrow();  // Panic if borrow_mut active
+        println!(&quot;{}&quot;, *val);
+    }
+}
+
+// ✅ Fix: drop guard before calling helper
+fn process(&amp;self) {
+    {
+        let mut val = self.value.borrow_mut();
+        *val += 1;
+    }  // Dropped
+    self.helper();  // Safe
+}
+</code></pre>
+<p><strong>Prevention:</strong> Keep borrow lifetimes as short as possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Deadlock Problem</h2>
+<p>What is a deadlock with <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, show an example, and explain why it happens.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>What is deadlock?</strong>
+When two or more threads wait for each other indefinitely, unable to proceed.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let mutex1 = Arc::new(Mutex::new(0));
+    let mutex2 = Arc::new(Mutex::new(0));
+
+    // Thread 1: locks mutex1, then mutex2
+    let m1 = Arc::clone(&amp;mutex1);
+    let m2 = Arc::clone(&amp;mutex2);
+    thread::spawn(move || {
+        let _g1 = m1.lock().unwrap();
+        println!(&quot;Thread 1: locked mutex1&quot;);
+        thread::sleep(Duration::from_millis(10));
+
+        let _g2 = m2.lock().unwrap();  // ⚠️ Waiting for Thread 2
+        println!(&quot;Thread 1: locked mutex2&quot;);
+    });
+
+    // Thread 2: locks mutex2, then mutex1
+    let m1 = Arc::clone(&amp;mutex1);
+    let m2 = Arc::clone(&amp;mutex2);
+    thread::spawn(move || {
+        let _g2 = m2.lock().unwrap();
+        println!(&quot;Thread 2: locked mutex2&quot;);
+        thread::sleep(Duration::from_millis(10));
+
+        let _g1 = m1.lock().unwrap();  // ⚠️ Waiting for Thread 1
+        println!(&quot;Thread 2: locked mutex1&quot;);
+    });
+
+    thread::sleep(Duration::from_secs(1));
+    // Program hangs - deadlock!
+}
+</code></pre>
+<p><strong>Why it deadlocks:</strong></p>
+<pre><code>Time  Thread 1              Thread 2
+────────────────────────────────────────
+t0    Lock mutex1           Lock mutex2
+t1    Wait for mutex2 ────→ Wait for mutex1
+t2    ← Both stuck waiting forever →
+</code></pre>
+<p>Thread 1 holds mutex1 and waits for mutex2.
+Thread 2 holds mutex2 and waits for mutex1.
+Neither can proceed - deadlock!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Deadlocks - Consistent Lock Ordering</h2>
+<p>How does consistent lock ordering prevent deadlocks? Show the solution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The solution: Always lock in the same order</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let mutex1 = Arc::new(Mutex::new(0));
+    let mutex2 = Arc::new(Mutex::new(0));
+
+    // Thread 1: Always lock mutex1 first, then mutex2
+    let m1 = Arc::clone(&amp;mutex1);
+    let m2 = Arc::clone(&amp;mutex2);
+    thread::spawn(move || {
+        let _g1 = m1.lock().unwrap();  // Lock 1 first
+        let _g2 = m2.lock().unwrap();  // Then 2
+        println!(&quot;Thread 1: got both locks&quot;);
+    });
+
+    // Thread 2: Same order - mutex1 first, then mutex2
+    let m1 = Arc::clone(&amp;mutex1);
+    let m2 = Arc::clone(&amp;mutex2);
+    thread::spawn(move || {
+        let _g1 = m1.lock().unwrap();  // Lock 1 first
+        let _g2 = m2.lock().unwrap();  // Then 2
+        println!(&quot;Thread 2: got both locks&quot;);
+    });
+
+    // No deadlock! Both threads follow same order
+}
+</code></pre>
+<p><strong>Why it works:</strong>
+- Both threads try to lock mutex1 first
+- One thread gets it, other waits
+- First thread locks mutex2, completes, releases both
+- Second thread then acquires both in order
+- No circular waiting = no deadlock</p>
+<p><strong>Pattern:</strong></p>
+<pre><code>Thread A: lock(1) → lock(2) → unlock(2) → unlock(1)
+Thread B: lock(1) → lock(2) → unlock(2) → unlock(1)
+✅ No deadlock
+</code></pre>
+<p><strong>Rule:</strong> Establish lock ordering hierarchy and always follow it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Deadlocks - try_lock</h2>
+<p>How can <code>try_lock</code> prevent deadlocks? Show the pattern.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Use try_lock to avoid blocking:</strong></p>
+<pre><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
+fn acquire_both(m1: &amp;Mutex&lt;i32&gt;, m2: &amp;Mutex&lt;i32&gt;) {
+    loop {
+        // Try to lock first mutex
+        let g1 = m1.try_lock();
+
+        match g1 {
+            Ok(guard1) =&gt; {
+                // Got first lock, try second
+                match m2.try_lock() {
+                    Ok(guard2) =&gt; {
+                        // Got both locks!
+                        println!(&quot;Got both locks&quot;);
+                        // Use guards...
+                        break;
+                    }
+                    Err(_) =&gt; {
+                        // Couldn't get second lock
+                        // Release first and retry
+                        drop(guard1);
+                        thread::sleep(Duration::from_millis(10));
+                    }
+                }
+            }
+            Err(_) =&gt; {
+                // Couldn't get first lock, retry
+                thread::sleep(Duration::from_millis(10));
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>How it prevents deadlock:</strong>
+- <code>try_lock</code> doesn't block - returns immediately
+- If can't get lock, back off and retry
+- No circular waiting possible
+- Eventually one thread gets both locks</p>
+<p><strong>Pattern:</strong>
+1. Try to acquire all locks
+2. If any fails, release all and retry
+3. Back off before retry (avoid livelock)</p>
+<p><strong>Trade-off:</strong>
+- ✅ No deadlocks
+- ✅ More flexible
+- ⚠️ More complex code
+- ⚠️ Potential livelock (both keep retrying)</p>
+<p><strong>Best use:</strong> When you can't guarantee lock ordering.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Deadlocks - Minimize Lock Duration</h2>
+<p>Why should you minimize lock duration, and how do you do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Why minimize lock duration:</strong>
+- Reduces contention (other threads waiting)
+- Decreases deadlock probability
+- Improves parallelism
+- Better performance</p>
+<p><strong>❌ Bad: holding lock too long</strong></p>
+<pre><code class="language-rust">let guard = mutex.lock().unwrap();
+expensive_computation();  // Lock held entire time!
+use_data(&amp;guard);
+</code></pre>
+<p><strong>Problems:</strong>
+- Other threads blocked during entire computation
+- Increases chance of deadlock with other locks
+- Reduces parallelism</p>
+<p><strong>✅ Good: minimal lock time</strong></p>
+<pre><code class="language-rust">let data_copy = {
+    let guard = mutex.lock().unwrap();
+    guard.clone()
+};  // Lock released immediately
+
+expensive_computation();  // No lock held
+use_data(&amp;data_copy);
+</code></pre>
+<p><strong>Pattern:</strong>
+1. Lock
+2. Copy what you need (quick)
+3. Unlock
+4. Do expensive work without lock</p>
+<p><strong>Another example:</strong></p>
+<pre><code class="language-rust">// ❌ Bad: multiple lock acquisitions
+for item in items {
+    mutex.lock().unwrap().push(item);
+}
+
+// ✅ Good: single lock
+{
+    let mut guard = mutex.lock().unwrap();
+    for item in items {
+        guard.push(item);
+    }
+}  // Lock released
+</code></pre>
+<p><strong>Rule:</strong> Lock late, unlock early. Keep critical sections as short as possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Deadlock Patterns</h2>
+<p>Describe three common deadlock patterns and their solutions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Pattern 1: Lock ordering</strong></p>
+<pre><code class="language-rust">// ❌ Deadlock: inconsistent order
+Thread A: lock(1) → lock(2)
+Thread B: lock(2) → lock(1)
+
+// ✅ Fix: consistent order
+Thread A: lock(1) → lock(2)
+Thread B: lock(1) → lock(2)
+</code></pre>
+<p><strong>Pattern 2: Nested locks</strong></p>
+<pre><code class="language-rust">// ❌ Deadlock: hidden nesting
+fn process(m1: &amp;Mutex&lt;i32&gt;, m2: &amp;Mutex&lt;i32&gt;) {
+    let g1 = m1.lock().unwrap();
+    // Might call function that locks m2
+    helper(m2);  // Could deadlock
+}
+
+// ✅ Fix: avoid nesting or use consistent order
+fn process(m1: &amp;Mutex&lt;i32&gt;, m2: &amp;Mutex&lt;i32&gt;) {
+    let g1 = m1.lock().unwrap();
+    drop(g1);  // Release first
+    helper(m2);  // Then lock second
+}
+</code></pre>
+<p><strong>Pattern 3: Lock held across await (async)</strong></p>
+<pre><code class="language-rust">// ❌ Deadlock: guard held across await
+async fn process(mutex: Arc&lt;Mutex&lt;Data&gt;&gt;) {
+    let guard = mutex.lock().unwrap();
+    some_async_operation().await;  // ⚠️ Guard held
+}
+
+// ✅ Fix: drop guard before await
+async fn process(mutex: Arc&lt;Mutex&lt;Data&gt;&gt;) {
+    let data = {
+        let guard = mutex.lock().unwrap();
+        guard.clone()
+    };  // Guard dropped
+    some_async_operation().await;  // Safe
+}
+</code></pre>
+<p><strong>Prevention summary:</strong>
+1. Consistent lock ordering
+2. Minimize lock duration<br />
+3. Avoid nested locks
+4. Never hold locks across await points</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance Overhead Summary</h2>
+<p>Create a summary table of all smart pointer operations and their performance costs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-markdown">| Operation           | Cost       | Notes                    |
+|---------------------|------------|--------------------------|
+| Allocation          |            |                          |
+| Stack               | ~0ns       | Just stack pointer       |
+| Box                 | ~50ns      | Heap allocator call      |
+| Rc                  | ~60ns      | Heap + counter           |
+| Arc                 | ~80ns      | Heap + atomic counter    |
+| Clone               |            |                          |
+| Rc clone            | ~2-3ns     | Counter increment        |
+| Arc clone           | ~5-10ns    | Atomic increment         |
+| Data clone          | Varies     | Deep copy                |
+| Interior Mutability |            |                          |
+| Regular &amp;mut        | ~0ns       | Compile-time             |
+| RefCell borrow      | ~5-10ns    | Runtime check            |
+| Mutex lock          | ~100-200ns | OS lock + atomics        |
+| RwLock read         | ~50-100ns  | Shared lock              |
+| RwLock write        | ~100-200ns | Exclusive lock           |
+</code></pre>
+<p><strong>When overhead matters:</strong>
+- Tight loops (millions of iterations)
+- Low-latency systems (audio, games)
+- Performance-critical hot paths
+- Real-time constraints</p>
+<p><strong>When overhead doesn't matter:</strong>
+- Infrequent operations
+- I/O-bound code
+- Complex algorithms
+- Normal application code</p>
+<p><strong>Key insight:</strong> Smart pointer overhead is usually negligible compared to actual work being done. Profile before optimizing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Holding Locks Too Long</h2>
+<p>What's the problem with holding Mutex locks too long? Show bad and good examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">// ❌ Bad: lock held during I/O
+let mut guard = mutex.lock().unwrap();
+guard.update();
+write_to_disk(&amp;guard);  // Slow! Other threads blocked
+network_request(&amp;guard);  // Very slow!
+</code></pre>
+<p><strong>Impact:</strong>
+- Reduces parallelism (other threads waiting)
+- Increases contention
+- Degrades performance
+- Can cause timeouts</p>
+<p><strong>Solution 1: Copy and release</strong></p>
+<pre><code class="language-rust">// ✅ Good: minimal lock time
+let data_to_write = {
+    let guard = mutex.lock().unwrap();
+    guard.clone()
+};  // Lock released
+
+write_to_disk(&amp;data_to_write);  // No lock held
+</code></pre>
+<p><strong>Solution 2: Batch operations</strong></p>
+<pre><code class="language-rust">// ❌ Bad: multiple lock acquisitions
+for item in items {
+    mutex.lock().unwrap().push(item);
+}
+
+// ✅ Good: single lock
+{
+    let mut guard = mutex.lock().unwrap();
+    for item in items {
+        guard.push(item);
+    }
+}
+</code></pre>
+<p><strong>Solution 3: Use RwLock for reads</strong></p>
+<pre><code class="language-rust">// If mostly reading, RwLock allows concurrent reads
+let rwlock = Arc::new(RwLock::new(data));
+let guard = rwlock.read().unwrap();  // Multiple readers OK
+</code></pre>
+<p><strong>Rule:</strong> Lock for the absolute minimum time necessary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Overusing Smart Pointers</h2>
+<p>Show three examples of unnecessarily using smart pointers and the simpler alternative.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Example 1: Single owner using Arc</strong></p>
+<pre><code class="language-rust">// ❌ Overuse: Arc for single thread
+fn process(data: Arc&lt;Vec&lt;i32&gt;&gt;) {
+    // Only used here, never shared
+}
+
+// ✅ Simple ownership
+fn process(data: Vec&lt;i32&gt;) {
+    // Direct ownership
+}
+</code></pre>
+<p><strong>Example 2: Unnecessary RefCell</strong></p>
+<pre><code class="language-rust">// ❌ Overuse: RefCell when &amp;mut works
+struct Container {
+    data: RefCell&lt;Vec&lt;i32&gt;&gt;,
+}
+
+fn update(c: &amp;Container) {
+    c.data.borrow_mut().push(1);
+}
+
+// ✅ Simple mut
+struct Container {
+    data: Vec&lt;i32&gt;,
+}
+
+fn update(c: &amp;mut Container) {
+    c.data.push(1);
+}
+</code></pre>
+<p><strong>Example 3: Cloning Arc when borrowing works</strong></p>
+<pre><code class="language-rust">// ❌ Unnecessary clone
+fn helper(data: Arc&lt;Data&gt;) {
+    // data used here
+}
+helper(Arc::clone(&amp;data));
+
+// ✅ Borrow when possible
+fn helper(data: &amp;Data) {
+    // data used here
+}
+helper(&amp;data);
+</code></pre>
+<p><strong>Signs of overuse:</strong>
+- Single owner using <code>Arc</code>
+- Can use <code>&amp;mut</code> but using <code>RefCell</code>
+- Cloning smart pointers when borrowing works
+- No threading but using <code>Arc</code>/<code>Mutex</code></p>
+<p><strong>Principle:</strong> Start simple:
+1. Stack allocation
+2. Regular ownership
+3. Borrowing
+4. Smart pointers (only when needed)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mixing Thread-Safe and Non-Thread-Safe</h2>
+<p>What happens if you try to put a non-thread-safe type inside <code>Arc</code>? Show the error and explanation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>The problem:</strong></p>
+<pre><code class="language-rust">use std::sync::Arc;
+use std::rc::Rc;
+use std::thread;
+
+// ❌ Won't compile
+let arc_rc = Arc::new(Rc::new(5));
+thread::spawn(move || {
+    println!(&quot;{}&quot;, arc_rc);
+});
+</code></pre>
+<p><strong>Compiler error:</strong></p>
+<pre><code>error[E0277]: `Rc&lt;i32&gt;` cannot be sent between threads safely
+   |
+   = help: the trait `Send` is not implemented for `Rc&lt;i32&gt;`
+</code></pre>
+<p><strong>Why?</strong>
+- <code>Arc</code> makes the <strong>pointer</strong> thread-safe
+- But not the <strong>data</strong> inside
+- If <code>T</code> doesn't implement <code>Send</code>, you can't send it between threads
+- Compiler prevents this at compile time</p>
+<p><strong>Valid combinations:</strong></p>
+<pre><code class="language-rust">// ✅ Arc with thread-safe types
+Arc::new(5)                    // i32 is Send
+Arc::new(String::from(&quot;hi&quot;))   // String is Send
+Arc::new(Mutex::new(5))        // Mutex&lt;i32&gt; is Send
+
+// ❌ Arc with non-thread-safe types
+Arc::new(Rc::new(5))           // Rc is not Send
+Arc::new(RefCell::new(5))      // RefCell is not Send/Sync
+</code></pre>
+<p><strong>Rule:</strong> <code>Arc&lt;T&gt;</code> is only thread-safe if <code>T</code> implements <code>Send</code> (and <code>Sync</code> for shared access).</p>
+<p><strong>Fix for shared state across threads:</strong></p>
+<pre><code class="language-rust">// Instead of Arc&lt;RefCell&lt;T&gt;&gt;
+// Use Arc&lt;Mutex&lt;T&gt;&gt;
+let data = Arc::new(Mutex::new(5));
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Best Practices Summary</h2>
+<p>Summarize the seven best practices for using smart pointers safely and effectively.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Choose appropriately</strong>
+- Start simple (regular ownership)
+- Add smart pointers only when needed
+- Use simplest type that works</p>
+<p><strong>2. Avoid reference cycles</strong>
+- Use <code>Weak</code> for back-references
+- Monitor reference counts (<code>Rc::strong_count</code>)
+- Document ownership relationships</p>
+<p><strong>3. Handle runtime errors</strong>
+- Use <code>try_borrow</code>/<code>try_lock</code> when unsure
+- Keep borrow/lock duration minimal
+- Add proper error handling</p>
+<p><strong>4. Prevent deadlocks</strong>
+- Consistent lock ordering (always lock in same order)
+- Minimize lock duration (lock late, unlock early)
+- Avoid nested locks
+- Consider lock-free alternatives (channels)</p>
+<p><strong>5. Monitor performance</strong>
+- Profile before optimizing
+- Benchmark critical paths
+- Reduce unnecessary smart pointers
+- Batch operations</p>
+<p><strong>6. Test thoroughly</strong>
+- Unit tests for basic functionality
+- Stress tests for concurrency
+- Memory leak detection (Valgrind)
+- Deadlock detection</p>
+<p><strong>7. Document intent</strong></p>
+<pre><code class="language-rust">/// Uses Arc&lt;Mutex&lt;T&gt;&gt; because:
+/// - Shared across threads (Arc)
+/// - Needs mutation (Mutex)
+/// Lock ordering: Always acquire data_mutex before config_mutex
+struct SharedState {
+    data: Arc&lt;Mutex&lt;Data&gt;&gt;,
+}
+</code></pre>
+<p><strong>Bottom line:</strong> Balance benefits (shared ownership, interior mutability) against costs (performance, complexity, potential runtime errors).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Key Trade-offs and Pitfalls</h2>
+<p>What are the seven key takeaways about smart pointer trade-offs and pitfalls?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>1. Smart pointers have costs</strong>
+- Performance: heap allocation, atomic operations
+- Complexity: runtime errors, deadlocks</p>
+<p><strong>2. Reference cycles leak memory</strong>
+- <code>Rc</code> cycles never reach count = 0
+- Always use <code>Weak</code> for back-references
+- Monitor strong/weak counts</p>
+<p><strong>3. RefCell can panic</strong>
+- Runtime borrow checking can fail
+- Use <code>try_</code> methods for safety
+- Keep borrows short-lived</p>
+<p><strong>4. Deadlocks are real</strong>
+- Inconsistent lock ordering causes deadlocks
+- Always lock in same order
+- Minimize lock duration</p>
+<p><strong>5. Profile before optimizing</strong>
+- Measure, don't guess
+- Smart pointer overhead usually acceptable
+- Focus on actual bottlenecks</p>
+<p><strong>6. Simpler is better</strong>
+- Use regular ownership when possible
+- Add smart pointers only when needed
+- Start simple, add complexity incrementally</p>
+<p><strong>7. Test concurrency issues</strong>
+- Hard to debug in production
+- Add stress tests
+- Use tools (Valgrind, sanitizers)</p>
+<p><strong>Mental model:</strong></p>
+<pre><code>Benefits:
+- Shared ownership
+- Interior mutability  
+- Thread safety
+
+Costs:
+- Performance overhead
+- Runtime errors (panics, deadlocks)
+- Increased complexity
+</code></pre>
+<p><strong>Decision framework:</strong> Use smart pointers when benefits outweigh costs. Always start with simplest solution that works.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
