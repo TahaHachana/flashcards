@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 05-Testing - 02-Integration-Tests</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration Tests vs Unit Tests</h2>
+<p>What are the key differences between integration tests and unit tests in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unit tests:
+- Live in <code>#[cfg(test)]</code> modules within source files
+- Can access private functions and internal state
+- Test implementation details
+- Part of the same compilation unit
+- Many tests, fast execution</p>
+<p>Integration tests:
+- Live in separate <code>tests/</code> directory
+- Can only access public APIs
+- Test from external user perspective
+- Each file is a separate binary
+- Fewer tests, slower execution</p>
+<p>Integration tests treat your crate as a black box and verify that modules work together correctly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tests Directory Location and Structure</h2>
+<p>What is the correct structure for the integration tests directory and what are the rules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structure:</p>
+<pre><code>my_project/
+├── Cargo.toml
+├── src/
+│   └── lib.rs
+└── tests/              # Must be named exactly 'tests/'
+    ├── integration_test.rs
+    ├── common/         # Subdirectory for shared utilities
+    │   └── mod.rs
+    └── another_test.rs
+</code></pre>
+<p>Rules:
+1. Must be named exactly <code>tests/</code> at project root
+2. Each <code>.rs</code> file becomes a separate test binary
+3. Cargo automatically compiles files during <code>cargo test</code>
+4. No <code>#[cfg(test)]</code> needed (entire file is a test)
+5. Tests must import the crate like external users</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration Test File Structure</h2>
+<p>How do you structure a basic integration test file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">// tests/integration_test.rs
+
+// Import your library as external user
+use my_project;
+
+#[test]
+fn test_public_api() {
+    let result = my_project::public_function(5);
+    assert_eq!(result, 10);
+}
+
+#[test]
+fn test_module_integration() {
+    let obj = my_project::MyStruct::new(42);
+    assert_eq!(obj.get_value(), 42);
+}
+</code></pre>
+<p>Key points:
+- No <code>#[cfg(test)]</code> module needed
+- Import crate by name from Cargo.toml
+- Only test public APIs
+- Use <code>#[test]</code> attribute on functions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary vs Library Testing Problem</h2>
+<p>Why can't binary crates (with only <code>src/main.rs</code>) be tested directly by integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Binary crates cannot be integration tested because:
+- They don't export any items (no public interface)
+- They're meant to be run, not imported
+- Integration tests cannot import them</p>
+<p>Example:</p>
+<pre><code class="language-rust">// src/main.rs (binary only)
+fn main() {
+    println!(&quot;Hello&quot;);
+}
+
+fn helper() -&gt; i32 { 42 }  // Can't be made public
+</code></pre>
+<pre><code class="language-rust">// tests/test.rs
+use my_binary;  // ❌ ERROR: Can't import binary crate!
+</code></pre>
+<p>Solution: Split logic into <code>lib.rs</code> (testable) and keep <code>main.rs</code> as thin wrapper.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Standard Binary Testing Pattern</h2>
+<p>What is the standard pattern for making binary projects testable?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Split logic between <code>lib.rs</code> and thin <code>main.rs</code>:</p>
+<p><strong>src/lib.rs</strong> (all logic):</p>
+<pre><code class="language-rust">pub fn process_data(input: &amp;str) -&gt; Result&lt;String, String&gt; {
+    Ok(format!(&quot;Processed: {}&quot;, input))
+}
+
+pub fn run() -&gt; Result&lt;(), String&gt; {
+    let result = process_data(&quot;example&quot;)?;
+    println!(&quot;{}&quot;, result);
+    Ok(())
+}
+</code></pre>
+<p><strong>src/main.rs</strong> (thin wrapper):</p>
+<pre><code class="language-rust">use my_project;
+
+fn main() {
+    if let Err(e) = my_project::run() {
+        eprintln!(&quot;Error: {}&quot;, e);
+        std::process::exit(1);
+    }
+}
+</code></pre>
+<p>Now integration tests can import and test <code>my_project::process_data()</code> and <code>my_project::run()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Each File Is Separate Crate</h2>
+<p>How does Cargo treat each file in the <code>tests/</code> directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each <code>.rs</code> file in <code>tests/</code> is compiled as a separate test binary:</p>
+<pre><code>tests/
+├── api_test.rs         # Compiled as 'api_test' binary
+├── integration_test.rs # Compiled as 'integration_test' binary
+└── feature_test.rs     # Compiled as 'feature_test' binary
+</code></pre>
+<p>Output shows separate test runs:</p>
+<pre><code>running 2 tests (api_test)
+test test_a ... ok
+test test_b ... ok
+
+running 1 test (integration_test)
+test test_c ... ok
+
+running 3 tests (feature_test)
+test test_d ... ok
+test test_e ... ok
+test test_f ... ok
+</code></pre>
+<p>Each file independently imports and tests your library.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Importing Crate in Tests</h2>
+<p>How do integration tests import the crate being tested?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Import using the crate name from <code>Cargo.toml</code>:</p>
+<p><strong>Cargo.toml:</strong></p>
+<pre><code class="language-toml">[package]
+name = &quot;awesome_lib&quot;
+</code></pre>
+<p><strong>Integration test:</strong></p>
+<pre><code class="language-rust">// tests/my_test.rs
+use awesome_lib;  // Use exact name from Cargo.toml
+
+#[test]
+fn test() {
+    awesome_lib::public_function();
+}
+</code></pre>
+<p>Common mistake:</p>
+<pre><code class="language-rust">use my_project;  // ❌ Wrong if Cargo.toml says &quot;awesome_lib&quot;
+</code></pre>
+<p>The crate name must match exactly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Can Be Accessed in Integration Tests</h2>
+<p>What items from your library can integration tests access?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Integration tests can only access:
+- Items marked <code>pub</code> in <code>src/lib.rs</code>
+- Items re-exported from <code>src/lib.rs</code>
+- Public items in public modules</p>
+<pre><code class="language-rust">// src/lib.rs
+pub fn accessible() {}      // ✅ Can test
+fn not_accessible() {}      // ❌ Cannot test
+
+pub mod public_module {
+    pub fn also_accessible() {}  // ✅ Can test
+    fn hidden() {}               // ❌ Cannot test
+}
+
+mod private_module {
+    pub fn looks_public() {}     // ❌ Cannot test (module private)
+}
+
+pub(crate) fn crate_only() {}    // ❌ Cannot test (crate-private)
+</code></pre>
+<p>This enforces testing through your public API only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shared Test Utilities Pattern</h2>
+<p>How do you share helper functions across multiple integration test files without creating extra test binaries?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use subdirectories (not files) for shared utilities:</p>
+<p><strong>Wrong (creates extra test binary):</strong></p>
+<pre><code>tests/
+├── common.rs        # ❌ Becomes test binary with 0 tests
+└── my_test.rs
+</code></pre>
+<p><strong>Correct (subdirectory not compiled as test):</strong></p>
+<pre><code>tests/
+├── common/          # ✅ Subdirectory (not a test binary)
+│   └── mod.rs       # Shared utilities
+└── my_test.rs       # Actual test file
+</code></pre>
+<p><strong>tests/common/mod.rs:</strong></p>
+<pre><code class="language-rust">pub fn setup() -&gt; TestContext { /* ... */ }
+</code></pre>
+<p><strong>tests/my_test.rs:</strong></p>
+<pre><code class="language-rust">mod common;  // Import shared utilities
+
+#[test]
+fn test() {
+    let ctx = common::setup();
+}
+</code></pre>
+<p>Key: Cargo treats subdirectories differently from files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Private Functions Problem</h2>
+<p>Why can't integration tests access private functions, and what's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem:</p>
+<pre><code class="language-rust">// src/lib.rs
+fn internal_helper() -&gt; i32 { 42 }
+
+pub fn public_function() -&gt; i32 {
+    internal_helper()
+}
+</code></pre>
+<pre><code class="language-rust">// tests/test.rs
+#[test]
+fn broken() {
+    // ❌ ERROR: internal_helper is not public
+    let result = my_project::internal_helper();
+}
+</code></pre>
+<p>Solutions:</p>
+<ol>
+<li>Test through public API:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn correct() {
+    let result = my_project::public_function();
+    assert_eq!(result, 42);
+}
+</code></pre>
+<ol>
+<li>Use unit tests in source file for private functions:</li>
+</ol>
+<pre><code class="language-rust">// src/lib.rs
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_internal() {
+        assert_eq!(internal_helper(), 42);
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Accidental Test Binaries Problem</h2>
+<p>What problem occurs when you create utility files directly in <code>tests/</code> directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Files become test binaries with no tests:</p>
+<pre><code>tests/
+├── utils.rs         # ❌ Compiled as test binary
+├── helpers.rs       # ❌ Compiled as test binary
+└── actual_test.rs
+</code></pre>
+<p>Output shows empty test runs:</p>
+<pre><code>running 0 tests (utils)
+running 0 tests (helpers)
+running 1 test (actual_test)
+test my_test ... ok
+</code></pre>
+<p>Solution: Use subdirectories:</p>
+<pre><code>tests/
+├── common/
+│   ├── mod.rs       # ✅ Not a test binary
+│   └── helpers.rs   # ✅ Not a test binary
+└── actual_test.rs   # ✅ Actual test
+</code></pre>
+<p>Now only <code>actual_test.rs</code> is compiled as a test binary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module Visibility Gotcha</h2>
+<p>What common mistake occurs with module visibility in integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Making function public but forgetting the module:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub mod parser {  // Module is public
+    fn parse(input: &amp;str) -&gt; String {  // Function NOT public
+        input.to_uppercase()
+    }
+}
+</code></pre>
+<pre><code class="language-rust">// tests/test.rs
+#[test]
+fn broken() {
+    // ❌ ERROR: parse is not public
+    let result = my_project::parser::parse(&quot;test&quot;);
+}
+</code></pre>
+<p>Solution: Make items public at ALL levels:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub mod parser {
+    pub fn parse(input: &amp;str) -&gt; String {  // Both pub
+        input.to_uppercase()
+    }
+}
+</code></pre>
+<pre><code class="language-rust">#[test]
+fn works() {
+    let result = my_project::parser::parse(&quot;test&quot;);  // ✅
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Wrong Crate Name Error</h2>
+<p>What happens if you use the wrong crate name in integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error occurs when test uses different name than Cargo.toml:</p>
+<p><strong>Cargo.toml:</strong></p>
+<pre><code class="language-toml">[package]
+name = &quot;my_awesome_lib&quot;
+</code></pre>
+<p><strong>Wrong:</strong></p>
+<pre><code class="language-rust">// tests/test.rs
+use my_project;  // ❌ ERROR: No crate named 'my_project'
+
+#[test]
+fn test() {
+    my_project::function();
+}
+</code></pre>
+<p><strong>Correct:</strong></p>
+<pre><code class="language-rust">use my_awesome_lib;  // ✅ Matches Cargo.toml
+
+#[test]
+fn test() {
+    my_awesome_lib::function();
+}
+</code></pre>
+<p>Always check the <code>name</code> field in <code>Cargo.toml</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary Without lib.rs Problem</h2>
+<p>What happens when you try to write integration tests for a binary-only project?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: No library to import:</p>
+<pre><code>my_binary/
+├── Cargo.toml
+├── src/
+│   └── main.rs      # Only binary, no lib.rs
+└── tests/
+    └── test.rs      # ❌ Nothing to import!
+</code></pre>
+<pre><code class="language-rust">// tests/test.rs
+use my_binary;  // ❌ ERROR: Binary crates cannot be imported
+</code></pre>
+<p>Solution: Create library alongside binary:</p>
+<pre><code>my_project/
+├── Cargo.toml
+├── src/
+│   ├── lib.rs       # ✅ Library with logic (testable)
+│   └── main.rs      # ✅ Thin wrapper
+└── tests/
+    └── test.rs      # ✅ Can test lib.rs
+</code></pre>
+<p>This is the idiomatic Rust approach for testable binaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Integration Tests Commands</h2>
+<p>What commands can you use to run integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># Run all tests (unit + integration)
+cargo test
+
+# Run only integration tests
+cargo test --test '*'
+
+# Run specific integration test file
+cargo test --test integration_test
+
+# Run specific test within a file
+cargo test --test integration_test test_name
+
+# Show output for passing tests
+cargo test -- --nocapture
+
+# Run single-threaded (for debugging)
+cargo test -- --test-threads=1
+</code></pre>
+<p>Example output:</p>
+<pre><code>running 2 tests (src/lib.rs unit tests)
+test tests::unit_test ... ok
+
+running 3 tests (integration_test)
+test test_api ... ok
+test test_workflow ... ok
+</code></pre>
+<p>Integration tests show their filename in output.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Public API End-to-End</h2>
+<p>What is the recommended pattern for testing complete workflows in integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test complete workflows, not individual functions:</p>
+<pre><code class="language-rust">// tests/workflow_test.rs
+use my_project::{Database, Query};
+
+#[test]
+fn test_full_database_workflow() {
+    // Setup
+    let mut db = Database::new();
+
+    // Insert
+    let id = db.insert(&quot;Alice&quot;, 30).unwrap();
+
+    // Query
+    let result = db.query(Query::ByName(&quot;Alice&quot;));
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap().len(), 1);
+
+    // Update
+    db.update(id, &quot;age&quot;, &quot;31&quot;).unwrap();
+
+    // Verify
+    let user = db.get(id).unwrap();
+    assert_eq!(user.age(), 31);
+}
+</code></pre>
+<p>This tests that modules integrate correctly through the public API.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Error Propagation Pattern</h2>
+<p>How do you test error handling in integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test that errors propagate correctly and are usable:</p>
+<pre><code class="language-rust">use my_project::{parse_config, ConfigError};
+
+#[test]
+fn test_missing_field_error() {
+    let result = parse_config(&quot;incomplete.toml&quot;);
+
+    assert!(result.is_err());
+    match result {
+        Err(ConfigError::MissingField(field)) =&gt; {
+            assert_eq!(field, &quot;database_url&quot;);
+        }
+        _ =&gt; panic!(&quot;Expected MissingField error&quot;),
+    }
+}
+
+#[test]
+fn test_invalid_format_error() {
+    let result = parse_config(&quot;invalid.toml&quot;);
+    assert!(matches!(result, Err(ConfigError::InvalidFormat(_))));
+}
+</code></pre>
+<p>This verifies:
+- Error types are public and usable
+- Error variants carry correct information
+- Error messages are helpful</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Setup and Teardown Pattern</h2>
+<p>How do you implement setup and teardown for integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use helper functions for setup and leverage Drop for teardown:</p>
+<pre><code class="language-rust">use my_project::ResourceManager;
+
+fn setup() -&gt; ResourceManager {
+    let manager = ResourceManager::new(&quot;test_resources&quot;);
+    manager.initialize().unwrap();
+    manager
+}
+
+fn teardown(manager: ResourceManager) {
+    manager.cleanup().unwrap();
+    // Resources cleaned when manager drops
+}
+
+#[test]
+fn test_resource_management() {
+    let manager = setup();
+
+    // Test operations
+    manager.allocate_resource(&quot;test&quot;);
+    assert!(manager.has_resource(&quot;test&quot;));
+
+    teardown(manager);
+
+    // Verify cleanup
+    assert!(!path_exists(&quot;test_resources/test&quot;));
+}
+</code></pre>
+<p>Alternatively, use <code>Drop</code> trait for automatic cleanup.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration vs Unit Test Focus</h2>
+<p>What should integration tests focus on versus unit tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unit tests: Test individual components</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_parse() {
+        assert!(parse(&quot;input&quot;).is_ok());
+    }
+
+    #[test]
+    fn test_validate() {
+        assert!(validate(data).is_ok());
+    }
+}
+</code></pre>
+<p>Integration tests: Test workflows and integration</p>
+<pre><code class="language-rust">// tests/workflow.rs
+#[test]
+fn test_parse_and_validate_workflow() {
+    let parsed = my_project::parse(&quot;input&quot;).unwrap();
+    let validated = my_project::validate(parsed).unwrap();
+    assert_eq!(validated.status, Status::Valid);
+}
+</code></pre>
+<p>Write many fast unit tests, fewer comprehensive integration tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing from User Perspective</h2>
+<p>Why is it important to test from a user's perspective in integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Integration tests should simulate how external users interact with your library:</p>
+<pre><code class="language-rust">// tests/user_workflow.rs
+use my_project::{Config, Server};
+
+#[test]
+fn test_typical_usage() {
+    // How a user would use your library
+
+    // 1. Create config
+    let config = Config::builder()
+        .host(&quot;localhost&quot;)
+        .port(8080)
+        .build()
+        .unwrap();
+
+    // 2. Start server
+    let server = Server::new(config);
+
+    // 3. Make request
+    let response = server.handle_request(&quot;/api/users&quot;);
+
+    // 4. Verify
+    assert!(response.is_ok());
+}
+</code></pre>
+<p>Benefits:
+- Ensures public API is sufficient
+- Catches usability issues
+- Documents intended usage
+- Tests realistic workflows</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Feature-Based Organization</h2>
+<p>How should you organize integration test files?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Organize by feature, not by test type:</p>
+<p>Good (feature-based):</p>
+<pre><code>tests/
+├── user_authentication.rs
+├── data_processing.rs
+├── api_endpoints.rs
+└── file_operations.rs
+</code></pre>
+<p>Bad (type-based):</p>
+<pre><code>tests/
+├── happy_paths.rs
+├── error_cases.rs
+└── edge_cases.rs
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">// tests/user_authentication.rs
+use my_project::{User, AuthToken};
+
+#[test]
+fn test_successful_login() { }
+
+#[test]
+fn test_invalid_credentials() { }
+
+#[test]
+fn test_session_expiry() { }
+</code></pre>
+<p>Feature-based organization makes tests easier to find and maintain.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration Test Naming</h2>
+<p>What are best practices for naming integration tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use descriptive names that explain the workflow being tested:</p>
+<p>Bad:</p>
+<pre><code class="language-rust">#[test]
+fn test1() { }
+
+#[test]
+fn test_function() { }
+</code></pre>
+<p>Good:</p>
+<pre><code class="language-rust">#[test]
+fn server_handles_concurrent_requests_correctly() { }
+
+#[test]
+fn parser_rejects_malformed_json_with_helpful_error() { }
+
+#[test]
+fn user_can_complete_full_registration_workflow() { }
+
+#[test]
+fn expired_auth_tokens_are_rejected() { }
+</code></pre>
+<p>Pattern: <code>subject_action_condition</code> or <code>workflow_description</code></p>
+<p>Good names serve as documentation of expected behavior.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration Test Performance</h2>
+<p>Why are integration tests typically slower than unit tests, and what's the recommended testing strategy?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Integration tests are slower because:
+- Each file compiles as separate binary
+- Tests exercise more code paths
+- May involve more setup/teardown
+- Test complete workflows, not isolated functions</p>
+<p>Recommended strategy (testing pyramid):</p>
+<pre><code>        /\
+       /  \      Unit Tests (many, fast)
+      /____\     - Individual functions
+     /      \    - Quick feedback
+    /________\   Integration Tests (fewer, slower)
+   /          \  - Main workflows
+  /____________\ - Verify integration
+</code></pre>
+<p>Write:
+- Many unit tests for fast feedback
+- Fewer integration tests for critical workflows</p>
+<p>Balance speed with comprehensive coverage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Module System Connection</h2>
+<p>How do integration tests reinforce understanding of Rust's module system?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Integration tests demonstrate module visibility rules:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub fn public() {}              // ✅ Visible in integration tests
+pub(crate) fn crate_only() {}   // ❌ Not visible (crate-private)
+fn private() {}                 // ❌ Not visible
+
+pub mod public_mod {
+    pub fn accessible() {}       // ✅ Visible (module and fn public)
+    fn hidden() {}               // ❌ Not visible (fn private)
+}
+
+mod private_mod {
+    pub fn looks_public() {}     // ❌ Not visible (module private)
+}
+</code></pre>
+<p>Integration tests show:
+- What "public" truly means
+- How <code>pub(crate)</code> differs from <code>pub</code>
+- Module boundary enforcement
+- Real-world API visibility</p>
+<p>This helps understand Rust's privacy system from external perspective.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Dev Dependencies for Tests</h2>
+<p>How can integration tests use additional test-only dependencies?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>[dev-dependencies]</code> in Cargo.toml for test-only crates:</p>
+<p><strong>Cargo.toml:</strong></p>
+<pre><code class="language-toml">[dev-dependencies]
+tempfile = &quot;3.8&quot;      # Temporary files for tests
+mockito = &quot;1.2&quot;       # HTTP mocking
+assert_cmd = &quot;2.0&quot;    # CLI testing
+</code></pre>
+<p><strong>Integration test:</strong></p>
+<pre><code class="language-rust">// tests/file_operations.rs
+use tempfile::tempdir;
+use my_project;
+
+#[test]
+fn test_file_operations() {
+    let dir = tempdir().unwrap();
+    let file_path = dir.path().join(&quot;test.txt&quot;);
+
+    my_project::write_file(&amp;file_path, &quot;content&quot;).unwrap();
+    let content = my_project::read_file(&amp;file_path).unwrap();
+
+    assert_eq!(content, &quot;content&quot;);
+    // dir automatically cleaned up when dropped
+}
+</code></pre>
+<p>Dev dependencies aren't included in production builds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Public API Sufficiency Test</h2>
+<p>How do integration tests enforce good API design?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Integration tests force you to verify your public API is sufficient:</p>
+<p>If tests can't accomplish something:</p>
+<pre><code class="language-rust">// tests/test.rs
+#[test]
+fn test_workflow() {
+    let data = my_project::Data::new();
+    // ❌ Can't inspect internal state
+    // ❌ Can't test intermediate steps
+    let result = my_project::process(data);
+}
+</code></pre>
+<p>This reveals API gaps:</p>
+<pre><code class="language-rust">// src/lib.rs
+pub struct Data {
+    value: i32,  // Private, no getter
+}
+
+impl Data {
+    pub fn new() -&gt; Self { Data { value: 0 } }
+    // Missing: pub fn value(&amp;self) -&gt; i32
+    // Missing: pub fn set_value(&amp;mut self, v: i32)
+}
+</code></pre>
+<p>Solution: Add necessary public methods:</p>
+<pre><code class="language-rust">impl Data {
+    pub fn value(&amp;self) -&gt; i32 { self.value }
+    pub fn set_value(&amp;mut self, v: i32) { self.value = v; }
+}
+</code></pre>
+<p>Integration tests ensure your API is complete and usable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Output Interpretation</h2>
+<p>How do you interpret integration test output?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Output shows each test file separately:</p>
+<pre><code>running 2 tests (src/lib.rs)
+test tests::unit_test_1 ... ok
+test tests::unit_test_2 ... ok
+
+running 3 tests (integration_test)
+test test_api ... ok
+test test_integration ... ok
+test test_error ... ok
+
+running 1 test (workflow_test)
+test test_full_workflow ... ok
+
+test result: ok. 6 passed; 0 failed
+</code></pre>
+<p>Reading the output:
+- Unit tests show module path (<code>src/lib.rs</code>)
+- Integration tests show filename (<code>integration_test</code>)
+- Each integration file is a separate test run
+- Total summary at the end</p>
+<p>Failed integration tests show:
+- Which test file failed
+- Which specific test within that file
+- Full error details and assertion failures</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Binary Testing Benefits</h2>
+<p>What are the benefits of the lib.rs + main.rs split pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Benefits of splitting binary logic:</p>
+<ol>
+<li><strong>Testability</strong>:</li>
+</ol>
+<pre><code class="language-rust">// tests/test.rs can test lib.rs
+use my_project;
+
+#[test]
+fn test_logic() {
+    assert!(my_project::process(&quot;input&quot;).is_ok());
+}
+</code></pre>
+<ol>
+<li><strong>Reusability</strong>:</li>
+<li>Other binaries can use your library</li>
+<li>
+<p>Can create multiple binaries using same logic</p>
+</li>
+<li>
+<p><strong>Clear separation</strong>:</p>
+</li>
+<li><code>lib.rs</code>: All business logic</li>
+<li>
+<p><code>main.rs</code>: Thin entry point (CLI parsing, error handling)</p>
+</li>
+<li>
+<p><strong>Standard practice</strong>:</p>
+</li>
+<li>Idiomatic Rust</li>
+<li>Expected by ecosystem</li>
+<li>
+<p>Better documentation</p>
+</li>
+<li>
+<p><strong>Flexibility</strong>:</p>
+</li>
+<li>Easy to add additional binaries</li>
+<li>Logic can be used in different contexts</li>
+</ol>
+<p>This pattern is so common it's considered Rust best practice.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Integration Tests</h2>
+<p>When should you write integration tests versus relying solely on unit tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Write integration tests when:</p>
+<ol>
+<li><strong>Testing module interactions</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn parser_validator_processor_work_together() {
+    let parsed = parse(input).unwrap();
+    let validated = validate(parsed).unwrap();
+    let result = process(validated).unwrap();
+    assert_eq!(result.status, Expected);
+}
+</code></pre>
+<ol>
+<li><strong>Verifying public API usability</strong>:</li>
+<li>Can users accomplish their goals?</li>
+<li>
+<p>Is the API ergonomic?</p>
+</li>
+<li>
+<p><strong>Testing complete workflows</strong>:</p>
+</li>
+<li>User registration flow</li>
+<li>Data processing pipeline</li>
+<li>
+<p>Request/response cycle</p>
+</li>
+<li>
+<p><strong>Catching integration bugs</strong>:</p>
+</li>
+<li>Issues only visible when components combine</li>
+<li>Configuration problems</li>
+<li>Resource management</li>
+</ol>
+<p>Don't need integration tests for:
+- Individual pure functions (use unit tests)
+- Internal implementation details
+- Already well-tested by unit tests</p>
+<p>Balance: Many unit tests + strategic integration tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Integration Tests Summary Table</h2>
+<p>Summarize the key characteristics of integration tests in a comparison format.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>| Aspect | Library Crate | Binary Crate |
+|--------|---------------|--------------|
+| File | <code>src/lib.rs</code> | <code>src/main.rs</code> (only) |
+| Integration testable | ✅ Yes, directly | ❌ No |
+| Public exports | ✅ Via <code>pub</code> | ❌ None |
+| Import in tests | <code>use my_lib;</code> | Must split to lib first |
+| Access | Public items only | N/A |</p>
+<p>Integration test characteristics:
+- <strong>Location</strong>: <code>tests/</code> directory
+- <strong>Compilation</strong>: Each file = separate binary
+- <strong>Visibility</strong>: Public APIs only
+- <strong>Purpose</strong>: Test component integration
+- <strong>Perspective</strong>: External user
+- <strong>Organization</strong>: Feature-based files
+- <strong>Shared code</strong>: Use subdirectories (<code>tests/common/</code>)
+- <strong>Speed</strong>: Slower than unit tests
+- <strong>Quantity</strong>: Fewer, more comprehensive</p>
+<p>Remember: Split binaries into lib.rs + thin main.rs for testability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

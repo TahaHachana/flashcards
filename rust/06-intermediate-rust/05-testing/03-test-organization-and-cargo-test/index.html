@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 05-Testing - 03-Test-Organization-And-Cargo-Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>cargo test Basic Function</h2>
+<p>What does <code>cargo test</code> do when you run it without any arguments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>cargo test</code> performs these steps:</p>
+<ol>
+<li><strong>Discovers</strong> all test functions marked with <code>#[test]</code> in:</li>
+<li>Unit tests (<code>#[cfg(test)]</code> modules)</li>
+<li>Integration tests (<code>tests/</code> directory)</li>
+<li>
+<p>Doc tests (code in documentation)</p>
+</li>
+<li>
+<p><strong>Compiles</strong> them in test mode</p>
+</li>
+<li>
+<p><strong>Runs</strong> tests in parallel by default</p>
+</li>
+<li>
+<p><strong>Reports</strong> results with summary</p>
+</li>
+</ol>
+<p>Example output:</p>
+<pre><code>running 5 tests
+test test_one ... ok
+test test_two ... ok
+test test_three ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Output Metrics</h2>
+<p>What do the metrics in test output mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+<p>Metrics:
+- <strong>passed</strong>: Tests completed without panicking
+- <strong>failed</strong>: Tests that panicked
+- <strong>ignored</strong>: Tests marked with <code>#[ignore]</code> (not run)
+- <strong>measured</strong>: Benchmark tests (performance tests)
+- <strong>filtered out</strong>: Tests excluded by filter argument</p>
+<p>Example:</p>
+<pre><code class="language-bash">cargo test addition
+# Shows &quot;2 filtered out&quot; if 2 tests don't match &quot;addition&quot;
+</code></pre>
+<p>These metrics help understand test execution scope and coverage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Filtering by Name</h2>
+<p>How do you run only tests that match a specific name pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Provide a filter string after <code>cargo test</code>:</p>
+<pre><code class="language-bash"># Run tests with &quot;addition&quot; in the name
+cargo test addition
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn test_addition_positive() { }  // Runs
+
+#[test]
+fn test_addition_negative() { }  // Runs
+
+#[test]
+fn test_multiplication() { }     // Filtered out
+</code></pre>
+<p>Output:</p>
+<pre><code>running 2 tests
+test test_addition_positive ... ok
+test test_addition_negative ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out
+</code></pre>
+<p>The filter matches any part of the test name or module path.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtering by Module Path</h2>
+<p>How do you run tests in a specific module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use the module path as a filter:</p>
+<pre><code class="language-bash"># Run tests in 'calculator' module
+cargo test calculator
+
+# Run tests in nested modules
+cargo test tests::math::addition
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    mod calculator {
+        #[test]
+        fn test_add() { }
+
+        #[test]
+        fn test_subtract() { }
+    }
+
+    mod parser {
+        #[test]
+        fn test_parse() { }
+    }
+}
+</code></pre>
+<pre><code class="language-bash">$ cargo test calculator
+running 2 tests
+test tests::calculator::test_add ... ok
+test tests::calculator::test_subtract ... ok
+</code></pre>
+<p>This runs all tests within the specified module.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Specific Test Types</h2>
+<p>What commands run specific types of tests (unit, integration, doc)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># Run only unit tests (in lib/binary)
+cargo test --lib
+
+# Run only integration tests
+cargo test --test '*'
+
+# Run specific integration test file
+cargo test --test integration_test
+
+# Run only doc tests
+cargo test --doc
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-bash"># During development (fast feedback)
+cargo test --lib
+
+# Before commit (comprehensive)
+cargo test              # All tests
+cargo test --doc        # Then doc tests
+cargo test --test '*'   # Then integration tests
+</code></pre>
+<p>This allows targeted testing during different development phases.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The --nocapture Flag</h2>
+<p>What does <code>--nocapture</code> do and why do you need the double dash (<code>--</code>)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>--nocapture</code> shows <code>println!</code> output even for passing tests.</p>
+<p>Default behavior (output hidden):</p>
+<pre><code class="language-bash">$ cargo test
+test test_with_output ... ok  # No output shown
+</code></pre>
+<p>With --nocapture:</p>
+<pre><code class="language-bash">$ cargo test -- --nocapture
+Starting test...
+Result is: 4
+test test_with_output ... ok
+</code></pre>
+<p>The double dash (<code>--</code>) separates options:</p>
+<pre><code>cargo test -- --nocapture
+           ↑  ↑
+           |  Options for test binary
+           Separator
+</code></pre>
+<ul>
+<li>Before <code>--</code>: Options for cargo</li>
+<li>After <code>--</code>: Options for the test binary</li>
+</ul>
+<p>Without <code>--</code>, cargo would try to interpret <code>--nocapture</code> itself and fail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use --nocapture</h2>
+<p>When should you use <code>--nocapture</code> in testing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>--nocapture</code> when:</p>
+<ol>
+<li><strong>Debugging failing tests</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn debug_test() {
+    println!(&quot;Step 1: Initialize&quot;);
+    let data = initialize();
+    println!(&quot;Step 2: Process - data length: {}&quot;, data.len());
+    let result = process(data);  // Fails here
+    println!(&quot;Step 3: Verify&quot;);  // Never reached
+}
+</code></pre>
+<ol>
+<li><strong>Verifying print statements work</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_logging() {
+    println!(&quot;Testing logger...&quot;);
+    log_message(&quot;test&quot;);
+}
+</code></pre>
+<ol>
+<li><strong>Understanding test execution flow</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn complex_test() {
+    println!(&quot;Starting&quot;);
+    for i in 1..=5 {
+        println!(&quot;Iteration {}&quot;, i);
+    }
+}
+</code></pre>
+<p>Run with: <code>cargo test -- --nocapture</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallel vs Sequential Execution</h2>
+<p>How do tests run by default, and how can you change this behavior?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Default: Tests run in <strong>parallel</strong> (concurrently)</p>
+<pre><code class="language-bash"># Default parallel execution
+cargo test
+
+# Sequential (one at a time)
+cargo test -- --test-threads=1
+
+# Custom thread count
+cargo test -- --test-threads=4
+</code></pre>
+<p>Example timing:</p>
+<pre><code class="language-rust">#[test]
+fn test_one() {
+    sleep(Duration::from_secs(1));
+}
+
+#[test]
+fn test_two() {
+    sleep(Duration::from_secs(1));
+}
+
+#[test]
+fn test_three() {
+    sleep(Duration::from_secs(1));
+}
+</code></pre>
+<p>Parallel: ~1 second total (all run together)
+Sequential: ~3 seconds total (one after another)</p>
+<p>Use <code>--test-threads=1</code> when tests share resources or for debugging.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Use Sequential Execution</h2>
+<p>When should you run tests sequentially with <code>--test-threads=1</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>--test-threads=1</code> when:</p>
+<ol>
+<li><strong>Tests share state</strong> (not ideal, but happens):</li>
+</ol>
+<pre><code class="language-rust">static mut COUNTER: i32 = 0;
+
+#[test]
+fn test_a() {
+    unsafe { COUNTER += 1; }
+    assert_eq!(unsafe { COUNTER }, 1);  // Fails in parallel
+}
+</code></pre>
+<ol>
+<li><strong>Resource conflicts</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_file_write() {
+    fs::write(&quot;test.txt&quot;, &quot;data&quot;).unwrap();
+}
+
+#[test]
+fn test_file_read() {
+    let content = fs::read_to_string(&quot;test.txt&quot;).unwrap();
+    // May conflict if both run simultaneously
+}
+</code></pre>
+<ol>
+<li><strong>Debugging</strong> (clearer output):</li>
+</ol>
+<pre><code class="language-bash">cargo test -- --test-threads=1 --nocapture
+# Output not interleaved
+</code></pre>
+<ol>
+<li><strong>Limited resources</strong> (ports, database connections)</li>
+</ol>
+<p>Better solution: Make tests independent when possible!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The #[ignore] Attribute</h2>
+<p>What does <code>#[ignore]</code> do and how do you run ignored tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>#[ignore]</code> marks tests to skip by default:</p>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn expensive_test() {
+    // Takes 10 minutes
+}
+
+#[test]
+fn fast_test() {
+    // Runs normally
+}
+</code></pre>
+<p>Running tests:</p>
+<pre><code class="language-bash"># Default: skips ignored tests
+cargo test
+# Output: 1 passed; 0 failed; 1 ignored
+
+# Run ONLY ignored tests
+cargo test -- --ignored
+
+# Run ALL tests (including ignored)
+cargo test -- --include-ignored
+</code></pre>
+<p>Use for:
+- Slow tests
+- Tests requiring external resources (network, database)
+- Platform-specific tests
+- Temporarily broken tests</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Ignore Tests</h2>
+<p>What are good use cases for marking tests with <code>#[ignore]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>#[ignore]</code> for:</p>
+<ol>
+<li><strong>Slow tests</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn full_system_integration() {
+    // Takes 5+ minutes
+}
+</code></pre>
+<ol>
+<li><strong>External dependencies</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn test_database_connection() {
+    // Requires running PostgreSQL
+}
+
+#[test]
+#[ignore]
+fn test_api_call() {
+    // Requires internet and API key
+}
+</code></pre>
+<ol>
+<li><strong>Platform-specific</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+#[cfg(target_os = &quot;linux&quot;)]
+fn linux_only_test() { }
+</code></pre>
+<ol>
+<li><strong>Temporarily broken</strong> (with comment):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]  // TODO: Fix bug #123
+fn currently_broken() { }
+</code></pre>
+<p>Benefits: Keep default <code>cargo test</code> fast while preserving slow/special tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Command Structure Double Dash</h2>
+<p>Explain the structure of <code>cargo test</code> commands with the double dash separator.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Structure:</p>
+<pre><code>cargo test [CARGO_OPTIONS] [FILTER] -- [TEST_BINARY_OPTIONS]
+           ↑                ↑         ↑  ↑
+           |                |         |  Options for test binary
+           |                |         Separator
+           |                Test filter
+           Options for cargo
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-bash"># Filter only (no dash needed)
+cargo test addition
+
+# Test binary option (needs --)
+cargo test -- --nocapture
+
+# Both filter and test option
+cargo test addition -- --nocapture
+
+# Multiple test options
+cargo test -- --test-threads=1 --nocapture
+
+# Cargo option + filter + test options
+cargo test --lib addition -- --nocapture
+</code></pre>
+<p>Common mistake:</p>
+<pre><code class="language-bash">cargo test --nocapture  # ❌ Error: cargo doesn't recognize
+cargo test -- --nocapture  # ✅ Correct: test binary interprets
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Output Order in Parallel Tests</h2>
+<p>What problem occurs with test output in parallel execution and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Output from parallel tests is interleaved and unreadable:</p>
+<pre><code class="language-bash">$ cargo test -- --nocapture
+Test 1: Step A
+Test 2: Step A
+Test 1: Step B
+Test 3: Step A
+Test 2: Step B
+Test 1: Step C
+</code></pre>
+<p>Solution: Run sequentially for readable output:</p>
+<pre><code class="language-bash">$ cargo test -- --test-threads=1 --nocapture
+Test 1: Step A
+Test 1: Step B
+Test 1: Step C
+Test 2: Step A
+Test 2: Step B
+Test 3: Step A
+</code></pre>
+<p>Use sequential execution when:
+- Debugging with print statements
+- Need to see execution flow
+- Reading test output is important</p>
+<p>Trade-off: Slower execution but clearer output.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RUST_BACKTRACE Environment Variable</h2>
+<p>How do you enable backtraces for failing tests and what does it show?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Enable with <code>RUST_BACKTRACE</code> environment variable:</p>
+<pre><code class="language-bash"># Show backtrace
+RUST_BACKTRACE=1 cargo test
+
+# Show full backtrace
+RUST_BACKTRACE=full cargo test
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn test_panic() {
+    let v = vec![1, 2];
+    let _ = v[5];  // Panics
+}
+</code></pre>
+<p>With backtrace:</p>
+<pre><code>thread 'test_panic' panicked at src/lib.rs:4:13:
+index out of bounds: the len is 2 but the index is 5
+stack backtrace:
+   0: rust_begin_unwind
+   1: core::panicking::panic_fmt
+   2: core::panicking::panic_bounds_check
+   3: my_crate::tests::test_panic
+   ... (more frames)
+</code></pre>
+<p>Shows the call stack leading to the panic, useful for debugging.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Organization by Feature</h2>
+<p>How should you organize tests by feature in your test module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Group tests in sub-modules by feature:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod authentication {
+        use super::*;
+
+        #[test]
+        fn test_login() { }
+
+        #[test]
+        fn test_logout() { }
+
+        #[test]
+        fn test_session_expiry() { }
+    }
+
+    mod database {
+        use super::*;
+
+        #[test]
+        fn test_connection() { }
+
+        #[test]
+        fn test_query() { }
+    }
+}
+</code></pre>
+<p>Run specific feature tests:</p>
+<pre><code class="language-bash">cargo test authentication  # Only auth tests
+cargo test database        # Only database tests
+</code></pre>
+<p>Benefits: Logical organization, selective execution, clear structure.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shared Test Utilities</h2>
+<p>How do you create and use shared helper functions in test modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create helper functions in the test module:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Shared setup (not a test - no #[test])
+    fn setup() -&gt; TestContext {
+        TestContext {
+            database: TestDatabase::new(),
+            config: TestConfig::default(),
+        }
+    }
+
+    // Shared assertions
+    fn assert_valid_user(user: &amp;User) {
+        assert!(user.age() &gt; 0);
+        assert!(!user.name().is_empty());
+    }
+
+    #[test]
+    fn test_create_user() {
+        let ctx = setup();
+        let user = ctx.create_user(&quot;Alice&quot;, 30);
+        assert_valid_user(&amp;user);
+    }
+
+    #[test]
+    fn test_update_user() {
+        let ctx = setup();
+        let mut user = ctx.create_user(&quot;Bob&quot;, 25);
+        user.update_age(26);
+        assert_valid_user(&amp;user);
+    }
+}
+</code></pre>
+<p>Benefits: Reduce duplication, consistent setup, reusable assertions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tests Sharing Mutable State Problem</h2>
+<p>What problem occurs when tests share mutable state and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Non-deterministic failures in parallel execution:</p>
+<pre><code class="language-rust">use std::sync::Mutex;
+
+lazy_static! {
+    static ref COUNTER: Mutex&lt;i32&gt; = Mutex::new(0);
+}
+
+#[test]
+fn test_a() {
+    *COUNTER.lock().unwrap() += 1;
+    assert_eq!(*COUNTER.lock().unwrap(), 1);  // Fails randomly
+}
+
+#[test]
+fn test_b() {
+    *COUNTER.lock().unwrap() += 1;
+    assert_eq!(*COUNTER.lock().unwrap(), 1);  // Fails randomly
+}
+</code></pre>
+<p>Solutions:</p>
+<ol>
+<li>Make tests independent (best):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let mut counter = 0;  // Local state
+    counter += 1;
+    assert_eq!(counter, 1);  // Always passes
+}
+</code></pre>
+<ol>
+<li>Run sequentially (workaround):</li>
+</ol>
+<pre><code class="language-bash">cargo test -- --test-threads=1
+</code></pre>
+<p>Always prefer independent tests!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filtered Out vs Ignored Difference</h2>
+<p>What's the difference between "filtered out" and "ignored" in test output?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>They indicate different things:</p>
+<p><strong>Filtered out</strong>: Test exists but doesn't match filter</p>
+<pre><code class="language-bash">$ cargo test addition
+test result: ok. 2 passed; 0 failed; 0 ignored; 1 filtered out
+              ↑
+              test_multiplication didn't match &quot;addition&quot;
+</code></pre>
+<p><strong>Ignored</strong>: Test marked with <code>#[ignore]</code></p>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn expensive_test() { }
+</code></pre>
+<pre><code class="language-bash">$ cargo test
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 filtered out
+              ↑
+              expensive_test has #[ignore]
+</code></pre>
+<p>Key distinction:
+- Filtered out: Excluded by command-line argument
+- Ignored: Excluded by <code>#[ignore]</code> attribute in code</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Release Mode Testing</h2>
+<p>How do you run tests in release mode and why might you need to?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Run tests with optimizations:</p>
+<pre><code class="language-bash">cargo test --release
+</code></pre>
+<p>Why use release mode:</p>
+<ol>
+<li><strong>Performance testing</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_algorithm_speed() {
+    let start = Instant::now();
+    expensive_algorithm();
+    assert!(start.elapsed() &lt; Duration::from_secs(1));
+}
+</code></pre>
+<ol>
+<li><strong>Different behavior</strong> (e.g., overflow):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_overflow() {
+    let x: u8 = 255;
+    let y = x + 1;  // Debug: panics, Release: wraps to 0
+}
+</code></pre>
+<ol>
+<li><strong>Real-world conditions</strong>:</li>
+<li>Tests behavior as users will experience it</li>
+<li>Catches optimization-related bugs</li>
+</ol>
+<p>Note: Debug mode has extra checks (overflow, assertions) that release mode doesn't.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Filter and Options</h2>
+<p>How do you combine test filtering with test binary options?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Place filter before <code>--</code>, options after:</p>
+<pre><code class="language-bash"># Filter + single option
+cargo test addition -- --nocapture
+
+# Filter + multiple options
+cargo test addition -- --test-threads=1 --nocapture
+
+# Cargo option + filter + test options
+cargo test --lib addition -- --nocapture
+
+# Multiple filters + options
+cargo test add subtract -- --nocapture
+</code></pre>
+<p>Structure:</p>
+<pre><code>cargo test [cargo-opts] [filter] -- [test-opts]
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-bash"># Only run 'user' tests, show output, sequential
+cargo test user -- --test-threads=1 --nocapture
+
+# Run integration tests matching 'api', with backtrace
+RUST_BACKTRACE=1 cargo test --test api_test api -- --nocapture
+</code></pre>
+<p>Remember: Everything after <code>--</code> goes to the test binary.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Development Patterns</h2>
+<p>What are common <code>cargo test</code> patterns for different development scenarios?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Quick iteration</strong> (working on specific test):</p>
+<pre><code class="language-bash">cargo test my_test -- --nocapture
+</code></pre>
+<p><strong>Debugging failure</strong> (single-threaded with output):</p>
+<pre><code class="language-bash">cargo test failing_test -- --test-threads=1 --nocapture
+RUST_BACKTRACE=1 cargo test failing_test
+</code></pre>
+<p><strong>Pre-commit check</strong> (comprehensive):</p>
+<pre><code class="language-bash">cargo test -- --include-ignored
+cargo test --release
+</code></pre>
+<p><strong>CI/CD pipeline</strong>:</p>
+<pre><code class="language-bash">cargo test --verbose
+cargo test --lib
+cargo test --doc
+cargo test --test '*'
+</code></pre>
+<p><strong>Fast feedback loop</strong> (unit tests only):</p>
+<pre><code class="language-bash">cargo test --lib
+</code></pre>
+<p>Adapt pattern to your current task for efficient testing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Quiet Output Mode</h2>
+<p>How do you get minimal test output and when would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use the <code>-q</code> flag for quiet mode:</p>
+<pre><code class="language-bash">cargo test -q
+</code></pre>
+<p>Default output:</p>
+<pre><code>running 5 tests
+test test_one ... ok
+test test_two ... ok
+test test_three ... ok
+test test_four ... ok
+test test_five ... ok
+
+test result: ok. 5 passed; 0 failed
+</code></pre>
+<p>Quiet output:</p>
+<pre><code>running 5 tests
+.....
+test result: ok. 5 passed; 0 failed
+</code></pre>
+<p>Use when:
+- Running many tests
+- Only care about pass/fail (not names)
+- Want cleaner output in scripts
+- CI/CD where verbose output clutters logs</p>
+<p>Still shows detailed output for failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Single Test Exactly</h2>
+<p>How do you ensure only one specific test runs, even if multiple tests have similar names?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Provide the full test path:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_user() { }
+
+    #[test]
+    fn test_user_validation() { }
+
+    #[test]
+    fn test_user_creation() { }
+}
+</code></pre>
+<p>Problem:</p>
+<pre><code class="language-bash">$ cargo test test_user
+# Runs all 3 tests (matches &quot;test_user&quot; substring)
+</code></pre>
+<p>Solutions:</p>
+<ol>
+<li>Use full module path:</li>
+</ol>
+<pre><code class="language-bash">cargo test tests::test_user
+# Still might match all three
+</code></pre>
+<ol>
+<li>Make names unique:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn user_basic() { }  // Unique name
+
+#[test]
+fn user_validation_rules() { }  // Unique name
+</code></pre>
+<ol>
+<li>Use exact flag (if available in your version):</li>
+</ol>
+<pre><code class="language-bash">cargo test --exact test_user
+</code></pre>
+<p>Best practice: Use descriptive, unique test names.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Independence Best Practice</h2>
+<p>Why must tests be independent and how do you ensure this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests must be independent because:
+- Run in <strong>non-deterministic order</strong>
+- Run in <strong>parallel</strong> by default
+- Shared state causes <strong>flaky tests</strong></p>
+<p>Bad (dependent tests):</p>
+<pre><code class="language-rust">static mut STATE: i32 = 0;
+
+#[test]
+fn test_a() {
+    unsafe { STATE = 5; }
+    assert_eq!(unsafe { STATE }, 5);
+}
+
+#[test]
+fn test_b() {
+    assert_eq!(unsafe { STATE }, 0);  // Fails if test_a runs first
+}
+</code></pre>
+<p>Good (independent tests):</p>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let state = 5;
+    assert_eq!(state, 5);
+}
+
+#[test]
+fn test_b() {
+    let state = 0;
+    assert_eq!(state, 0);
+}
+</code></pre>
+<p>Principles:
+- Each test creates its own state
+- No shared mutable globals
+- Tests don't depend on execution order
+- Setup and cleanup within each test</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fast Tests Best Practice</h2>
+<p>How do you keep your test suite fast while maintaining comprehensive coverage?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Strategies:</p>
+<ol>
+<li><strong>Mark slow tests as ignored</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn fast_test() {
+    // Runs every time (milliseconds)
+}
+
+#[test]
+#[ignore]
+fn slow_integration_test() {
+    // Run manually (minutes)
+}
+</code></pre>
+<ol>
+<li><strong>Run unit tests frequently, integration rarely</strong>:</li>
+</ol>
+<pre><code class="language-bash"># During development (fast)
+cargo test --lib
+
+# Before commit (comprehensive)
+cargo test -- --include-ignored
+</code></pre>
+<ol>
+<li><strong>Mock external dependencies</strong>:</li>
+</ol>
+<pre><code class="language-rust">// ❌ Slow: actual API call
+#[test]
+fn test_api() {
+    let response = api_call();
+}
+
+// ✅ Fast: mock response
+#[test]
+fn test_api() {
+    let response = MockResponse::new();
+}
+</code></pre>
+<ol>
+<li><strong>Minimize I/O</strong>:</li>
+<li>Use in-memory databases</li>
+<li>Avoid file system</li>
+<li>Mock network calls</li>
+</ol>
+<p>Goal: Keep default <code>cargo test</code> under 1-2 seconds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Descriptive Test Names Pattern</h2>
+<p>What naming pattern should you use for test functions and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use descriptive names that explain what is tested and expected outcome:</p>
+<p>Bad names:</p>
+<pre><code class="language-rust">#[test]
+fn test1() { }
+
+#[test]
+fn test() { }
+
+#[test]
+fn works() { }
+</code></pre>
+<p>Good names:</p>
+<pre><code class="language-rust">#[test]
+fn parser_rejects_empty_input() { }
+
+#[test]
+fn user_age_must_be_positive() { }
+
+#[test]
+fn multiply_by_zero_returns_zero() { }
+
+#[test]
+fn expired_tokens_are_rejected() { }
+</code></pre>
+<p>Pattern: <code>subject_action_condition</code> or <code>expected_behavior_when_condition</code></p>
+<p>Benefits:
+- Self-documenting
+- Clear failure messages
+- Easy to find relevant tests
+- Serves as specification</p>
+<p>Example failure:</p>
+<pre><code>test parser_rejects_empty_input ... FAILED
+# Immediately clear what failed
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Custom Environment Variables in Tests</h2>
+<p>How can you use custom environment variables in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Set variables in test code or shell:</p>
+<p>In test code:</p>
+<pre><code class="language-rust">#[test]
+fn test_with_env() {
+    std::env::set_var(&quot;TEST_MODE&quot;, &quot;true&quot;);
+    std::env::set_var(&quot;API_KEY&quot;, &quot;test_key&quot;);
+
+    // Test code that reads these variables
+    assert_eq!(std::env::var(&quot;TEST_MODE&quot;).unwrap(), &quot;true&quot;);
+}
+</code></pre>
+<p>From shell:</p>
+<pre><code class="language-bash">API_KEY=test_key cargo test
+
+# Multiple variables
+TEST_MODE=true API_KEY=test cargo test
+</code></pre>
+<p>Check environment in code:</p>
+<pre><code class="language-rust">#[test]
+fn test_config() {
+    if std::env::var(&quot;CI&quot;).is_ok() {
+        // Running in CI environment
+        use_ci_specific_config();
+    } else {
+        // Local development
+        use_local_config();
+    }
+}
+</code></pre>
+<p>Common pattern: Use env vars to control test behavior without changing code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Organization by Type</h2>
+<p>How can you organize tests by type (unit, integration, edge cases) within a test module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create sub-modules for different test types:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod unit {
+        use super::*;
+
+        #[test]
+        fn test_pure_function() { }
+
+        #[test]
+        fn test_calculation() { }
+    }
+
+    mod integration {
+        use super::*;
+
+        #[test]
+        fn test_components_together() { }
+
+        #[test]
+        fn test_full_workflow() { }
+    }
+
+    mod edge_cases {
+        use super::*;
+
+        #[test]
+        fn test_empty_input() { }
+
+        #[test]
+        fn test_overflow() { }
+    }
+}
+</code></pre>
+<p>Run specific types:</p>
+<pre><code class="language-bash">cargo test unit
+cargo test edge_cases
+cargo test integration
+</code></pre>
+<p>Benefits: Clear categorization, selective execution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Descriptive Failure Messages</h2>
+<p>How should you write descriptive failure messages in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Include context about what was tested and why it failed:</p>
+<p>Basic:</p>
+<pre><code class="language-rust">#[test]
+fn test_age() {
+    let user = User::new(&quot;Alice&quot;, 15);
+    assert!(user.age() &gt;= 18);  // Not very helpful
+}
+</code></pre>
+<p>With message:</p>
+<pre><code class="language-rust">#[test]
+fn test_age() {
+    let user = User::new(&quot;Alice&quot;, 15);
+    assert!(
+        user.age() &gt;= 18,
+        &quot;Expected user {} to be adult (&gt;=18), but age is {}&quot;,
+        user.name(),
+        user.age()
+    );
+}
+</code></pre>
+<p>Output when fails:</p>
+<pre><code>assertion failed: user.age() &gt;= 18
+Expected user Alice to be adult (&gt;=18), but age is 15
+</code></pre>
+<p>Include:
+- What was being tested
+- Expected value
+- Actual value
+- Why it matters</p>
+<p>Makes debugging much faster!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Essential Commands Quick Reference</h2>
+<p>What are the most essential <code>cargo test</code> commands to remember?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Core commands:</p>
+<pre><code class="language-bash"># Run all tests
+cargo test
+
+# Run specific test/module
+cargo test test_name
+
+# Show output for passing tests
+cargo test -- --nocapture
+
+# Run sequentially (for debugging)
+cargo test -- --test-threads=1
+
+# Combine filter and options
+cargo test my_test -- --test-threads=1 --nocapture
+
+# Run ignored tests
+cargo test -- --ignored
+cargo test -- --include-ignored
+
+# Debug with backtrace
+RUST_BACKTRACE=1 cargo test
+
+# Only unit tests
+cargo test --lib
+
+# Quiet mode
+cargo test -q
+
+# Release mode
+cargo test --release
+</code></pre>
+<p>Remember the structure:</p>
+<pre><code>cargo test [filter] -- [options]
+           ↑           ↑
+           Before      After separator
+</code></pre>
+<p>Most used: <code>cargo test test_name -- --nocapture</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

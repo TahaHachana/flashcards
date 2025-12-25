@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 05-Testing - 01-Unit-Tests</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of Unit Tests in Rust</h2>
+<p>What runtime issues can unit tests catch that the Rust compiler cannot detect?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unit tests catch runtime issues that compile-time checks miss:
+- Logic errors (function returns wrong value)
+- Incorrect algorithms (sorting implementation has bugs)
+- Business rule violations (validation accepts invalid input)
+- Edge cases (code fails on empty inputs or boundary values)</p>
+<p>The compiler catches type errors, borrow checker violations, and lifetime issues, but cannot verify that your logic is correct.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The #[test] Attribute Requirements</h2>
+<p>What are the three requirements for a function marked with <code>#[test]</code> in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test functions must:
+1. Take no parameters (cannot have any arguments)
+2. Return <code>()</code> (unit type) or <code>Result&lt;(), E&gt;</code>
+3. Not be called from regular code (only run via <code>cargo test</code>)</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn valid_test() {
+    assert_eq!(2 + 2, 4);
+}
+</code></pre>
+<p>Tests are only compiled and executed when running <code>cargo test</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Success vs Failure Mechanism</h2>
+<p>How does Rust determine if a test passes or fails?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A test passes if the function completes without panicking.
+A test fails if the function panics.</p>
+<p>Any panic source causes failure:
+- <code>assert!()</code> macro
+- <code>unwrap()</code> on <code>None</code> or <code>Err</code>
+- <code>expect()</code> on <code>None</code> or <code>Err</code>
+- <code>panic!()</code> macro
+- Index out of bounds</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn passes() {
+    assert_eq!(2, 2); // No panic → pass
+}
+
+#[test]
+fn fails() {
+    assert_eq!(2, 3); // Panics → fail
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The assert! Macro</h2>
+<p>What does <code>assert!(condition)</code> do and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>assert!(condition)</code> panics if the boolean condition is <code>false</code>.</p>
+<p>Use when testing boolean expressions:</p>
+<pre><code class="language-rust">#[test]
+fn test_validation() {
+    let is_valid = true;
+    assert!(is_valid);
+
+    let count = 5;
+    assert!(count &gt; 0);
+    assert!(count &lt; 10);
+}
+</code></pre>
+<p>With custom message:</p>
+<pre><code class="language-rust">assert!(age &gt;= 18, &quot;User must be 18+, got: {}&quot;, age);
+</code></pre>
+<p>When it fails, shows: <code>assertion failed: age &gt;= 18</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The assert_eq! Macro</h2>
+<p>What are the requirements and benefits of using <code>assert_eq!(left, right)</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Requirements:
+- Values must implement <code>PartialEq</code> (for comparison)
+- Values must implement <code>Debug</code> (for error messages)</p>
+<p>Benefits over <code>assert!(left == right)</code>:
+- Shows both actual and expected values on failure
+- Clearer failure messages</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn test_calculation() {
+    let result = 2 + 2;
+    assert_eq!(result, 4);
+}
+</code></pre>
+<p>Failure output:</p>
+<pre><code>assertion `left == right` failed
+  left: 5
+ right: 4
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The assert_ne! Macro Use Cases</h2>
+<p>When should you use <code>assert_ne!(left, right)</code> instead of <code>assert_eq!</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>assert_ne!</code> to verify values are NOT equal:</p>
+<ol>
+<li><strong>Uniqueness</strong>: IDs or random values must differ</li>
+</ol>
+<pre><code class="language-rust">let id1 = generate_id();
+let id2 = generate_id();
+assert_ne!(id1, id2, &quot;IDs must be unique&quot;);
+</code></pre>
+<ol>
+<li><strong>Mutations</strong>: Value changed after operation</li>
+</ol>
+<pre><code class="language-rust">let mut counter = 0;
+counter += 1;
+assert_ne!(counter, 0);
+</code></pre>
+<ol>
+<li><strong>Negative cases</strong>: Shouldn't equal invalid value</li>
+</ol>
+<pre><code class="language-rust">let result = parse(&quot;valid&quot;);
+assert_ne!(result, None);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Purpose of #[cfg(test)] Module</h2>
+<p>Why use <code>#[cfg(test)]</code> to wrap test modules instead of just using <code>#[test]</code> on individual functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>#[cfg(test)]</code> provides conditional compilation:</p>
+<p>Benefits:
+1. Code inside is <strong>only compiled</strong> during <code>cargo test</code>
+2. Not included in release builds → reduces binary size
+3. Keeps tests close to implementation without polluting public API
+4. Can contain helper functions shared across tests</p>
+<p>Example:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_one() { }
+
+    #[test]
+    fn test_two() { }
+}
+</code></pre>
+<p>Without <code>#[cfg(test)]</code>, test code would ship in production binaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The use super::*; Pattern</h2>
+<p>Why is <code>use super::*;</code> needed in test modules and what does it import?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test modules are child modules that can't access parent items by default.</p>
+<p><code>use super::*;</code> imports all public items from the parent:
+- <code>super</code> refers to the parent module
+- <code>*</code> imports all public items</p>
+<p>What gets imported:</p>
+<pre><code class="language-rust">pub fn public_fn() {}        // ✓ Imported
+fn private_fn() {}           // ✗ Not imported
+pub struct PublicStruct {}   // ✓ Imported
+const CONST: i32 = 10;       // ✗ Not imported (needs pub)
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;  // Import parent's public items
+
+    #[test]
+    fn test() {
+        public_fn();  // Now accessible
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Tests Commands</h2>
+<p>How do you run tests in Rust, and what are some useful filtering options?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Basic commands:</p>
+<pre><code class="language-bash">cargo test              # Run all tests
+cargo test test_name    # Run specific test
+cargo test addition     # Run tests matching pattern
+</code></pre>
+<p>Useful options:</p>
+<pre><code class="language-bash"># Show println! output for passing tests
+cargo test -- --nocapture
+
+# Run tests in specific module
+cargo test tests::addition
+
+# Run single-threaded (for debugging)
+cargo test -- --test-threads=1
+</code></pre>
+<p>In Rust Playground:
+- Click "···" menu next to RUN
+- Select "TEST" instead of "RUN"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arrange-Act-Assert Pattern</h2>
+<p>What is the Arrange-Act-Assert (AAA) pattern for structuring tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>AAA structures tests in three clear phases:</p>
+<ol>
+<li><strong>Arrange</strong>: Set up test data and preconditions</li>
+<li><strong>Act</strong>: Perform the operation being tested</li>
+<li><strong>Assert</strong>: Verify the result</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn test_user_creation() {
+    // Arrange: Set up test data
+    let name = &quot;Alice&quot;;
+    let age = 30;
+
+    // Act: Perform operation
+    let user = User::new(name, age);
+
+    // Assert: Verify result
+    assert_eq!(user.name(), name);
+    assert_eq!(user.age(), age);
+}
+</code></pre>
+<p>This pattern makes tests readable and maintainable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Helper Functions</h2>
+<p>How do you create and use helper functions in test modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Helper functions don't need <code>#[test]</code> and can be called by multiple tests:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Helper function (no #[test])
+    fn create_test_user() -&gt; User {
+        User::new(&quot;TestUser&quot;, 25)
+    }
+
+    fn setup_environment() -&gt; TestContext {
+        TestContext {
+            database: TestDatabase::new(),
+            config: TestConfig::default(),
+        }
+    }
+
+    #[test]
+    fn test_operations() {
+        let user = create_test_user();  // Use helper
+        assert!(user.is_valid());
+    }
+}
+</code></pre>
+<p>Benefits: Reduce duplication, centralize test setup logic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Private Functions</h2>
+<p>Can unit tests in the same file test private (non-pub) functions? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, unit tests in the same file can test private functions.</p>
+<p>The test module is a child module within the same file, so it has access to private items:</p>
+<pre><code class="language-rust">// Private function
+fn internal_calculation(x: i32) -&gt; i32 {
+    x * 2 + 1
+}
+
+pub fn public_api(x: i32) -&gt; i32 {
+    internal_calculation(x)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_internal() {
+        // Can test private function
+        assert_eq!(internal_calculation(5), 11);
+    }
+}
+</code></pre>
+<p>Philosophy: Test through public APIs when possible, but testing private functions for complex logic is acceptable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tests Cannot Take Parameters</h2>
+<p>Why can't test functions take parameters and how do you work around this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test functions cannot take parameters because the test runner doesn't know what values to pass.</p>
+<p>Error:</p>
+<pre><code class="language-rust">#[test]
+fn broken(input: i32) {  // Won't compile
+    assert_eq!(input, 42);
+}
+</code></pre>
+<p>Workarounds:</p>
+<ol>
+<li>Use helper functions:</li>
+</ol>
+<pre><code class="language-rust">fn verify(input: i32) {
+    assert_eq!(input, 42);
+}
+
+#[test]
+fn test_case_1() { verify(42); }
+
+#[test]
+fn test_case_2() { verify(calculate()); }
+</code></pre>
+<ol>
+<li>Create separate tests:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_positive() { verify(42); }
+
+#[test]
+fn test_negative() { verify(-42); }
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting use super::* Error</h2>
+<p>What error occurs when you forget <code>use super::*;</code> in a test module?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Without <code>use super::*;</code>, test functions cannot find parent module items:</p>
+<pre><code class="language-rust">pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+#[cfg(test)]
+mod tests {
+    // Missing: use super::*;
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 2), 4);
+        // Error: cannot find function `add` in this scope
+    }
+}
+</code></pre>
+<p>Solution:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;  // Import parent items
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 2), 4);  // Works!
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Return Type Restrictions</h2>
+<p>What types can test functions return and when would you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test functions can return:</p>
+<ol>
+<li><strong>Unit type <code>()</code></strong> (most common):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_basic() {
+    assert_eq!(2 + 2, 4);
+    // Implicit return of ()
+}
+</code></pre>
+<ol>
+<li><strong>Result&lt;(), E&gt;</strong> (for error propagation):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_with_result() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let content = read_file(&quot;test.txt&quot;)?;
+    assert!(content.contains(&quot;expected&quot;));
+    Ok(())
+}
+</code></pre>
+<p>Cannot return arbitrary types:</p>
+<pre><code class="language-rust">#[test]
+fn invalid() -&gt; i32 {  // Error!
+    42
+}
+</code></pre>
+<p>Use <code>Result</code> when testing code that returns <code>Result</code> and you want to use <code>?</code> operator.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Trait Requirements for assert_eq!</h2>
+<p>What traits must a type implement to use it with <code>assert_eq!</code> and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Types must implement:</p>
+<ol>
+<li><strong>PartialEq</strong>: To compare values for equality</li>
+<li><strong>Debug</strong>: To format error messages showing the values</li>
+</ol>
+<p>Error without traits:</p>
+<pre><code class="language-rust">struct CustomType { value: i32 }
+
+#[test]
+fn broken() {
+    let a = CustomType { value: 5 };
+    let b = CustomType { value: 5 };
+    assert_eq!(a, b);  // Error: traits not implemented
+}
+</code></pre>
+<p>Solution:</p>
+<pre><code class="language-rust">#[derive(Debug, PartialEq)]
+struct CustomType { value: i32 }
+
+#[test]
+fn works() {
+    let a = CustomType { value: 5 };
+    let b = CustomType { value: 5 };
+    assert_eq!(a, b);  // Works!
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing with Moved Values</h2>
+<p>What ownership issue can occur when testing functions that take ownership, and how do you solve it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Can't use value after it's moved:</p>
+<pre><code class="language-rust">#[test]
+fn broken() {
+    let s = String::from(&quot;hello&quot;);
+    takes_ownership(s);
+    assert_eq!(s, &quot;hello&quot;);  // Error: value moved
+}
+</code></pre>
+<p>Solutions:</p>
+<ol>
+<li>Use function that returns ownership:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn solution1() {
+    let s = String::from(&quot;hello&quot;);
+    let result = returns_ownership(s);
+    assert_eq!(result, &quot;hello&quot;);
+}
+</code></pre>
+<ol>
+<li>Clone before moving:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn solution2() {
+    let s = String::from(&quot;hello&quot;);
+    takes_ownership(s.clone());
+    assert_eq!(s, &quot;hello&quot;);  // Original still valid
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Result Output Interpretation</h2>
+<p>What do the different metrics in test output mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+<p>Metrics:
+- <strong>passed</strong>: Tests completed without panicking
+- <strong>failed</strong>: Tests that panicked
+- <strong>ignored</strong>: Tests marked with <code>#[ignore]</code> attribute (not run)
+- <strong>measured</strong>: Benchmark tests (performance tests)
+- <strong>filtered out</strong>: Tests excluded by command-line filter</p>
+<p>Example:</p>
+<pre><code class="language-bash">cargo test addition  # Filters to only tests with &quot;addition&quot;
+</code></pre>
+<p>All metrics help you understand test execution scope and results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Failed Test Information</h2>
+<p>What key information does Rust provide when a test fails?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Failed test output includes:</p>
+<ol>
+<li><strong>Location</strong>: Exact file and line number</li>
+</ol>
+<pre><code>panicked at src/lib.rs:3:5
+</code></pre>
+<ol>
+<li><strong>Values</strong>: What the actual values were</li>
+</ol>
+<pre><code>assertion `left == right` failed
+  left: 4
+ right: 5
+</code></pre>
+<ol>
+<li><strong>Backtrace hint</strong>: How to get detailed stack trace</li>
+</ol>
+<pre><code>note: run with `RUST_BACKTRACE=1` environment variable
+</code></pre>
+<ol>
+<li><strong>Test name</strong>: Which specific test failed</li>
+</ol>
+<pre><code>failures:
+    test_calculation
+</code></pre>
+<p>This information helps quickly locate and diagnose the problem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Custom Panic Messages</h2>
+<p>How do you add custom error messages to assert macros and why would you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Add messages as additional arguments after the assertion:</p>
+<pre><code class="language-rust">assert!(condition, &quot;format string&quot;, args...);
+assert_eq!(left, right, &quot;format string&quot;, args...);
+assert_ne!(left, right, &quot;format string&quot;, args...);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-rust">#[test]
+fn test_age() {
+    let age = 15;
+    assert!(
+        age &gt;= 18,
+        &quot;User must be 18+, but got: {}&quot;,
+        age
+    );
+}
+</code></pre>
+<p>Output:</p>
+<pre><code>panicked at src/lib.rs:4:5:
+User must be 18+, but got: 15
+</code></pre>
+<p>Why: Provides context about what was being tested and why it matters, making failures easier to understand.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Naming Best Practices</h2>
+<p>What are the best practices for naming test functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Good test names are:</p>
+<ol>
+<li><strong>Descriptive</strong>: State what is being tested</li>
+<li><strong>Include expected behavior</strong>: Show what should happen</li>
+<li><strong>Use snake_case</strong>: Follow Rust conventions</li>
+<li><strong>Specific but concise</strong>: Clear without being verbose</li>
+</ol>
+<p>Examples:</p>
+<p>Bad:</p>
+<pre><code class="language-rust">#[test]
+fn test1() { }  // Vague
+
+#[test]
+fn test() { }  // Too generic
+</code></pre>
+<p>Good:</p>
+<pre><code class="language-rust">#[test]
+fn parse_returns_none_for_empty_string() { }
+
+#[test]
+fn user_age_must_be_positive() { }
+
+#[test]
+fn multiply_by_zero_returns_zero() { }
+</code></pre>
+<p>Pattern: <code>what_happens_when_condition</code> or <code>function_behavior_on_input</code></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>One Assertion Per Test Guideline</h2>
+<p>When should you use one assertion per test vs multiple assertions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>One assertion per test (preferred):</p>
+<pre><code class="language-rust">#[test]
+fn test_addition() {
+    assert_eq!(add(2, 2), 4);
+}
+
+#[test]
+fn test_multiplication() {
+    assert_eq!(multiply(3, 3), 9);
+}
+</code></pre>
+<p>Benefits:
+- Each test has focused purpose
+- Failures point to specific scenarios
+- Tests run in parallel
+- Can run individual tests</p>
+<p>Multiple assertions (acceptable exception):</p>
+<pre><code class="language-rust">#[test]
+fn test_user_initialization() {
+    let user = User::new(&quot;Alice&quot;, 30);
+    assert_eq!(user.name(), &quot;Alice&quot;);  // Related
+    assert_eq!(user.age(), 30);        // Related
+    assert!(user.is_active());         // Related
+}
+</code></pre>
+<p>Use multiple assertions only when testing related properties of the same object.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing Edge Cases</h2>
+<p>What types of edge cases should you test and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Always test boundary conditions and unusual inputs:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_empty_input() {
+        assert_eq!(count_words(&quot;&quot;), 0);
+    }
+
+    #[test]
+    fn test_single_element() {
+        assert_eq!(count_words(&quot;hello&quot;), 1);
+    }
+
+    #[test]
+    fn test_typical_case() {
+        assert_eq!(count_words(&quot;hello world&quot;), 2);
+    }
+
+    #[test]
+    fn test_extra_whitespace() {
+        assert_eq!(count_words(&quot;  hello   world  &quot;), 2);
+    }
+}
+</code></pre>
+<p>Categories:
+- Empty/null inputs
+- Single element
+- Boundary values (min/max)
+- Invalid formats
+- Whitespace handling</p>
+<p>Edge cases often reveal bugs that typical inputs miss.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Independence Principle</h2>
+<p>Why must tests be independent and what problems arise from test dependencies?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests must not depend on:
+- Execution order
+- Shared mutable state
+- Results from other tests</p>
+<p>Bad (dependent tests):</p>
+<pre><code class="language-rust">static mut COUNTER: i32 = 0;
+
+#[test]
+fn test_first() {
+    unsafe { COUNTER += 1; }
+    assert_eq!(unsafe { COUNTER }, 1);
+}
+
+#[test]
+fn test_second() {  // Might fail!
+    assert_eq!(unsafe { COUNTER }, 1);
+}
+</code></pre>
+<p>Good (independent tests):</p>
+<pre><code class="language-rust">#[test]
+fn test_increment() {
+    let mut counter = 0;
+    counter += 1;
+    assert_eq!(counter, 1);
+}
+
+#[test]
+fn test_decrement() {
+    let mut counter = 10;
+    counter -= 1;
+    assert_eq!(counter, 9);
+}
+</code></pre>
+<p>Why: Tests run in parallel and in non-deterministic order. Dependencies cause flaky tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Tests as Documentation</h2>
+<p>How do tests serve as documentation in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests demonstrate how to use APIs through working examples:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn example_basic_usage() {
+        // Shows how to create and use the type
+        let parser = Parser::new();
+        let result = parser.parse(&quot;42&quot;);
+        assert_eq!(result, Some(42));
+    }
+
+    #[test]
+    fn example_error_handling() {
+        // Shows what happens with invalid input
+        let parser = Parser::new();
+        let result = parser.parse(&quot;invalid&quot;);
+        assert_eq!(result, None);
+    }
+}
+</code></pre>
+<p>Benefits:
+- Shows real usage patterns
+- Examples are guaranteed to compile and work
+- Updates automatically when APIs change
+- Demonstrates edge cases and error handling</p>
+<p>Tests complement doc comments by providing executable examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Module Organization</h2>
+<p>How can you organize tests into sub-modules for better structure?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create nested modules within the test module:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod addition {
+        use super::*;
+
+        #[test]
+        fn test_positive() {
+            assert_eq!(add(2, 2), 4);
+        }
+
+        #[test]
+        fn test_negative() {
+            assert_eq!(add(-2, -2), -4);
+        }
+    }
+
+    mod multiplication {
+        use super::*;
+
+        #[test]
+        fn test_by_zero() {
+            assert_eq!(multiply(5, 0), 0);
+        }
+    }
+}
+</code></pre>
+<p>Test output shows hierarchy:</p>
+<pre><code>test tests::addition::test_positive ... ok
+test tests::multiplication::test_by_zero ... ok
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing with Result Return Type</h2>
+<p>When and how should test functions return Result&lt;(), E&gt;?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>Result</code> return type when testing code that uses <code>Result</code> and you want cleaner error propagation:</p>
+<pre><code class="language-rust">use std::error::Error;
+
+#[test]
+fn test_with_result() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let content = std::fs::read_to_string(&quot;config.txt&quot;)?;
+    assert!(content.contains(&quot;expected_key&quot;));
+
+    let parsed = parse_config(&amp;content)?;
+    assert_eq!(parsed.version, &quot;1.0&quot;);
+
+    Ok(())
+}
+</code></pre>
+<p>Benefits:
+- Use <code>?</code> operator for cleaner code
+- Test fails with error message if any operation returns <code>Err</code>
+- More readable than multiple <code>unwrap()</code> calls</p>
+<p>When not needed:</p>
+<pre><code class="language-rust">#[test]
+fn simple_test() {
+    assert_eq!(2 + 2, 4);  // No Result needed
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>assert! vs assert_eq! Choice</h2>
+<p>When should you use <code>assert!</code> vs <code>assert_eq!</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>assert_eq!</code> when comparing concrete values:</p>
+<pre><code class="language-rust">#[test]
+fn use_assert_eq() {
+    let result = calculate();
+    assert_eq!(result, 42);  // Better - shows both values
+}
+</code></pre>
+<p>Use <code>assert!</code> for:</p>
+<ol>
+<li>Boolean conditions:</li>
+</ol>
+<pre><code class="language-rust">assert!(is_valid);
+assert!(count &gt; 0);
+</code></pre>
+<ol>
+<li>Complex comparisons:</li>
+</ol>
+<pre><code class="language-rust">assert!(result &gt; 0 &amp;&amp; result &lt; 100);
+</code></pre>
+<ol>
+<li>Trait method results:</li>
+</ol>
+<pre><code class="language-rust">assert!(collection.is_empty());
+assert!(string.starts_with(&quot;prefix&quot;));
+</code></pre>
+<p>Why <code>assert_eq!</code> is better for equality:</p>
+<pre><code>// assert_eq! failure:
+left: 41
+right: 42
+
+// assert! failure:
+assertion failed: result == 42
+// (doesn't show actual value)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Helpful Failure Messages Practice</h2>
+<p>How do you write helpful custom failure messages in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Include context about what was being tested and why it matters:</p>
+<p>Less helpful:</p>
+<pre><code class="language-rust">#[test]
+fn test_validation() {
+    assert!(validate_email(&quot;invalid&quot;));
+    // Just says: assertion failed
+}
+</code></pre>
+<p>More helpful:</p>
+<pre><code class="language-rust">#[test]
+fn test_validation() {
+    let email = &quot;invalid@&quot;;
+    assert!(
+        validate_email(email),
+        &quot;Email '{}' should be valid but was rejected&quot;,
+        email
+    );
+}
+
+#[test]
+fn test_age_requirement() {
+    let user_age = 15;
+    assert!(
+        user_age &gt;= 18,
+        &quot;Expected user age {} to meet minimum requirement of 18&quot;,
+        user_age
+    );
+}
+</code></pre>
+<p>Good messages include:
+- What value was being tested
+- What was expected
+- Why the test matters</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Private vs Public Testing Strategy</h2>
+<p>What is the recommended strategy for deciding whether to test private or public functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Strategy:</p>
+<ol>
+<li><strong>Prefer testing public APIs</strong>:</li>
+</ol>
+<pre><code class="language-rust">pub fn process_data(input: &amp;str) -&gt; Result&lt;Data, Error&gt; {
+    let parsed = parse_internal(input)?;
+    validate_internal(&amp;parsed)?;
+    Ok(transform_internal(parsed))
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_process_data() {
+        // Test the public function
+        let result = process_data(&quot;input&quot;);
+        assert!(result.is_ok());
+    }
+}
+</code></pre>
+<ol>
+<li><strong>Test private functions when</strong>:</li>
+<li>Logic is complex and deserves isolated testing</li>
+<li>Public API doesn't adequately exercise the function</li>
+<li>Function is critical and has many edge cases</li>
+</ol>
+<pre><code class="language-rust">fn complex_algorithm(data: &amp;[i32]) -&gt; i32 {
+    // Complex logic worth testing directly
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_complex_algorithm_directly() {
+        assert_eq!(complex_algorithm(&amp;[1, 2, 3]), 6);
+    }
+}
+</code></pre>
+<p>Philosophy: Public APIs are your contract; private functions are implementation details.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

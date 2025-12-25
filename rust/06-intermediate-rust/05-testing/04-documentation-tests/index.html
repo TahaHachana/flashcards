@@ -1,0 +1,1627 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 05-Testing - 04-Documentation-Tests</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation Tests Purpose</h2>
+<p>What problem do documentation tests solve in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Documentation tests solve the outdated documentation problem:</p>
+<p>Traditional docs:</p>
+<pre><code>Code changes → Docs not updated → Examples break → Users confused
+</code></pre>
+<p>Rust's solution:</p>
+<pre><code>Code changes → Doc examples fail tests → Fix examples → Docs stay current
+</code></pre>
+<p>Benefits:
+- Examples are compiled and run automatically
+- Broken examples fail tests
+- Refactoring catches outdated docs
+- Users can trust documentation
+- Documentation is executable code</p>
+<p>Philosophy: In Rust, documentation IS code and must stay synchronized through testing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Comment Syntax /// vs //!</h2>
+<p>What's the difference between <code>///</code> and <code>//!</code> in documentation comments?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>///</code> documents the <strong>next item</strong>:</p>
+<pre><code class="language-rust">/// Adds two numbers.
+pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+</code></pre>
+<p><code>//!</code> documents the <strong>containing item</strong> (module/crate):</p>
+<pre><code class="language-rust">//! This module provides math utilities.
+
+pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+</code></pre>
+<p>Usage:
+- <code>///</code> for functions, structs, methods, fields
+- <code>//!</code> for module-level or crate-level docs
+- Both can contain code examples in triple backticks</p>
+<p>Triple slashes for items, exclamation for containers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Code Examples in Doc Comments</h2>
+<p>How do you write code examples in documentation that become tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use triple backticks in doc comments:</p>
+<pre><code class="language-rust">/// Multiplies two numbers.
+///
+/// # Examples
+///
+/// ```
+/// let result = my_crate::multiply(3, 4);
+/// assert_eq!(result, 12);
+/// ```
+pub fn multiply(a: i32, b: i32) -&gt; i32 {
+    a * b
+}
+</code></pre>
+<p>When <code>cargo test</code> runs:
+1. Extracts code from <code>```</code> blocks
+2. Wraps in test function
+3. Compiles and runs
+4. Test passes if no panic</p>
+<p>Output shows: <code>test src/lib.rs - multiply (line 5) ... ok</code></p>
+<p>Code automatically has access to your crate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hidden Lines in Doc Tests</h2>
+<p>How do you hide setup code in documentation examples while still running it in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>#</code> prefix for lines that run in tests but don't show in docs:</p>
+<pre><code class="language-rust">/// # Examples
+///
+/// ```
+/// # use my_crate::Parser;
+/// # let parser = Parser::new();
+/// # let config = Config::default();
+/// # parser.set_config(config);
+/// // Users only see this:
+/// let result = parser.parse(&quot;input&quot;);
+/// assert_eq!(result, expected);
+/// ```
+</code></pre>
+<p>In rendered docs, users see:</p>
+<pre><code class="language-rust">let result = parser.parse(&quot;input&quot;);
+assert_eq!(result, expected);
+</code></pre>
+<p>In tests, full code (including hidden lines) executes.</p>
+<p>Rules:
+- Line must start with <code>#</code> (hash + space)
+- Hidden in docs, executed in tests
+- Use for imports, setup, error handling</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Attributes</h2>
+<p>What attributes can you use in documentation code blocks and what do they do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">/// ```          - Normal (compile and run)
+/// ```no_run    - Compile but don't run
+/// ```ignore    - Skip test entirely
+/// ```should_panic - Expect code to panic
+/// ```compile_fail - Expect compilation failure
+</code></pre>
+<p>Examples:</p>
+<pre><code class="language-rust">/// ```no_run
+/// // Compiles but doesn't run (infinite loop, network call)
+/// loop { process_events(); }
+/// ```
+
+/// ```should_panic
+/// divide(10, 0);  // Should panic
+/// ```
+
+/// ```ignore
+/// // Pseudocode illustration
+/// let result = magical_operation();
+/// ```
+
+/// ```compile_fail
+/// let x: i32 = &quot;not a number&quot;;  // Type error
+/// ```
+</code></pre>
+<p>Use <code>no_run</code> for side effects, <code>should_panic</code> for errors, <code>ignore</code> for non-code, <code>compile_fail</code> for anti-examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>assert_eq! in Documentation</h2>
+<p>Why is <code>assert_eq!</code> used everywhere in Rust documentation instead of <code>println!</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>assert_eq!</code> is superior for documentation:</p>
+<p>With <code>println!</code>:</p>
+<pre><code class="language-rust">/// ```
+/// let result = compute(5);
+/// println!(&quot;{}&quot;, result);  // What's expected?
+/// ```
+</code></pre>
+<p>Problems:
+- Requires Display/Debug
+- Doesn't verify correctness
+- Output unclear</p>
+<p>With <code>assert_eq!</code>:</p>
+<pre><code class="language-rust">/// ```
+/// let result = compute(5);
+/// assert_eq!(result, 10);  // Clear: expects 10
+/// ```
+</code></pre>
+<p>Benefits:
+- No trait requirements
+- Tests verify correctness
+- Shows expected values clearly
+- Self-documenting behavior</p>
+<p><code>assert_eq!</code> makes examples both documentation AND tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Running Documentation Tests</h2>
+<p>How do you run documentation tests and what does the output show?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Commands:</p>
+<pre><code class="language-bash"># Run only doc tests
+cargo test --doc
+
+# Run all tests (includes docs)
+cargo test
+
+# Filter doc tests
+cargo test --doc add
+</code></pre>
+<p>Output:</p>
+<pre><code>   Doc-tests my_crate
+
+running 3 tests
+test src/lib.rs - add (line 5) ... ok
+test src/lib.rs - multiply (line 15) ... ok
+test src/lib.rs - divide (line 25) ... ok
+
+test result: ok. 3 passed; 0 failed
+</code></pre>
+<p>Shows:
+- File location (<code>src/lib.rs</code>)
+- Function name (<code>add</code>)
+- Line number where example starts (<code>line 5</code>)
+- Pass/fail status</p>
+<p>Failure shows exact panic message and location.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>cargo doc Command</h2>
+<p>What does <code>cargo doc</code> do and what options are available?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Generates HTML documentation from doc comments:</p>
+<pre><code class="language-bash"># Generate documentation
+cargo doc
+
+# Generate and open in browser
+cargo doc --open
+
+# Don't document dependencies
+cargo doc --no-deps
+
+# Document private items too
+cargo doc --document-private-items
+</code></pre>
+<p>What gets documented:
+- Public items by default
+- Doc comments (<code>///</code> and <code>//!</code>)
+- Auto-generated trait implementations
+- All dependencies (unless <code>--no-deps</code>)</p>
+<p>Output location: <code>target/doc/</code></p>
+<p>Result: Professional HTML docs with:
+- Searchable index
+- Source code links
+- Trait implementations
+- Cross-references</p>
+<p>Same format as std library docs!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Hidden Lines Common Patterns</h2>
+<p>What are common patterns for using hidden lines in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Hiding imports:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// # use my_crate::Config;
+/// let config = Config::default();
+/// ```
+</code></pre>
+<ol>
+<li>Hiding error handling:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+/// let content = read_file(&quot;data.txt&quot;)?;
+/// # Ok(())
+/// # }
+/// ```
+</code></pre>
+<ol>
+<li>Hiding setup:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// # let mut game = Game::new();
+/// # game.start();
+/// # game.advance_to_level(5);
+/// // User sees this:
+/// game.save_checkpoint();
+/// ```
+</code></pre>
+<ol>
+<li>Hiding cleanup:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// # std::fs::write(&quot;test.txt&quot;, &quot;data&quot;).unwrap();
+/// let content = read_file(&quot;test.txt&quot;);
+/// # std::fs::remove_file(&quot;test.txt&quot;).unwrap();
+/// ```
+</code></pre>
+<p>Hide boilerplate, show essence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Expected Gotchas</h2>
+<p>What common mistakes occur when writing documentation tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Gotcha 1: Forgetting imports</p>
+<pre><code class="language-rust">/// ```
+/// // ❌ Config not in scope
+/// let config = Config::default();
+/// ```
+</code></pre>
+<p>Solution: Add hidden import <code># use my_crate::Config;</code></p>
+<p>Gotcha 2: Missing error handling</p>
+<pre><code class="language-rust">/// ```
+/// let content = read_file(&quot;data.txt&quot;)?;  // ❌ Can't use ? outside fn
+/// ```
+</code></pre>
+<p>Solution: Wrap in hidden main with Result return</p>
+<p>Gotcha 3: Environment-specific code</p>
+<pre><code class="language-rust">/// ```
+/// // ❌ Assumes file exists
+/// let content = read_file(&quot;test.txt&quot;).unwrap();
+/// ```
+</code></pre>
+<p>Solution: Use <code>no_run</code> or create file in hidden setup</p>
+<p>Gotcha 4: Testing private functions</p>
+<pre><code class="language-rust">/// ```
+/// // ❌ Can't access private
+/// let result = my_crate::private_fn();
+/// ```
+</code></pre>
+<p>Solution: Make public or use unit tests</p>
+<p>Always test your examples with <code>cargo test --doc</code>!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Standard Doc Sections</h2>
+<p>What are the standard documentation sections in Rust and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">/// Brief description of function.
+///
+/// # Arguments
+/// * `input` - The string to process
+/// * `mode` - Processing mode
+///
+/// # Returns
+/// Processed string result
+///
+/// # Examples
+/// ```
+/// let result = process(&quot;hello&quot;, Mode::Upper);
+/// assert_eq!(result, &quot;HELLO&quot;);
+/// ```
+///
+/// # Panics
+/// Panics if input is empty.
+///
+/// # Errors
+/// Returns error if input contains invalid UTF-8.
+///
+/// # Safety
+/// Safe to call from any context.
+pub fn process(input: &amp;str, mode: Mode) -&gt; String
+</code></pre>
+<p>Sections:
+- <code># Examples</code> - Most important, always include
+- <code># Panics</code> - When function might panic
+- <code># Errors</code> - For Result-returning functions
+- <code># Safety</code> - For unsafe functions
+- <code># Arguments</code> - Complex parameters
+- <code># Returns</code> - Non-obvious returns</p>
+<p>Examples are mandatory, others as needed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test no_run Attribute</h2>
+<p>When and why should you use the <code>no_run</code> attribute in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>no_run</code> when code should compile but not execute:</p>
+<pre><code class="language-rust">/// # Examples
+///
+/// ```no_run
+/// // Infinite loop - compiles but shouldn't run
+/// loop {
+///     process_events();
+/// }
+/// ```
+
+/// ```no_run
+/// // Requires external resources
+/// let data = fetch_from_api(&quot;https://example.com&quot;);
+/// ```
+
+/// ```no_run
+/// // Has side effects (file I/O)
+/// std::fs::write(&quot;output.txt&quot;, &quot;data&quot;).unwrap();
+/// ```
+</code></pre>
+<p>Use when:
+- Example has side effects (network, files, database)
+- Example is an infinite loop
+- Example requires external resources
+- Example would be slow to run</p>
+<p>Code is still type-checked and compiled, ensuring correctness without execution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test should_panic Attribute</h2>
+<p>How do you document examples that are expected to panic in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>should_panic</code> attribute:</p>
+<pre><code class="language-rust">/// Divides two numbers.
+///
+/// # Examples
+///
+/// Normal division:
+/// ```
+/// let result = divide(10, 2);
+/// assert_eq!(result, 5);
+/// ```
+///
+/// Division by zero panics:
+/// ```should_panic
+/// // This panics!
+/// divide(10, 0);
+/// ```
+pub fn divide(a: i32, b: i32) -&gt; i32 {
+    if b == 0 {
+        panic!(&quot;Cannot divide by zero&quot;);
+    }
+    a / b
+}
+</code></pre>
+<p>Benefits:
+- Shows users what causes panics
+- Tests that panic behavior works
+- Documents error conditions
+- Verifies panic happens as expected</p>
+<p>Use to demonstrate and verify panic conditions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test compile_fail Attribute</h2>
+<p>When should you use <code>compile_fail</code> in documentation tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>compile_fail</code> to show what <strong>doesn't</strong> compile:</p>
+<pre><code class="language-rust">/// This function requires a valid type.
+///
+/// # Examples
+///
+/// This works:
+/// ```
+/// let result = process(42);
+/// assert_eq!(result, 84);
+/// ```
+///
+/// This won't compile:
+/// ```compile_fail
+/// let result = process(&quot;not a number&quot;);  // Type error!
+/// ```
+pub fn process(x: i32) -&gt; i32 {
+    x * 2
+}
+</code></pre>
+<p>Use for:
+- Showing common mistakes
+- Demonstrating type safety
+- Explaining compiler errors
+- Anti-patterns (what NOT to do)</p>
+<p>Test passes if compilation fails, ensuring the anti-example stays invalid.</p>
+<p>Great for teaching proper API usage by showing what fails.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Tests vs Unit Tests</h2>
+<p>When should you use documentation tests versus unit tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Documentation tests:</strong>
+- Public API only
+- User-facing examples
+- Show how to use code
+- Part of documentation
+- Simple, clear examples</p>
+<pre><code class="language-rust">/// # Examples
+/// ```
+/// let result = add(2, 2);
+/// assert_eq!(result, 4);
+/// ```
+pub fn add(a: i32, b: i32) -&gt; i32 { a + b }
+</code></pre>
+<p><strong>Unit tests:</strong>
+- Can test private functions
+- Internal verification
+- Not shown to users
+- Can be complex/messy
+- Thorough edge case coverage</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_internal_logic() {
+        assert_eq!(internal_helper(5), 10);
+    }
+}
+</code></pre>
+<p>Use both: Doc tests for examples, unit tests for comprehensive coverage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Examples Pattern</h2>
+<p>How should you organize multiple examples in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Organize by scenario with descriptive text:</p>
+<pre><code class="language-rust">/// Parses a string into an integer.
+///
+/// # Examples
+///
+/// Basic usage:
+/// ```
+/// let num = parse(&quot;42&quot;);
+/// assert_eq!(num, Some(42));
+/// ```
+///
+/// Invalid input returns None:
+/// ```
+/// let num = parse(&quot;abc&quot;);
+/// assert_eq!(num, None);
+/// ```
+///
+/// Handles negative numbers:
+/// ```
+/// let num = parse(&quot;-10&quot;);
+/// assert_eq!(num, Some(-10));
+/// ```
+///
+/// Empty string:
+/// ```
+/// let num = parse(&quot;&quot;);
+/// assert_eq!(num, None);
+/// ```
+pub fn parse(s: &amp;str) -&gt; Option&lt;i32&gt; {
+    s.parse().ok()
+}
+</code></pre>
+<p>Benefits: Shows multiple use cases, covers edge cases, clear documentation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Automatic Imports</h2>
+<p>What imports are automatically available in documentation tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Doc tests automatically have:</p>
+<ol>
+<li><strong>Your crate</strong> (by name from Cargo.toml):</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// // No explicit import needed!
+/// let result = my_crate::add(2, 2);
+/// ```
+</code></pre>
+<ol>
+<li><strong>Standard library prelude</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// // Vec, Option, Result, etc. already available
+/// let v = Vec::new();
+/// let opt = Some(42);
+/// ```
+</code></pre>
+<p>What you need to import explicitly:
+- Other items from your crate
+- Standard library items outside prelude
+- External dependencies</p>
+<p>Example needing imports:</p>
+<pre><code class="language-rust">/// ```
+/// # use my_crate::{Config, Parser};  // Need explicit import
+/// # use std::collections::HashMap;    // Outside prelude
+/// let config = Config::default();
+/// ```
+</code></pre>
+<p>Your crate name and prelude are automatic, everything else needs importing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Documentation Test Best Practices</h2>
+<p>What are the best practices for writing documentation tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Always include examples</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// # Examples
+/// ```
+/// let result = my_func(42);
+/// ```
+</code></pre>
+<ol>
+<li><strong>Show common use cases</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// Basic:
+/// ```
+/// let user = User::new(&quot;Alice&quot;, 30);
+/// ```
+///
+/// With options:
+/// ```
+/// let mut user = User::new(&quot;Bob&quot;, 25);
+/// user.set_email(&quot;bob@example.com&quot;);
+/// ```
+</code></pre>
+<ol>
+<li><strong>Document error cases</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// ```should_panic
+/// divide(10, 0);  // Panics
+/// ```
+</code></pre>
+<ol>
+<li><strong>Use hidden lines for clarity</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// ```
+/// # use my_crate::Config;
+/// config.enable_feature(&quot;async&quot;);
+/// ```
+</code></pre>
+<ol>
+<li><strong>Keep examples simple</strong>:</li>
+<li>Focus on one thing</li>
+<li>Minimize setup</li>
+<li>
+<p>Use clear variable names</p>
+</li>
+<li>
+<p><strong>Use assert_eq! not println!</strong></p>
+</li>
+</ol>
+<p>Examples should be executable, clear, and trustworthy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Error Patterns</h2>
+<p>How do you document and test functions that return Result in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use hidden main wrapper with Result return:</p>
+<pre><code class="language-rust">/// Reads a file and returns its contents.
+///
+/// # Examples
+///
+/// ```
+/// # use std::error::Error;
+/// # fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+/// let content = read_config(&quot;config.toml&quot;)?;
+/// assert!(content.contains(&quot;version&quot;));
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Errors
+///
+/// Returns an error if the file doesn't exist:
+/// ```
+/// # use std::error::Error;
+/// # fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+/// let result = read_config(&quot;nonexistent.toml&quot;);
+/// assert!(result.is_err());
+/// # Ok(())
+/// # }
+/// ```
+pub fn read_config(path: &amp;str) -&gt; Result&lt;String, std::io::Error&gt; {
+    std::fs::read_to_string(path)
+}
+</code></pre>
+<p>The hidden <code>main() -&gt; Result</code> wrapper allows using <code>?</code> operator naturally.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When to Skip Doc Tests</h2>
+<p>When should you use the <code>ignore</code> attribute in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>ignore</code> when example shouldn't run as a test:</p>
+<pre><code class="language-rust">/// # Examples
+///
+/// ```ignore
+/// // This is pseudocode
+/// let result = some_future_api();
+/// ```
+
+/// ```ignore
+/// // This requires manual setup
+/// // 1. Install PostgreSQL
+/// // 2. Create database
+/// // 3. Run migrations
+/// let db = connect_to_database();
+/// ```
+
+/// ```ignore
+/// // Platform-specific example (Windows only)
+/// use windows::Win32::Foundation::HWND;
+/// ```
+</code></pre>
+<p>Use when:
+- Example is pseudocode/illustration
+- Requires complex external setup
+- Platform-specific (doesn't compile everywhere)
+- Still in development</p>
+<p>Note: Different from <code>#[ignore]</code> on unit tests. Doc test <code>ignore</code> is in the code fence.</p>
+<p>Prefer <code>no_run</code> when possible (still type-checks).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Async Code Pattern</h2>
+<p>How do you write documentation tests for async functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use hidden runtime setup:</p>
+<pre><code class="language-rust">/// Fetches data from the API.
+///
+/// # Examples
+///
+/// ```
+/// # tokio::runtime::Runtime::new().unwrap().block_on(async {
+/// let data = fetch_user(42).await?;
+/// assert_eq!(data.id, 42);
+/// # Ok::&lt;(), Box&lt;dyn std::error::Error&gt;&gt;(())
+/// # });
+/// ```
+pub async fn fetch_user(id: u32) -&gt; Result&lt;User, Error&gt; {
+    // Async implementation
+}
+</code></pre>
+<p>Alternative with <code>no_run</code>:</p>
+<pre><code class="language-rust">/// # Examples
+///
+/// ```no_run
+/// # async fn example() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+/// let data = fetch_user(42).await?;
+/// assert_eq!(data.id, 42);
+/// # Ok(())
+/// # }
+/// ```
+</code></pre>
+<p>Hidden runtime allows async code to work in doc tests.</p>
+<p>For complex async examples, <code>no_run</code> is often clearer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Builder Pattern Example</h2>
+<p>How do you document builder patterns effectively in doc tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Show complete builder chain:</p>
+<pre><code class="language-rust">/// Creates a new configuration.
+///
+/// # Examples
+///
+/// Basic usage:
+/// ```
+/// let config = Config::builder()
+///     .host(&quot;localhost&quot;)
+///     .port(8080)
+///     .build();
+///
+/// assert_eq!(config.host(), &quot;localhost&quot;);
+/// assert_eq!(config.port(), 8080);
+/// ```
+///
+/// With optional settings:
+/// ```
+/// let config = Config::builder()
+///     .host(&quot;example.com&quot;)
+///     .port(443)
+///     .timeout(30)
+///     .retries(3)
+///     .build();
+///
+/// assert_eq!(config.timeout(), 30);
+/// ```
+pub struct Config { /* ... */ }
+</code></pre>
+<p>Benefits:
+- Shows full builder chain
+- Demonstrates method chaining
+- Shows optional vs required methods
+- Clear, readable examples</p>
+<p>Builder patterns need complete examples to be useful.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Verification Strategy</h2>
+<p>What should you verify in documentation test examples?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Verify key behaviors explicitly:</p>
+<pre><code class="language-rust">/// Creates a new user.
+///
+/// # Examples
+///
+/// ```
+/// let user = User::new(&quot;Alice&quot;, 30);
+///
+/// // Verify construction
+/// assert_eq!(user.name(), &quot;Alice&quot;);
+/// assert_eq!(user.age(), 30);
+///
+/// // Verify derived state
+/// assert!(user.is_adult());
+/// assert!(user.is_valid());
+///
+/// // Verify behavior
+/// assert!(user.can_vote());
+/// ```
+</code></pre>
+<p>What to verify:
+- Input was properly stored
+- Computed properties are correct
+- State is valid
+- Methods work as expected
+- Edge cases handled</p>
+<p>Don't just construct objects - show they work correctly!</p>
+<p>Each <code>assert_eq!</code> documents expected behavior.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Module Level Documentation</h2>
+<p>How do you write module-level documentation with examples?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>//!</code> at the top of the module:</p>
+<pre><code class="language-rust">//! Mathematical utility functions.
+//!
+//! This module provides basic arithmetic operations
+//! with proper error handling.
+//!
+//! # Examples
+//!
+//! ```
+//! use my_crate::math;
+//!
+//! let sum = math::add(2, 3);
+//! assert_eq!(sum, 5);
+//!
+//! let product = math::multiply(4, 5);
+//! assert_eq!(product, 20);
+//! ```
+
+pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+pub fn multiply(a: i32, b: i32) -&gt; i32 {
+    a * b
+}
+</code></pre>
+<p>Module docs should:
+- Explain module purpose
+- Show typical usage
+- Demonstrate how items work together
+- Provide complete working examples</p>
+<p>Use <code>//!</code> for the container, <code>///</code> for items.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Crate Level Documentation</h2>
+<p>Where and how do you write crate-level documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>In <code>lib.rs</code> or <code>main.rs</code> at the very top:</p>
+<pre><code class="language-rust">//! # My Awesome Crate
+//!
+//! This crate provides tools for data processing.
+//!
+//! ## Quick Start
+//!
+//! ```
+//! use my_crate::Processor;
+//!
+//! let processor = Processor::new();
+//! let result = processor.process(&quot;input&quot;);
+//! assert_eq!(result, &quot;processed: input&quot;);
+//! ```
+//!
+//! ## Features
+//!
+//! - Fast processing
+//! - Memory efficient
+//! - Easy to use
+
+pub struct Processor { /* ... */ }
+</code></pre>
+<p>Crate-level docs appear on:
+- Main documentation page
+- crates.io page
+- README context</p>
+<p>Should include:
+- What the crate does
+- Quick start example
+- Key features
+- Links to important items</p>
+<p>First impression for users!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Link References</h2>
+<p>How do you create links to other items in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use square brackets for auto-linking:</p>
+<pre><code class="language-rust">/// Processes data using the specified [`Config`].
+///
+/// See also [`validate`] for input validation.
+///
+/// # Examples
+///
+/// ```
+/// use my_crate::{process, Config};
+///
+/// let config = Config::default();
+/// let result = process(&quot;input&quot;, &amp;config);
+/// ```
+///
+/// For advanced usage, see [`Config::builder`].
+pub fn process(input: &amp;str, config: &amp;Config) -&gt; String {
+    // Implementation
+}
+
+/// Validates input before processing.
+///
+/// Used internally by [`process`].
+pub fn validate(input: &amp;str) -&gt; bool {
+    !input.is_empty()
+}
+</code></pre>
+<p>Linking:
+- <code>[</code>Type<code>]</code> - Links to type
+- <code>[</code>function<code>]</code> - Links to function
+- <code>[</code>module::item<code>]</code> - Full path</p>
+<p>Creates clickable links in rendered documentation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Text Blocks</h2>
+<p>How do you include non-code text blocks in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use triple backticks with <code>text</code> (or no language):</p>
+<pre><code class="language-rust">/// Parses configuration files.
+///
+/// Supported format:
+/// ```text
+/// key = value
+/// another_key = another_value
+/// [section]
+/// nested_key = nested_value
+/// ```
+///
+/// # Examples
+///
+/// ```
+/// let config = parse_config(&quot;key = value\nfoo = bar&quot;);
+/// assert_eq!(config.get(&quot;key&quot;), Some(&quot;value&quot;));
+/// ```
+</code></pre>
+<p>Use <code>text</code> for:
+- Configuration examples
+- File format examples
+- Command line examples
+- Output examples</p>
+<p>These blocks are NOT run as tests.</p>
+<p>Use <code>```text</code> for illustrations, <code>```</code> (rust) for executable examples.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Inline Code</h2>
+<p>How do you format inline code vs code blocks in documentation?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use backticks for inline code:</p>
+<pre><code class="language-rust">/// Adds two numbers together.
+///
+/// The function takes two parameters: `a` and `b`,
+/// both of type `i32`. It returns their sum as an `i32`.
+///
+/// Use `add(2, 3)` for simple addition, or see
+/// [`add_many`] for adding multiple values.
+///
+/// # Examples
+///
+/// ```
+/// let result = add(5, 7);
+/// assert_eq!(result, 12);
+/// ```
+pub fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+</code></pre>
+<p>Formatting:
+- Single backticks: `code` for inline
+- Triple backticks: ``` for blocks
+- Inline for: variable names, types, function names, keywords
+- Blocks for: complete examples</p>
+<p>Good inline code makes documentation scannable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Private Items</h2>
+<p>Should you write documentation for private items and how do you test them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, document private items for internal clarity:</p>
+<pre><code class="language-rust">/// Public API function.
+///
+/// # Examples
+/// ```
+/// let result = process(&quot;input&quot;);
+/// ```
+pub fn process(input: &amp;str) -&gt; String {
+    validate_and_transform(input)
+}
+
+/// Validates and transforms input.
+///
+/// This is an internal helper function.
+/// Used by `process` to ensure input is valid.
+///
+/// # Examples
+/// ```
+/// # use my_crate::validate_and_transform;  // Won't work - private!
+/// // Can't test private functions in doc tests
+/// ```
+fn validate_and_transform(input: &amp;str) -&gt; String {
+    input.to_uppercase()
+}
+</code></pre>
+<p>Private item docs:
+- Help maintainers understand code
+- Not visible in public docs (unless <code>--document-private-items</code>)
+- Cannot be tested in doc tests
+- Use unit tests for private function testing</p>
+<p>Document for internal clarity, test with unit tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Doc Test Summary Best Practices</h2>
+<p>Summarize the key principles for effective documentation tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Key principles:</p>
+<ol>
+<li><strong>Always include examples</strong> - Most important section</li>
+<li><strong>Keep examples simple</strong> - One concept at a time</li>
+<li><strong>Use hidden lines</strong> - Hide boilerplate, show essence</li>
+<li><strong>Verify with assert_eq!</strong> - Not println!</li>
+<li><strong>Test multiple scenarios</strong> - Success, error, edge cases</li>
+<li><strong>Use appropriate attributes</strong>:</li>
+<li><code>no_run</code> for side effects</li>
+<li><code>should_panic</code> for errors</li>
+<li><code>ignore</code> for pseudocode</li>
+<li>
+<p><code>compile_fail</code> for anti-patterns</p>
+</li>
+<li>
+<p><strong>Document error cases</strong> - Show what fails</p>
+</li>
+<li><strong>Write readable examples</strong> - Clear variable names</li>
+<li><strong>Test your tests</strong> - Run <code>cargo test --doc</code></li>
+<li><strong>Link to related items</strong> - Use [<code>Type</code>] syntax</li>
+</ol>
+<p>Commands:</p>
+<pre><code class="language-bash">cargo test --doc      # Test docs
+cargo doc --open      # View docs
+</code></pre>
+<p>Philosophy: Documentation IS code. Examples must compile and run correctly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

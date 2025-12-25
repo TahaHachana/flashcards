@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 01-Foundations - 01-Concurrency-Fundamentals</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Concurrency vs Parallelism</h2>
+<p>What is the difference between concurrency and parallelism?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency is about multiple tasks making progress over time, potentially by interleaving on a single core. Parallelism is about multiple tasks actually executing simultaneously on different cores at the same instant. Concurrency is about dealing with lots of things at once; parallelism is about doing lots of things at once. The same concurrent code works correctly whether it runs in parallel or interleaved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Concurrency Is Hard</h2>
+<p>What are the main reasons concurrency is traditionally difficult in programming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency is hard due to: (1) Data races - unsynchronized concurrent access with at least one write, (2) Race conditions - behavior depending on unpredictable timing, (3) Deadlocks - threads waiting for each other in cycles, (4) Memory corruption from unsafe shared access, and (5) Non-deterministic bugs that are extremely difficult to debug and reproduce.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Data Race Definition</h2>
+<p>What three conditions must all be true for a data race to occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A data race occurs when: (1) Two or more threads access the same memory location, (2) At least one access is a write, and (3) The accesses are not synchronized. All three conditions must be met simultaneously for it to be a data race.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rust's Approach to Concurrency</h2>
+<p>How does Rust achieve "fearless concurrency" and what does this term mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust achieves fearless concurrency by using its ownership and type system to prevent data races at compile time. The compiler tracks which types can be safely transferred between threads (Send) and shared between threads (Sync). This means entire categories of concurrency bugs simply cannot compile, allowing developers to write concurrent code without fear of data races.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Data Race vs Race Condition</h2>
+<p>What is the difference between a data race and a race condition? Which does Rust prevent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A data race is unsynchronized concurrent access to memory where at least one is a write - this causes undefined behavior and memory safety issues. A race condition is when program correctness depends on the relative timing of events - this affects program logic but not memory safety. Rust prevents data races at compile time but allows race conditions (which are logic bugs, not safety bugs).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Data Races Are Catastrophic</h2>
+<p>Why are data races considered catastrophic problems in concurrent programming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Data races cause undefined behavior where anything can happen. They create non-deterministic bugs that work sometimes and fail others, making them nearly impossible to debug. They can corrupt memory in ways that crash far from the actual bug location. The behavior changes based on unpredictable timing, and they can lead to security vulnerabilities and data corruption.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership and Data Races</h2>
+<p>How do Rust's ownership rules prevent data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust's ownership rules prevent data races by ensuring: (1) Each value has one owner - can't have data races if only one thread owns the data, (2) References must be valid - can't have dangling pointers in threads, and (3) One mutable or many immutable references - can't have data races if this rule holds across threads. The compiler enforces these rules even across thread boundaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Move Semantics in Threads</h2>
+<p>Why does Rust require the <code>move</code> keyword when capturing variables in thread closures, and how does this prevent data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>move</code> keyword transfers ownership of captured variables from the parent scope into the thread's closure. This prevents data races by ensuring only one thread owns the data - the parent thread can no longer access it after the move. Without <code>move</code>, both threads could potentially access the same data, creating a data race. The compiler enforces this to guarantee thread safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Two Concurrency Models</h2>
+<p>What are the two primary concurrency models supported by Rust, and how do they differ?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The two models are: (1) Message Passing - threads communicate by sending data through channels with no shared memory and ownership transferred between threads, and (2) Shared State - threads share memory protected by synchronization primitives like Mutex. Message passing is often clearer and avoids shared state complexity, while shared state can be more efficient for frequently-accessed data. Both are safe in Rust.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Creation Overhead</h2>
+<p>What are the costs associated with creating threads, and why shouldn't you create thousands of threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each thread consumes significant resources: typically 1-2 MB of memory for its stack, creation and destruction overhead, and OS resources (file descriptors, kernel structures). Creating thousands of threads wastes memory, thrashes the scheduler, and can actually slow down your program. The solution is to use thread pools that reuse a fixed number of threads for many tasks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>When Concurrency Helps Performance</h2>
+<p>When does concurrency actually improve performance, and when doesn't it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency helps when: (1) CPU-bound work can utilize multiple cores (parallelism), or (2) I/O-bound work allows doing other work while waiting. It doesn't help when: (1) The work is too small to justify thread overhead, (2) You're already maxing out available cores, or (3) The work is inherently sequential. Only use concurrency when the work being done justifies the overhead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallel Computation Pattern</h2>
+<p>Describe the parallel computation pattern for independent tasks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Spawn separate threads for independent computations that can run simultaneously, store the thread handles, and join them to collect results. Example: spawning two threads each performing expensive calculations, then joining both to get their results. This utilizes multiple cores for CPU-bound work where tasks don't need to communicate or share state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Background Processing Pattern</h2>
+<p>What is the background processing pattern and what is important to remember about it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The background processing pattern spawns a long-running thread (often with a loop) to handle tasks while the main thread continues other work. Important: background threads keep running until the process exits unless explicitly signaled to stop. In real code, you should use channels or other mechanisms to signal shutdown rather than letting the thread run indefinitely or relying on process termination.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Panic Handling</h2>
+<p>What happens when a thread panics, and why must you handle join results?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When a thread panics, the panic is contained to that thread - it doesn't crash the whole program. The <code>join()</code> method returns a <code>Result</code> containing either the thread's return value (Ok) or the panic payload (Err). If you ignore the join result with <code>let _ = handle.join()</code>, you silently ignore panics. Always handle join results in production code to detect and respond to thread failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallelism Guarantees</h2>
+<p>Does spawning multiple threads guarantee they will run in parallel? Why or why not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. The OS scheduler decides whether threads run in parallel. On a single-core machine, threads will run concurrently (interleaved) but not in parallel (simultaneously). Even on multi-core machines, if all cores are busy or the scheduler decides otherwise, threads may interleave. You must write code that's correct whether threads run in parallel or interleaved - never rely on timing assumptions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Concurrent I/O Pattern</h2>
+<p>How does the concurrent I/O pattern work, and when is it beneficial?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Spawn threads for multiple I/O operations (network requests, file reads) that can happen simultaneously, collect their handles, then join them to gather results. This is beneficial for I/O-bound work because while one thread waits for slow I/O, other threads can make progress. The total time is roughly the time of the slowest operation rather than the sum of all operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership Prevents Sharing</h2>
+<p>Why does this code fail to compile, and what is Rust preventing?</p>
+<pre><code class="language-rust">let mut data = vec![1, 2, 3];
+thread::spawn(|| { data.push(4); });
+data.push(5);
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>This fails because the closure might outlive the current function but tries to borrow <code>data</code>. Both the spawned thread and main thread would have access to <code>data</code> and could mutate it simultaneously, creating a data race. Rust's compiler prevents this at compile time, enforcing that only one thread can own mutable data. You must use <code>move</code> to transfer ownership or use synchronization primitives like <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Ownership System</h2>
+<p>How is concurrency safety in Rust connected to the ownership and borrowing system?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency safety is a direct extension of ownership rules. The same rules that prevent use-after-free and double-free also prevent data races: ownership prevents multiple threads from owning the same data, borrowing rules (one mutable or many immutable) prevent concurrent mutation, and lifetimes ensure references don't outlive their data even across threads. It's the same system, just extended to concurrent contexts via Send and Sync traits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Race Condition Example</h2>
+<p>Explain how code using <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> can have a race condition but not a data race.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>With <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, the Mutex prevents data races by ensuring synchronized access - only one thread can access the data at a time. However, there's still a race condition: you don't know which thread will acquire the lock first, so the order of operations is unpredictable. For example, two threads incrementing a counter will always produce the correct final value (no data race), but the order of increments is non-deterministic (race condition).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fearless Concurrency Meaning</h2>
+<p>What does "fearless concurrency" mean in Rust, and what can you still fear?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>"Fearless concurrency" means you don't have to fear data races or memory safety bugs in concurrent code - the compiler prevents them. You can refactor concurrent code aggressively and the compiler will catch safety errors. However, you should still fear: race conditions (logic bugs), deadlocks (design bugs), and performance issues (choosing wrong patterns). Rust eliminates memory safety fears but not all concurrency challenges.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Both Models Are Safe</h2>
+<p>Why are both message passing and shared state concurrency models safe in Rust, unlike in other languages?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both models are safe because Rust enforces safety at compile time through the type system. For message passing, ownership transfer through channels ensures only one thread owns data at a time. For shared state, types like <code>Arc</code> and <code>Mutex</code> have built-in synchronization that the type system enforces. The compiler won't let you share mutable state without proper synchronization or send non-thread-safe types between threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Overhead vs Work</h2>
+<p>Why is spawning a thread for very small work items problematic? Give an example.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Thread creation has significant overhead (memory allocation, OS setup, context switching). If the work is too small, the overhead exceeds the actual computation time, making it slower than sequential execution. Example: spawning threads to multiply single numbers by 2 - the thread overhead (microseconds to milliseconds) far exceeds the multiplication (nanoseconds). Only use threads when work justifies the overhead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Compile-time vs Runtime Safety</h2>
+<p>What concurrency safety does Rust provide at compile time vs runtime?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>At compile time: Rust prevents data races by checking Send/Sync traits and ownership rules - code with data races won't compile. At runtime: Rust handles thread panics safely (contained to that thread), and synchronization primitives like Mutex prevent actual data races during execution. The compile-time checks eliminate entire bug classes before the program even runs, while runtime mechanisms handle dynamic scenarios like lock acquisition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance Considerations</h2>
+<p>What are the key performance considerations when deciding to use concurrency?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Consider: (1) Is the work CPU-bound (benefits from parallelism) or I/O-bound (benefits from concurrency)? (2) Does the work justify thread overhead (needs to be substantial)? (3) How many cores are available (no benefit beyond core count for CPU work)? (4) Is there contention for shared resources (locks can serialize execution)? (5) Is the problem naturally parallel or does it require coordination? Measure actual performance rather than assuming concurrency helps.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Smart Pointers</h2>
+<p>How do concurrency primitives relate to the smart pointers you've learned?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency primitives are smart pointers that extend ownership to concurrent contexts. <code>Arc&lt;T&gt;</code> (Atomic Reference Counted) allows shared ownership across threads, similar to <code>Rc&lt;T&gt;</code> but thread-safe. <code>Mutex&lt;T&gt;</code> provides interior mutability for shared data, similar to <code>RefCell&lt;T&gt;</code> but with thread-safe locking. These types compose (like <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>) to provide both shared ownership and synchronized mutation across threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Concurrency Exists</h2>
+<p>What are the four main reasons concurrency exists in programming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Concurrency exists for: (1) Performance - utilizing multiple CPU cores to do more work in less time, (2) Responsiveness - keeping applications responsive while doing background work (like UI threads), (3) Natural modeling - some problems are inherently concurrent (like web servers handling multiple requests), and (4) I/O efficiency - doing useful work while waiting for slow operations like disk or network access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Error Handling</h2>
+<p>How does thread error handling connect to Rust's error handling model?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Thread panics are errors that must be handled through the <code>Result</code> type returned by <code>join()</code>. This connects to Rust's error handling: <code>join()</code> returns <code>Result&lt;T, E&gt;</code> where <code>Ok(T)</code> contains the thread's return value and <code>Err(E)</code> contains the panic payload. You handle thread failures the same way you handle other errors - with pattern matching, <code>unwrap()</code>, <code>expect()</code>, or the <code>?</code> operator.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>System Programming Connection</h2>
+<p>How does Rust's thread API relate to system programming and OS threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust's thread API is a safe wrapper around platform-specific OS threading primitives (pthreads on Unix, Windows threads on Windows). Threads are OS-level constructs that represent actual execution contexts scheduled by the kernel. Rust provides a safe, cross-platform abstraction while maintaining zero-cost: the overhead is just the OS thread overhead, not Rust's abstraction. This connects Rust to systems programming by safely exposing low-level OS capabilities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

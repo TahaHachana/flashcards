@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 01-Foundations - 02-Send-And-Sync-Traits</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Trait Definition</h2>
+<p>What does the Send trait mean in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Send means a type can be safely transferred (moved) from one thread to another. Ownership can cross thread boundaries. If a type is Send, you can move values of that type into a thread using <code>thread::spawn(move || ...)</code>. Most types are Send, including primitives, String, Vec, and Box.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Sync Trait Definition</h2>
+<p>What does the Sync trait mean in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Sync means a type can be safely shared (referenced) between multiple threads. Immutable references (&amp;T) can cross thread boundaries. If a type is Sync, multiple threads can have immutable references to it simultaneously. Most immutable types are Sync, including primitives and types with thread-safe interior mutability like Mutex.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Marker Traits Purpose</h2>
+<p>What are marker traits and what makes Send and Sync marker traits?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Marker traits carry no functionality or methods - they exist purely to communicate information to the compiler. Send and Sync are marker traits that tell the compiler about thread safety properties. They don't provide any methods; they just mark types as safe to send between threads (Send) or safe to share between threads (Sync). The compiler uses these markers to enforce thread safety at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send and Sync Relationship</h2>
+<p>What is the relationship between Send and Sync? Complete this statement: "T is Sync if and only if..."</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>T is Sync if and only if &amp;T is Send. This means: if you can safely share references to T between threads (T is Sync), then you can safely send those references to other threads (so &amp;T is Send). Conversely, if &amp;T is not Send, then T cannot be Sync. The two traits are fundamentally connected through this relationship.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Auto-Implementation Rules</h2>
+<p>How does the compiler automatically implement Send and Sync for custom types?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler derives Send and Sync based on a type's composition using propagation rules: (1) If all fields are Send, the type is Send, (2) If all fields are Sync, the type is Sync, (3) If any field is not Send, the type is not Send, (4) If any field is not Sync, the type is not Sync. You rarely implement these manually - the compiler does it automatically by examining the fields.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Rc Is Not Send</h2>
+<p>Why is Rc<T> not Send, and what problems would occur if it were?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rc<T> uses non-atomic reference counting for performance. If two threads both had Rc pointers and dropped them simultaneously, they could both try to modify the reference count at the same time, causing a data race and potentially corrupting the count. This could lead to use-after-free or memory leaks. The compiler prevents this by making Rc not implement Send, so you can't move it between threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc vs Rc</h2>
+<p>What is the difference between Rc<T> and Arc<T>, and when should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rc<T> uses non-atomic reference counting and is not Send/Sync - use it for single-threaded shared ownership. Arc<T> uses atomic reference counting and is Send/Sync - use it for multi-threaded shared ownership. Arc has atomic operation overhead, so only use it when you actually need thread safety. The rule: single-threaded = Rc, multi-threaded = Arc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Cell Is Not Sync</h2>
+<p>Why is Cell<T> not Sync, and what would happen if it were?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cell<T> provides interior mutability without synchronization - it allows mutation through shared references without locking. If multiple threads could access a Cell simultaneously, they could race to read and write, causing data races. For example, one thread reading while another writes could see torn/inconsistent data. The compiler prevents this by making Cell not implement Sync.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread-Safe Interior Mutability</h2>
+<p>What types provide thread-safe interior mutability, and why are they Sync when Cell/RefCell are not?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Mutex<T> and RwLock<T> provide thread-safe interior mutability. They are Sync (when T is Send) because they use locking to ensure only one thread can access the data at a time, preventing data races. Cell/RefCell have no synchronization and assume single-threaded access, so they're not Sync. The synchronization overhead is the cost of thread safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Without Sync Examples</h2>
+<p>Give examples of types that are Send but not Sync, and explain why.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cell<T> and RefCell<T> are Send but not Sync. They're Send because you can transfer ownership to another thread (the new thread becomes the sole owner). They're not Sync because multiple threads can't safely share references to them - they have unsynchronized interior mutability. Also, mpsc::Sender and Receiver are Send but not Sync because they're designed for transfer between threads, not simultaneous access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Types Neither Send Nor Sync</h2>
+<p>What types are neither Send nor Sync, and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rc<T> is neither Send nor Sync because it uses non-atomic reference counting that isn't thread-safe. Raw pointers (<em>const T and </em>mut T) are neither Send nor Sync by default because the compiler can't verify the pointed-to data will remain valid across thread boundaries. Any type containing these types also becomes neither Send nor Sync through composition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Raw Pointers Thread Safety</h2>
+<p>Why aren't raw pointers (<em>const T and </em>mut T) Send or Sync by default?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Raw pointers have no lifetime tracking or safety guarantees. The compiler can't verify that the pointed-to data will remain valid if the pointer is sent to another thread or shared between threads. Without these guarantees, using raw pointers across threads could lead to use-after-free, data races, or accessing freed memory. You must use unsafe and manually guarantee safety if you need to send raw pointers between threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Clone Mechanics</h2>
+<p>When you call Arc::clone(&amp;arc), what gets cloned and what doesn't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc::clone clones the Arc pointer itself (incrementing the atomic reference count), not the underlying data. Multiple Arc pointers can point to the same heap-allocated data. This is efficient because the data isn't copied - only the pointer and reference count are involved. Each thread gets its own Arc handle to the same shared data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Sync Trait Bounds</h2>
+<p>When writing generic functions or types that work with threads, what trait bounds should you typically add and why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Add T: Send when the function will transfer ownership of T to another thread (move it into thread::spawn). Add T: Sync when multiple threads will share references to T. Often use T: Send + Sync together for types that need to be both moved and shared across threads. The 'static bound is also often needed because threads can outlive their parent scope.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>MutexGuard Not Send</h2>
+<p>Why is MutexGuard<T> not Send, and what problems does this prevent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>MutexGuard is tied to the thread that acquired the lock - it must be dropped on the same thread that created it. If you could send a MutexGuard to another thread, thread A could acquire a lock but thread B could release it, violating the mutex's invariants and potentially causing deadlocks or data races. This is especially important in async code where tasks can move between threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Async and Send Requirement</h2>
+<p>Why do many async functions require Future: Send bounds, and what issue does this solve?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Async runtimes can move tasks between threads for load balancing. If a Future isn't Send, it can't be moved to another thread, limiting scheduling flexibility. The Send bound ensures that all data held across await points can be safely transferred between threads. This is why types like MutexGuard (not Send) cause compilation errors if held across await points.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Manual Implementation Dangers</h2>
+<p>When should you manually implement Send or Sync using unsafe impl, and what are the dangers?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Manually implement Send/Sync only when working with unsafe code where the compiler can't verify safety but you can guarantee it (like custom smart pointers or FFI wrappers). Dangers: incorrect implementation breaks Rust's safety guarantees and can cause data races, use-after-free, or undefined behavior. The auto-implementation is almost always correct - manual implementation requires deep understanding and careful safety proofs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Sync Propagation</h2>
+<p>If you have <code>struct Container&lt;T&gt; { data: Vec&lt;T&gt; }</code>, when is Container Send and when is it Sync?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Container is Send when T is Send, because Vec<T> is Send when T is Send. Container is Sync when T is Sync, because Vec<T> is Sync when T is Sync. The traits propagate through composition: if any field lacks a trait, the containing type lacks it. If T is Rc<i32> (not Send/Sync), then Container is also not Send/Sync.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Thread Spawn Requires Send</h2>
+<p>Why does thread::spawn require the closure and captured data to be Send + 'static?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Send is required because the closure is moved to a new thread - it must be safe to transfer ownership across thread boundaries. The 'static bound is required because the spawned thread can outlive the scope that created it, so it can't hold references to data that might be dropped. These bounds ensure the thread can safely own and access its data throughout its lifetime.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Compile Time Verification</h2>
+<p>How do Send and Sync enable compile-time prevention of data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The compiler automatically checks Send/Sync when you use types across threads. If you try to send a non-Send type to another thread or share a non-Sync type between threads, compilation fails with a clear error. This means data races from violating thread safety are caught before the program even runs. The type system encodes thread safety as a compile-time property, not a runtime check.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Send Sync Types</h2>
+<p>List common types that are both Send and Sync.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Types that are both Send and Sync: (1) All primitive types (i32, f64, bool, char), (2) String and &amp;str, (3) Vec<T>, HashMap<K,V> when T, K, V are Send+Sync, (4) Box<T>, Arc<T> when T is Send+Sync, (5) Mutex<T>, RwLock<T> when T is Send, (6) Most standard library types. These are the building blocks of safe concurrent programs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutex Sync Requirement</h2>
+<p>Why is Mutex<T> Sync when T is Send (but T doesn't need to be Sync)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Mutex<T> is Sync because the lock ensures synchronized access - only one thread can access T at a time through the MutexGuard. T needs to be Send because when you lock the mutex, you're effectively transferring access to T to the locking thread (though not ownership). T doesn't need to be Sync because the Mutex itself provides the synchronization - the inner T is never simultaneously accessed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Message Passing Send Requirement</h2>
+<p>Why do channels (mpsc::channel) require sent data to be Send?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Channels transfer ownership of data from the sending thread to the receiving thread. The data must be Send because it's being moved across thread boundaries. The sender gives up ownership and the receiver gains it. If the data weren't Send, this transfer could violate thread safety (like trying to send Rc between threads, which could corrupt its non-atomic reference count).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Static Variables and Sync</h2>
+<p>Why do static variables require their types to be Sync?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Static variables have 'static lifetime and can be accessed from any thread in the program. Multiple threads can have references to the same static variable simultaneously, so the type must be Sync to ensure this is safe. Without the Sync requirement, you could create data races by having multiple threads access a non-thread-safe static variable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Composition and Thread Safety</h2>
+<p>If you have a struct with fields Arc<Mutex\<Vec\<String>>>, is this struct Send and Sync? Why?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, this struct is both Send and Sync. Breaking it down: String is Send+Sync, Vec<String> is Send+Sync (because String is), Mutex<Vec\<String>> is Send+Sync (because Vec<String> is Send), and Arc<Mutex\<Vec\<String>>> is Send+Sync (because Mutex<Vec\<String>> is). Since all fields are Send+Sync, the struct is automatically Send+Sync through composition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Sync Library Design</h2>
+<p>When designing a library with public types, why should you care about Send and Sync?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Send and Sync determine whether users can use your types in concurrent code. If your type isn't Send/Sync, users can't share it between threads, limiting your library's applicability. Public API types should ensure their fields are Send/Sync unless there's a specific reason not to be. These traits communicate thread safety guarantees to users at compile time, becoming part of your API contract.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell vs Mutex Pattern</h2>
+<p>When should you use RefCell<T> vs Mutex<T> for interior mutability?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use RefCell<T> for single-threaded interior mutability - it has no synchronization overhead but isn't Sync. Use Mutex<T> for multi-threaded interior mutability - it provides thread-safe access but has locking overhead. The rule: if your code involves threads, use Mutex. If it's strictly single-threaded and you need interior mutability, RefCell is more efficient. Don't use RefCell just because you want to avoid thinking about locking.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership Extension to Threads</h2>
+<p>How do Send and Sync extend Rust's ownership system to concurrent contexts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Send and Sync apply ownership rules across thread boundaries. Send means "can transfer ownership between threads" (moving values), Sync means "can share references between threads" (borrowing). They leverage the same ownership, borrowing, and lifetime rules you already know, but enforce them across threads. The compiler uses these traits to ensure the ownership system's safety guarantees hold even in concurrent code, preventing data races at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Async MutexGuard Issue</h2>
+<p>Why does holding a MutexGuard across an await point cause compilation errors, and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>MutexGuard is not Send because it's tied to the thread that acquired the lock. In async code, await points can cause the task to move to a different thread. If you hold the guard across an await, the compiler can't guarantee it will be dropped on the same thread. Fix: drop the guard before the await point by limiting its scope with braces, or use async-aware primitives like tokio::sync::Mutex.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Efficiency Consideration</h2>
+<p>What is the performance cost of Arc compared to Rc, and when should you avoid using Arc unnecessarily?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc uses atomic operations for reference counting, which are slower than Rc's non-atomic operations due to memory ordering guarantees and potential cache coherency overhead. Use Arc only when you actually need to share data across threads. If your code is single-threaded, use Rc for better performance. Don't use Arc "just in case" you might need threading later - pay for thread safety only when you need it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

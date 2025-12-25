@@ -1,0 +1,1899 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 06-Intermediate-Rust - 05-Testing - 05-Test-Utilities</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[should_panic] Attribute Purpose</h2>
+<p>What does <code>#[should_panic]</code> do and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>#[should_panic]</code> marks tests that expect code to panic:</p>
+<pre><code class="language-rust">#[test]
+#[should_panic]
+fn test_divide_by_zero() {
+    divide(10, 0);  // Should panic
+}
+</code></pre>
+<p>Test behavior:
+- ✅ Passes if code panics
+- ❌ Fails if code doesn't panic</p>
+<p>Use for:
+- Input validation errors
+- Precondition violations
+- Invalid state transitions
+- Boundary condition failures</p>
+<p>Example:</p>
+<pre><code class="language-rust">pub fn divide(a: i32, b: i32) -&gt; i32 {
+    if b == 0 {
+        panic!(&quot;Cannot divide by zero&quot;);
+    }
+    a / b
+}
+
+#[test]
+#[should_panic]
+fn test_panic_on_zero() {
+    divide(10, 0);
+}
+</code></pre>
+<p>Essential for testing that code fails correctly in invalid scenarios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[should_panic] Expected Message</h2>
+<p>How does the <code>expected</code> parameter work with <code>#[should_panic]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>expected</code> parameter verifies panic message content:</p>
+<pre><code class="language-rust">pub fn validate_age(age: i32) {
+    if age &lt; 0 {
+        panic!(&quot;Age cannot be negative&quot;);
+    }
+    if age &gt; 150 {
+        panic!(&quot;Age cannot exceed 150&quot;);
+    }
+}
+
+#[test]
+#[should_panic(expected = &quot;cannot be negative&quot;)]
+fn test_negative_age() {
+    validate_age(-5);  // ✅ Passes: message contains substring
+}
+
+#[test]
+#[should_panic(expected = &quot;must be positive&quot;)]
+fn test_wrong_message() {
+    validate_age(-5);  // ❌ Fails: message doesn't contain substring
+}
+</code></pre>
+<p>Behavior:
+- Checks if panic message <strong>contains</strong> expected string
+- Case-sensitive substring match
+- Test fails if:
+  - Code doesn't panic
+  - Panic message doesn't contain expected string</p>
+<p>Prevents false positives from panics in wrong places.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[should_panic] Wrong Location Gotcha</h2>
+<p>What problem occurs when panic happens in unexpected code with <code>#[should_panic]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Test passes if ANY panic occurs, even from wrong location:</p>
+<pre><code class="language-rust">#[test]
+#[should_panic]
+fn test_divide() {
+    let v = vec![];
+    let _ = v[0];  // ❌ Panics here (wrong reason!)
+    divide(10, 0); // Never reached (intended panic location)
+}
+</code></pre>
+<p>This test PASSES even though it panics for the wrong reason!</p>
+<p>Solution: Use <code>expected</code> parameter:</p>
+<pre><code class="language-rust">#[test]
+#[should_panic(expected = &quot;divide by zero&quot;)]
+fn test_divide() {
+    let v = vec![];
+    let _ = v[0];  // ❌ Fails: panic message doesn't match
+}
+
+#[test]
+#[should_panic(expected = &quot;divide by zero&quot;)]
+fn test_divide_correct() {
+    divide(10, 0);  // ✅ Passes: correct panic message
+}
+</code></pre>
+<p>Always use <code>expected</code> to verify the correct panic occurs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[should_panic] vs Result</h2>
+<p>What's the difference between testing panics with <code>#[should_panic]</code> versus testing Result errors?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Different error handling approaches need different tests:</p>
+<p><strong>Function that panics:</strong></p>
+<pre><code class="language-rust">pub fn divide(a: i32, b: i32) -&gt; i32 {
+    if b == 0 { panic!(&quot;Cannot divide by zero&quot;); }
+    a / b
+}
+
+#[test]
+#[should_panic(expected = &quot;divide by zero&quot;)]
+fn test_panic() {
+    divide(10, 0);  // ✅ Correct: expects panic
+}
+</code></pre>
+<p><strong>Function that returns Result:</strong></p>
+<pre><code class="language-rust">pub fn safe_divide(a: i32, b: i32) -&gt; Result&lt;i32, String&gt; {
+    if b == 0 { return Err(&quot;Cannot divide by zero&quot;.to_string()); }
+    Ok(a / b)
+}
+
+#[test]
+fn test_error() {
+    let result = safe_divide(10, 0);
+    assert!(result.is_err());  // ✅ Correct: tests Result
+}
+
+#[test]
+#[should_panic]  // ❌ Wrong: doesn't panic, returns Err
+fn test_panic() {
+    safe_divide(10, 0);
+}
+</code></pre>
+<p>Use <code>#[should_panic]</code> for panics, <code>assert!(result.is_err())</code> for Result errors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[should_panic] Common Patterns</h2>
+<p>What are common use cases for <code>#[should_panic]</code> tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Input Validation:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[should_panic(expected = &quot;Name cannot be empty&quot;)]
+fn test_empty_name() {
+    create_user(&quot;&quot;, 25);
+}
+</code></pre>
+<ol>
+<li><strong>Precondition Violations:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[should_panic(expected = &quot;empty stack&quot;)]
+fn test_pop_empty() {
+    let mut stack = Stack::new();
+    stack.pop();  // Violates precondition
+}
+</code></pre>
+<ol>
+<li><strong>Invalid State Transitions:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[should_panic(expected = &quot;not connected&quot;)]
+fn test_send_disconnected() {
+    let conn = Connection { connected: false };
+    conn.send(&quot;data&quot;);  // Invalid state
+}
+</code></pre>
+<ol>
+<li><strong>Invariant Violations:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[should_panic(expected = &quot;Total cannot be zero&quot;)]
+fn test_zero_total() {
+    calculate_percentage(50.0, 0.0);
+}
+</code></pre>
+<p>Test that code enforces contracts correctly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[ignore] Attribute Purpose</h2>
+<p>What does <code>#[ignore]</code> do and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>#[ignore]</code> skips tests during normal <code>cargo test</code>:</p>
+<pre><code class="language-rust">#[test]
+fn fast_test() {
+    assert_eq!(2 + 2, 4);  // Always runs
+}
+
+#[test]
+#[ignore]
+fn slow_test() {
+    expensive_operation();  // Skipped by default
+}
+</code></pre>
+<p>Running ignored tests:</p>
+<pre><code class="language-bash">cargo test               # Skips ignored
+cargo test -- --ignored  # Only ignored
+cargo test -- --include-ignored  # All
+</code></pre>
+<p>Use for:
+- Slow tests (minutes+)
+- External dependencies (network, database)
+- Platform-specific tests
+- Temporarily broken tests (with TODO)</p>
+<p>Output:</p>
+<pre><code>test fast_test ... ok
+test slow_test ... ignored
+
+test result: ok. 1 passed; 0 failed; 1 ignored
+</code></pre>
+<p>Keeps default test runs fast while preserving comprehensive tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>#[ignore] Common Use Cases</h2>
+<p>What are common scenarios for using <code>#[ignore]</code> in tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Network/External Dependencies:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn test_api_endpoint() {
+    let response = reqwest::blocking::get(&quot;https://api.example.com&quot;).unwrap();
+    assert!(response.status().is_success());
+}
+</code></pre>
+<ol>
+<li><strong>Expensive Operations:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+fn test_large_dataset() {
+    // Processes 1GB of data, takes 10 minutes
+    let results = process_huge_file(&quot;dataset.csv&quot;);
+    assert_eq!(results.len(), 1_000_000);
+}
+</code></pre>
+<ol>
+<li><strong>Platform-Specific:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]
+#[cfg(target_os = &quot;windows&quot;)]
+fn test_windows_api() {
+    use_windows_specific_feature();
+}
+</code></pre>
+<ol>
+<li><strong>Temporarily Broken:</strong></li>
+</ol>
+<pre><code class="language-rust">#[test]
+#[ignore]  // TODO: Fix after database refactor (issue #123)
+fn test_authentication() {
+    // Currently broken, will fix soon
+}
+</code></pre>
+<p>Document why with comments or <code>#[ignore = "reason"]</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Helper Functions Pattern</h2>
+<p>How do you create and use helper functions in test modules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Helper functions don't have <code>#[test]</code> attribute:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Helper function (not a test)
+    fn setup_database() -&gt; Database {
+        let mut db = Database::new();
+        db.connect();
+        db.clear_users();
+        db
+    }
+
+    // Another helper
+    fn assert_user_valid(user: &amp;User) {
+        assert!(!user.name().is_empty());
+        assert!(user.age() &gt; 0);
+    }
+
+    #[test]
+    fn test_user_creation() {
+        let db = setup_database();  // Use helper
+        let user = create_user(&quot;Alice&quot;);
+        assert_user_valid(&amp;user);   // Use helper
+    }
+
+    #[test]
+    fn test_user_update() {
+        let db = setup_database();  // Reuse helper
+        let mut user = create_user(&quot;Bob&quot;);
+        user.update_age(26);
+        assert_user_valid(&amp;user);
+    }
+}
+</code></pre>
+<p>Benefits: Reduce duplication, consistent setup, reusable assertions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Drop Trait for Cleanup</h2>
+<p>How can you use the <code>Drop</code> trait for automatic test cleanup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Implement <code>Drop</code> for automatic cleanup even on panic:</p>
+<pre><code class="language-rust">struct TestGuard {
+    db: Database,
+}
+
+impl TestGuard {
+    fn new() -&gt; Self {
+        let mut db = Database::new();
+        db.connect();
+        db.begin_transaction();
+        TestGuard { db }
+    }
+}
+
+impl Drop for TestGuard {
+    fn drop(&amp;mut self) {
+        // Automatic cleanup when test ends
+        self.db.rollback_transaction();
+        self.db.disconnect();
+    }
+}
+
+#[test]
+fn test_with_cleanup() {
+    let guard = TestGuard::new();
+
+    guard.db.insert_user(&quot;Alice&quot;);
+    assert_eq!(guard.db.count_users(), 1);
+
+    // Automatic cleanup on drop (even if test panics!)
+}
+</code></pre>
+<p>Key benefit: Cleanup happens even if test panics.</p>
+<p>RAII (Resource Acquisition Is Initialization) pattern ensures reliability.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Fixtures Pattern</h2>
+<p>What is the test fixture pattern and how do you implement it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Test fixtures provide reusable test environments:</p>
+<pre><code class="language-rust">struct TestContext {
+    db: Database,
+    temp_dir: TempDir,
+    config: Config,
+}
+
+impl TestContext {
+    fn new() -&gt; Self {
+        let temp_dir = TempDir::new().unwrap();
+        let mut db = Database::new();
+        db.connect(&amp;temp_dir.path());
+        db.initialize_schema();
+
+        TestContext {
+            db,
+            temp_dir,
+            config: Config::default(),
+        }
+    }
+
+    fn create_user(&amp;self, name: &amp;str) -&gt; User {
+        self.db.insert_user(name)
+    }
+}
+
+#[test]
+fn test_with_fixture() {
+    let ctx = TestContext::new();
+    let user = ctx.create_user(&quot;Alice&quot;);
+    assert_eq!(ctx.db.count_users(), 1);
+    // Auto cleanup when ctx drops
+}
+</code></pre>
+<p>Benefits: Encapsulates setup, reusable, self-cleaning, consistent environment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Data Builders</h2>
+<p>How do you implement the builder pattern for test data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create builders for flexible test data:</p>
+<pre><code class="language-rust">struct UserBuilder {
+    name: String,
+    age: u32,
+    email: String,
+}
+
+impl UserBuilder {
+    fn new() -&gt; Self {
+        // Sensible defaults
+        UserBuilder {
+            name: &quot;TestUser&quot;.to_string(),
+            age: 25,
+            email: &quot;test@example.com&quot;.to_string(),
+        }
+    }
+
+    fn name(mut self, name: &amp;str) -&gt; Self {
+        self.name = name.to_string();
+        self
+    }
+
+    fn age(mut self, age: u32) -&gt; Self {
+        self.age = age;
+        self
+    }
+
+    fn build(self) -&gt; User {
+        User::new(&amp;self.name, self.age, &amp;self.email)
+    }
+}
+
+#[test]
+fn test() {
+    let user = UserBuilder::new()
+        .name(&quot;Alice&quot;)
+        .age(30)
+        .build();
+    assert_eq!(user.name(), &quot;Alice&quot;);
+}
+</code></pre>
+<p>Benefits: Readable, flexible, minimal setup required.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>File System Test Pattern</h2>
+<p>How do you properly test file system operations with automatic cleanup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use temporary directory with Drop cleanup:</p>
+<pre><code class="language-rust">use std::fs;
+use std::path::PathBuf;
+
+struct TestDirectory {
+    path: PathBuf,
+}
+
+impl TestDirectory {
+    fn new() -&gt; Self {
+        let path = PathBuf::from(format!(&quot;test_dir_{}&quot;, random_id()));
+        fs::create_dir(&amp;path).unwrap();
+        TestDirectory { path }
+    }
+
+    fn create_file(&amp;self, name: &amp;str, content: &amp;str) {
+        fs::write(self.path.join(name), content).unwrap();
+    }
+
+    fn path(&amp;self) -&gt; &amp;PathBuf {
+        &amp;self.path
+    }
+}
+
+impl Drop for TestDirectory {
+    fn drop(&amp;mut self) {
+        // Cleanup: remove directory and contents
+        let _ = fs::remove_dir_all(&amp;self.path);
+    }
+}
+
+#[test]
+fn test_files() {
+    let dir = TestDirectory::new();
+    dir.create_file(&quot;test.txt&quot;, &quot;Hello&quot;);
+
+    let content = read_file(&amp;dir.path().join(&quot;test.txt&quot;));
+    assert_eq!(content, &quot;Hello&quot;);
+    // Automatic cleanup when dir drops
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Database Transaction Test Pattern</h2>
+<p>How do you ensure database test isolation with automatic rollback?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use transaction wrapper with Drop rollback:</p>
+<pre><code class="language-rust">struct TestTransaction&lt;'a&gt; {
+    db: &amp;'a mut Database,
+}
+
+impl&lt;'a&gt; TestTransaction&lt;'a&gt; {
+    fn new(db: &amp;'a mut Database) -&gt; Self {
+        db.begin_transaction();
+        TestTransaction { db }
+    }
+}
+
+impl&lt;'a&gt; Drop for TestTransaction&lt;'a&gt; {
+    fn drop(&amp;mut self) {
+        // Always rollback (even on panic)
+        self.db.rollback();
+    }
+}
+
+#[test]
+fn test_isolation() {
+    let mut db = Database::new();
+
+    {
+        let tx = TestTransaction::new(&amp;mut db);
+        tx.db.insert_user(&quot;Alice&quot;);
+        assert_eq!(tx.db.count_users(), 1);
+    }  // Transaction rolled back here
+
+    // Database clean for next test
+    assert_eq!(db.count_users(), 0);
+}
+</code></pre>
+<p>Ensures no test pollution, even with panics.</p>
+<p>Each test gets a clean database state.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Common Assertions Helper</h2>
+<p>How do you create reusable assertion helpers for tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create assertion functions in test helpers:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod test_helpers {
+    use super::*;
+
+    pub fn assert_user_valid(user: &amp;User) {
+        assert!(!user.name().is_empty(), &quot;Name must not be empty&quot;);
+        assert!(user.age() &gt; 0, &quot;Age must be positive&quot;);
+        assert!(user.email().contains('@'), &quot;Email must be valid&quot;);
+    }
+
+    pub fn assert_response_ok(response: &amp;Response) {
+        assert_eq!(response.status(), 200);
+        assert!(!response.body().is_empty());
+    }
+
+    pub fn assert_in_range(value: i32, min: i32, max: i32) {
+        assert!(
+            value &gt;= min &amp;&amp; value &lt;= max,
+            &quot;Expected {} in range [{}, {}]&quot;, value, min, max
+        );
+    }
+}
+
+#[test]
+fn test_user() {
+    let user = create_user(&quot;Alice&quot;, 30, &quot;alice@example.com&quot;);
+    test_helpers::assert_user_valid(&amp;user);
+}
+</code></pre>
+<p>Benefits: Consistent checks, better error messages, DRY principle.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parametrized Test Pattern</h2>
+<p>How do you implement parametrized tests manually in Rust?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create helper function called from test with multiple inputs:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_parse_case(input: &amp;str, expected: i32) {
+        let result = parse(input);
+        assert_eq!(
+            result, expected,
+            &quot;Failed for input: '{}'&quot;, input
+        );
+    }
+
+    #[test]
+    fn test_parse_various_inputs() {
+        // Multiple test cases in one test
+        test_parse_case(&quot;0&quot;, 0);
+        test_parse_case(&quot;42&quot;, 42);
+        test_parse_case(&quot;-10&quot;, -10);
+        test_parse_case(&quot;999&quot;, 999);
+    }
+
+    #[test]
+    fn test_parse_errors() {
+        assert!(parse(&quot;abc&quot;).is_err());
+        assert!(parse(&quot;&quot;).is_err());
+        assert!(parse(&quot;12.34&quot;).is_err());
+    }
+}
+</code></pre>
+<p>Benefits: Many cases in one test, clear failure messages showing which case failed.</p>
+<p>Alternative: External crates like <code>rstest</code> for macro-based parametrization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mock Server Test Pattern</h2>
+<p>How do you create a mock server for testing with automatic cleanup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-rust">struct MockServer {
+    port: u16,
+    server_handle: ServerHandle,
+}
+
+impl MockServer {
+    fn start() -&gt; Self {
+        let port = find_available_port();
+        let server = start_test_server(port);
+        MockServer {
+            port,
+            server_handle: server,
+        }
+    }
+
+    fn url(&amp;self) -&gt; String {
+        format!(&quot;http://localhost:{}&quot;, self.port)
+    }
+
+    fn expect_request(&amp;self, path: &amp;str, response: &amp;str) {
+        self.server_handle.mock(path, response);
+    }
+}
+
+impl Drop for MockServer {
+    fn drop(&amp;mut self) {
+        self.server_handle.stop();
+    }
+}
+
+#[test]
+fn test_api_call() {
+    let server = MockServer::start();
+    server.expect_request(&quot;/api/users&quot;, r#&quot;{&quot;users&quot;: []}&quot;#);
+
+    let response = make_request(&amp;server.url());
+    assert_eq!(response.status(), 200);
+    // Server automatically stopped on drop
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Combining Test Attributes</h2>
+<p>How can you combine multiple test attributes like <code>#[should_panic]</code> and <code>#[ignore]</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Stack attributes for combined behavior:</p>
+<pre><code class="language-rust">#[test]
+#[ignore]
+#[should_panic(expected = &quot;network unavailable&quot;)]
+fn test_network_failure() {
+    // Ignored: can't reliably test
+    // Should panic when run with --ignored
+    connect_to_invalid_server();
+}
+
+#[test]
+#[cfg(target_os = &quot;linux&quot;)]
+#[ignore]
+fn test_linux_specific() {
+    // Only compiles on Linux
+    // Ignored by default
+    use_linux_feature();
+}
+</code></pre>
+<p>With shared setup:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    fn setup() -&gt; TestContext {
+        TestContext::new()
+    }
+
+    #[test]
+    fn normal_test() {
+        let ctx = setup();
+        // Normal test
+    }
+
+    #[test]
+    #[should_panic]
+    fn panic_test() {
+        let ctx = setup();
+        // Should panic
+    }
+
+    #[test]
+    #[ignore]
+    fn slow_test() {
+        let ctx = setup();
+        // Slow test
+    }
+}
+</code></pre>
+<p>Attributes are composable for complex scenarios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Setup Function Best Practices</h2>
+<p>What are best practices for test setup functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Keep setup functions simple</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn setup_database() -&gt; Database {
+    let mut db = Database::new();
+    db.connect();
+    db.clear_all();
+    db
+}
+</code></pre>
+<ol>
+<li><strong>Return what's needed</strong>:</li>
+</ol>
+<pre><code class="language-rust">fn setup() -&gt; (Database, Config) {
+    let db = Database::new();
+    let config = Config::default();
+    (db, config)
+}
+</code></pre>
+<ol>
+<li><strong>Make setup infallible</strong> (panic on setup failure):</li>
+</ol>
+<pre><code class="language-rust">fn setup() -&gt; TestContext {
+    TestContext::new()
+        .unwrap_or_else(|e| panic!(&quot;Setup failed: {}&quot;, e))
+}
+</code></pre>
+<ol>
+<li><strong>Use fixtures for complex setup</strong>:</li>
+</ol>
+<pre><code class="language-rust">struct TestFixture {
+    db: Database,
+    server: MockServer,
+    temp_dir: TempDir,
+}
+
+impl TestFixture {
+    fn new() -&gt; Self { /* ... */ }
+}
+</code></pre>
+<ol>
+<li><strong>Document requirements</strong>:</li>
+</ol>
+<pre><code class="language-rust">/// Requires: PostgreSQL running on port 5432
+fn setup_database() -&gt; Database { /* ... */ }
+</code></pre>
+<p>Clear setup makes tests maintainable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Teardown Best Practices</h2>
+<p>What are best practices for test teardown and cleanup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li><strong>Prefer automatic cleanup with Drop</strong>:</li>
+</ol>
+<pre><code class="language-rust">impl Drop for TestGuard {
+    fn drop(&amp;mut self) {
+        self.cleanup();  // Automatic
+    }
+}
+</code></pre>
+<ol>
+<li><strong>Ensure cleanup on panic</strong>:</li>
+</ol>
+<pre><code class="language-rust">// ✅ Good: Drop always runs
+struct Guard { resource: Resource }
+impl Drop for Guard {
+    fn drop(&amp;mut self) {
+        self.resource.cleanup();
+    }
+}
+
+// ❌ Bad: Won't run if test panics
+fn manual_cleanup(resource: Resource) {
+    resource.cleanup();  // Not called on panic
+}
+</code></pre>
+<ol>
+<li><strong>Make tests independent</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let ctx = TestContext::new();  // Fresh state
+    // Test...
+}  // Cleanup
+
+#[test]
+fn test_b() {
+    let ctx = TestContext::new();  // Fresh state
+    // Test...
+}  // Cleanup
+</code></pre>
+<ol>
+<li><strong>Use scopes for cleanup timing</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test() {
+    {
+        let guard = TestGuard::new();
+        // Use resource
+    }  // Cleanup happens here
+
+    // Continue testing with clean state
+}
+</code></pre>
+<p>Reliable cleanup prevents test pollution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Independence Principle</h2>
+<p>Why must tests be independent and how do you ensure this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Tests must be independent because they:
+- Run in <strong>non-deterministic order</strong>
+- Run in <strong>parallel</strong> by default
+- Shared state causes <strong>flaky tests</strong></p>
+<p>Bad (dependent tests):</p>
+<pre><code class="language-rust">static mut STATE: i32 = 0;
+
+#[test]
+fn test_a() {
+    unsafe { STATE = 5; }
+    assert_eq!(unsafe { STATE }, 5);
+}
+
+#[test]
+fn test_b() {
+    // ❌ Fails if test_a runs first
+    assert_eq!(unsafe { STATE }, 0);
+}
+</code></pre>
+<p>Good (independent tests):</p>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let state = 5;
+    assert_eq!(state, 5);
+}
+
+#[test]
+fn test_b() {
+    let state = 0;
+    assert_eq!(state, 0);
+}
+</code></pre>
+<p>Principles:
+- Each test creates own state
+- No shared mutable globals
+- Tests don't depend on execution order
+- Setup and cleanup within each test
+- Use <code>--test-threads=1</code> only for debugging</p>
+<p>Independent tests are reliable tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Resource Management Pattern</h2>
+<p>How do you manage test resources (files, connections, etc.) reliably?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use RAII pattern with Drop:</p>
+<pre><code class="language-rust">struct TestResource {
+    file_handle: File,
+    temp_path: PathBuf,
+}
+
+impl TestResource {
+    fn new() -&gt; std::io::Result&lt;Self&gt; {
+        let temp_path = PathBuf::from(&quot;test_file.tmp&quot;);
+        let file_handle = File::create(&amp;temp_path)?;
+        Ok(TestResource { file_handle, temp_path })
+    }
+
+    fn write(&amp;mut self, data: &amp;[u8]) -&gt; std::io::Result&lt;()&gt; {
+        self.file_handle.write_all(data)
+    }
+}
+
+impl Drop for TestResource {
+    fn drop(&amp;mut self) {
+        // Cleanup even on panic
+        let _ = fs::remove_file(&amp;self.temp_path);
+    }
+}
+
+#[test]
+fn test_resource() -&gt; std::io::Result&lt;()&gt; {
+    let mut resource = TestResource::new()?;
+    resource.write(b&quot;test data&quot;)?;
+    // Verify...
+    Ok(())
+    // Automatic cleanup via Drop
+}
+</code></pre>
+<p>RAII ensures resources are always cleaned up.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Setup Macro Pattern</h2>
+<p>How can you use macros for repetitive test setup?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create setup macros for very repetitive patterns:</p>
+<pre><code class="language-rust">macro_rules! with_database {
+    ($db:ident, $code:block) =&gt; {
+        let mut $db = Database::new();
+        $db.connect();
+        $db.clear_all();
+        $code
+    };
+}
+
+#[test]
+fn test_users() {
+    with_database!(db, {
+        db.insert_user(&quot;Alice&quot;);
+        assert_eq!(db.count_users(), 1);
+    });
+}
+
+#[test]
+fn test_queries() {
+    with_database!(db, {
+        db.insert_user(&quot;Bob&quot;);
+        let user = db.find_user(&quot;Bob&quot;);
+        assert!(user.is_some());
+    });
+}
+</code></pre>
+<p>Benefits:
+- Very concise
+- Consistent setup
+- Less boilerplate</p>
+<p>Trade-offs:
+- Harder to debug
+- Less IDE support
+- Can hide complexity</p>
+<p>Use sparingly - helper functions are usually clearer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Temporary Directory Pattern</h2>
+<p>What's the best way to create temporary directories for tests?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>tempfile</code> crate or custom implementation:</p>
+<pre><code class="language-rust">use tempfile::TempDir;
+
+#[test]
+fn test_with_temp_dir() {
+    let temp_dir = TempDir::new().unwrap();
+    let file_path = temp_dir.path().join(&quot;test.txt&quot;);
+
+    // Create and test files
+    std::fs::write(&amp;file_path, &quot;data&quot;).unwrap();
+    assert!(file_path.exists());
+
+    // Automatic cleanup when temp_dir drops
+}
+</code></pre>
+<p>Custom implementation:</p>
+<pre><code class="language-rust">struct TestDir {
+    path: PathBuf,
+}
+
+impl TestDir {
+    fn new() -&gt; Self {
+        let path = env::temp_dir().join(format!(&quot;test_{}&quot;, random_id()));
+        fs::create_dir(&amp;path).unwrap();
+        TestDir { path }
+    }
+
+    fn path(&amp;self) -&gt; &amp;Path {
+        &amp;self.path
+    }
+}
+
+impl Drop for TestDir {
+    fn drop(&amp;mut self) {
+        let _ = fs::remove_dir_all(&amp;self.path);
+    }
+}
+</code></pre>
+<p>Temporary directories ensure test isolation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shared State Anti-Pattern</h2>
+<p>Why is shared mutable state in tests problematic and what's the solution?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Problem: Non-deterministic failures with parallel tests:</p>
+<pre><code class="language-rust">use std::sync::Mutex;
+
+lazy_static! {
+    static ref COUNTER: Mutex&lt;i32&gt; = Mutex::new(0);
+}
+
+#[test]
+fn test_a() {
+    *COUNTER.lock().unwrap() = 0;
+    *COUNTER.lock().unwrap() += 1;
+    assert_eq!(*COUNTER.lock().unwrap(), 1);  // ❌ Fails if test_b runs concurrently
+}
+
+#[test]
+fn test_b() {
+    *COUNTER.lock().unwrap() = 0;
+    *COUNTER.lock().unwrap() += 2;
+    assert_eq!(*COUNTER.lock().unwrap(), 2);  // ❌ Fails if test_a runs concurrently
+}
+</code></pre>
+<p>Solutions:</p>
+<ol>
+<li><strong>Make tests independent</strong> (best):</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let mut counter = 0;
+    counter += 1;
+    assert_eq!(counter, 1);  // ✅ Always passes
+}
+</code></pre>
+<ol>
+<li><strong>Run sequentially</strong> (workaround):</li>
+</ol>
+<pre><code class="language-bash">cargo test -- --test-threads=1
+</code></pre>
+<ol>
+<li><strong>Use test-specific state</strong>:</li>
+</ol>
+<pre><code class="language-rust">#[test]
+fn test_a() {
+    let ctx = TestContext::new();  // Isolated state
+    ctx.counter += 1;
+    assert_eq!(ctx.counter, 1);
+}
+</code></pre>
+<p>Always prefer independent tests.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Organization by Feature</h2>
+<p>How should you organize test utility functions and fixtures?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Organize by feature area in sub-modules:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod database_helpers {
+        use super::*;
+
+        pub fn setup_db() -&gt; Database {
+            let mut db = Database::new();
+            db.connect();
+            db
+        }
+
+        pub fn assert_user_exists(db: &amp;Database, name: &amp;str) {
+            assert!(db.find_user(name).is_some());
+        }
+    }
+
+    mod file_helpers {
+        use super::*;
+
+        pub fn create_test_file(name: &amp;str) -&gt; TestFile {
+            TestFile::new(name)
+        }
+    }
+
+    #[test]
+    fn test_user_creation() {
+        let db = database_helpers::setup_db();
+        create_user(&amp;db, &quot;Alice&quot;);
+        database_helpers::assert_user_exists(&amp;db, &quot;Alice&quot;);
+    }
+}
+</code></pre>
+<p>Benefits: Clear organization, easy to find helpers, grouped by purpose.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Async Test Utilities</h2>
+<p>How do you create test utilities for async code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use async test frameworks or manual runtime setup:</p>
+<p>With <code>tokio::test</code>:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    async fn setup_async_context() -&gt; TestContext {
+        let db = connect_async().await.unwrap();
+        TestContext { db }
+    }
+
+    #[tokio::test]
+    async fn test_async_operation() {
+        let ctx = setup_async_context().await;
+        let result = async_operation(&amp;ctx.db).await;
+        assert!(result.is_ok());
+    }
+}
+</code></pre>
+<p>Manual runtime:</p>
+<pre><code class="language-rust">#[test]
+fn test_async() {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        let ctx = setup_async_context().await;
+        // Test async code
+    });
+}
+</code></pre>
+<p>Async cleanup with Drop:</p>
+<pre><code class="language-rust">impl Drop for AsyncTestGuard {
+    fn drop(&amp;mut self) {
+        // Note: Drop is not async!
+        // Use blocking cleanup or spawn task
+        tokio::runtime::Handle::current()
+            .block_on(async { self.cleanup().await });
+    }
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Utility Documentation</h2>
+<p>How should you document test utilities and helper functions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Document test utilities clearly:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod test_helpers {
+    use super::*;
+
+    /// Creates a test database with clean state.
+    ///
+    /// The database is automatically cleaned up when dropped.
+    ///
+    /// # Panics
+    ///
+    /// Panics if database connection fails.
+    pub fn setup_test_db() -&gt; TestDatabase {
+        TestDatabase::new()
+            .expect(&quot;Failed to setup test database&quot;)
+    }
+
+    /// Asserts that a user with the given name exists.
+    ///
+    /// # Panics
+    ///
+    /// Panics if user is not found or database query fails.
+    pub fn assert_user_exists(db: &amp;Database, name: &amp;str) {
+        let user = db.find_user(name)
+            .expect(&quot;Database query failed&quot;);
+        assert!(user.is_some(), &quot;User '{}' not found&quot;, name);
+    }
+
+    /// Builder for creating test users with custom properties.
+    pub struct TestUserBuilder {
+        // ...
+    }
+}
+</code></pre>
+<p>Good documentation helps other developers use test utilities correctly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Complex Setup Pattern</h2>
+<p>How do you handle complex test setups with multiple dependencies?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use a comprehensive test fixture:</p>
+<pre><code class="language-rust">struct IntegrationTestContext {
+    db: Database,
+    server: MockServer,
+    temp_dir: TempDir,
+    config: Config,
+}
+
+impl IntegrationTestContext {
+    fn new() -&gt; Self {
+        // Setup in correct order
+        let temp_dir = TempDir::new().unwrap();
+
+        let mut db = Database::new();
+        db.connect(&amp;temp_dir.path()).unwrap();
+        db.migrate().unwrap();
+
+        let config = Config::load(&amp;temp_dir.path()).unwrap();
+
+        let server = MockServer::start(8080);
+        server.configure(&amp;config);
+
+        IntegrationTestContext {
+            db,
+            server,
+            temp_dir,
+            config,
+        }
+    }
+
+    fn with_users(mut self, count: usize) -&gt; Self {
+        for i in 0..count {
+            self.db.create_user(&amp;format!(&quot;user{}&quot;, i));
+        }
+        self
+    }
+}
+
+impl Drop for IntegrationTestContext {
+    fn drop(&amp;mut self) {
+        // Cleanup in reverse order
+        self.server.stop();
+        self.db.disconnect();
+        // temp_dir drops automatically
+    }
+}
+
+#[test]
+fn test_integration() {
+    let ctx = IntegrationTestContext::new()
+        .with_users(5);
+    // Test with full environment
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Error Message Best Practices</h2>
+<p>How should you write helpful error messages in test assertions?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Provide context and actual values:</p>
+<p>Bad:</p>
+<pre><code class="language-rust">#[test]
+fn test_age() {
+    let user = create_user(&quot;Alice&quot;, 15);
+    assert!(user.age() &gt;= 18);  // Unhelpful: &quot;assertion failed&quot;
+}
+</code></pre>
+<p>Good:</p>
+<pre><code class="language-rust">#[test]
+fn test_age() {
+    let user = create_user(&quot;Alice&quot;, 15);
+    assert!(
+        user.age() &gt;= 18,
+        &quot;User {} must be 18+, but age is {}&quot;,
+        user.name(),
+        user.age()
+    );
+}
+</code></pre>
+<p>Helper with good messages:</p>
+<pre><code class="language-rust">fn assert_valid_age(user: &amp;User) {
+    assert!(
+        user.age() &gt;= 18 &amp;&amp; user.age() &lt;= 150,
+        &quot;User '{}' has invalid age: {} (must be 18-150)&quot;,
+        user.name(),
+        user.age()
+    );
+}
+</code></pre>
+<p>Good error messages:
+- Explain what was expected
+- Show actual values
+- Provide context
+- Help identify the problem quickly</p>
+<p>Failed test output should be immediately actionable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Test Utilities Summary</h2>
+<p>Summarize the key test utilities and their purposes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Attributes:
+- <code>#[should_panic]</code> - Test panics (with <code>expected</code> for message)
+- <code>#[ignore]</code> - Skip slow/external tests</p>
+<p>Setup patterns:
+- Helper functions - Simple reusable setup
+- Fixtures - Complex test environments
+- Builders - Flexible test data
+- Drop trait - Automatic cleanup</p>
+<p>Best practices:
+1. <strong>Independence</strong> - No shared mutable state
+2. <strong>RAII cleanup</strong> - Use Drop for reliability
+3. <strong>Clear naming</strong> - Descriptive helper names
+4. <strong>Documentation</strong> - Comment complex helpers
+5. <strong>Error messages</strong> - Provide context
+6. <strong>Organization</strong> - Group by feature</p>
+<p>Common patterns:
+- File systems: TempDir with Drop
+- Databases: Transaction with rollback
+- Servers: MockServer with shutdown
+- Resources: Guard with cleanup</p>
+<p>Running:</p>
+<pre><code class="language-bash">cargo test -- --ignored      # Only ignored
+cargo test -- --include-ignored  # All
+</code></pre>
+<p>Key principle: Tests should be independent, reliable, and maintainable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

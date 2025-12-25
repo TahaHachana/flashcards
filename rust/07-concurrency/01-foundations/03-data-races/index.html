@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 01-Foundations - 03-Data-Races</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Data Race Definition</h2>
+<p>What is a data race, and what three conditions must all be met for one to occur?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A data race occurs when: (1) Two or more threads access the same memory location, (2) At least one access is a write, and (3) The accesses are not synchronized. All three conditions must be true simultaneously. Data races cause undefined behavior, making them catastrophic bugs that can lead to crashes, corruption, or security vulnerabilities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Why Data Races Are Catastrophic</h2>
+<p>Why are data races considered catastrophic, and what makes them different from other bugs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Data races cause undefined behavior - literally anything can happen. They are: (1) Non-deterministic - manifest differently based on unpredictable thread timing, (2) Nearly impossible to debug or reproduce, (3) Silent - may corrupt data without immediate symptoms, (4) Optimizer-breaking - compilers assume no data races and optimize accordingly, potentially making things worse, and (5) Security risks - can bypass security checks or leak sensitive data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rust's Data Race Guarantee</h2>
+<p>What is Rust's compile-time guarantee regarding data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>If your Rust code compiles, it cannot have data races. Rust prevents data races at compile time through the type system, ownership rules, and Send/Sync traits. This is a unique guarantee - you can still have other concurrency bugs (race conditions, deadlocks), but data races specifically are impossible in safe Rust. The compiler catches them before the program ever runs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Breaking Condition 1 Ownership</h2>
+<p>How does Rust's ownership system break the first condition of data races (multiple threads accessing same memory)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ownership ensures only one thread owns data at a time. When you move data into a thread with <code>move</code>, ownership is transferred - the original thread can no longer access it. This breaks the "multiple threads accessing same memory" condition because only the thread that owns the data can access it. No shared access means no data race is possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Breaking Condition 2 Immutability</h2>
+<p>How does Rust allow breaking the second condition of data races (at least one write)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust allows multiple threads to share immutable data using Arc<T>. Since all accesses are reads (no writes), there's no data race even though multiple threads access the same memory. The type system ensures you can't mutate data through an Arc without additional synchronization. Multiple readers are always safe - it's the writers that cause data races.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Breaking Condition 3 Synchronization</h2>
+<p>How does Rust enforce the third condition (synchronization) to prevent data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust provides synchronization primitives like Mutex<T> and RwLock<T> that enforce synchronized access through the type system. You can't access the data inside a Mutex without first acquiring the lock, which the type system enforces. Only one thread can hold the lock at a time, guaranteeing synchronized access. The type system makes synchronization mandatory, not optional.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type System Role</h2>
+<p>How does Rust's type system track and enforce thread safety to prevent data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The type system uses Send and Sync marker traits to track thread safety. The compiler automatically checks these traits when code uses types across threads. Types with unsynchronized interior mutability (like RefCell) are not Sync, so they can't be shared between threads. Types with non-atomic operations (like Rc) are not Send, so they can't be moved between threads. These compile-time checks prevent data races before the program runs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>RefCell Thread Safety</h2>
+<p>Why does the compiler prevent sharing RefCell<T> between threads, and what data race would occur if it didn't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>RefCell provides interior mutability without synchronization - it allows mutation through shared references with only runtime borrow checking. If multiple threads accessed a RefCell simultaneously, they could race to read and write with no coordination, causing data races. The compiler prevents this by making RefCell not Sync - you can't share &amp;RefCell between threads, forcing you to use Mutex instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rc Thread Safety</h2>
+<p>Why does the compiler prevent sending Rc<T> between threads, and what data race would occur if it didn't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rc uses non-atomic reference counting for performance. If two threads both had Rc pointers and dropped them simultaneously, both would try to decrement the reference count at the same time without synchronization, causing a data race on the count itself. This could lead to use-after-free or memory leaks. The compiler prevents this by making Rc not Send - it can't cross thread boundaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership Rules and Data Races</h2>
+<p>How do Rust's core ownership rules (one owner, one mutable or many immutable borrows) naturally prevent data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each value has one owner, so only one thread can own data at a time (prevents shared access). The borrowing rule "one mutable or many immutable" prevents having a mutable reference in one thread while another thread accesses the data. These rules prevent the conditions for data races: if only one thread owns the data, or if all accesses are reads, data races are impossible. The same rules that prevent memory errors also prevent data races.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Atomic Types Purpose</h2>
+<p>What are atomic types, and how do they prevent data races in lock-free programming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Atomic types (AtomicUsize, AtomicBool, etc.) provide thread-safe operations without locks. Each atomic operation is indivisible - it completes entirely or not at all, guaranteed by hardware. Operations have memory ordering semantics that ensure proper synchronization between threads. This prevents data races even though multiple threads access the same memory concurrently, because the hardware ensures each operation is atomic and properly synchronized.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Compiler Checks for Threads</h2>
+<p>What checks does the Rust compiler perform when you spawn a thread, and when do these checks happen?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>At compile time, the compiler checks: (1) Types moved into the thread are Send (safe to transfer ownership), (2) Types shared between threads are Sync (safe to share references), and (3) Borrowed data outlives the thread (lifetime checking). These checks happen at compile time with zero runtime overhead. If any check fails, compilation fails with a clear error explaining the thread safety violation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Concurrent Mutation Prevention</h2>
+<p>Why doesn't this compile: <code>let mut counter = 0; thread::spawn(|| { counter += 1; }); counter += 1;</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both the spawned thread and parent thread would mutate counter without synchronization, causing a data race. Rust's borrowing rules prevent capturing mutable references in closures that might outlive the scope. The closure can't capture &amp;mut counter because the borrow would need to last as long as the thread (potentially forever). The compiler prevents this at compile time, forcing you to use proper synchronization like Mutex.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Use After Free in Threads</h2>
+<p>Why doesn't this compile: <code>let data = vec![1,2,3]; thread::spawn(|| { println!("{:?}", &amp;data); }); drop(data);</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The thread might access data after it's dropped, causing use-after-free. Rust's lifetime system ensures borrowed data outlives all references to it, even across thread boundaries. The compiler can't guarantee the thread will finish before data is dropped, so it prevents borrowing data in a thread that might outlive the borrow. You must either move ownership (move) or use Arc for shared ownership.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Immutable Sharing Pattern</h2>
+<p>Why is sharing data with Arc<Vec\<T>> across threads safe from data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc provides shared ownership with atomic reference counting, and the data inside is immutable (without additional primitives). Multiple threads can read the Vec simultaneously because all accesses are reads - no writes means no data race. Arc is Send + Sync, allowing it to cross thread boundaries. The type system prevents mutation without Mutex or other synchronization, guaranteeing all accesses are read-only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutex Synchronization Pattern</h2>
+<p>How does Arc<Mutex\<T>> enable safe shared mutable state, and what prevents data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc provides shared ownership across threads, while Mutex provides synchronized access. The type system ensures you can't access T without first locking the Mutex, which returns a MutexGuard. Only one thread can hold the lock at a time, guaranteeing exclusive access. This breaks the "no synchronization" condition of data races - all accesses are synchronized through the lock, preventing concurrent unsynchronized access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Message Passing Safety</h2>
+<p>Why is message passing through channels (mpsc::channel) safe from data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Channels transfer ownership of data from sender to receiver. When you send data, ownership is moved into the channel, and when you receive it, ownership is moved to the receiver. Only one thread owns the data at any time. This breaks the "multiple threads accessing same memory" condition - there's no shared access because ownership is transferred, not shared. The type system enforces this by requiring sent data to be Send.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Atomic Operations Pattern</h2>
+<p>How do atomic operations like fetch_add provide lock-free shared mutation without data races?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each atomic operation is indivisible at the hardware level - it happens completely or not at all, with no intermediate state visible to other threads. Memory ordering semantics (like SeqCst) ensure operations are properly synchronized and visible across threads in the right order. This prevents data races even without locks because the hardware guarantees atomicity and proper synchronization. Multiple threads can safely modify the same atomic variable concurrently.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Rust vs Other Languages</h2>
+<p>How does Rust's approach to preventing data races differ from C/C++, Java, and Go?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>C/C++: Data races are undefined behavior; programmer must ensure safety manually with no compiler help. Java/C#: Data races cause well-defined but incorrect behavior; rely on runtime checks and careful programming. Go: Data races are detectable with tools (race detector) but not prevented by compiler. Rust: Data races are impossible in safe code; compiler guarantees their absence at compile time with zero runtime overhead. Rust is unique in preventing data races at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>False Sense of Security</h2>
+<p>What concurrency bugs can still occur in Rust despite the data race guarantee?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust prevents data races but not: (1) Race conditions - logic depending on thread timing, (2) Deadlocks - threads waiting for each other in cycles, (3) Livelocks - threads actively preventing each other from progressing, (4) Logic errors in concurrent algorithms, and (5) Performance issues from excessive locking. Data race prevention is a memory safety guarantee, not a correctness guarantee for all concurrent behavior.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Interior Mutability Thread Safety</h2>
+<p>What's the difference between RefCell and Mutex for interior mutability, and why can't you use RefCell with Arc?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>RefCell provides single-threaded interior mutability with runtime borrow checking but no synchronization - it's not Sync. Mutex provides thread-safe interior mutability with locking - it is Sync. Arc<RefCell\<T>> won't compile because RefCell isn't Sync, meaning you can't share it between threads. You must use Arc<Mutex\<T>> for shared mutable state across threads. The type system enforces this distinction at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unsafe and Data Races</h2>
+<p>Can you have data races in unsafe Rust code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Even in unsafe blocks, raw pointers (<em>const T, </em>mut T) are not Send/Sync by default, making it difficult to accidentally create data races. To actually introduce data races, you'd need to: (1) Manually implement Send/Sync using unsafe impl, (2) Then write unsafe code that violates thread safety. This requires multiple intentional steps. Safe Rust cannot have data races - even unsafe code maintains many safety checks unless you explicitly bypass them.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Atomic Memory Ordering</h2>
+<p>What are memory orderings for atomic operations, and what happens if you use the wrong one?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Memory orderings control how atomic operations synchronize with other operations: Relaxed (no ordering guarantees), Acquire/Release (synchronize with matching operations), SeqCst (sequential consistency - strongest guarantees). Wrong ordering can cause subtle bugs where operations appear to happen out of order to different threads, even though no data race occurs. When in doubt, use SeqCst for correctness, optimize later. Atomic operations prevent data races but ordering affects program correctness.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Lock Poisoning</h2>
+<p>What is mutex poisoning, when does it occur, and how should you handle it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A Mutex becomes "poisoned" when a thread panics while holding the lock. This indicates the data inside might be in an inconsistent state. Calling lock() on a poisoned mutex returns Err(PoisonError) instead of Ok(MutexGuard). You can: (1) Propagate the error with ?, (2) Unwrap if you're certain panics won't happen, or (3) Call into_inner() on the PoisonError to access the data anyway (if you know it's safe). Always handle poisoning in production code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Compile Time Zero Cost</h2>
+<p>What is the runtime cost of Rust's data race prevention?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Zero runtime cost. All checks happen at compile time through the type system, ownership rules, and Send/Sync traits. There are no runtime checks for thread safety, no garbage collection overhead, and no reference counting (except where explicitly used with Arc). This is "zero-cost abstraction" - you get safety guarantees without paying for them at runtime. The CPU executes the same machine code it would for unsafe concurrent code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Preventing Concurrent Mutation</h2>
+<p>Why can't you capture a mutable reference in a closure passed to thread::spawn?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The closure might outlive the current scope (threads can run indefinitely), and Rust can't guarantee the mutable reference remains valid. Also, if both the parent thread and spawned thread had mutable access, they could mutate without synchronization, causing data races. The borrowing rules prevent this by not allowing mutable references to be captured in closures that outlive their scope. You must use move to transfer ownership or use Arc<Mutex\<T>> for shared mutation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Requirement for Channels</h2>
+<p>Why do channels require sent data to be Send, and what would go wrong without this requirement?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Channels transfer ownership from the sending thread to the receiving thread. The data crosses thread boundaries, so it must be Send (safe to transfer between threads). If you could send non-Send types like Rc, you could have multiple threads with Rc pointers, causing data races on the non-atomic reference count. The Send requirement ensures only thread-safe types can be sent through channels, preventing data races at compile time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership Extension to Threads</h2>
+<p>How does data race prevention prove that Rust's ownership system works?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The same ownership rules that prevent memory errors (use-after-free, double-free) also prevent data races. One owner means no shared access across threads. One mutable or many immutable borrows means no concurrent mutation. References must outlive their data means no dangling pointers in threads. These rules extend seamlessly to concurrent contexts through Send/Sync, proving that ownership is a fundamental safety mechanism that works for both memory safety and concurrency safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Real World Impact</h2>
+<p>What are real-world consequences of data races in production systems?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Data races cause: (1) Security vulnerabilities - race conditions can bypass authentication or authorization checks, (2) Financial losses - race conditions in transaction processing can cause incorrect balances or double-spending, (3) Data corruption - inconsistent states in databases or file systems, (4) Crashes - memory corruption from races leads to segfaults, and (5) Non-reproducible bugs - issues that appear randomly and are nearly impossible to debug. Rust's guarantee eliminates this entire class of production bugs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Type System Encodes Safety</h2>
+<p>How does the type system encode thread safety as a compile-time property?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Send and Sync are traits automatically derived based on type composition. The compiler checks these traits when code crosses thread boundaries, turning potential runtime data races into compile-time errors. Thread safety becomes a property you can reason about and enforce through generic bounds (T: Send + Sync). The type system makes thread safety explicit and verifiable, allowing the compiler to guarantee no data races without any runtime overhead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
