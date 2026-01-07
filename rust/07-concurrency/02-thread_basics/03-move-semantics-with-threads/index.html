@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 02-Thread Basics - 03-Move-Semantics-With-Threads</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Move Keyword Purpose</h2>
+<p>What does the move keyword do in thread closures, and why is it necessary?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The move keyword transfers ownership of captured variables from the parent scope into the thread's closure. It's necessary because threads can outlive their parent scope, so they can't safely borrow data - the borrowed data might be dropped while the thread still needs it. Move makes the thread the sole owner of the data, satisfying the 'static lifetime requirement and preventing data races by ensuring only one thread owns the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Static Lifetime Requirement</h2>
+<p>Why do threads require 'static lifetime or ownership of their data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Threads can outlive the scope that created them - they might run for the entire program lifetime. If a thread borrowed non-'static data, that data could be dropped while the thread still references it, causing use-after-free. The 'static requirement ensures data lives as long as needed. The move keyword satisfies this by transferring ownership - the thread owns the data, so it lives as long as the thread needs it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Copy vs Move Types</h2>
+<p>What's the difference between how Copy and Move types behave with the move keyword in threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Copy types (i32, bool, &amp;T, etc.) are copied into the thread - the original remains accessible in the parent scope. Move types (String, Vec, types with heap data) are moved - ownership transfers to the thread and the original becomes inaccessible. Example: move || { println!("{}", x) } - if x is i32, it's copied; if x is String, it's moved. This is the same Copy/Move distinction as everywhere else in Rust.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc for Sharing</h2>
+<p>Why do you need Arc when multiple threads need access to the same data?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You can only move data once - after moving into one thread, it's no longer available to move into another. Arc (Atomic Reference Counted) allows shared ownership: Arc::clone creates new pointers to the same data, each can be moved into different threads. All Arc pointers share access to the same underlying data. Arc uses atomic operations for thread-safe reference counting, enabling safe sharing across threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Clone Mechanics</h2>
+<p>When you call Arc::clone(&amp;arc), what gets cloned and what doesn't?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc::clone clones the Arc pointer and increments the atomic reference count - it does NOT clone the underlying data. All Arc clones point to the same data in memory. This is cheap (just an atomic increment) compared to cloning the actual data. Example: Arc::new(vec![1,2,3]) with 3 clones = 1 Vec in memory, 3 Arc pointers to it, reference count = 3.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Borrowing Without Move</h2>
+<p>Why doesn't this compile without move: <code>let v = vec![1,2,3]; thread::spawn(|| println!("{:?}", v));</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The closure tries to borrow v, but the thread might outlive the scope where v exists. When the scope ends, v would be dropped, leaving the thread with a dangling reference (use-after-free). The compiler prevents this by requiring either 'static lifetime or ownership via move. Adding move transfers ownership to the thread, making it safe - the thread owns v so it can't be dropped prematurely.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scoped Threads Exception</h2>
+<p>How do scoped threads (thread::scope) allow borrowing without move?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>thread::scope guarantees all spawned threads complete before the scope ends. This bounds the threads' lifetimes - they can't outlive the borrowed data. The scope acts as a join point, automatically joining all threads when it exits. Since threads are guaranteed to finish before data is dropped, borrowing is safe. The lifetime constraint is enforced at compile time through the scope's lifetime parameter.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Clone Before Move</h2>
+<p>When should you clone data before moving it into a thread, and what are the trade-offs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Clone when: both the thread and parent need the data, you want independent copies that don't affect each other, or you want to avoid synchronization overhead. Trade-offs: Benefits - no synchronization needed, modifications are independent, simpler than Arc. Costs - duplicates data (memory), cloning takes time, changes in one copy don't affect others. Use clone for independent work, Arc for sharing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Moving Mutable Data</h2>
+<p>Can you move mutable data into a thread, and can the thread return it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes to both. The thread becomes the owner and can mutate the data freely. The thread can return owned data via its return value, which you get through join(). Pattern: let handle = thread::spawn(move || { data.push(4); data }); let data = handle.join().unwrap();. This transfers ownership from parent to thread, thread modifies it, then transfers ownership back to parent via the return value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Partial Moves</h2>
+<p>Can a move closure move some variables and copy others?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes. The move keyword moves all captured variables, but Copy types are copied (not moved) and remain accessible. Example: let x = 42; let s = String::from("hi"); thread::spawn(move || { /<em> x copied, s moved </em>/ }); println!("{}", x); // OK - x is Copy; println!("{}", s); // Error - s was moved. Each variable's behavior depends on whether it implements Copy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc with Mutex</h2>
+<p>How do Arc and Mutex work together for shared mutable state, and why do you need both?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Arc provides shared ownership (multiple threads can have Arc pointers to the same data). Mutex provides synchronized mutation (only one thread can access the data at a time). Pattern: Arc<Mutex\<T>>. Each thread gets its own Arc (via clone and move), all pointing to the same Mutex. The Mutex ensures safe mutation despite shared access. You need Arc because each thread must own its Arc, and Mutex because Arc alone only allows shared immutable access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Process and Return Pattern</h2>
+<p>Describe the process and return pattern for threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Move data into thread, process it, return the result. Pattern: let handle = thread::spawn(move || { process(data); result }); let result = handle.join().unwrap();. The thread owns the data, does computation, and returns the result via the return value. Parent gets result through join(). Useful for parallel computation where you send work to a thread and get back the answer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallel Map Pattern</h2>
+<p>How do you implement parallel map using move semantics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Split data into chunks, clone each chunk, move each chunk into a thread that processes it and returns results, collect all results. Pattern: for chunk in chunks { let chunk_copy = chunk.to_vec(); handles.push(thread::spawn(move || process(chunk_copy))); } then join all and combine results. Each thread gets its own data copy (independent processing), processes in parallel, returns results that are merged.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Builder Pattern with Move</h2>
+<p>How does move semantics work with configuration structs passed to threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create a config struct, then move the entire struct into the thread. Pattern: let config = Config { name, iterations }; thread::spawn(move || { use config.name, config.iterations });. The thread owns the config, accessing its fields as needed. This is cleaner than moving individual fields and allows grouping related configuration. The struct is moved as a single unit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Expensive Clone Gotcha</h2>
+<p>What's wrong with cloning large data structures for each thread, and what's the fix?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Cloning large structures (Vec of millions of elements) for each thread wastes memory and time - if you have 10 threads and 1GB data, you use 10GB. Fix: use Arc to share the data instead. Arc::clone is cheap (just increments counter), all threads access the same data. Only clone if threads need independent copies. For read-only sharing, Arc is almost always better than clone.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting Move Gotcha</h2>
+<p>What error occurs if you forget the move keyword when capturing non-Copy types in thread closures?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error: "borrowed value does not live long enough" or "closure may outlive the current function". The closure tries to borrow the variable, but the thread might outlive the scope where it's borrowed from. The compiler prevents this use-after-free at compile time. Fix: add move keyword to transfer ownership. This is a common beginner mistake - the error message points you to use move.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Moving When Sharing Needed</h2>
+<p>What's wrong with this: <code>thread::spawn(move || use data); thread::spawn(move || use data);</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Error: "value moved" or "use of moved value". You can only move data once - after the first spawn moves it, data is gone and unavailable for the second spawn. Fix: use Arc. Pattern: let data = Arc::new(data); let d1 = Arc::clone(&amp;data); spawn(move || use d1); let d2 = Arc::clone(&amp;data); spawn(move || use d2);. Each thread gets its own Arc (moved in) pointing to shared data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Arc Pointer Equality</h2>
+<p>If you create multiple Arc clones, are they pointing to the same data or different copies?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Same data. Arc::clone creates new pointers to the same underlying data, not copies of the data. You can verify: Arc::ptr_eq(&amp;arc1, &amp;arc2) returns true. Only one allocation exists for the data, multiple Arc handles reference it. This is why Arc::clone is cheap and why all threads see the same data. When all Arc handles are dropped, the data is freed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Returning Borrowed Data</h2>
+<p>Why can't you return borrowed data from a thread: <code>thread::spawn(|| &amp;data[0])</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The thread would return a reference to data that might be dropped. The parent scope (where data lives) could end before the thread returns, making the reference invalid. Threads require 'static or ownership, so returned references must point to 'static data. Fix: return owned values (data[0] instead of &amp;data[0]), or use Arc to ensure data lives long enough, or return indices instead of references.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scoped Borrowing Rules</h2>
+<p>Do scoped threads allow you to bypass Rust's borrowing rules?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Scoped threads allow borrowing (instead of requiring move), but still enforce all borrowing rules: one mutable XOR many immutable borrows. You can't have one thread mutably borrowing while another immutably borrows, even in the same scope. Scoped threads relax the lifetime requirement (allow non-'static) but not the exclusivity requirement (one mutable or many immutable). Borrowing rules always apply.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Closure Factory Pattern</h2>
+<p>How do you create closures that capture different data and can be spawned as threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Create a function that takes data as parameters and returns a closure capturing that data. Pattern: fn make_worker(data: Vec<i32>) -&gt; impl FnOnce() + Send { move || process(data) }. The returned closure owns the data (via move). Each call to make_worker creates a new closure with different captured data. Then spawn each closure: thread::spawn(make_worker(data1)); thread::spawn(make_worker(data2));.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Shared Read Only Pattern</h2>
+<p>How do you share read-only data across multiple threads efficiently?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use Arc to wrap the data, clone the Arc for each thread, move each Arc clone into its thread. Pattern: let data = Arc::new(vec![1,2,3]); for thread in threads { let data = Arc::clone(&amp;data); spawn(move || read from data); }. All threads have read access, no cloning of actual data, minimal overhead (atomic reference counting). The data is immutable so no synchronization needed beyond Arc's reference counting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Move Semantics Zero Cost</h2>
+<p>What is the runtime cost of move semantics with threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Zero runtime cost. Move is a compile-time concept that transfers ownership - no runtime operations occur. The data isn't copied or moved in memory (unless it's a Copy type being copied). Move just changes which scope owns the data. The type system tracks ownership at compile time. Arc has runtime cost (atomic operations), but move itself is free. This is zero-cost abstraction - safety without performance penalty.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Send Trait Connection</h2>
+<p>How does the Send trait relate to move semantics in threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When you move data into a thread, the compiler checks if the type is Send. Only Send types can be moved across thread boundaries. The move keyword transfers ownership, and Send ensures that transfer is thread-safe. Non-Send types (like Rc) can't be moved to threads - compilation fails. Send is automatically implemented for types safe to transfer, and checked automatically when using move with threads. Type system enforces thread safety.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Capturing Specific Variables</h2>
+<p>How do you move only specific variables into a thread while leaving others accessible?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Explicitly bind the variables you want to move before the closure. Pattern: let keep = data1; let move_this = data2; thread::spawn({ let move_this = move_this; move || use move_this but not keep }). The inner let shadows the outer variable, moving only that one. The outer keep remains accessible. This gives fine-grained control over what gets moved vs what stays in parent scope.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ownership Transfer Back</h2>
+<p>Can ownership transfer back from thread to parent, and how?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, through the thread's return value. The thread owns data (via move), returns it when done, parent receives it through join(). Pattern: let handle = spawn(move || { process data; data }); let data = handle.join().unwrap();. Ownership flows: parent → thread (via move) → parent (via return). This allows the thread to work with exclusive ownership then return the result. Common for parallel computation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Ownership System</h2>
+<p>How is move with threads the same as ownership transfer in other contexts?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>It's exactly the same ownership transfer - passing data to functions, returning from functions, assigning to variables. The move keyword makes it explicit in closures. After moving, the original is inaccessible (same as after any move). The only difference is threads have the 'static requirement, but the ownership mechanics are identical. Understanding ownership in single-threaded code directly applies to threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>API Design Implications</h2>
+<p>What should library designers consider about move semantics and threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Consider: (1) Should types be Send/Sync? (2) Should APIs take ownership or references? (3) Should you provide Arc-wrapped versions? (4) How will users share data? Good practices: make types Send/Sync unless there's a reason not to, document thread-safety clearly, consider providing Arc::new helpers, think about whether users will need to share instances. API design communicates ownership and sharing expectations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Memory Safety Guarantee</h2>
+<p>How does move semantics prevent use-after-free in concurrent code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Once data is moved into a thread, the parent can't access it - the compiler prevents this at compile time. This eliminates use-after-free: the parent can't drop data while the thread uses it, and can't access data after the thread takes ownership. Only one owner exists at a time. Combined with Send/Sync checks, move semantics provides compile-time memory safety guarantees in concurrent code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Performance Considerations</h2>
+<p>Compare the performance implications of: move, clone, and Arc for thread data sharing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Move: zero cost, transfers ownership, data not copied. Clone: copies all data - memory and time cost proportional to data size, creates independent copies. Arc: small cost for atomic operations (increment/decrement reference count), shared access to single copy. Choose: move for single ownership (cheapest), Arc for shared read-only (cheap sharing), clone for independent copies (expensive but necessary). Don't clone large structures if Arc suffices.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

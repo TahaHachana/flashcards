@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 02-Thread Basics - 01-Threads</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Spawn Basics</h2>
+<p>What does thread::spawn do, and what does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>thread::spawn creates and immediately starts a new OS thread that executes the provided closure. It returns a JoinHandle<T> where T is the return type of the closure. The function doesn't block - the new thread and calling thread both continue executing concurrently. The JoinHandle is used to wait for the thread to complete and retrieve its result.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Threading Model</h2>
+<p>What threading model does Rust use, and what does this mean?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust uses a 1:1 threading model where each Rust thread corresponds to one native OS thread (pthread on Unix, Windows thread on Windows). This means threads have real overhead (memory for stack, OS resources) but provide true parallelism and are scheduled by the OS. There's no green threading or M:N model - Rust threads are direct wrappers around OS threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Execution Order</h2>
+<p>Can you predict the order in which threads will execute their code?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No. Threads execute concurrently and the OS scheduler decides which thread runs when. The order is non-deterministic and can vary between runs. You must never write code that depends on a specific execution order. This unpredictability is a fundamental property of concurrent execution - if you need ordering, you must explicitly coordinate using synchronization primitives.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Move Keyword Requirement</h2>
+<p>Why is the move keyword required when capturing variables in thread closures?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The move keyword transfers ownership of captured variables into the thread's closure. Without it, the closure would borrow variables, but the compiler can't guarantee those borrows remain valid - the thread might outlive the scope where the variables were created. move ensures the thread owns its data, preventing dangling references and enabling the thread to run independently of its parent scope.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>JoinHandle Type</h2>
+<p>What is JoinHandle<T>, and what is T?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>JoinHandle<T> is the handle returned by thread::spawn that represents the spawned thread. T is the return type of the closure passed to spawn - it's what the thread produces when it completes. For example, thread::spawn(|| 42) returns JoinHandle<i32>. You use the handle to wait for the thread (join) and retrieve its return value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Join Method Purpose</h2>
+<p>What does the join() method do, and what does it return?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>join() blocks the current thread until the spawned thread completes. It returns Result<T, Box\<dyn Any + Send>> where: Ok(T) contains the thread's return value if it completed successfully, or Err(e) contains the panic payload if the thread panicked. Calling join consumes the JoinHandle - you can only join a thread once. It's how you wait for a thread and get its result.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Panic Isolation</h2>
+<p>What happens when a thread panics, and how does it affect other threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When a thread panics, the panic is isolated to that thread - it doesn't crash the entire program or affect other threads. The panicking thread unwinds its stack and terminates. The panic is captured in the JoinHandle, and join() returns Err containing the panic payload. Other threads, including main, continue running normally. Only if the main thread panics does the entire process exit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Sleep</h2>
+<p>What does thread::sleep do, and what's important to understand about it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>thread::sleep pauses the current thread for a specified Duration, yielding the CPU to other threads. Critically, it only blocks the current thread - other threads in the program continue running normally. It's not a precise timer (OS scheduler decides when to wake the thread), and sleeping is cooperative - the thread gives up its time slice. Use sleep to avoid busy-waiting and reduce CPU usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scoped Threads</h2>
+<p>What are scoped threads (thread::scope), and how do they differ from regular threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Scoped threads can borrow data from the enclosing scope without move because the scope guarantees all threads complete before it ends. thread::scope takes a closure and automatically joins all spawned threads before returning. This allows multiple threads to safely borrow the same data, is more efficient than Arc, and requires no manual joining. Use scoped threads for short-lived threads that need to access local data.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Builder</h2>
+<p>What is thread::Builder and what configuration options does it provide?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>thread::Builder provides more control over thread creation than spawn. It allows you to: (1) Set thread name with name() for debugging and logging, (2) Set stack size with stack_size() (default is ~2MB on most platforms). You call spawn() on the builder to create the thread. Builder is useful when you need named threads for profiling or need custom stack sizes for deep recursion or memory constraints.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forgetting to Join</h2>
+<p>What happens if you don't call join() on a spawned thread?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>If you don't join a thread, you lose its return value and can't detect if it panicked. More critically, if the main thread exits before the spawned thread completes, the spawned thread is killed immediately - it might not finish its work. The thread becomes "detached" and you have no way to wait for it or coordinate with it. Always join threads whose completion you care about.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Handling Join Results</h2>
+<p>Why should you always handle the Result from join() rather than ignoring it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Ignoring join results with let _ = handle.join() silently swallows thread panics, hiding failures. In production code, thread failures should be detected and handled appropriately - either logging the error, propagating it, or taking corrective action. Using unwrap() or expect() is better than ignoring because at least the program will crash visibly rather than silently continuing with incomplete work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Multiple Threads Pattern</h2>
+<p>What's the common pattern for managing multiple threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Collect JoinHandles in a Vec: spawn threads in a loop pushing handles to the vector, then iterate the vector calling join() on each handle to wait for all threads and collect results. This ensures all threads complete and their results/errors are handled. Pattern: let mut handles = vec![]; for ... { handles.push(thread::spawn(...)); } for handle in handles { handle.join().unwrap(); }</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Creation Overhead</h2>
+<p>What are the costs of creating threads, and what's the typical guideline for how many to create?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each thread costs: (1) 1-2MB of memory for its stack, (2) OS resources (file descriptors, kernel structures), (3) Creation and destruction overhead, (4) Context switching overhead. Creating thousands of threads wastes resources. Guideline: create threads roughly equal to the number of CPU cores for CPU-bound work, or use a thread pool to reuse threads. For I/O-bound work, consider async instead.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Parallel Computation Pattern</h2>
+<p>Describe the parallel computation pattern for dividing work across threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Split data into chunks, spawn one thread per chunk to process it independently, collect results via join. Example: divide a vector into N chunks, spawn N threads each processing one chunk and returning a partial result, then combine all results. This utilizes multiple CPU cores for CPU-bound work. Key: ensure work per thread justifies thread overhead, and chunks should be independent (no shared state).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Background Worker Pattern</h2>
+<p>What is the background worker pattern and how is it typically implemented?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A long-running thread that processes tasks in a loop, usually receiving work through a channel. Pattern: spawn a thread with a loop that receives messages, processes each message, and breaks on a "stop" signal. Often uses recv_timeout to do periodic work while waiting. Useful for background tasks like logging, monitoring, or processing queues. Clean shutdown requires signaling the thread to stop before joining.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fan Out Fan In Pattern</h2>
+<p>What is the fan-out/fan-in pattern in concurrent programming?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Fan-out: distribute work to multiple threads (spawn multiple workers with different inputs). Fan-in: collect results from all threads back into one place. Typically use channels where each thread sends its result, then collect all results from the channel. Pattern enables parallel processing where each worker does independent work, then results are aggregated. Example: spawn 10 threads doing different computations, collect all 10 results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Main Thread Coordination</h2>
+<p>How do you keep the main thread alive while background workers run, and signal them to stop?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use Arc<AtomicBool> shared between main and worker threads. Workers loop while the flag is true. Main thread sleeps or does other work, then sets the flag to false to signal stop, then joins the workers. The atomic ensures thread-safe access to the flag. Alternative: use channels where workers wait for messages and main sends a stop message. Critical: main must not exit before workers or they'll be killed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Pool Purpose</h2>
+<p>What is a thread pool and why use it instead of spawning threads per task?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A thread pool is a fixed set of worker threads that process multiple tasks by reusing the same threads. Benefits: (1) Amortizes thread creation overhead across many tasks, (2) Bounds resource usage (fixed number of threads), (3) Better for many small tasks. Workers wait for tasks from a shared queue. Much more efficient than creating a new thread per task when you have many tasks. Production code often uses the threadpool or rayon crate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Busy Waiting Problem</h2>
+<p>What is busy-waiting and why is it problematic in thread loops?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Busy-waiting is spinning in a tight loop checking a condition without yielding the CPU. Example: while running.load() {} with no sleep. Problems: (1) Wastes 100% CPU doing nothing useful, (2) Prevents other threads from getting CPU time, (3) Drains battery on mobile devices, (4) Doesn't scale. Fix: add thread::sleep in the loop to yield the CPU, or use blocking operations like channel recv() instead of polling.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Capturing References Error</h2>
+<p>Why doesn't this compile: <code>let v = vec![1,2,3]; thread::spawn(|| println!("{:?}", v));</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The closure tries to borrow v, but the thread might outlive the scope where v exists, causing use-after-free. The compiler requires either: (1) move keyword to transfer ownership: thread::spawn(move || ...), or (2) Use scoped threads that guarantee completion before v is dropped. Regular threads require 'static lifetime or ownership because they can outlive their parent scope.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Main Thread Exits Early</h2>
+<p>What happens if the main thread exits while spawned threads are still running?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When main exits, the entire process terminates immediately, killing all spawned threads regardless of whether they've finished their work. Spawned threads won't complete - they're forcibly terminated. This can leave work incomplete, cause data corruption, or lose results. Always join threads you care about, or keep main alive until background work completes. The process exit is ungraceful for spawned threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Current Information</h2>
+<p>How can a thread get information about itself at runtime?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use thread::current() which returns a handle to the currently executing thread. From this you can call: id() for a unique thread ID, and name() for the thread name (if set via Builder). Useful for logging, debugging, and identifying which thread is running code. Example: let name = thread::current().name(); println!("Running in thread: {:?}", name);</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Lifetime Requirements</h2>
+<p>Why do regular threads require 'static lifetime or ownership, and how do scoped threads avoid this?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Regular threads can outlive the scope that spawned them - they might run forever or until process exit. Therefore captured data must either be owned (moved) or have 'static lifetime. Scoped threads avoid this by guaranteeing all spawned threads complete before the scope ends, allowing safe borrowing of local data. The scope acts as a join point that ensures threads finish before borrowed data is dropped.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Stack Size</h2>
+<p>What is the default thread stack size, when might you need to change it, and how?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Default is ~2MB on most platforms. Change it with thread::Builder::new().stack_size(bytes). Increase for: (1) Deep recursion that would overflow, (2) Large stack-allocated data structures. Decrease for: (1) Memory-constrained environments, (2) Many threads where total memory matters. Stack overflow causes panic. Note: stack size is per-thread, so 100 threads with 4MB stacks = 400MB just for stacks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Scoped vs Regular Threads</h2>
+<p>Compare scoped threads (thread::scope) with regular threads (thread::spawn). When should you use each?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Regular threads: require 'static or move, manual join needed, can outlive parent scope, more flexible but verbose. Scoped threads: can borrow from parent scope, automatic join at scope end, simpler and more efficient for short-lived threads. Use scoped when: (1) Threads need to borrow local data, (2) Threads are short-lived, (3) You want automatic cleanup. Use regular when: (1) Threads need to outlive parent scope, (2) Background/long-running threads.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Return Values</h2>
+<p>How do threads return values, and how do you retrieve them?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The closure passed to spawn can return a value (the last expression). This value's type becomes T in JoinHandle<T>. Retrieve it by calling join() which returns Result<T, _>. Example: let h = thread::spawn(|| 42); let result = h.join().unwrap(); // result is 42. The value is moved out of the thread when join succeeds. If the thread panics, join returns Err instead of the value.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Ownership</h2>
+<p>How do threads demonstrate the power of Rust's ownership system?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The move keyword transfers ownership into threads, ensuring only one thread owns data at a time. This prevents data races at compile time - you can't accidentally share mutable state without synchronization. If you want to share, you must explicitly use Arc (for ownership) and Mutex (for mutation), making the cost and synchronization visible. Ownership makes thread safety a compile-time property rather than runtime hope.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Threads vs Async</h2>
+<p>When should you use threads vs async/await for concurrency?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use threads for: (1) CPU-bound work that benefits from parallelism (utilizing multiple cores), (2) Blocking operations, (3) Simple concurrent work. Use async for: (1) I/O-bound work (network, disk), (2) Handling thousands of concurrent operations, (3) When blocking is expensive. Threads have ~2MB stack overhead per thread; async tasks have ~few KB overhead. Many programs use both: async for I/O, thread pools for parallel computation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Safety Type System</h2>
+<p>How does the type system ensure thread safety when spawning threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>thread::spawn requires the closure to be FnOnce + Send + 'static. Send ensures captured data can be safely transferred to another thread. 'static ensures no borrowed data with shorter lifetimes (prevents dangling references). The return type T must be Send to be transferred back via join. These compile-time checks prevent data races and use-after-free across thread boundaries. If your types don't satisfy these bounds, the code won't compile.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

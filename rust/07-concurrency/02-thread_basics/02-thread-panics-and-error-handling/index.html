@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Rust - 07-Concurrency - 02-Thread Basics - 02-Thread-Panics-And-Error-Handling</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Panic Isolation</h2>
+<p>What happens when a thread panics, and does it affect other threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When a thread panics, it unwinds its stack, runs all destructors, and terminates - but other threads continue running normally. The panic is isolated to that thread. Only if the main thread panics does the entire process exit. This isolation allows building fault-tolerant systems where individual component failures don't crash the entire application. The panic is captured in the JoinHandle and returned as an error via join().</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Join Result Type</h2>
+<p>What is the return type of join(), and what does each variant represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>join() returns Result<T, Box\<dyn Any + Send>> where: Ok(T) contains the thread's return value if it completed successfully, and Err(Box<dyn Any + Send>) contains the panic payload if the thread panicked. T is the return type of the thread's closure. The Box<dyn Any + Send> can contain any Send type, typically a &amp;str or String panic message, and allows runtime type inspection.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Panic Contract</h2>
+<p>What guarantees does Rust provide when a thread panics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Rust guarantees: (1) The thread's stack is properly unwound, (2) All destructors (Drop implementations) are called in reverse order, (3) The panic is captured and retrievable via join(), (4) Other threads are unaffected (unless it's main thread), and (5) Resources are properly cleaned up. These guarantees maintain memory safety and resource cleanup even during failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Main Thread Panic Special Case</h2>
+<p>What happens when the main thread panics, and how does this differ from other threads?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When the main thread panics, the entire process terminates immediately, killing all spawned threads regardless of their state. This is the only exception to panic isolation. Spawned threads panic in isolation and don't affect the process, but the main thread's panic is fatal. Worker threads won't complete their work if main panics - they're forcibly terminated without cleanup.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwinding Behavior</h2>
+<p>What is unwinding, and in what order are destructors called during a panic?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unwinding is the process of walking back up the stack when a panic occurs, calling destructors for all local variables. Destructors are called in reverse order (LIFO) - the most recently created variables are dropped first. This ensures proper cleanup: resources acquired later are released before resources acquired earlier. Unwinding maintains the RAII (Resource Acquisition Is Initialization) pattern even during failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Extracting Panic Messages</h2>
+<p>How do you extract the panic message from a thread panic error?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use downcast_ref on the panic payload to try converting it to &amp;str or String. Pattern: if let Some(s) = e.downcast_ref::&lt;&amp;str&gt;() { /<em> use s </em>/ } else if let Some(s) = e.downcast_ref::<String>() { /<em> use s </em>/ }. Most panics carry &amp;str or String messages, but the payload can be any Send type. The Any trait allows runtime type inspection to extract the actual message type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Custom Panic Payloads</h2>
+<p>Can you panic with custom types, and what are the requirements?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Yes, you can panic with any type that implements Send. Example: panic!(CustomError { code: 42, message: "failed" }). The type must be Send because the panic payload crosses thread boundaries when join() returns it. You extract custom payloads using downcast_ref::<CustomType>(). This is useful for structured error information beyond simple strings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Catch Unwind Purpose</h2>
+<p>What is std::panic::catch_unwind and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>catch_unwind catches panics within a thread, preventing them from propagating. It returns Result: Ok(value) if the closure succeeds, Err(payload) if it panics. Use cases: (1) Plugin systems - isolate plugin failures, (2) FFI boundaries - prevent panics from crossing to C, (3) Retry logic - catch, log, retry, (4) Testing frameworks - isolate test failures. It allows recovery from panics without the thread terminating.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Panic Abort Mode</h2>
+<p>What is panic = 'abort' mode, and what are the trade-offs?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>In abort mode (set in Cargo.toml), panics immediately terminate the process without unwinding. Trade-offs: Benefits - no unwinding overhead, smaller binary size, faster panics. Costs - destructors don't run, resources aren't cleaned up, can't catch panics with catch_unwind. Use when: binary size matters, embedded systems, or when cleanup isn't critical. Default is 'unwind' which provides cleanup guarantees.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Mutex Poisoning</h2>
+<p>What is mutex poisoning, when does it occur, and what does it indicate?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A Mutex becomes "poisoned" when a thread panics while holding its lock. This indicates the protected data might be in an inconsistent state because the panicking thread may have left it partially modified. Subsequent lock() calls return Err(PoisonError) instead of Ok(MutexGuard). Poisoning is a warning, not a hard error - you can still access the data via into_inner() if you determine it's safe.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Handling Poisoned Mutexes</h2>
+<p>What are the three ways to handle a poisoned mutex?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>(1) Propagate error: mutex.lock()? passes PoisonError to caller. (2) Panic: mutex.lock().unwrap() panics if poisoned. (3) Recover: match mutex.lock() { Ok(guard) =&gt; use guard, Err(poisoned) =&gt; poisoned.into_inner() } accesses data anyway. Choose based on whether the data corruption matters for your use case. Sometimes the data is still valid despite the panic.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Resume Unwind</h2>
+<p>What is panic::resume_unwind and when would you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>resume_unwind takes a panic payload and continues the panic, propagating it upward. Use when you catch a panic with catch_unwind but want to: (1) Inspect or log the panic before propagating, (2) Add context to the panic, (3) Conditionally re-panic based on the payload type. Example: catch panic, log details to monitoring system, then resume_unwind to propagate the panic to the caller.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Graceful Degradation Pattern</h2>
+<p>How do you implement graceful degradation when some worker threads fail?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Spawn multiple workers, collect their JoinHandles, then join each handling both Ok and Err cases. Count successes and failures, continue with partial results. Pattern: for handle in handles { match handle.join() { Ok(<em>) =&gt; successful += 1, Err(</em>) =&gt; failed += 1 }}. The application continues functioning with reduced capacity rather than crashing completely when some workers fail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Retry Pattern</h2>
+<p>Describe the retry pattern for handling thread failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Wrap thread spawning in a loop with max attempts. On failure (join returns Err), retry the operation. Pattern: for attempt in 0..max_attempts { match spawn_and_join() { Ok(result) =&gt; { use result; break; } Err(_) =&gt; { log retry; if last attempt { give up }}}}. Useful for transient failures, network operations, or resource contention. Set reasonable retry limits to avoid infinite loops.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Supervisor Pattern</h2>
+<p>What is the supervisor pattern for thread management?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A parent thread monitors worker threads and restarts them if they panic. Check if worker thread has finished with is_finished(), join to check for panic, spawn replacement if it panicked. Common in long-running services where workers handle tasks from a queue - if a worker panics on a bad task, supervisor restarts it to continue processing. Erlang/OTP inspired pattern for fault tolerance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Panic Logging Pattern</h2>
+<p>How do you set up custom panic logging for all thread panics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use panic::set_hook to install a custom panic handler. Pattern: panic::set_hook(Box::new(|panic_info| { log panic message, location, backtrace to file/monitoring system })). The hook is called for all panics before unwinding begins. Useful for: production logging, error reporting services, debugging, monitoring. The hook runs even if the panic is later caught with catch_unwind.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Ignoring Panics Gotcha</h2>
+<p>Why is let _ = handle.join() dangerous, and what should you do instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Using let _ = handle.join() silently discards the Result, hiding thread panics. You won't know if the thread failed, lost its work, or produced incorrect state. Always handle the Result: use match, unwrap/expect with meaningful messages, or ? to propagate. In production, log errors and take appropriate action (retry, alert, graceful degradation). Silent failures are the worst kind of failures.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Panic in Drop Gotcha</h2>
+<p>What happens if you panic inside a Drop implementation during unwinding, and what should you do instead?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Panicking in Drop while already unwinding (from another panic) causes immediate abort - the process terminates without further cleanup. This is because Rust can't handle multiple panics simultaneously. Never panic in Drop. Instead: log errors, return early, use Result for fallible cleanup. If cleanup must succeed, document it clearly and make it the caller's responsibility to not panic before dropping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>FFI Panic Boundary</h2>
+<p>Why must you catch panics before they cross FFI boundaries, and how?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Panics crossing into C code cause undefined behavior - C doesn't understand Rust's unwinding. Use catch_unwind in extern "C" functions to catch panics and convert them to error codes or return values. Pattern: extern "C" fn safe_call() -&gt; i32 { match catch_unwind(|| risky()) { Ok(v) =&gt; v, Err(_) =&gt; -1 /<em> error code </em>/ }}. This maintains the C calling convention's expectations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Box Dyn Any Send Meaning</h2>
+<p>Why is the panic payload type Box<dyn Any + Send>? Explain each component.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Box: heap-allocated because payload size is unknown at compile time. dyn Any: trait object allowing runtime type inspection and downcasting to concrete types. Send: ensures payload can cross thread boundaries (required because join() transfers it between threads). This type allows panics to carry any Send type while maintaining type safety and thread safety. Most commonly contains &amp;str or String but can be any Send type.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Poisoned Mutex Data Safety</h2>
+<p>Is the data in a poisoned mutex always corrupted, and how should you decide whether to use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>No, poisoned doesn't mean corrupted - it means potentially inconsistent. The panicking thread may have completed its modifications or may have left data mid-update. Decision factors: (1) Was the operation atomic or multi-step? (2) Can you validate the data? (3) What are consequences of using bad data? Sometimes data is fine (panic was unrelated), sometimes it's unsafe. Use into_inner() only when you've determined it's safe for your specific use case.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Thread Panic vs Result</h2>
+<p>When should a thread panic vs return Result<T, E>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use Result for: recoverable errors, expected failures, business logic errors - these let the caller decide how to handle. Use panic for: programming bugs, violated invariants, unrecoverable errors within the thread. In threads, panics are isolated and can be caught by join(), making them suitable for "this thread failed" scenarios. The caller (via join) treats the panic as an error to handle. Panic = unrecoverable within thread, Result = recoverable error.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Unwinding and RAII</h2>
+<p>How does unwinding relate to RAII (Resource Acquisition Is Initialization)?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Unwinding ensures Drop is called even during panics, maintaining RAII guarantees. Resources (files, locks, memory) are automatically cleaned up when their owners go out of scope, whether normally or via panic. This is critical for correctness: locks are released, files are closed, memory is freed. RAII + unwinding = automatic cleanup even in failure cases. This is why Rust can guarantee resource safety across panics.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Panic Hook Use Cases</h2>
+<p>What are practical use cases for panic::set_hook?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use cases: (1) Production logging - send panics to logging service/file, (2) Error reporting - upload to Sentry/Bugsnag, (3) Custom backtraces - capture and format stack traces, (4) Debugging - print additional context, (5) Testing - custom test failure formatting, (6) Monitoring - increment panic counters in metrics. The hook provides a centralized place to handle all panics consistently across the application.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Testing and Catch Unwind</h2>
+<p>How does Rust's test framework use catch_unwind?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The test framework wraps each test in catch_unwind so one test's panic doesn't prevent other tests from running. Each test runs in isolation - panics are caught, reported as failures, and testing continues. The #[should_panic] attribute expects a panic and fails if it doesn't occur. This demonstrates catch_unwind's use for isolating failures in a controlled environment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Abort Mode Trade-offs</h2>
+<p>When should you use panic = 'abort' vs 'unwind'?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use 'abort' when: (1) Binary size matters (embedded, WASM), (2) Performance critical (no unwind overhead), (3) Resources don't need cleanup (OS will reclaim), (4) Panics are truly fatal. Use 'unwind' when: (1) Cleanup is important (close files, release locks), (2) Need to catch panics with catch_unwind, (3) Production services that must not crash, (4) Default case - safer. Most applications should use unwind for robustness.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Timeout with Panic Handling</h2>
+<p>How do you implement timeout handling that also catches thread panics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Spawn thread with time-limited operation, have main thread wait for a duration, then check if thread is finished. Use join() to detect both completion and panics. Pattern: spawn thread with slow work, main sleeps for timeout duration, join with is_finished() check. If not finished, you know it timed out. If finished, join tells you if it succeeded or panicked. Handles both timeout (thread alive too long) and panic (thread failed).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Fault Tolerance Systems</h2>
+<p>How does thread panic isolation enable fault-tolerant systems?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Isolation means one component's failure doesn't cascade. Web servers handle request panics without crashing the server. Background workers can be restarted. Services remain available despite individual failures. Pattern: spawn workers, monitor with join(), restart on failure, continue with remaining workers. This is crucial for production reliability - systems degrade gracefully rather than failing completely. Combined with supervision and retry, builds robust services.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Resource Cleanup Guarantee</h2>
+<p>What cleanup guarantees does Rust provide during thread panics?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>During unwinding, all local variables' Drop implementations are called in reverse order of creation. This guarantees: MutexGuard releases locks, File closes handles, Box/Vec/String free memory, custom Resources run cleanup code. The guarantee holds for all panics (unless using abort mode or panicking in Drop). This is why Rust can have safe concurrency - resources are always cleaned up even when threads fail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Connection to Error Handling</h2>
+<p>How do thread panics connect to Rust's overall error handling philosophy?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Thread panics are converted to Result by join(), integrating with Rust's error handling. Panics represent "thread failed" - an error the caller must handle. Use Result for expected errors, panic for bugs/invariant violations. In threads, panics are isolated errors that propagate via Result, not program termination. This unifies panic (unrecoverable within scope) with Result (recoverable at caller) - panics become errors at thread boundaries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
