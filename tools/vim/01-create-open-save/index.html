@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Tools - Vim - 01 Create Open Save</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Opening Vim from the Command Line</h2>
+<p>What is the basic syntax for opening a file with Vim from the shell?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>$ vim [filename]
+$ vi [filename]
+</code></pre>
+<p>The brackets mean the filename is optional. On modern systems, <code>vi</code> is usually just a link to Vim. Press ENTER after the command to tell the shell you are done.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Opening an Unnamed Buffer</h2>
+<p>What happens when you run <code>vim</code> with no filename argument?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Vim opens an empty, unnamed buffer. You can assign a name to it later when you write (save) the buffer to disk. Until then, the file has no name on the filesystem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>New File vs Existing File Indicator</h2>
+<p>How does Vim signal on the status line that a file you opened does not yet exist?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The status line at the bottom of the screen shows:</p>
+<p>"filename" [New file]</p>
+<p>Tilde characters (~) fill every empty line in the buffer to indicate there is no text in the file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The Buffer Concept</h2>
+<p>What is a Vim "buffer" and why does it matter for saving?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>A buffer is a temporary, in-memory copy of the file being edited. All edits are made to the buffer only. The original file on disk is unchanged until you explicitly write (save) the buffer. Writing the buffer copies it back to disk, replacing the old file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Command Mode vs Insert Mode</h2>
+<p>What are the two primary modes in Vim, and how does Vim start?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Command mode — every keystroke is a command (the default/starting mode).</li>
+<li>Insert mode — keystrokes are entered as text into the buffer.</li>
+</ol>
+<p>Vim always starts in command mode. You enter insert mode with commands like <code>i</code>, and return to command mode by pressing ESC.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Returning to Command Mode</h2>
+<p>How do you return to command mode from insert mode, and what happens if you press ESC when already in command mode?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Press ESC to return to command mode. The cursor moves back one space (onto the last character typed).</p>
+<p>If you are already in command mode when you press ESC, Vim beeps. This is why command mode is sometimes jokingly called "beep mode" — you can always press ESC until you hear the beep to confirm you are in command mode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Save and Quit with ZZ</h2>
+<p>What does the <code>ZZ</code> command do and what is important to remember about it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>ZZ</code> (capital Z twice) writes (saves) the buffer to the file and then quits Vim, returning you to the shell prompt.</p>
+<p>Key points:
+- Must be in command mode first (press ESC if unsure).
+- It is case-sensitive — both letters must be uppercase.
+- It is equivalent to <code>:wq</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The :w Command — Save Without Quitting</h2>
+<p>What ex command saves the buffer to disk without quitting Vim, and when should you use it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:w</code> (write) saves the buffer to disk but keeps the editing session open.</p>
+<p>You should use <code>:w</code> regularly throughout an editing session to protect your work against system failure or a major accidental edit. It does not quit the editor.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The :q Command — Quit Without Changes</h2>
+<p>When can you use <code>:q</code> to exit Vim, and what happens if you try to use it after making unsaved changes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:q</code> quits Vim and returns to the shell, but only if the buffer has no unsaved changes.</p>
+<p>If there are unsaved changes, Vim refuses and shows:</p>
+<pre><code>E37: No write since last change (add ! to override)
+</code></pre>
+<p>To quit and discard changes you must use <code>:q!</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The :wq Command — Save and Quit</h2>
+<p>What is the difference between <code>:wq</code> and <code>:x</code> when saving and quitting?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Both <code>:wq</code> and <code>:x</code> write the file and quit, but:</p>
+<ul>
+<li><code>:wq</code> — writes unconditionally, even if the file was not changed. This always updates the file's modification timestamp.</li>
+<li><code>:x</code>  — writes only if the buffer has been modified. If nothing changed, it simply quits without touching the file or its timestamp.</li>
+</ul>
+<p>This distinction matters when using build tools like <code>make</code>, which rely on file modification times.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Quit Without Saving — :q!</h2>
+<p>How do you force Vim to quit and discard all unsaved changes in the current session?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:q!</code></p>
+<p>The exclamation point overrides Vim's protection against data loss. All edits made since the last write are permanently discarded and the original file is left untouched.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reload the Last Saved Version — :e!</h2>
+<p>How do you discard all current edits and reload the last saved version of the file without quitting Vim?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:e!</code></p>
+<p>This reloads the file from disk, replacing the current buffer contents. All edits since the last write are lost. It is useful when you want to start the current editing session over without exiting Vim.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Opening a File from Inside Vim — :e</h2>
+<p>How do you open a file for editing from within an already-running Vim session?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:e filename</code></p>
+<p>This is especially needed when Vim was launched from a GUI environment without a filename. You can also use it to switch to a different file mid-session. If there are unsaved changes, Vim will warn you; use <code>:e! filename</code> to force the switch and discard changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Opening a File at a Specific Line Number</h2>
+<p>What command-line options open a file at a specific line number or at the last line?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>$ vim -c n file    → opens file at line number n
+$ vim + file       → opens file at the very last line
+</code></pre>
+<p>The <code>-c</code> flag (or the older <code>+</code> prefix) executes a command immediately after the file is loaded. Example: <code>vim -c 42 report.txt</code> opens report.txt with the cursor on line 42.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Opening a File at a Pattern Match</h2>
+<p>How do you open a file so that the cursor lands on the first line matching a given pattern?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>$ vim -c /pattern file
+</code></pre>
+<p>Example: <code>vim -c /TODO notes.txt</code> opens notes.txt with the cursor positioned at the first line containing "TODO."</p>
+<p>If the pattern contains spaces, quote it or escape the spaces:</p>
+<pre><code>vim -c /&quot;fix this&quot; file
+vim -c /fix\ this file
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Read-Only Mode</h2>
+<p>How do you open a file in read-only mode and what are the two commands to do it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>$ vim -R file
+$ view file
+</code></pre>
+<p>Both open the file in read-only mode. You can navigate and search normally but Vim will refuse any write command. To override and save anyway (if you have permission), use:</p>
+<pre><code>:w!    or    :wq!
+</code></pre>
+<p>If you do not own the file, those overrides will still fail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Saving Under a New Filename</h2>
+<p>How do you save the current buffer as a different filename, leaving the original file unchanged?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>:w newfilename
+</code></pre>
+<p>This writes the buffer to newfilename. The original file is untouched (provided you did not previously write to it). You can then quit with <code>:q</code> without affecting the original.</p>
+<p>Example — to save practice as practice.new:</p>
+<pre><code>:w practice.new
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Overriding Write Warnings — :w!</h2>
+<p>In what two situations is <code>:w!</code> needed, and what does the exclamation point do?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The <code>!</code> overrides Vim's protective warnings. It is needed when:</p>
+<ol>
+<li>Writing to an existing file that would be overwritten (Vim warns "File exists").</li>
+<li>Writing a file opened in read-only mode (vim -R or view), provided you have filesystem write permission.</li>
+</ol>
+<p>Examples: <code>:w!</code> (overwrite current file), <code>:wq!</code> (write and quit), <code>:w! newfile</code> (force write to newfile).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Saving Part of a File with Line Addressing</h2>
+<p>How do you write only a range of lines from the current buffer to a new file?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Combine ex line addresses with <code>:w</code>:</p>
+<pre><code>:230,$w newfile      → save from line 230 to end of file
+:.,600w newfile      → save from current line to line 600
+:1,50w header.txt    → save lines 1–50
+</code></pre>
+<p>The <code>.</code> symbol means the current line, and <code>$</code> means the last line of the file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Appending Part of a File to Another File</h2>
+<p>What syntax appends lines from the current buffer to an existing file instead of overwriting it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use <code>&gt;&gt;</code> with the write command:</p>
+<pre><code>:1,10w newfile         → write lines 1–10 to newfile (creates or overwrites)
+:340,$w &gt;&gt; newfile     → append from line 340 to end to newfile
+</code></pre>
+<p>After these two commands, newfile contains lines 1–10 followed by lines 340 to the end of the buffer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reading Another File into the Buffer — :r</h2>
+<p>How do you insert the contents of another file into the file you are currently editing?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>:r filename         → insert file after the current cursor line
+:185r filename      → insert file after line 185
+:$r filename        → insert file at the very end
+:0r filename        → insert file at the very beginning (before line 1)
+:/pattern/r file    → insert file after the line matching pattern
+</code></pre>
+<p>The <code>:r</code> command (short for <code>:read</code>) inserts the entire named file starting on the line after the given address.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Crash Recovery — Swap Files in Vim</h2>
+<p>How does Vim protect work in progress against a system crash, and how do you recover?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Vim continuously writes edits to a swap file in the same directory as the file being edited. For a file named <code>practice</code>, the swap file is <code>.practice.swp</code>.</p>
+<p>After a crash, the next time you open the same file, Vim detects the swap file and offers to recover. To recover:
+1. Accept the recovery prompt (or run <code>vim -r practice</code>).
+2. Immediately write the recovered buffer (<code>:w</code>).
+3. Quit and manually delete the <code>.practice.swp</code> file.
+4. Re-open the file to continue editing normally.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Forcing a Buffer Preserve — :preserve</h2>
+<p>What ex command forces Vim to save the swap file immediately, and when is it useful?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><code>:pre</code> (short for <code>:preserve</code>)</p>
+<p>This forces Vim to write the current buffer to its swap file right away, even without a crash. It is useful when:
+- The filesystem is full and you cannot write the file normally.
+- You lack write permission for the file and want to ensure your edits are not lost.</p>
+<p>After <code>:pre</code>, you can look for space to free or use <code>:w pathname/file</code> to write elsewhere.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Filename Shorthands — % and</h2>
+<p>What do the <code>%</code> and <code>#</code> symbols represent in ex commands that take a filename?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>%  → the current filename (the file currently in the buffer)
+#  → the alternate (previous) filename
+</code></pre>
+<p>Examples:</p>
+<pre><code>:w %        → write the buffer to the current file (same as plain :w)
+:e #        → switch to editing the previous file
+:r #        → read the previous file into the current buffer
+</code></pre>
+<p>These shorthands save typing when working with two files back and forth.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>The autowrite Option</h2>
+<p>What does the <code>autowrite</code> option do and when does it trigger an automatic save?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>When <code>autowrite</code> (abbreviated <code>aw</code>) is set, Vim automatically writes the current buffer to disk before:
+- Moving to the next file with <code>:n</code> (next).
+- Running a shell command with <code>:!command</code>.</p>
+<pre><code>:set autowrite
+:set noautowrite
+</code></pre>
+<p>This prevents accidental data loss when switching between files or shelling out.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting — [New File] When You Expected an Existing File</h2>
+<p>Vim shows "[New file]" but you expected to open an existing file. What should you check?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <ol>
+<li>Case sensitivity — Unix filenames are case-sensitive. <code>Letter.txt</code> and <code>letter.txt</code> are different files.</li>
+<li>Wrong directory — use <code>:q</code> to quit, then run <code>pwd</code> in the shell to verify your current directory.</li>
+<li>Wrong name — run <code>ls</code> in the shell to see all files in the directory and confirm the exact name.</li>
+</ol>
+<p>Correct the error and re-invoke Vim with the right path or filename.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting — Read Only or Permission Denied</h2>
+<p>Vim shows "[Read only]" or "Permission denied" when you try to write. What are the possible causes and fixes?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Causes:
+- Vim was launched with <code>view</code> or <code>vim -R</code> (read-only mode).
+- You do not have write permission for the file.</p>
+<p>Fixes:
+- If you own the file and have permission, use <code>:w!</code> or <code>:wq!</code> to force the write.
+- If you lack write permission, use <code>:w /tmp/myfile</code> to save a copy to a directory where you do have permission, then adjust permissions externally.
+- If the file system is full, first free space or use <code>:pre</code> to preserve the swap file.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting — Stuck in ex Line-Editing Mode</h2>
+<p>You invoke Vim but see a colon prompt (<code>:</code>) instead of the normal screen. What happened and how do you fix it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>You are in ex line-editing mode, likely because an interrupt (CTRL-C) was received before Vim could draw the screen.</p>
+<p>Fix: type <code>vi</code> and press ENTER at the colon prompt.</p>
+<p>This switches ex into its visual (vi) mode and draws the normal Vim screen.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Troubleshooting — Terminal Type Errors on Opening</h2>
+<p>What do messages like "Unknown terminal type" or "Not a typewriter" mean when starting Vim, and what is a quick workaround?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>These messages mean the <code>$TERM</code> environment variable is undefined, set to an unknown value, or the terminal's terminfo entry is broken.</p>
+<p>Quick workaround:
+- Type <code>:q</code> to exit, then set: <code>export TERM=vt100</code> (or <code>setenv TERM vt100</code> in csh).
+- Re-invoke Vim. vt100 is a basic but widely supported terminal type.</p>
+<p>For a lasting fix, investigate the terminfo database or consult the system documentation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

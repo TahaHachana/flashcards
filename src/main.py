@@ -17,7 +17,7 @@ def preserve_acronyms_title(text):
     known_acronyms = {"DSA", "SQL", "API", "HTTP", "HTML", "CSS", "JS", "CSS", "XML", "JSON", "REST", "CRUD", "OOP", "TCP", "UDP", "IP", "DNS", "VPN", "SSL", "TLS", "SSH", "FTP", "SMTP", "POP", "IMAP", "AWS", "GCP", "AI", "ML", "NLP", "CV", "GPU", "CPU", "RAM", "SSD", "HDD", "USB", "PDF", "CSV", "YAML", "TOML"}
     
     # Split by underscores and spaces
-    words = text.replace("_", " ").split()
+    words = text.replace("_", " ").replace("-", " ").split()
     result_words = []
     
     for word in words:
