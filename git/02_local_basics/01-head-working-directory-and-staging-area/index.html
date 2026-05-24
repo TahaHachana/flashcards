@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Git - 02 Local Basics - 02 Stage And Commit Changes</title>
+  <title>Flashcards - Git - 02 Local Basics - 01 Head Working Directory And Staging Area</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,8 +28,8 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>The Two-Step Commit Process</h2>
-<p>What are the two steps in Git's commit process and why does Git use this approach?</p>
+                                        <h2>The Three Git Areas</h2>
+<p>Name the three areas Git uses to manage a project and describe the role of each.</p>
                                     </div>
                                 </div>
                             </div>
@@ -37,10 +37,10 @@
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ol>
-<li>Stage changes with <code>git add</code> (select what to include)</li>
-<li>Commit staged changes with <code>git commit</code> (save the snapshot)</li>
+<li><strong>Working Directory (working tree)</strong> — the actual files on your filesystem that you read and edit. Changes here are not yet recorded by Git.</li>
+<li><strong>Staging Area (index)</strong> — an intermediate buffer stored in <code>.git/index</code> where you deliberately accumulate file snapshots to include in the next commit.</li>
+<li><strong>Repository (HEAD)</strong> — the permanent record of committed snapshots. HEAD points to the most recent commit on the current branch.</li>
 </ol>
-<p>This gives precise control over what goes into each commit, allowing you to commit only related changes together, review before committing, and create logical, focused commits.</p>
                                     </div>
                                 </div>
                             </div>
@@ -54,242 +54,51 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>The Three Areas of Git Workflow</h2>
-<p>What are the three areas changes flow through in Git, and what does each represent?</p>
+                                        <h2>What HEAD Points To</h2>
+<p>In normal (non-detached) operation, what is the chain of references that HEAD follows to reach a commit?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ol>
-<li>Working Directory: Your actual files where you make changes (modified state)</li>
-<li>Staging Area (Index): A holding area for changes you want to commit (staged state)</li>
-<li>Repository (.git directory): Permanent storage of committed snapshots (committed state)</li>
-</ol>
-<p>Flow: Working Directory → Staging Area → Repository</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Purpose of git add</h2>
-<p>What does <code>git add</code> do, and what does it NOT do?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p><code>git add</code> DOES:
-- Take a snapshot of the file's current state
-- Store it in the staging area
-- Mark the file as "ready to commit"
-- Leave the working directory file unchanged</p>
-<p><code>git add</code> does NOT:
-- Commit anything (it only prepares files)
-- Automatically include future changes to the file
-- Add files to the repository permanently</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Common git add Commands</h2>
-<p>What do these <code>git add</code> commands do: <code>git add .</code>, <code>git add -A</code>, and <code>git add -u</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ul>
-<li><code>git add .</code>: Add all files in current directory (new, modified, deleted)</li>
-<li><code>git add -A</code> or <code>git add --all</code>: Add all files in entire repository from any location</li>
-<li><code>git add -u</code> or <code>git add --update</code>: Add all modified and deleted files (NOT new untracked files)</li>
-</ul>
-<p>Most common: <code>git add .</code> for staging everything in current directory</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>What git commit Does</h2>
-<p>What happens when you run <code>git commit</code>?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ol>
-<li>Creates a snapshot of all staged changes</li>
-<li>Generates a unique SHA-1 hash (commit ID)</li>
-<li>Stores commit metadata (author, date, message)</li>
-<li>Links to parent commit (creating history chain)</li>
-<li>Moves the current branch pointer forward</li>
-<li>Clears the staging area</li>
-</ol>
-<p>Result: Changes are permanently saved in repository history.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Commit Message Best Practices</h2>
-<p>What are the key guidelines for writing good Git commit messages?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>DO:
-- Use imperative mood: "Add feature" not "Added feature"
-- Keep first line under 50 characters
-- Start with capital letter
-- Explain WHAT and WHY, not HOW
-- Be specific and descriptive</p>
-<p>DON'T:
-- Write vague messages ("fix bug", "update code")
-- Use past tense
-- Include unnecessary details
-- Commit unrelated changes together</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>The Four File States in Git</h2>
-<p>What are the four possible states of files in Git?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ol>
-<li>Untracked: New files Git doesn't know about (use <code>git add</code> to track)</li>
-<li>Tracked (Unmodified): Files in repository that haven't changed</li>
-<li>Tracked (Modified): Files Git tracks that have been changed but not staged</li>
-<li>Staged: Changes marked for next commit, ready to be committed</li>
-</ol>
-<p>Check state with <code>git status</code></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Modified File After Staging</h2>
-<p>What happens if you stage a file with <code>git add</code>, then modify it again before committing?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>The file appears in BOTH "Changes to be committed" and "Changes not staged for commit" in <code>git status</code>.</p>
-<p>The staged version has the first edit, the working directory has the second edit. You must run <code>git add</code> again to stage the latest changes. Git stages the file's state at the moment you run <code>git add</code>, not continuously.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>The commit -a Flag</h2>
-<p>What does <code>git commit -a</code> or <code>git commit -am "message"</code> do, and what are its limitations?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>It stages all modified tracked files and commits them in one step, skipping the explicit <code>git add</code> step.</p>
-<p>LIMITATION: It ONLY works for files Git already tracks. It does NOT add new (untracked) files. New files still require explicit <code>git add</code>.</p>
-<p>Example: <code>git commit -am "Quick fix for styling"</code></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Unstaging Files</h2>
-<p>How do you unstage a file that was added to the staging area by mistake?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>Modern Git (2.23+):</p>
-<pre><code class="language-bash">git restore --staged filename
+                                        <pre><code>HEAD  →  refs/heads/&lt;branch&gt;  →  &lt;commit SHA-1&gt;
 </code></pre>
-<p>Older Git:</p>
-<pre><code class="language-bash">git reset HEAD filename
+<p>HEAD is a symbolic reference that points to the current <strong>branch reference</strong>, which in turn points to the latest <strong>commit</strong> on that branch. HEAD itself does not move when you make commits — the branch pointer advances, and HEAD keeps pointing to the same branch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>File States in the Working Directory</h2>
+<p>List the four states a file known to Git can be in within the working directory and explain each.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Untracked  → New file Git has never been told about.
+              Exists on disk, invisible to Git history.
+
+Clean      → Committed and identical to the HEAD version.
+              No differences between disk and repository.
+
+Modified   → Committed previously, but edited on disk since
+              the last commit. Git sees a difference.
+
+Deleted    → Was committed, but the file has been removed
+              from disk. Git sees it as a pending deletion.
 </code></pre>
-<p>This removes the file from staging but keeps your changes in the working directory. The file returns to "modified but not staged" state.</p>
+<p>A fifth category — <strong>Ignored</strong> — applies to files matched by <code>.gitignore</code>; Git treats them as if they do not exist.</p>
                                     </div>
                                 </div>
                             </div>
@@ -303,19 +112,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Viewing Changes</h2>
-<p>What's the difference between <code>git diff</code> and <code>git diff --staged</code>?</p>
+                                        <h2>Why the Staging Area Exists</h2>
+<p>What would be lost if Git had no staging area and committed the entire working directory directly?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li><code>git diff</code>: Shows unstaged changes (changes in working directory not yet staged)</li>
-<li><code>git diff --staged</code> (or <code>git diff --cached</code>): Shows staged changes (what will be included in next commit)</li>
+                                        <p>Without a staging area every commit would capture <strong>all</strong> modified files at once, making it impossible to:</p>
+<ul>
+<li><strong>Separate concerns</strong> — group only the files relevant to one logical change into a single commit while leaving unrelated edits aside.</li>
+<li><strong>Stage partial file changes</strong> — use <code>git add -p</code> to commit individual hunks within a file, keeping different fixes in different commits.</li>
+<li><strong>Review before committing</strong> — use <code>git diff --staged</code> to inspect exactly what will be recorded, catching mistakes before they enter history permanently.</li>
 </ul>
-<p>Use <code>git diff --staged</code> to review exactly what you're about to commit.</p>
+<p>The staging area transforms commits from "whatever happened to be modified" into deliberately crafted, meaningful snapshots.</p>
                                     </div>
                                 </div>
                             </div>
@@ -329,20 +140,19 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>The Root Commit</h2>
-<p>What is special about the first commit in a Git repository?</p>
+                                        <h2>The Index as a Proposed Snapshot</h2>
+<p>Why is it more accurate to think of the staging area as a "proposed next snapshot" rather than a "list of changes"?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>The first commit is called the "root commit" and has these special properties:
-- It has no parent commit
-- Forms the base of the entire project history
-- Shown as <code>(root-commit)</code> in commit output
-- Convention: Often messaged as "Initial commit" or "Initial project setup"</p>
-<p>Every other commit descends from this root commit.</p>
+                                        <p>The staging area holds a <strong>complete snapshot of every tracked file</strong> as you intend it to be at the time of the next commit — not just a diff or a queue of changes. When you run <code>git add file.txt</code>, you are updating the full-project snapshot stored in the index to include the current version of <code>file.txt</code>. When you commit, the entire index snapshot is written as a new commit object. This is why:</p>
+<ul>
+<li>Reverting a staged file (<code>git restore --staged file.txt</code>) restores it to the HEAD version, not to some intermediate "un-staged" state.</li>
+<li>Two <code>git add</code> calls on the same file overwrite the first — only the latest version enters the snapshot.</li>
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -356,20 +166,32 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Amending Commits</h2>
-<p>What does <code>git commit --amend</code> do and when should you use it?</p>
+                                        <h2>HEAD Relative References</h2>
+<p>What commit does each of the following resolve to, and what is the difference between <code>~</code> and <code>^</code>?</p>
+<pre><code>HEAD~1
+HEAD~2
+HEAD^2
+</code></pre>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>git commit --amend</code> replaces the last commit with a new one by:
-- Combining staged changes with the previous commit
-- Allowing you to change the commit message
-- Creating a new commit that replaces the old one</p>
-<p>WARNING: Only amend commits that haven't been pushed to a remote repository, as amending changes history.</p>
-<p>Example: <code>git commit --amend -m "Corrected message"</code></p>
+                                        <pre><code>HEAD~1  (same as HEAD~)
+        → The first parent of the current commit (one step back
+          in linear history). Works for all commits.
+
+HEAD~2  → Two steps back (parent of the parent).
+          Shorthand for HEAD~~.
+
+HEAD^2  → The SECOND parent of the current commit.
+          Only meaningful for merge commits, which have two parents.
+          HEAD^1 is the first parent (same as HEAD~1).
+</code></pre>
+<p><strong>Rule of thumb:</strong>
+- <code>~N</code> — go back N generations along the <strong>first-parent</strong> chain.
+- <code>^N</code> — select the <strong>Nth parent</strong> of a single commit (for merges).</p>
                                     </div>
                                 </div>
                             </div>
@@ -383,24 +205,26 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Staging Best Practices</h2>
-<p>What are key best practices for staging and committing in Git?</p>
+                                        <h2>Detached HEAD State</h2>
+<p>What is detached HEAD state, what triggers it, and what is the risk of making commits in it?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Staging:
-- Stage related changes together
-- Review with <code>git diff --staged</code> before committing
-- Use <code>git add -p</code> for partial staging of large changes</p>
-<p>Committing:
-- One commit = one logical change
-- Commit often (small, focused commits)
-- Test before committing (don't commit broken code)
-- Write clear, descriptive messages
-- Commit complete features, not work-in-progress</p>
+                                        <p><strong>Detached HEAD</strong> occurs when HEAD points directly to a commit hash instead of to a branch reference:</p>
+<pre><code>Normal:    HEAD → refs/heads/main → commit abc
+Detached:  HEAD → commit abc  (no branch in between)
+</code></pre>
+<p><strong>Triggers:</strong>
+- <code>git checkout &lt;commit-hash&gt;</code>
+- <code>git checkout &lt;tag&gt;</code>
+- <code>git checkout origin/main</code> (a remote-tracking branch)</p>
+<p><strong>Risk:</strong> Any commits made in detached HEAD state are not reachable from any branch. If you switch away without saving them to a branch, Git's garbage collector will eventually delete them.</p>
+<p><strong>Recovery:</strong></p>
+<pre><code class="language-bash">git switch -c my-recovery-branch   # create a branch at current position
+</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -414,21 +238,93 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Verifying Commits</h2>
-<p>What are four ways to verify and view commits after committing?</p>
+                                        <h2>Three-Way git diff Comparisons</h2>
+<p>Complete the table:</p>
+<pre><code>Command              Compares _________ vs _________
+git diff             ?                  ?
+git diff --staged    ?                  ?
+git diff HEAD        ?                  ?
+</code></pre>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ol>
-<li><code>git log</code>: View complete commit history</li>
-<li><code>git show</code> or <code>git show HEAD</code>: View last commit details</li>
-<li><code>git log --oneline</code>: View commit history in condensed one-line format</li>
-<li><code>git rev-list --count HEAD</code>: Count total number of commits</li>
-</ol>
-<p>These commands help verify your commit was successful and review what was committed.</p>
+                                        <pre><code>Command              Compares _________________ vs _____________
+git diff             Working directory          Staging area
+                     (shows unstaged changes)
+
+git diff --staged    Staging area               HEAD (last commit)
+                     (shows what will be committed next)
+
+git diff HEAD        Working directory           HEAD (last commit)
+                     (shows all changes: staged + unstaged combined)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Where the Index Is Stored</h2>
+<p>Where is the staging area physically stored, and which commands directly modify it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The staging area is stored in the binary file <strong><code>.git/index</code></strong> at the root of the repository. You never edit it directly. The commands that modify it are:</p>
+<pre><code>git add &lt;file&gt;              → add/update file snapshot in index
+git add -p                  → interactively stage hunks
+git rm --cached &lt;file&gt;      → remove file from index (keep on disk)
+git reset HEAD &lt;file&gt;       → restore index entry to HEAD version
+git restore --staged &lt;file&gt; → same as above (modern syntax)
+git commit                  → reads index, writes commit, clears
+                              it to match the new HEAD
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Staged File Scenario</h2>
+<p>You stage <code>app.py</code> with <code>git add app.py</code>, then edit <code>app.py</code> again without staging. How many distinct versions of <code>app.py</code> now exist across the three areas, and what does each contain?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p><strong>Three distinct versions</strong> exist simultaneously:</p>
+<pre><code>Working directory → app.py with BOTH sets of edits
+                    (the post-stage modifications)
+
+Staging area      → app.py as it was when you ran git add
+                    (first set of edits only; will go into next commit)
+
+HEAD (repository) → app.py as it was in the last commit
+                    (original, unmodified version)
+</code></pre>
+<p>Running <code>git diff</code> shows working-dir vs index (second edit).
+Running <code>git diff --staged</code> shows index vs HEAD (first edit).
+Running <code>git commit</code> records only the staged (first edit) version.</p>
                                     </div>
                                 </div>
                             </div>

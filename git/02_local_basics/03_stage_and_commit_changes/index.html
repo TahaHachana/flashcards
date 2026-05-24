@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Flashcards - Git - 02 Local Basics - 01 Initialize Repository</title>
+  <title>Flashcards - Git - 02 Local Basics - 03 Stage And Commit Changes</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,18 +28,27 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>What is a Git Repository</h2>
-<p>What is a Git repository and what are its two main components?</p>
+                                        <h2>git add Variants Compared</h2>
+<p>What is the difference between <code>git add .</code>, <code>git add -u</code>, and <code>git add -A</code>? Which one stages new untracked files?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>A Git repository (repo) is a directory that Git tracks. It contains:
-1. Your project files (working directory)
-2. A hidden <code>.git</code> folder (Git's database storing all history, commits, branches, and metadata)</p>
-<p>A directory is just a regular folder until you initialize it as a Git repository.</p>
+                                        <pre><code>git add .    Stages modifications, deletions, AND new untracked
+             files — but only within the current directory and
+             its subdirectories.
+
+git add -u   Stages modifications and deletions for already-
+             tracked files only. Does NOT stage new untracked
+             files.
+
+git add -A   Stages everything: modifications, deletions, and
+             new untracked files across the ENTIRE repository,
+             regardless of the current directory.
+</code></pre>
+<p>Both <code>git add .</code> and <code>git add -A</code> stage new files, but <code>-A</code> always covers the full repo while <code>.</code> is limited to the current subtree.</p>
                                     </div>
                                 </div>
                             </div>
@@ -53,23 +62,22 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Purpose of git init</h2>
-<p>What does the <code>git init</code> command do, and what does it NOT do?</p>
+                                        <h2>Interactive Staging with git add -p</h2>
+<p>What is <code>git add -p</code>, what does it allow you to do, and what do the keys <code>y</code>, <code>n</code>, and <code>s</code> do at the hunk prompt?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p><code>git init</code> DOES:
-- Create a hidden <code>.git</code> subdirectory with repository structure
-- Prepare the directory for version control
-- Place you on the default branch</p>
-<p><code>git init</code> does NOT:
-- Create any commits
-- Track any files automatically
-- Change your existing files
-- Upload anything anywhere</p>
+                                        <p><code>git add -p</code> (patch mode) presents each <strong>hunk</strong> (contiguous block of changes) in your modified files one at a time and asks whether to stage it.</p>
+<pre><code>y  → Yes, stage this hunk
+n  → No, skip this hunk (do not stage it)
+s  → Split the hunk into smaller pieces for finer control
+e  → Manually edit the hunk before staging
+q  → Quit; leave remaining hunks unstaged
+</code></pre>
+<p><strong>Purpose:</strong> lets you commit only part of a file's changes — keeping unrelated modifications out of the current commit and crafting a cleaner, single-purpose history.</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,23 +91,30 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Contents of the .git Directory</h2>
-<p>What critical information does the <code>.git</code> directory contain?</p>
+                                        <h2>Anatomy of a Git Commit</h2>
+<p>List the six fields stored inside every Git commit object.</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>HEAD (points to current branch)</li>
-<li>config (repository-specific settings)</li>
-<li>objects/ (Git's object database: commits, trees, blobs)</li>
-<li>refs/ (references to commits: branches and tags)</li>
-<li>hooks/ (scripts that run at certain Git events)</li>
-<li>Complete project history and metadata</li>
-</ul>
-<p>Never manually edit <code>.git</code> contents—Git manages this automatically.</p>
+                                        <pre><code>1. SHA-1 hash    40-character unique identifier derived from all
+                 content in the commit.
+
+2. Tree          Pointer to a tree object — a full snapshot of
+                 all tracked files and directories.
+
+3. Parent(s)     SHA-1 of the preceding commit(s). None for the
+                 root commit; two for a merge commit.
+
+4. Author        Name, email, and timestamp of who wrote the change.
+
+5. Committer     Name, email, and timestamp of who recorded the
+                 commit (may differ from author in patch workflows).
+
+6. Message       Human-readable description of the change.
+</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -113,8 +128,59 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Initializing with Specific Branch Name</h2>
-<p>What are three ways to initialize a Git repository with "main" as the default branch instead of "master"?</p>
+                                        <h2>git commit -a Limitation</h2>
+<p>You create a new file <code>feature.py</code> and also edit <code>README.md</code>. You run <code>git commit -a -m "Add feature"</code>. What gets committed?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Only the changes to <strong><code>README.md</code></strong> (an already-tracked file) are committed. The new file <strong><code>feature.py</code></strong> is <strong>not committed</strong> — it remains untracked.</p>
+<p><code>git commit -a</code> auto-stages modifications and deletions for files that Git already tracks, but it never stages brand-new untracked files. To include <code>feature.py</code> you must explicitly run <code>git add feature.py</code> first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>How to Unstage a File</h2>
+<p>You staged <code>config.py</code> by mistake. How do you remove it from the staging area while keeping the changes in your working directory?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash"># Modern syntax (Git 2.23+)
+git restore --staged config.py
+
+# Classic syntax (still works in all versions)
+git reset HEAD config.py
+</code></pre>
+<p>Both commands restore the staging area entry for <code>config.py</code> to the <strong>HEAD version</strong> (effectively removing the staged change), while leaving the file on disk <strong>untouched</strong>. The modifications remain in the working directory as unstaged changes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>What Happens Internally During git commit</h2>
+<p>Describe the internal sequence of steps Git takes when you run <code>git commit -m "message"</code>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -122,11 +188,13 @@
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
                                         <ol>
-<li>Set globally first: <code>git config --global init.defaultBranch main</code>, then <code>git init</code></li>
-<li>Specify during init: <code>git init -b main</code> or <code>git init --initial-branch=main</code></li>
-<li>Rename after init: <code>git init</code>, then <code>git branch -m master main</code></li>
+<li>Git reads the current staging area (index).</li>
+<li>Creates <strong>blob</strong> objects in <code>.git/objects/</code> for any file content not already stored.</li>
+<li>Creates <strong>tree</strong> objects representing each directory's file listing.</li>
+<li>Creates the <strong>commit</strong> object containing: the root tree SHA-1, parent commit SHA-1(s), author/committer metadata, and the message.</li>
+<li>Updates the current <strong>branch ref</strong> (e.g., <code>refs/heads/main</code>) to point to the new commit's SHA-1.</li>
+<li>HEAD, which points to the branch, now implicitly resolves to the new commit.</li>
 </ol>
-<p>Method 1 is recommended as it applies to all future repositories.</p>
                                     </div>
                                 </div>
                             </div>
@@ -140,22 +208,29 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Repository State After Initialization</h2>
-<p>What is the state of a repository immediately after running <code>git init</code>?</p>
+                                        <h2>Good Commit Message Format</h2>
+<p>What are the three structural rules for a well-formed Git commit message, and why does each matter?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>Repository is empty (no commits yet)</li>
-<li>No files are tracked by Git</li>
-<li>Working directory may have files, but Git doesn't know about them</li>
-<li>You're on the initial branch (typically <code>main</code>)</li>
-<li><code>.git</code> folder exists with empty repository structure</li>
-</ul>
-<p>Use <code>git status</code> to verify the empty state.</p>
+                                        <pre><code>Rule 1 — Subject line: imperative mood, ≤ 50 characters
+  &quot;Add login validation&quot;  not  &quot;Added login validation&quot;
+  Why: shown in git log --oneline, GitHub PR titles, email
+       subjects — brevity makes it scannable.
+
+Rule 2 — Blank line between subject and body
+  Why: tools (git log, GitHub, email clients) use it to
+       distinguish subject from body. Without it, the body
+       is treated as part of the subject.
+
+Rule 3 — Body lines wrapped at 72 characters, explaining WHY
+  Why: the diff already shows what changed; the message
+       should record the intent, rationale, or constraints
+       that made the change necessary.
+</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -169,19 +244,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>Checking if Directory is a Repository</h2>
-<p>How can you check if a directory is already a Git repository?</p>
+                                        <h2>Author vs. Committer</h2>
+<p>What is the difference between the Author and Committer fields in a Git commit, and in what workflow do they differ?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <p>Method 1: Check for <code>.git</code> folder: <code>ls -la | grep .git</code></p>
-<p>Method 2: Run <code>git status</code>:
-- If it's a repo: Shows branch info and status
-- If it's NOT a repo: "fatal: not a git repository (or any of the parent directories): .git"</p>
-<p>The status command is the most reliable method.</p>
+                                        <pre><code>Author    → The person who originally wrote the change.
+            Records when the work was done.
+
+Committer → The person who recorded the commit in the
+            repository. Records when it was committed.
+</code></pre>
+<p>In a <strong>patch workflow</strong>, a contributor emails a patch to a maintainer. The contributor is the <strong>Author</strong> (they wrote the code); the maintainer who applies the patch with <code>git am</code> or <code>git apply</code> becomes the <strong>Committer</strong>. For direct commits by a solo developer the two are always identical.</p>
                                     </div>
                                 </div>
                             </div>
@@ -195,107 +272,21 @@
                             <div class="flip-card-front">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <h2>What Happens When You Delete .git</h2>
-<p>What happens if you delete the <code>.git</code> folder from a repository?</p>
+                                        <h2>The Empty Commit</h2>
+<p>By default, what does Git do if you try to commit with nothing staged, and how do you override this behaviour?</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="card h-100 text-bg-dark border-light">
                                     <div class="card-body">
-                                        <ul>
-<li>ALL Git history is permanently lost (commits, branches, tags)</li>
-<li>Directory becomes a regular folder (no longer a repository)</li>
-<li>Files in working directory remain unchanged (your actual project files are safe)</li>
-<li>This action CANNOT be undone—history is gone forever</li>
-</ul>
-<p>Only delete <code>.git</code> if you deliberately want to remove all version control from a project.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Reinitializing an Existing Repository</h2>
-<p>What happens if you run <code>git init</code> in a directory that's already a Git repository?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>It's SAFE. Git will:
-- Recognize the existing <code>.git</code> folder
-- Preserve all data and history
-- Keep existing configuration
-- Ensure repository structure is correct
-- Output: "Reinitialized existing Git repository..."</p>
-<p>This is sometimes used to repair corrupted repository structure, but rarely needed.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Repository Location Best Practices</h2>
-<p>What are best practices for where to initialize Git repositories?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <p>DO:
-- One repository per project
-- Initialize at project root (top-level folder)
-- Use meaningful directory names</p>
-<p>DON'T:
-- Initialize in home directory (~)
-- Create nested repositories (unless using submodules)
-- Initialize in system folders (Desktop, Documents root)
-- Track temporary or cache folders</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="carousel-item">
-                    <div class="flip-card m-3">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <h2>Verifying Successful Initialization</h2>
-<p>What are four ways to verify that <code>git init</code> was successful?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="card h-100 text-bg-dark border-light">
-                                    <div class="card-body">
-                                        <ol>
-<li>Check for <code>.git</code> folder: <code>ls -la</code> (should see .git directory)</li>
-<li>Check Git status: <code>git status</code> (should show branch info, not error)</li>
-<li>Check current branch: <code>git branch</code> (shows branch, may be empty)</li>
-<li>Verify config: <code>git config --list --local</code> (shows repo-specific settings)</li>
-</ol>
-<p>If any command shows "fatal: not a git repository", initialization failed.</p>
+                                        <p>By default, Git <strong>refuses</strong> to create a commit with an empty staging area (nothing changed since the last commit) and prints:</p>
+<pre><code>nothing to commit, working tree clean
+</code></pre>
+<p>To force an empty commit (useful for triggering CI pipelines or adding documentation markers):</p>
+<pre><code class="language-bash">git commit --allow-empty -m &quot;Trigger CI pipeline&quot;
+</code></pre>
+<p>The resulting commit has no diff — it contains only metadata (message, author, timestamp, parent pointer).</p>
                                     </div>
                                 </div>
                             </div>

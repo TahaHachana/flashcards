@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flashcards - Git - 02 Local Basics - 04 Status And History</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="text-bg-dark">
+  <div class="d-flex flex-column min-vh-100 min-vw-100">
+    <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+      <div class="d-grid gap-2 col-12 mx-auto">
+        
+<div id="carousel" class="carousel slide">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="carousel-inner" style="width: 70%; margin-left: 15%;"> -->
+            <div class="carousel-inner">
+
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git status Three Sections</h2>
+<p><code>git status</code> organises its output into three sections. Name each section and describe which files appear there.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>1. Changes to be committed
+   Files that are in the staging area (index) and differ from
+   HEAD. These WILL be included in the next git commit.
+
+2. Changes not staged for commit
+   Tracked files that have been modified on disk since the last
+   git add. These will NOT be in the next commit unless staged.
+
+3. Untracked files
+   New files Git has never been told about. Completely invisible
+   to both git commit and git commit -a.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git status Short Format</h2>
+<p>In <code>git status -s</code>, what does the output <code>MM src/app.py</code> mean? What do the two columns represent?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Each line in short format has two columns: <strong>XY filename</strong></p>
+<pre><code>X = index (staging area) status
+Y = working tree status
+
+M  = modified    A = added    D = deleted
+?? = untracked   ' ' = unmodified
+</code></pre>
+<p><code>MM src/app.py</code> means:</p>
+<pre><code>First M  (X column) → index has staged modifications
+                       (index differs from HEAD)
+
+Second M (Y column) → working tree has FURTHER modifications
+                       (working tree differs from the staged version)
+</code></pre>
+<p>In other words, some changes to <code>app.py</code> are staged, and additional edits were made after staging. Only the staged portion will appear in the next commit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git log Default Output Fields</h2>
+<p>What four pieces of information does a standard <code>git log</code> entry display for each commit?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>1. Full SHA-1 hash   40-character unique commit identifier
+                     (e.g., 521edbe1dd2ec9c6f959c504d12615a...)
+
+2. Author            Name and email of the person who wrote
+                     the change.
+
+3. Date              The author timestamp (when the work was
+                     done), including timezone.
+
+4. Commit message    The full log message, starting with the
+                     subject line (indented in output).
+</code></pre>
+<p>Commits are listed in <strong>reverse chronological order</strong> — newest first.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git show vs git log</h2>
+<p>What is the fundamental difference between <code>git log</code> and <code>git show</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>git log    → Lists MANY commits (metadata only by default).
+             Used to navigate history and find a commit of
+             interest. No diff shown unless -p is added.
+
+git show   → Focuses on ONE commit: shows full metadata
+             PLUS the unified diff that commit introduced.
+             Used to inspect what a specific commit changed.
+</code></pre>
+<p><code>git show</code> without arguments always shows the <strong>HEAD</strong> commit. Pass any ref, hash, branch name, or tag to show any other commit:</p>
+<pre><code class="language-bash">git show HEAD~3
+git show v2.1.0
+git show feature-branch
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git show File Content at a Commit</h2>
+<p>How do you use <code>git show</code> to display the full content of a specific file as it existed at a particular commit — without seeing the diff?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>Use the <code>&lt;ref&gt;:&lt;path&gt;</code> syntax:</p>
+<pre><code class="language-bash">git show HEAD:src/app.py          # file content at HEAD
+git show v1.0:README.md           # file content at tag v1.0
+git show abc1234:config/settings.py  # file content at a hash
+</code></pre>
+<p>This outputs the raw file content at that point in history, with no diff decoration. Useful for reading an old version of a file or piping it to another command.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Three Core git diff Comparisons</h2>
+<p>Complete the table:</p>
+<pre><code>Command               Compares          vs
+git diff              ?                 ?
+git diff --staged     ?                 ?
+git diff HEAD         ?                 ?
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>Command               Compares               vs
+git diff              Working directory       Staging area
+                      (unstaged changes —
+                       what won't be committed yet)
+
+git diff --staged     Staging area            HEAD (last commit)
+  (= --cached)        (staged changes —
+                       what WILL be committed next)
+
+git diff HEAD         Working directory       HEAD (last commit)
+                      (all changes: staged +
+                       unstaged combined)
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Reading a Unified Diff Hunk Header</h2>
+<p>What does the hunk header <code>@@ -4,7 +4,9 @@</code> mean in a <code>git diff</code> output?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <p>The hunk header describes the line ranges shown in the old and new versions:</p>
+<pre><code>@@ -4,7 +4,9 @@
+
+-4,7  → In the OLD file (a/): the hunk starts at line 4
+         and covers 7 lines (lines 4–10).
+
++4,9  → In the NEW file (b/): the hunk starts at line 4
+         and covers 9 lines (lines 4–12).
+
+The difference (7 → 9) reflects 2 net lines added.
+</code></pre>
+<p>Within the hunk:
+- Lines prefixed with <code>-</code> exist only in the old version (removed).
+- Lines prefixed with <code>+</code> exist only in the new version (added).
+- Lines with a leading space are unchanged context lines.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Diffing Between Two Commits</h2>
+<p>Write the <code>git diff</code> command to see only the changes made to <code>src/app.py</code> between the commit three steps before HEAD and the commit two steps before HEAD.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code class="language-bash">git diff HEAD~3 HEAD~2 -- src/app.py
+</code></pre>
+<p>Breaking it down:</p>
+<pre><code>HEAD~3         → The older commit (three parents before HEAD)
+HEAD~2         → The newer commit (two parents before HEAD)
+-- src/app.py  → Limit the diff to this file only
+                 (the -- separates refs from paths)
+</code></pre>
+<p>Without <code>-- src/app.py</code>, the diff would show all changed files between the two commits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>Two-Dot vs Three-Dot git diff</h2>
+<p>What is the difference between <code>git diff main..feature</code> and <code>git diff main...feature</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>main..feature   (two dots)
+  Standard diff: compares the tip of main directly with the
+  tip of feature. Shows all differences between the two
+  branch tips as they currently stand.
+
+main...feature  (three dots)
+  Symmetric diff: compares the tip of feature with the
+  MERGE BASE (the common ancestor where the branches diverged).
+  Shows only the changes introduced on feature since it
+  branched off — exactly what a pull request diff shows.
+</code></pre>
+<p>Use <code>...</code> when reviewing a feature branch to see only its own changes, independent of what has happened on main since the branch was created.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-item">
+                    <div class="flip-card m-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <h2>git diff --stat and --name-only</h2>
+<p>When would you use <code>git diff --stat</code> or <code>git diff --name-only</code> instead of a plain <code>git diff</code>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card h-100 text-bg-dark border-light">
+                                    <div class="card-body">
+                                        <pre><code>git diff --stat    → Shows a summary: filename, a bar chart of
+                     relative change size, and a count of
+                     insertions/deletions per file.
+                     Use when you want a quick overview of which
+                     files changed and how much, without reading
+                     every changed line.
+
+   Example output:
+   src/app.py | 12 ++++++------
+   README.md  |  3 +++
+   2 files changed, 15 insertions(+), 6 deletions(-)
+
+git diff --name-only → Lists only the filenames that changed,
+                       one per line, with no other output.
+                       Use in scripts or when you just need the
+                       list of affected paths.
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col ms-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                    <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                    <span class="">Previous</span>
+                </button>
+            </div>
+            <div class="col me-3">
+                <button class="btn btn-dark btn-lg btn-outline-light w-100" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                    <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                    <span class="">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .flip-card {
+        background-color: transparent;
+        /* width: 200px; */
+        height: 300px;
+        /* border: 1px solid #f1f1f1; */
+        /* perspective: 1000px; */
+        /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* text-align: center; */
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    /* .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    } */
+
+    /* Position the front and back side */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        /* Safari */
+        backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    /* .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    } */
+
+    /* Style the back side */
+    .flip-card-back {
+        /* background-color: dodgerblue;
+        color: white; */
+        transform: rotateY(180deg);
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .card-body {
+        overflow: auto;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    document.querySelector(".carousel-item").classList.add("active")
+    const myCarouselElement = document.querySelector('#carousel')
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        touch: true
+    });
+</script>
+<script>
+    hljs.highlightAll();
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const flipCards = document.querySelectorAll('.flip-card');
+
+        flipCards.forEach(flipCard => {
+            const flipCardInner = flipCard.querySelector('.flip-card-inner');
+            let isFlipped = false;
+
+            flipCard.addEventListener('click', () => {
+                if (isFlipped) {
+                    flipCardInner.style.transform = 'rotateY(0deg)';
+                } else {
+                    flipCardInner.style.transform = 'rotateY(180deg)';
+                }
+                isFlipped = !isFlipped;
+            });
+        });
+    });
+</script>
+
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
